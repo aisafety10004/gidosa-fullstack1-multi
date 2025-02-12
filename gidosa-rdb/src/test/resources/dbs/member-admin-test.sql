@@ -1,0 +1,1 @@
+--insert into member_admin (name, created_at, updated_at) values ('컴퓨터공학', now(), now())^;

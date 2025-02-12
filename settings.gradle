@@ -1,0 +1,8 @@
+rootProject.name = 'gidosa-multimodule'
+
+include 'gidosa-common'
+include 'gidosa-common-api'
+include 'gidosa-rdb'
+include 'gidosa-auth'
+include 'gidosa-full-webadmin'
+include 'gidosa-webapp-api'

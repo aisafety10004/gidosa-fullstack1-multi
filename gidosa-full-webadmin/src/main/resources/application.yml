@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: local
+    group:
+      local:
+        - common
+      dev:
+        - common
+      prod:
+        - common
+        -
+
+
+
+

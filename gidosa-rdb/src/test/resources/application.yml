@@ -1,0 +1,10 @@
+#profile-name: local
+spring:
+  profiles:
+    active: local
+    group:
+      local:
+        - common
+      dev:
+        - common
+

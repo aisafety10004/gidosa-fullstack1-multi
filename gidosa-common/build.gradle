@@ -1,0 +1,30 @@
+plugins{
+    id 'java-test-fixtures'
+}
+
+bootJar {
+    enabled = false
+    archiveFileName = 'gidosa-common.jar'
+}
+
+jar {
+    enabled = true
+}
+
+test {
+    enabled = false
+}
+//tasks.bootJar { enabled = false }
+//tasks.jar { enabled = false }
+
+dependencies {
+//    implementation 'com.fasterxml.jackson.core:jackson-core'
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // testFixture
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.register("prepareKotlinBuildScriptModel") {}

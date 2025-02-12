@@ -1,0 +1,92 @@
+bootJar {
+    enabled = true
+    archiveFileName = 'gidosa-webapp-api.jar'
+}
+
+jar {
+    enabled = false
+}
+
+test {
+    enabled = false
+}
+//tasks.bootJar { enabled = false }
+//tasks.jar { enabled = false }
+
+//group = 'net.gidosa.webapp'
+//version = 'unspecified'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(path: ':gidosa-common')
+//    implementation project(path: ':gidosa-auth')
+//    implementation project(path: ':gidosa-common-api')
+    implementation project(path: ':gidosa-rdb')
+//    implementation project(path: ':gidosa-redis')
+//    implementation project(path: ':gidosa-queue-stream')
+//    implementation project(path: ':gidosa-search')
+//    implementation project(path: ':gidosa-dynamodb')
+//    implementation project(path: ':gidosa-db-mongo')
+
+    // general
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+////    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.0'
+//    implementation 'org.postgresql:postgresql:42.7.3'
+    implementation 'com.mysql:mysql-connector-j'
+////    implementation 'com.h2database:h2'
+//
+//    // opensearch
+//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+//    implementation 'org.opensearch.client:spring-data-opensearch-starter:1.3.0'
+//    implementation 'org.opensearch.client:spring-data-opensearch:1.3.0'
+//    implementation 'org.opensearch.client:opensearch-java:2.10.0'
+//    implementation 'org.opensearch.client:opensearch-rest-high-level-client:2.12.0'
+
+    // springdoc swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+
+    // mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+//    // Other dependencies
+//    // unirest
+//    implementation 'com.konghq:unirest-java:3.11.09'
+//
+//    // KG 이니시스
+////    implementation files("libs/INIpaySample_v1.3.jar")
+//
+//    // firebase
+//    implementation 'com.google.firebase:firebase-admin:9.1.1'
+//
+//    // logback(control statement(ex) if, for) 기능 추가) + for EvaluatorFilter of Logback
+//    implementation group: 'org.codehaus.janino', name: 'janino', version: '3.1.6'
+//
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+//    testImplementation 'org.springframework.security:spring-security-test'
+
+    testImplementation project(path: ':gidosa-common')
+//    testImplementation project(path: ':gidosa-auth')
+//    testImplementation project(path: ':gidosa-common-api')
+    testImplementation project(path: ':gidosa-rdb')
+//    testImplementation project(path: ':gidosa-redis')
+//    testImplementation project(path: ':gidosa-queue-stream')
+//    testImplementation project(path: ':gidosa-search')
+//    testImplementation project(path: ':gidosa-dynamodb')
+//    testImplementation project(path: ':gidosa-db-mongo')
+//
+//    testImplementation(testFixtures(project(":gidosa-common")))
+//    testImplementation(testFixtures(project(":gidosa-rdb")))
+    testImplementation(testFixtures(project(":gidosa-rdb")))
+    testImplementation(testFixtures(project(":gidosa-common-api")))
+}
+
+tasks.register("prepareKotlinBuildScriptModel") {}

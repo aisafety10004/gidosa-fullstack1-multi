@@ -1,0 +1,62 @@
+# 서버포트
+server:
+  port: 9095
+#  forward-headers-strategy: framework
+  error:
+    whitelabel:
+      enabled: true
+
+# spring-web-jpa
+spring:
+  application:
+    name: gidosa-full-webadmin
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+    username: root
+    password: password
+
+  thymeleaf:          # 타임리프
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    view-names: thymeleaf/*
+    enabled: true
+  #    check-template-location: true
+
+  mvc:
+#    static-path-pattern: /**
+    view:         # 제이에스피
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+#    context-path: /api
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    #    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Seoul
+        dialect: org.hibernate.dialect.MySQLDialect
+    #        format_sql: true
+    jwt:
+      secret: vosdfay6ghfasdfasldfjasldfmxcfvojalksnfskdsdgfn
+
+# mybatis
+mybatis:
+  #  mapper-locations: classpath:mappers/**/*.xml
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: net.gidosa.admin.repositories.mappers
+#  configuration:
+#    map-underscore-to-camel-case: true
+
+# log

@@ -1,0 +1,52 @@
+server:
+
+
+# Spring
+spring:
+  jpa:
+#    show-sql: true # java코드로 짠 sql을
+#    defer-datasource-initialization: true # data.sql 사용을 위해서 필수적으로 등록, Hibernate 초기화 후 data.sql 실행
+    properties:
+#      '[hypersistence.utils.enable_types_contributor]': false
+      hibernate:
+        hbm2ddl:
+          auto: update      # ddl-auto와 같음
+        show_sql: true      # java코드로 짠 sql을
+        format_sql: true    # sql문 pretty하게 보여줌
+        use_sql_comments: true
+        jdbc:
+          time_zone: Asia/Seoul
+        dialect: org.hibernate.dialect.MySQLDialect
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        enable_lazy_load_no_trans: false  # open-in-view 비슷?
+#        default_schema: users
+        query:
+          fail_on_pagination_over_collection_fetch: true
+
+  datasource:
+    postgres:
+      replication:
+#        driver-class-name: com.mysql.cj.jdbc.Driver
+        driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        master1:
+          username: root
+          password: password
+          jdbc-url: jdbc:log4jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+#          jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+          max-pool-size: 5
+        slave1:
+          username: root
+          password: password
+          jdbc-url: jdbc:log4jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+#          jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+          max-pool-size: 5
+
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+jwt:
+  #  secret-key: 1234
+  secret-key-memberuser: BBF90F1D9986ACDF27284070F421A883036E9F5491B2E44BB75DA136E689372FC8297624F148467010509BF7EA0A8E56E2B9CE8E73DCF638A7FCE6ED73A8D807
+  secret-key-membercorporation: BBF90F1D9986ACDF27284070F421A883036E9F5491B2E44BB75DA136E689372FC8297624F148467010509BF7EA0A8E56E2B9CE8E73DCF638A7FCE6ED73A8D807
+  issuer-memberuser: test1@test.com
+  issuer-membercorporation: test1@test.com
