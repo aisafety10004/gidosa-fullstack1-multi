@@ -4,7 +4,7 @@
 
 bootJar {
     enabled = true
-    archiveFileName = 'gidosa-full-webadmin.jar'
+    archiveFileName = 'gidosa-full-webapp.jar'
 }
 jar {
     enabled = false
@@ -16,13 +16,13 @@ test {
 //tasks.bootJar { enabled = false }
 //tasks.jar { enabled = false }
 
-//group = 'net.gidosa.full.webadmin'
+//group = 'net.gidosa.full.webapp'
 //version = 'unspecified'
 
 //// JAR 대신 WAR 파일을 생성하도록 설정
 //tasks.named('bootJar') {
 //    enabled = false
-//    archiveFileName = 'gidosa-full-webadmin.jar'
+//    archiveFileName = 'gidosa-full-webapp.jar'
 //}
 //tasks.named('jar') {
 //    enabled = false
@@ -39,7 +39,7 @@ dependencies {
     implementation project(path: ':gidosa-rdb')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
@@ -79,7 +79,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
-//    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 test {

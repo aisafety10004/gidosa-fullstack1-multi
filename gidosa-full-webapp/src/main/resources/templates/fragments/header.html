@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <header th:fragment="header" class="w-full" th:if="${headerInvisiable == null || !headerInvisiable}">
+        <nav class="flex items-center justify-between px-8 py-4 bg-white shadow-md w-full"
+             th:classappend="${headerInvisible ?: 'bg-gray-500/50'}">
+            <div class="flex items-center">
+                <a th:href="@{/}"
+                   class="text-lg md:text-2xl font-bold text-primary focus:outline-none"
+                   onclick="if (headerInvisible) return false;">
+                    위험안전 관리
+                </a>
+                <th:block th:if="${menuText}">
+                    <span class="mx-2 md:mx-4 text-gray-300">|</span>
+                    <span class="text-base md:text-xl text-gray-700" th:text="${menuText}"></span>
+                </th:block>
+            </div>
+
+            <!-- 햄버거 버튼과 X 버튼 -->
+            <th:block th:if="${showCloseButton}">
+                <a th:href="@{/auth/login}"
+                   class="w-10 h-10 flex items-center justify-center rounded-lg bg-white text-black">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                         stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                        <path d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </a>
+            </th:block>
+            <th:block th:unless="${showCloseButton}">
+                <button class="relative w-10 h-10 md:hidden bg-white rounded-lg transition-colors duration-200 focus:outline-none"
+                        th:classappend="${headerInvisible ?: 'bg-gray-500/50'}"
+                        onclick="toggleMenu()">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center gap-[6px]">
+                        <span class="w-6 h-[2px] bg-gray-700 transition-transform duration-300"
+                              id="hamburger-top"></span>
+                        <span class="w-6 h-[2px] bg-gray-700 transition-opacity duration-300"
+                              id="hamburger-middle"></span>
+                        <span class="w-6 h-[2px] bg-gray-700 transition-transform duration-300"
+                              id="hamburger-bottom"></span>
+                    </div>
+                </button>
+            </th:block>
+
+            <!-- 데스크탑 네비게이션 링크 -->
+            <th:block th:unless="${showCloseButton}">
+                <div class="hidden md:flex md:items-center md:gap-8">
+                    <a th:href="@{/auth/login}"
+                       class="px-6 py-2 text-white rounded-md hover:bg-primaryDark transition-colors duration-300 focus:outline-none"
+                       th:classappend="${headerInvisible != null and headerInvisible == true ? 'bg-gray-500/50 pointer-events-none' : 'bg-primary'}"
+                       onclick="if (headerInvisible) return false;">
+                        가입/로그인
+                    </a>
+                </div>
+            </th:block>
+        </nav>
+
+        <!-- 모바일 드롭다운 메뉴 -->
+        <div id="mobile-menu" class="md:hidden absolute w-full bg-white shadow-lg z-50 hidden">
+            <div class="flex flex-col py-2">
+                <a th:href="@{/auth/login}"
+                   class="mx-8 my-3 px-6 py-2 bg-primary text-white rounded-md hover:bg-primaryDark text-center focus:outline-none"
+                   onclick="closeMenu()">
+                    가입/로그인
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- JavaScript for menu toggle -->
+<!--    <th:block layout:fragment="script">-->
+<!--        <script th:inline="javascript">-->
+<!--            function toggleMenu() {-->
+<!--                const mobileMenu = document.getElementById('mobile-menu');-->
+<!--                const isOpen = mobileMenu.classList.contains('hidden');-->
+<!--                const topBar = document.getElementById('hamburger-top');-->
+<!--                const middleBar = document.getElementById('hamburger-middle');-->
+<!--                const bottomBar = document.getElementById('hamburger-bottom');-->
+
+<!--                if (isOpen) {-->
+<!--                    mobileMenu.classList.remove('hidden');-->
+<!--                    topBar.classList.add('transform', 'rotate-45', 'translate-y-[8px]');-->
+<!--                    middleBar.classList.add('opacity-0');-->
+<!--                    bottomBar.classList.add('transform', '-rotate-45', '-translate-y-[8px]');-->
+<!--                } else {-->
+<!--                    closeMenu();-->
+<!--                }-->
+<!--            }-->
+
+<!--            function closeMenu() {-->
+<!--                const mobileMenu = document.getElementById('mobile-menu');-->
+<!--                const topBar = document.getElementById('hamburger-top');-->
+<!--                const middleBar = document.getElementById('hamburger-middle');-->
+<!--                const bottomBar = document.getElementById('hamburger-bottom');-->
+
+<!--                mobileMenu.classList.add('hidden');-->
+<!--                topBar.classList.remove('transform', 'rotate-45', 'translate-y-[8px]');-->
+<!--                middleBar.classList.remove('opacity-0');-->
+<!--                bottomBar.classList.remove('transform', '-rotate-45', '-translate-y-[8px]');-->
+<!--            }-->
+<!--        </script>-->
+<!--    </th:block>-->
+</body>
+</html>

@@ -1,6 +1,6 @@
 # 서버포트
 server:
-  port: 9095
+  port: 9097
 #  forward-headers-strategy: framework
 #  servlet:
 #    encoding:
@@ -9,17 +9,20 @@ server:
 #      force: true
   error:
     whitelabel:
-      enabled: true
+      enabled: false   # 스프링 기본 에러 페이지 비활성화
+    include-exception: true
+    include-stacktrace: always
+    path: /error       # 에러 발생시 이동할 경로
 
-# spring-web-jpa
 spring:
   application:
-    name: gidosa-full-webadmin
+    name: gidosa-full-webapp
 
 #  web:
 #    resources:
 #      static-locations:
 #        - classpath:/static/
+#      add-mappings: false
 
   devtools:
     livereload:
@@ -45,7 +48,8 @@ spring:
 #    enabled: true
 #    check-template-location: true
 
-#  mvc:
+  mvc:
+    throw-exception-if-no-handler-found: true
 ##    static-path-pattern: /**
 ##    static-path-pattern: /static/**
 #    view:         # 제이에스피
@@ -75,7 +79,7 @@ spring:
 mybatis:
   #  mapper-locations: classpath:mappers/**/*.xml
   mapper-locations: classpath:mappers/*.xml
-  type-aliases-package: net.gidosa.full.webadmin.mappers
+  type-aliases-package: net.gidosa.full.webapp.mappers
 #  configuration:
 #    map-underscore-to-camel-case: true
 

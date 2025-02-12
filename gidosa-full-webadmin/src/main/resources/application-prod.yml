@@ -16,6 +16,8 @@ spring:
     url:
     username:
     password:
+    hikari:
+      maximum-pool-size: 20
 
   thymeleaf:          # 타임리프
     cache: false
@@ -54,7 +56,7 @@ spring:
 mybatis:
   #  mapper-locations: classpath:mappers/**/*.xml
   mapper-locations: classpath:mappers/*.xml
-  type-aliases-package: net.gidosa.admin.repositories.mappers
+  type-aliases-package: net.gidosa.full.webadmin.mappers
 #  configuration:
 #    map-underscore-to-camel-case: true
 

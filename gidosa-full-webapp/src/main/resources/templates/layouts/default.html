@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE - 지도사">지도사</title>
+    
+    <!-- Common CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/tailwind.css}">-->
+    <!-- Page specific CSS -->
+    <th:block layout:fragment="css"></th:block>
+
+    <script src="/js/tailwindcss.js"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Header/Navigation -->
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div layout:fragment="content">
+            <!-- Page content will be inserted here -->
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    
+    <!-- Common JavaScript -->
+    <script th:src="@{/js/main.js}"></script>
+    
+    <!-- Page specific JavaScript -->
+    <th:block layout:fragment="script"></th:block>
+</body>
+</html> 
