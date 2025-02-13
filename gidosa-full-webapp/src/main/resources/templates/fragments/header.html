@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <header th:fragment="header" class="w-full" th:if="${headerInvisiable == null || !headerInvisiable}">
+    <header th:fragment="header" class="w-full" th:if="${headerInvisible == null || !headerInvisible}">
         <nav class="flex items-center justify-between px-8 py-4 bg-white shadow-md w-full"
              th:classappend="${headerInvisible ?: 'bg-gray-500/50'}">
             <div class="flex items-center">
