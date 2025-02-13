@@ -1,0 +1,56 @@
+.search-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-input {
+  padding: 15px 20px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.search-icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.building-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.building-card:hover {
+  transform: translateY(-5px);
+}
+
+.modal .search-input-container {
+  position: relative;
+}
+
+.modal .search-input-container i {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#searchModal .modal-content {
+  border-radius: 16px;
+  padding: 10px;
+}
+
+#searchModal .modal-header {
+  padding: 10px 15px;
+}
+
+#searchModal .modal-body {
+  padding: 20px;
+} 

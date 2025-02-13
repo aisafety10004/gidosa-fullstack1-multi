@@ -50,6 +50,7 @@ spring:
           time_zone: Asia/Seoul
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
+    open-in-view: false
     jwt:
       secret: vosdfay6ghfasdfasldfjasldfmxcfvojalksnfskdsdgfn
 

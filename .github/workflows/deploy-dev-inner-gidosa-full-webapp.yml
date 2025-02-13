@@ -9,7 +9,8 @@ on:
       - ".github/workflows/deploy-prod-inner-gidosa-full-webapp.yml"
   workflow_dispatch:
 
-#env:
+env:
+  RDB_URL: ${{ secrets.RDB_DEV_INNER_URL }}
 #  RDB_MASTER_URL: ${{ secrets.RDB_DEV_INNER_MASTER_URL }}
 #  RDB_MASTER_USERNAME: ${{ secrets.RDB_DEV_INNER_MASTER_USERNAME }}
 #  RDB_MASTER_PASSWORD: ${{ secrets.RDB_DEV_INNER_MASTER_PASSWORD }}
@@ -61,11 +62,12 @@ jobs:
         env:
           spring.profiles.active: dev
 
-#      - name: Set dev yml file
-#        uses: microsoft/variable-substitution@v1 # archive됨. 추후 iamazeem/substitute-action@v1 으로 변경
-#        with:
-#          files: ./gidosa-full-webapp/src/main/resources/application-dev.yml
-#        env:
+      - name: Set dev yml file
+        uses: microsoft/variable-substitution@v1 # archive됨. 추후 iamazeem/substitute-action@v1 으로 변경
+        with:
+          files: ./gidosa-full-webapp/src/main/resources/application-dev.yml
+        env:
+          spring.datasource.url: ${{ env.RDB_URL }}
 #          spring.datasource.mysql.replication.master1.jdbc-url: ${{ env.RDB_MASTER_URL }}
 #          spring.datasource.mysql.replication.master1.username: ${{ env.RDB_MASTER_USERNAME }}
 #          spring.datasource.mysql.replication.master1.password: ${{ env.RDB_MASTER_PASSWORD }}

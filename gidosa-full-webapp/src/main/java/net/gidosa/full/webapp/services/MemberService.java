@@ -2,7 +2,7 @@ package net.gidosa.full.webapp.services;
 
 import lombok.RequiredArgsConstructor;
 import net.gidosa.full.webapp.dto.MemberRegisterDto;
-import net.gidosa.full.webapp.entity.Member;
+import net.gidosa.full.webapp.models.Member;
 import net.gidosa.full.webapp.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

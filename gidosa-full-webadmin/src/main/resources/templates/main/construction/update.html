@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/basic.html}"
+>
+<head>
+    <title>건설공사현장 수정</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2>건설공사현장 수정</h2>
+        
+        <form th:action="@{/construction/update/{id}(id=${construction.id})}" th:object="${construction}" method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">현장명</label>
+                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="location" class="form-label">위치</label>
+                <input type="text" class="form-control" id="location" th:field="*{location}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="startDate" class="form-label">시작일</label>
+                <input type="datetime-local" class="form-control" id="startDate" th:field="*{startDate}">
+            </div>
+            
+            <div class="mb-3">
+                <label for="endDate" class="form-label">종료일</label>
+                <input type="datetime-local" class="form-control" id="endDate" th:field="*{endDate}">
+            </div>
+            
+            <div class="mb-3">
+                <label for="status" class="form-label">상태</label>
+                <select class="form-control" id="status" th:field="*{status}">
+                    <option value="준비중">준비중</option>
+                    <option value="진행중">진행중</option>
+                    <option value="완료">완료</option>
+                    <option value="중단">중단</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="description" class="form-label">설명</label>
+                <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">수정</button>
+            <a href="/construction/list" class="btn btn-secondary">취소</a>
+        </form>
+    </div>
+</body>
+</html>

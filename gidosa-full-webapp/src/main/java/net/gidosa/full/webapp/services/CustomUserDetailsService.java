@@ -1,7 +1,7 @@
 package net.gidosa.full.webapp.service;
 
 import lombok.RequiredArgsConstructor;
-import net.gidosa.full.webapp.entity.Member;
+import net.gidosa.full.webapp.models.Member;
 import net.gidosa.full.webapp.repository.MemberRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

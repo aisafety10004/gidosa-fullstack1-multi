@@ -1,4 +1,4 @@
-package net.gidosa.full.webapp.entity;
+package net.gidosa.full.webapp.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;

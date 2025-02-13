@@ -1,6 +1,6 @@
 package net.gidosa.full.webapp.repository;
 
-import net.gidosa.full.webapp.entity.Member;
+import net.gidosa.full.webapp.models.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
