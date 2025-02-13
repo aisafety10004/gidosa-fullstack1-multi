@@ -94,15 +94,15 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew clean :gidosa-full-webapp:buildNeeded --stacktrace --info --refresh-dependencies -x test
+          ./gradlew clean :gidosa-full-webadmin:buildNeeded --stacktrace --info --refresh-dependencies -x test
 
       # deploy할 파일 작업
       - name: Optimize deploy files
         run: |
-          mv ./gidosa-full-webapp/scripts/code-deploy/* ./
+          mv ./gidosa-full-webadmin/scripts/code-deploy/* ./
           chmod +x ./start-dev-inner.sh ./stop-dev-inner.sh
           echo dev >> profile
-      #          mv ./gidosa-full-webapp/build/libs/gidosa-full-webadmin.jar ./
+      #          mv ./gidosa-full-webadmin/build/libs/gidosa-full-webadmin.jar ./
       #          mv ./agents-dependency/* ./
 
       #      # deploy에 필요없는 파일 작업 -> 안됨!!!

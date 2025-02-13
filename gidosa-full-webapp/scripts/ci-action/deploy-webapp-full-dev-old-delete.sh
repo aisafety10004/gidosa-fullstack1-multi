@@ -2,7 +2,7 @@
 
 # 설정 값
 bucket_name="gidosa-deploys"
-folder_path="dev-gidosa-full-webadmin-webapp/"
+folder_path="dev-gidosa-full-webapp/"
 file_count_to_keep=10
 
 # 특정 폴더 내 객체들을 가져오고 최신 타임스탬프로 정렬
