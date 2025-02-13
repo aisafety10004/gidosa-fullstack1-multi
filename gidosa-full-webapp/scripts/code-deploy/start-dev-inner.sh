@@ -27,7 +27,7 @@ cd ${WEBAPP_FOLDER}
 
 echo "gidosa-full-webapp starting"
 #nohup java -jar -javaagent:${PINPOINT_AGENT} -Dpinpoint.applicationName=${PINPOINT_APPLICATION_NAME} -Dpinpoint.agentId=${PINPOINT_AGENT_ID} -Dpinpoint.config=${PINPOINT_CONFIG} -Dspring.profiles.active=${PROFILE} -Duser.timezone=Asia/Seoul ${WEBAPP_API_NAME}.jar > $APP_LOG 2> $ERROR_LOG &
-nohup /home/gapture/Downloads/jdk-21/bin/java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8120 -jar gidosa-full-webapp.jar > /home/gapture/apps-gidosa/logs-fulls-all/gidosa-full-webapp.log 2> /home/gapture/apps-gidosa/logs-fulls-all/gidosa-full-webapp-error.log &
+nohup /home/gapture/Downloads/jdk-21/bin/java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8323 -jar gidosa-full-webapp.jar > /home/gapture/apps-gidosa/logs-fulls-all/gidosa-full-webapp.log 2> /home/gapture/apps-gidosa/logs-fulls-all/gidosa-full-webapp-error.log &
 sleep 10       # pid파일이 만들어지기까지 기다리는 예상시간
 
 WEBAPP_API_PID=$(cat $WEBAPP_API_NAME.pid)
