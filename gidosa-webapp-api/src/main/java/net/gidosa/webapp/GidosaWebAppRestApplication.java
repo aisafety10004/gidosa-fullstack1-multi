@@ -1,5 +1,6 @@
 package net.gidosa.webapp;
 
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,7 +8,7 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 
-@Slf4j
+@Log4j2
 //@EnableScheduling
 //@EnableMongoAuditing
 @SpringBootApplication(
