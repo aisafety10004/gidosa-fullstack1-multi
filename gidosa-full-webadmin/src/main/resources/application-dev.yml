@@ -13,8 +13,8 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
-    url: jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+#    url: jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
     username: root
     password: password
     hikari:
@@ -22,34 +22,34 @@ spring:
 
   thymeleaf:          # 타임리프
     cache: false
-    prefix: classpath:/templates/
-    suffix: .html
-    view-names: thymeleaf/*
-    enabled: true
+#    prefix: classpath:/templates/
+#    suffix: .html
+#    view-names: thymeleaf/*
+#    enabled: true
   #    check-template-location: true
 
-  mvc:
-#    static-path-pattern: /**
-    view:         # 제이에스피
-      prefix: /WEB-INF/views/
-      suffix: .jsp
+#  mvc:
+##    static-path-pattern: /**
+#    view:         # 제이에스피
+#      prefix: /WEB-INF/views/
+#      suffix: .jsp
 
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 25MB
+      max-request-size: 25MB
 #    context-path: /api
 
   jpa:
     hibernate:
       ddl-auto: update
-    #    show-sql: true
+    show-sql: true
     properties:
       hibernate:
         jdbc:
           time_zone: Asia/Seoul
         dialect: org.hibernate.dialect.MySQLDialect
-    #        format_sql: true
+        format_sql: true
     jwt:
       secret: vosdfay6ghfasdfasldfjasldfmxcfvojalksnfskdsdgfn
 

@@ -23,10 +23,10 @@ spring:
 
   devtools:
     livereload:
-      enabled: true
+      enabled: false
     restart:
-      enabled: true
-    add-properties: false
+      enabled: false
+#    add-properties: false
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

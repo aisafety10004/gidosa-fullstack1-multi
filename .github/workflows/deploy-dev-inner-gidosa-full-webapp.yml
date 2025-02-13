@@ -1,0 +1,49 @@
+name: dev-inner gidosa-full-webapp
+
+on:
+  push:
+    branches:
+      - dev
+    paths-ignore:
+      - "api-gidosa-image/**"
+      - ".github/workflows/deploy-prod-inner-gidosa-full-webapp.yml"
+  workflow_dispatch:
+
+env:
+  RDB_MASTER_URL: ${{ secrets.RDB_DEV_INNER_MASTER_URL }}
+  RDB_MASTER_USERNAME: ${{ secrets.RDB_DEV_INNER_MASTER_USERNAME }}
+  RDB_MASTER_PASSWORD: ${{ secrets.RDB_DEV_INNER_MASTER_PASSWORD }}
+  RDB_SLAVE_URL: ${{ secrets.RDB_DEV_INNER_SLAVE_URL }}
+  RDB_SLAVE_USERNAME: ${{ secrets.RDB_DEV_INNER_SLAVE_USERNAME }}
+  RDB_SLAVE_PASSWORD: ${{ secrets.RDB_DEV_INNER_SLAVE_PASSWORD }}
+  JWT_SECRET_KEY_MEMBERUSER: ${{ secrets.JWT_DEV_SECRET_KEY_MEMBERUSER }}
+  JWT_SECRET_KEY_MEMBERMANAGER: ${{ secrets.JWT_DEV_SECRET_KEY_MEMBERMANAGER }}
+  JWT_ISSUER_MEMBERUSER: ${{ secrets.JWT_DEV_ISSUER_MEMBERUSER }}
+  JWT_ISSUER_MEMBERMANAGER: ${{ secrets.JWT_DEV_ISSUER_MEMBERMANAGER }}
+
+jobs:
+  # 의존성 빌드 및 codedeploy event
+  build-codedeploy:
+    environment: dev
+    runs-on: ubuntu-22.04
+    permissions: write-all
+    #    permissions: read-all
+    #    permissions: {}
+    #    permissions:
+    #      actions: read|write|none
+    #      checks: read|write|none
+    #      contents: read|write|none
+    #      deployments: read|write|none
+    #      id-token: read|write|none
+    #      issues: read|write|none
+    #      discussions: read|write|none
+    #      packages: read|write|none
+    #      pages: read|write|none
+    #      pull-requests: read|write|none
+    #      repository-projects: read|write|none
+    #      security-events: read|write|none
+    #      statuses: read|write|none
+    steps:
+      - name: Checkout source code
+        #        uses: actions/checkout@master
+        uses: actions/checkout@v4

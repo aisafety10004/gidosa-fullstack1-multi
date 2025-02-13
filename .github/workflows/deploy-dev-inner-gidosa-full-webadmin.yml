@@ -1,0 +1,173 @@
+name: dev-inner gidosa-full-webadmin
+
+on:
+  push:
+    branches:
+      - dev
+    paths-ignore:
+      - "api-gidosa-image/**"
+      - ".github/workflows/deploy-prod-inner-gidosa-full-webadmin.yml"
+  workflow_dispatch:
+
+#env:
+#  RDB_MASTER_URL: ${{ secrets.RDB_DEV_INNER_MASTER_URL }}
+#  RDB_MASTER_USERNAME: ${{ secrets.RDB_DEV_INNER_MASTER_USERNAME }}
+#  RDB_MASTER_PASSWORD: ${{ secrets.RDB_DEV_INNER_MASTER_PASSWORD }}
+#  RDB_SLAVE_URL: ${{ secrets.RDB_DEV_INNER_SLAVE_URL }}
+#  RDB_SLAVE_USERNAME: ${{ secrets.RDB_DEV_INNER_SLAVE_USERNAME }}
+#  RDB_SLAVE_PASSWORD: ${{ secrets.RDB_DEV_INNER_SLAVE_PASSWORD }}
+#  JWT_SECRET_KEY_MEMBERUSER: ${{ secrets.JWT_DEV_SECRET_KEY_MEMBERUSER }}
+#  JWT_SECRET_KEY_MEMBERMANAGER: ${{ secrets.JWT_DEV_SECRET_KEY_MEMBERMANAGER }}
+#  JWT_ISSUER_MEMBERUSER: ${{ secrets.JWT_DEV_ISSUER_MEMBERUSER }}
+#  JWT_ISSUER_MEMBERMANAGER: ${{ secrets.JWT_DEV_ISSUER_MEMBERMANAGER }}
+
+jobs:
+  # 의존성 빌드 및 codedeploy event
+  build-codedeploy:
+    environment: dev
+    runs-on: ubuntu-22.04
+    permissions: write-all
+    #    permissions: read-all
+    #    permissions: {}
+    #    permissions:
+    #      actions: read|write|none
+    #      checks: read|write|none
+    #      contents: read|write|none
+    #      deployments: read|write|none
+    #      id-token: read|write|none
+    #      issues: read|write|none
+    #      discussions: read|write|none
+    #      packages: read|write|none
+    #      pages: read|write|none
+    #      pull-requests: read|write|none
+    #      repository-projects: read|write|none
+    #      security-events: read|write|none
+    #      statuses: read|write|none
+    steps:
+      - name: Checkout source code
+        #        uses: actions/checkout@master
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: "21"
+          distribution: "temurin"
+
+      - name: Set main yml file
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ./gidosa-full-webadmin/src/main/resources/application.yml
+        env:
+          spring.profiles.active: dev
+
+#      - name: Set dev yml file
+#        uses: microsoft/variable-substitution@v1 # archive됨. 추후 iamazeem/substitute-action@v1 으로 변경
+#        with:
+#          files: ./gidosa-full-webadmin/src/main/resources/application-dev.yml
+#        env:
+#          spring.datasource.mysql.replication.master1.jdbc-url: ${{ env.RDB_MASTER_URL }}
+#          spring.datasource.mysql.replication.master1.username: ${{ env.RDB_MASTER_USERNAME }}
+#          spring.datasource.mysql.replication.master1.password: ${{ env.RDB_MASTER_PASSWORD }}
+#          spring.datasource.mysql.replication.slave1.jdbc-url: ${{ env.RDB_SLAVE_URL }}
+#          spring.datasource.mysql.replication.slave1.username: ${{ env.RDB_SLAVE_USERNAME }}
+#          spring.datasource.mysql.replication.slave1.password: ${{ env.RDB_SLAVE_PASSWORD }}
+#          jwt.secret-key-memberuser: ${{ env.JWT_SECRET_KEY_MEMBERUSER }}
+#          jwt.secret-key-membermanager: ${{ env.JWT_SECRET_KEY_MEMBERMANAGER }}
+#          jwt.issuer-memberuser: ${{ env.JWT_ISSUER_MEMBERUSER }}
+#          jwt.issuer-membermanager: ${{ env.JWT_ISSUER_MEMBERMANAGER }}
+#          #          sentry.dsn: ${{ env.SENTRY_DSN }}
+#          infra.server-image-url: ${{ env.INFRA_SERVER_IMAGE_URL }}
+
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: |
+          ./gradlew clean :gidosa-full-webapp:buildNeeded --stacktrace --info --refresh-dependencies -x test
+
+      # deploy할 파일 작업
+      - name: Optimize deploy files
+        run: |
+          mv ./gidosa-full-webapp/scripts/code-deploy/* ./
+          chmod +x ./start-dev-inner.sh ./stop-dev-inner.sh
+          echo dev >> profile
+      #          mv ./gidosa-full-webapp/build/libs/gidosa-full-webadmin.jar ./
+      #          mv ./agents-dependency/* ./
+
+      #      # deploy에 필요없는 파일 작업 -> 안됨!!!
+      #      - name: remove needless files
+      #        run: rm -rf ./.*
+
+      # Make zip 파일
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA.zip .
+
+      # ssh 접속 실행1
+      - name: SSH Remote Connection & Execution
+        uses: appleboy/ssh-action@master
+        continue-on-error: true
+        with:
+          host: ${{ secrets.DEV_INNER1_SSH_HOST }}
+          port: ${{ secrets.DEV_INNER1_SSH_PORT }}
+          username: ${{ secrets.DEV_INNER1_SSH_USERNAME }}
+          password: ${{ secrets.DEV_INNER1_SSH_PASSWORD }}
+          #          key: ${{ secrets.DEV_INNER1_SSH_KEY }}
+          script: | #// 버티컬바를 사용하면 여러 명령어를 순차 실행할 수 있다.
+            ./apps-gidosa/gidosa-full-webadmin/stop-dev-inner.sh
+            rm -rf ./apps-gidosa/gidosa-full-webadmin/*
+            rm -rf ./apps-gidosa/gidosa-full-webadmin/.*
+      #            cd ./apps-gidosa/gidosa-full-webadmin
+      #            rm -rf *
+      #            rm -rf .*
+      #            ./deploy.sh
+
+      # ssh 접속 파일 업로드
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEV_INNER1_SSH_HOST }}
+          port: ${{ secrets.DEV_INNER1_SSH_PORT }}
+          username: ${{ secrets.DEV_INNER1_SSH_USERNAME }}
+          password: ${{ secrets.DEV_INNER1_SSH_PASSWORD }}
+          #          source: "tests/a.txt,tests/b.txt"
+          #          source: "HELP.md, build.gradle"
+          #          source: "./$GITHUB_SHA.zip, HELP.md"
+          #          source: $GITHUB_SHA.zip
+          #          source: "*"
+          source: "./*.zip, ./*.sh"
+          #          target: your_server_target_folder_path
+          target: "./apps-gidosa/gidosa-full-webadmin"
+      #         target: "/home/gapture/apps-gidosa/gidosa-full-webadmin/"
+
+      # ssh 접속 실행2
+      - name: SSH Remote Connection & Execution2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_INNER1_SSH_HOST }}
+          port: ${{ secrets.DEV_INNER1_SSH_PORT }}
+          username: ${{ secrets.DEV_INNER1_SSH_USERNAME }}
+          password: ${{ secrets.DEV_INNER1_SSH_PASSWORD }}
+          #          key: ${{ secrets.DEV_INNER1_SSH_KEY }}
+          script: | #// 버티컬바를 사용하면 여러 명령어를 순차 실행할 수 있다.
+            unzip -o ./apps-gidosa/gidosa-full-webadmin/*.zip -d ./apps-gidosa/gidosa-full-webadmin
+            ./apps-gidosa/gidosa-full-webadmin/start-dev-inner.sh
+  #            cd ./apps-gidosa/gidosa-full-webadmin
+  #            unzip -o *.zip
+  #            unzip -o ./apps-gidosa/gidosa-full-webadmin/*.zip
+  #            sleep 25
+  #            cp -f ./gidosa-full-webadmin/build/libs/gidosa-full-webadmin.jar ./gidosa-full-webadmin.jar
+  #            nohup java -jar gidosa-full-webadmin.jar > /home/gapture/apps-gidosa/logs-fulls-all/gidosa-full-webadmin.log 2> /home/gapture/apps-gidosa/logs-fulls-all/gidosa-full-webadmin-error.log &
+  #            WEBAPP_API_PID=$(cat gidosa-full-webadmin.pid)
+  #            TIME_NOW=$(date +%c)
+  #            echo "$TIME_NOW > 실행된 프로세스 아이디는 $WEBAPP_API_PID 입니다." >> /home/gapture/apps-gidosa/gidosa-full-webadmin/gidosa-full-webadmin-deploy.log

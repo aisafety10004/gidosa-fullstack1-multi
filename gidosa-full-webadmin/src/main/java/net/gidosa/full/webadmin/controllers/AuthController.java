@@ -34,4 +34,9 @@ public class AuthController {
 //        return "thymeleaf/index2";
         return "index2";
     }
+
+    @GetMapping("/forgot-password")
+    public String passwordForgot(Model model) {
+        return "auth/forgot-password";
+    }
 }
