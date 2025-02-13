@@ -14,8 +14,8 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
-    url: jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+#    url: jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
     username: root
     password: password
     hikari:
