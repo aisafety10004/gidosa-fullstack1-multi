@@ -36,7 +36,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-////    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.0'
+////    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 //    implementation 'org.postgresql:postgresql:42.7.3'
     implementation 'com.mysql:mysql-connector-j'
 ////    implementation 'com.h2database:h2'
@@ -83,6 +83,8 @@ dependencies {
 //    testImplementation project(path: ':gidosa-dynamodb')
 //    testImplementation project(path: ':gidosa-db-mongo')
 //
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+
 //    testImplementation(testFixtures(project(":gidosa-common")))
 //    testImplementation(testFixtures(project(":gidosa-rdb")))
     testImplementation(testFixtures(project(":gidosa-rdb")))

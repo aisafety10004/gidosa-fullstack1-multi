@@ -27,9 +27,9 @@ public class AuthController {
 
     @GetMapping("/login2")
     public String login2(Model model) {
-        String test1 = authService.test1();
+//        String test1 = authService.test1();
 
-        model.addAttribute("test1", test1);
+//        model.addAttribute("test1", test1);
 //        return PREFIX_THYMELEAF_BASE + "auth/login";
 //        return "thymeleaf/index2";
         return "index2";

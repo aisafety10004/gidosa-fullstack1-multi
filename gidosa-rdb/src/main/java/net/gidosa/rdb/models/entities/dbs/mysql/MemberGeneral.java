@@ -1,4 +1,4 @@
-package net.gidosa.full.webapp.models;
+package net.gidosa.rdb.models.entities.dbs.mysql;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,10 +10,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "members")
+@Table(name = "members_general")
 @Getter @Setter
 @NoArgsConstructor
-public class Member {
+public class MemberGeneral {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +39,4 @@ public class Member {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-} 
+}

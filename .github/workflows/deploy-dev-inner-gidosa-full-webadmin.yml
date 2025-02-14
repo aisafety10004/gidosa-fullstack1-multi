@@ -67,7 +67,8 @@ jobs:
         with:
           files: ./gidosa-full-webadmin/src/main/resources/application-dev.yml
         env:
-          spring.datasource.url: ${{ env.RDB_URL }}
+          spring.datasource.mysql.master1.jdbc-url: ${{ env.RDB_URL }}
+#          spring.datasource.url: ${{ env.RDB_URL }}
 #          spring.datasource.mysql.replication.master1.jdbc-url: ${{ env.RDB_MASTER_URL }}
 #          spring.datasource.mysql.replication.master1.username: ${{ env.RDB_MASTER_USERNAME }}
 #          spring.datasource.mysql.replication.master1.password: ${{ env.RDB_MASTER_PASSWORD }}

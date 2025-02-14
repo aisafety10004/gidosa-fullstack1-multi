@@ -24,7 +24,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 //    implementation 'org.springframework.boot:spring-boot-starter-validation'
-//    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.0'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 //    implementation 'org.postgresql:postgresql:42.7.3'
     implementation 'com.mysql:mysql-connector-j'
 //    implementation 'com.vladmihalcea:hibernate-types-52:2.21.1'     // postgres data type support??(json type)
@@ -52,6 +52,7 @@ dependencies {
 //    testImplementation(testFixtures(project(":gidosa-rdb")))
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 //    testImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
 //    testImplementation group: 'org.assertj', name: 'assertj-core'
 

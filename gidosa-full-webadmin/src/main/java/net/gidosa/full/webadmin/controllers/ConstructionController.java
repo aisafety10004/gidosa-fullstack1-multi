@@ -2,8 +2,8 @@ package net.gidosa.full.webadmin.controllers;
 
 import groovy.util.logging.Log4j2;
 import lombok.RequiredArgsConstructor;
-import net.gidosa.full.webadmin.models.Construction;
-import net.gidosa.full.webadmin.repositories.ConstructionRepository;
+import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
+import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/construction")
 public class ConstructionController {
-
-    private final ConstructionRepository constructionRepository;
+    private final ConstructionJpaRepository constructionJpaRepository;
 
     @GetMapping("/list")
     public String list(Model model) {
-        model.addAttribute("constructions", constructionRepository.findAll());
+        model.addAttribute("constructions", constructionJpaRepository.findAll());
         return "main/construction/list";
     }
 
@@ -30,13 +29,13 @@ public class ConstructionController {
 
     @PostMapping("/register")
     public String register(@ModelAttribute Construction construction) {
-        constructionRepository.save(construction);
+        constructionJpaRepository.save(construction);
         return "redirect:/construction/list";
     }
 
     @GetMapping("/update/{id}")
     public String updateForm(@PathVariable Long id, Model model) {
-        Construction construction = constructionRepository.findById(id)
+        Construction construction = constructionJpaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid construction Id:" + id));
         model.addAttribute("construction", construction);
         return "main/construction/update";
@@ -45,13 +44,13 @@ public class ConstructionController {
     @PostMapping("/update/{id}")
     public String update(@PathVariable Long id, @ModelAttribute Construction construction) {
         construction.setId(id);
-        constructionRepository.save(construction);
+        constructionJpaRepository.save(construction);
         return "redirect:/construction/list";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
-        constructionRepository.deleteById(id);
+        constructionJpaRepository.deleteById(id);
         return "redirect:/construction/list";
     }
 }

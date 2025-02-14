@@ -2,20 +2,20 @@ package net.gidosa.full.webapp.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import net.gidosa.full.webapp.dto.MemberRegisterDto;
+import net.gidosa.full.webapp.models.dtos.MemberRegisterDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import net.gidosa.full.webapp.services.MemberService;
+import net.gidosa.full.webapp.services.MemberGeneralService;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/member")
-public class MemberController {
+public class MemberGeneralController {
 
-    private final MemberService memberService;
+    private final MemberGeneralService memberGeneralService;
 
     @GetMapping("/register/agreement")
     public String registerAgreement(Model model) {
@@ -39,7 +39,7 @@ public class MemberController {
         }
 
         try {
-            memberService.register(memberRegisterDto);
+            memberGeneralService.register(memberRegisterDto);
             return "redirect:/auth/login?registered";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());

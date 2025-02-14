@@ -1,8 +1,8 @@
 package net.gidosa.full.webapp.service;
 
 import lombok.RequiredArgsConstructor;
-import net.gidosa.full.webapp.models.Member;
-import net.gidosa.full.webapp.repository.MemberRepository;
+import net.gidosa.rdb.models.entities.dbs.mysql.MemberGeneral;
+import net.gidosa.rdb.repositories.mysql.jpa.MemberGeneralJpaRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,15 +16,15 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final MemberRepository memberRepository;
+    private final MemberGeneralJpaRepository memberGeneralRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        MemberGeneral memberGeneral = memberGeneralRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("UserGeneral not found with username: " + username));
 
-        return new User(member.getUsername(),
-                member.getPassword(),
-                Collections.singleton(new SimpleGrantedAuthority(member.getRole())));
+        return new User(memberGeneral.getUsername(),
+                memberGeneral.getPassword(),
+                Collections.singleton(new SimpleGrantedAuthority(memberGeneral.getRole())));
     }
 } 

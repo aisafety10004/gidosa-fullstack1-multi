@@ -1,4 +1,4 @@
-package net.gidosa.full.webapp.dto;
+package net.gidosa.full.webapp.models.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

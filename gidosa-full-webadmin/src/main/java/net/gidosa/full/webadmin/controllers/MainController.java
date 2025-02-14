@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/main")
 public class MainController {
     private final MainService mainService;
-    private final AuthService authService;
+//    private final AuthService authService;
 
     @GetMapping
     public String index(Model model) {
-        String test1 = authService.test1();
+//        String test1 = authService.test1();
 
-        model.addAttribute("test1", test1);
+//        model.addAttribute("test1", test1);
 //        return PREFIX_THYMELEAF_BASE + "main/main";
 //        return "thymeleaf/main/main";
         return "main/main";

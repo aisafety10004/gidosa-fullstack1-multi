@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DbConsts {
-    public static final String RDS_POSTGRES_ENTITY_MANAGER_UNIT_NAME = "rdsPostgresEntityManagerUnit";
+    public static final String RDS_MYSQL_ENTITY_MANAGER_UNIT_NAME = "rdsMysqlEntityManagerUnit";
     public static final String REPLICATION_WRITE_READ = "write";
     public static final String REPLICATION_WRITE1_READ = "write1";
     public static final String REPLICATION_MASTER = "master";
