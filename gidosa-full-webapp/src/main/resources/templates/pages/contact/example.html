@@ -94,6 +94,8 @@
 
               mainSearch.addEventListener('click', function() {
                   searchModal.show();
+              });
+              document.getElementById('searchModal').addEventListener('shown.bs.modal', function () {
                   modalSearch.focus();
               });
 
