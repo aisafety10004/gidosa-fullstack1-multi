@@ -8,26 +8,31 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import net.gidosa.full.webapp.services.MemberGeneralService;
+import net.gidosa.full.webapp.services.GeneralMemberService;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/member")
-public class MemberGeneralController {
+@RequestMapping("/general/member")
+public class GeneralMemberController {
 
-    private final MemberGeneralService memberGeneralService;
+    private final GeneralMemberService generalMemberService;
 
     @GetMapping("/register/agreement")
-    public String registerAgreement(Model model) {
+    public String registerAgreement(@RequestParam(value = "constructionId") Long constructionId, Model model) {
         model.addAttribute("headerInvisible", true);
+        model.addAttribute("headerSubInvisible", true);
+        model.addAttribute("constructionId", constructionId);
 
-        return "pages/member/register-agreement";
+        return "pages/general/member/register-agreement";
     }
 
     @GetMapping("/register")
-    public String registerForm(Model model) {
+    public String registerForm(@RequestParam(value = "constructionId") Long constructionId, Model model) {
+        model.addAttribute("headerSubInvisible", true);
         model.addAttribute("memberRegisterDto", new MemberRegisterDto());
-        return "pages/member/register";
+        model.addAttribute("constructionId", constructionId);
+
+        return "pages/general/member/register";
     }
 
     @PostMapping("/register")
@@ -35,15 +40,15 @@ public class MemberGeneralController {
                          BindingResult bindingResult,
                          Model model) {
         if (bindingResult.hasErrors()) {
-            return "pages/member/register";
+            return "pages/general/member/register";
         }
 
         try {
-            memberGeneralService.register(memberRegisterDto);
+            generalMemberService.register(memberRegisterDto);
             return "redirect:/auth/login?registered";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "pages/member/register";
+            return "pages/general/member/register";
         }
     }
 
@@ -54,8 +59,11 @@ public class MemberGeneralController {
     }
 
     @GetMapping("/find-id")
-    public String findIdForm(Model model) {
-        return "pages/member/find-id";
+    public String findIdForm(@RequestParam(value = "constructionId") Long constructionId, Model model) {
+        model.addAttribute("headerSubInvisible", true);
+        model.addAttribute("constructionId", constructionId);
+
+        return "pages/general/member/find-id";
     }
 
     @PostMapping("/find-id")
@@ -72,12 +80,15 @@ public class MemberGeneralController {
 
         model.addAttribute("found", found);
         model.addAttribute("message", message);
-        return "pages/member/find-id";
+        return "pages/general/member/find-id";
     }
 
     @GetMapping("/find-pw")
-    public String findPwForm(Model model) {
-        return "pages/member/find-pw";
+    public String findPwForm(@RequestParam(value = "constructionId") Long constructionId, Model model) {
+        model.addAttribute("headerSubInvisible", true);
+        model.addAttribute("constructionId", constructionId);
+
+        return "pages/general/member/find-pw";
     }
 
     @PostMapping("/find-pw")
@@ -95,6 +106,6 @@ public class MemberGeneralController {
 
         model.addAttribute("sent", sent);
         model.addAttribute("message", message);
-        return "pages/member/find-pw";
+        return "pages/general/member/find-pw";
     }
 }

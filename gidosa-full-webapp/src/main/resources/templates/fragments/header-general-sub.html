@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<header th:fragment="header-sub" class="w-full" style="margin-top: 72px;" th:if="${headerSubInvisible == null || !headerSubInvisible}">
+    <nav class="flex items-center justify-between shadow-md px-8 py-4 bg-white w-full"
+         th:classappend="${headerSubInvisible ?: 'bg-gray-500/50'}">
+        <!-- 데스크탑 네비게이션 링크 -->
+        <th:block th:unless="${showCloseButton}">
+            <div class="hidden md:flex md:items-center md:gap-1">
+                <a th:href="@{''}"
+                   class="px-6 py-2 text-black rounded-md hover:bg-primaryDark transition-colors duration-300 focus:outline-none"
+                   th:classappend="${headerSubInvisible != null and headerSubInvisible == true ? 'bg-gray-500/50 pointer-events-none' : ''}"
+                   onclick="if (headerSubInvisible) return false;">
+                    메뉴1
+                </a>
+                <a th:href="@{''}"
+                   class="px-6 py-2 text-black rounded-md hover:bg-primaryDark transition-colors duration-300 focus:outline-none"
+                   th:classappend="${headerSubInvisible != null and headerSubInvisible == true ? 'bg-gray-500/50 pointer-events-none' : ''}"
+                   onclick="if (headerSubInvisible) return false;">
+                    메뉴2
+                </a>
+            </div>
+        </th:block>
+    </nav>
+
+    <!-- 모바일 드롭다운 메뉴 -->
+<!--    <div id="mobile-menu" class="md:hidden absolute w-full bg-white shadow-lg z-50 hidden">-->
+<!--        <div class="flex flex-col py-2">-->
+<!--            <a th:href="@{''}"-->
+<!--               class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"-->
+<!--               onclick="closeMenu()">-->
+<!--                메뉴1-->
+<!--            </a>-->
+<!--            <a th:href="@{''}"-->
+<!--               class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"-->
+<!--               onclick="closeMenu()">-->
+<!--                메뉴2-->
+<!--            </a>-->
+<!--        </div>-->
+<!--    </div>-->
+</header>
+</body>
+</html>

@@ -10,21 +10,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/document")
-public class DocumentController {
+@RequestMapping("/general/document")
+public class GeneralDocumentController {
     
     @GetMapping("/terms1")
     public String terms(Model model) {
-        return "pages/document/terms1";
+        model.addAttribute("headerSubInvisible", true);
+        return "pages/general/document/terms1";
     }
     
     @GetMapping("/privacy1")
     public String privacy(Model model) {
-        return "pages/document/privacy1";
+        model.addAttribute("headerSubInvisible", true);
+        return "pages/general/document/privacy1";
     }
     
     @GetMapping("/marketing1")
     public String marketing(Model model) {
-        return "pages/document/marketing1";
+        model.addAttribute("headerSubInvisible", true);
+        return "pages/general/document/marketing1";
     }
 } 

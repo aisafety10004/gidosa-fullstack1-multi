@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/default}">
+      layout:decorate="~{layouts/general}">
 <head>
     <title>로그인 - 위험안전 관리</title>
 </head>
@@ -12,12 +12,12 @@
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">로그인</h2>
             <p class="mt-2 text-center text-sm text-gray-600">
                 또는
-                <a th:href="@{/member/register/agreement}" class="font-medium text-primary hover:text-primary-dark">
+                <a th:href="@{${'/general/member/register/agreement?constructionId=' + constructionId}}" class="font-medium text-primary hover:text-primary-dark">
                     회원가입
                 </a>
             </p>
         </div>
-        <form class="mt-8 space-y-6" th:action="@{/auth/login}" method="POST">
+        <form class="mt-8 space-y-6" th:action="@{/general/auth/login}" method="POST">
             <div th:if="${param.error}" class="rounded-md bg-red-50 p-4">
                 <div class="text-sm text-red-700">
                     아이디 또는 비밀번호가 일치하지 않습니다.
@@ -48,11 +48,11 @@
                 </div>
 
                 <div class="text-sm">
-                    <a th:href="@{/member/find-id}" class="font-medium text-primary hover:text-primary-dark">
+                    <a th:href="@{${'/general/member/find-id?constructionId=' + constructionId}}" class="font-medium text-primary hover:text-primary-dark">
                         아이디 찾기
                     </a>
                     <span class="text-gray-500 mx-2">|</span>
-                    <a th:href="@{/member/find-pw}" class="font-medium text-primary hover:text-primary-dark">
+                    <a th:href="@{${'/general/member/find-pw?constructionId=' + constructionId}}" class="font-medium text-primary hover:text-primary-dark">
                         비밀번호 찾기
                     </a>
                 </div>

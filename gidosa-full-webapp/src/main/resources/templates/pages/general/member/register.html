@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/default}">
+      layout:decorate="~{layouts/general}">
 <head>
     <title>회원가입 - 위험안전 관리</title>
 </head>
@@ -9,7 +9,7 @@
     <div layout:fragment="content" class="max-w-2xl mx-auto py-8 px-4">
         <h2 class="text-2xl font-bold mb-8 text-center">회원가입</h2>
         
-        <form th:action="@{/member/register}" method="POST" class="space-y-6" id="registerForm">
+        <form th:action="@{/general/member/register}" method="POST" class="space-y-6" id="registerForm">
             <!-- 아이디 -->
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-700">아이디</label>
@@ -78,7 +78,7 @@
             </div>
 
             <div class="flex justify-center space-x-4 pt-4">
-                <a th:href="@{/auth/login}"
+                <a th:href="@{/general/auth/login}"
                    class="px-6 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                     취소
                 </a>
@@ -104,8 +104,8 @@
                 }
 
                 // TODO: 서버에 중복 확인 요청
-                //fetch('/api/member/check-username?username=' + username)
-                fetch('/member/check-username?username=' + username)
+                //fetch('/api/general/member/check-username?username=' + username)
+                fetch('/general/member/check-username?username=' + username)
                     .then(response => response.json())
                     .then(data => {
                         if (data.available) {

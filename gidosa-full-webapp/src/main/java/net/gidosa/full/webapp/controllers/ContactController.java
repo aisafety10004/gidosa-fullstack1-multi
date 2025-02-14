@@ -4,21 +4,29 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import net.gidosa.full.webapp.services.ContactService;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/contact")
 public class ContactController {
+
+    private final ContactService contactService;
 
     @GetMapping("/request-site")
     public String showContactForm(Model model) {
@@ -43,6 +51,16 @@ public class ContactController {
         
         model.addAttribute("buildings", buildings);
         return "pages/contact/example";
+    }
+
+    @GetMapping("/search")
+    @ResponseBody
+    public Map<String, Object> searchConstructions(@RequestParam String keyword) {
+        List<Construction> results = contactService.searchByKeyword(keyword);
+        Map<String, Object> response = new HashMap<>();
+        response.put("count", results.size());
+        response.put("results", results);
+        return response;
     }
 }
 

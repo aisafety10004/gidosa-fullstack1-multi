@@ -60,7 +60,10 @@
                             <input type="text" class="form-control" 
                                    placeholder="건설공사현장 이름를 입력하세요"
                                    id="modalSearch">
-                            <i class="bi bi-search"></i>
+                            <i class="bi bi-search" id="searchIcon" style="cursor: pointer;"></i>
+                        </div>
+                        <div id="searchResults" class="mt-3">
+                            <!-- 검색 결과가 여기에 표시됩니다 -->
                         </div>
                         <div class="search-info mt-4">
                             <p class="text-muted">
@@ -84,16 +87,73 @@
               const mainSearch = document.getElementById('mainSearch');
               const searchModal = new bootstrap.Modal(document.getElementById('searchModal'));
 
+              // 기존의 input 이벤트 리스너를 제거하고 새로운 이벤트 리스너들을 추가
+              const modalSearch = document.getElementById('modalSearch');
+              const searchIcon = document.getElementById('searchIcon');
+              const searchResults = document.getElementById('searchResults');
+
               mainSearch.addEventListener('click', function() {
                   searchModal.show();
+                  modalSearch.focus();
               });
 
-              // 모달 내 검색 기능
-              const modalSearch = document.getElementById('modalSearch');
-              modalSearch.addEventListener('input', function(e) {
-                  // TODO: 검색 로직 구현
-                  console.log('Searching for:', e.target.value);
+              // 검색 아이콘 클릭 이벤트
+              searchIcon.addEventListener('click', function() {
+                  const keyword = modalSearch.value.trim();
+                  if (keyword.length > 0) {
+                      searchConstructions(keyword);
+                  } else {
+                      alert('건설공사현장 이름을 입력해주세요.');
+                  }
               });
+
+              // Enter 키 이벤트
+              modalSearch.addEventListener('keypress', function(e) {
+                  if (e.key === 'Enter') {
+                      const keyword = modalSearch.value.trim();
+                      if (keyword.length > 0) {
+                          searchConstructions(keyword);
+                      } else {
+                          alert('건설공사현장 이름을 입력해주세요.');
+                      }
+                  }
+              });
+
+              async function searchConstructions(keyword) {
+                  try {
+                      const response = await fetch(`/contact/search?keyword=${encodeURIComponent(keyword)}`);
+                      const data = await response.json();
+                      
+                      let html = `<div class="search-count mb-3">검색 결과 ${data.count}건</div>`;
+                      
+                      if (data.count > 0) {
+                          html += '<div class="list-group">';
+                          data.results.forEach(item => {
+                              html += `
+                                  <a href="/general/construction/${item.id}">
+                                      <div class="list-group-item">
+                                          <div class="d-flex justify-content-between align-items-center">
+                                              <div>
+                                                  <h6 class="mb-1">${item.name}</h6>
+                                                  <small class="text-muted">${item.location}</small>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </a>
+                              `;
+                          });
+                          html += '</div>';
+                      } else {
+                          html += '<div class="text-center text-muted">검색 결과가 없습니다.</div>';
+                      }
+                      
+                      searchResults.innerHTML = html;
+                  } catch (error) {
+                      alert('검색 중 오류 발생: ', error);
+                      //console.error('검색 중 오류 발생:', error);
+                      searchResults.innerHTML = '<div class="text-danger">검색 중 오류가 발생했습니다.</div>';
+                  }
+              }
             });
         </script>
     </th:block>

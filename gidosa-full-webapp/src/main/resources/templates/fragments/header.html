@@ -59,12 +59,12 @@
                        onclick="if (headerInvisible) return false;">
                         도입문의
                     </a>
-                    <a th:href="@{/auth/login}"
-                       class="px-6 py-2 text-black rounded-md hover:bg-primaryDark transition-colors duration-300 focus:outline-none"
-                       th:classappend="${headerInvisible != null and headerInvisible == true ? 'bg-gray-500/50 pointer-events-none' : ''}"
-                       onclick="if (headerInvisible) return false;">
-                        회원가입/로그인
-                    </a>
+<!--                    <a th:href="@{/auth/login}"-->
+<!--                       class="px-6 py-2 text-black rounded-md hover:bg-primaryDark transition-colors duration-300 focus:outline-none"-->
+<!--                       th:classappend="${headerInvisible != null and headerInvisible == true ? 'bg-gray-500/50 pointer-events-none' : ''}"-->
+<!--                       onclick="if (headerInvisible) return false;">-->
+<!--                        회원가입/로그인-->
+<!--                    </a>-->
                 </div>
             </th:block>
         </nav>
@@ -82,11 +82,11 @@
                    onclick="closeMenu()">
                     도입문의
                 </a>
-                <a th:href="@{/auth/login}"
-                   class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
-                   onclick="closeMenu()">
-                    회원가입/로그인
-                </a>
+<!--                <a th:href="@{/auth/login}"-->
+<!--                   class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"-->
+<!--                   onclick="closeMenu()">-->
+<!--                    회원가입/로그인-->
+<!--                </a>-->
             </div>
         </div>
     </header>

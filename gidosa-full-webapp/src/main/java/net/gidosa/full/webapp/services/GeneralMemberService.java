@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class MemberGeneralService {
+public class GeneralMemberService {
 
     private final MemberGeneralJpaRepository memberRepository;
     private final PasswordEncoder passwordEncoder;

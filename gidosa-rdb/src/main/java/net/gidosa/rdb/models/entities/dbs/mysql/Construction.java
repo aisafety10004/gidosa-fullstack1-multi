@@ -54,11 +54,17 @@ public class Construction {
     }
 
     public String getStartDateStr() {
+        if (startDate == null) {
+            return null;
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return startDate.format(formatter);
     }
 
     public String getEndDateStr() {
+        if (endDate == null) {
+            return null;
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return endDate.format(formatter);
     }
