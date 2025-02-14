@@ -13,12 +13,12 @@
         <form th:action="@{/construction/register}" th:object="${construction}" method="post">
             <div class="mb-3">
                 <label for="name" class="form-label">현장명</label>
-                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                <input type="text" class="form-control" placeholder="현장명을 입력하세요(필수값)" id="name" th:field="*{name}" required>
             </div>
             
             <div class="mb-3">
                 <label for="location" class="form-label">위치</label>
-                <input type="text" class="form-control" id="location" th:field="*{location}" required>
+                <input type="text" class="form-control" placeholder="위치를 입력하세요(필수값)" id="location" th:field="*{location}" required>
             </div>
             
             <div class="mb-3">

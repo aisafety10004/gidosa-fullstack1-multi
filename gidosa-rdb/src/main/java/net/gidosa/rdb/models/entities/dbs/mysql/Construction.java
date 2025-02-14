@@ -1,11 +1,17 @@
 package net.gidosa.rdb.models.entities.dbs.mysql;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import java.time.LocalDateTime;
+import lombok.*;
 
-@Data
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Table(name = "constructions")
 public class Construction {
     @Id
@@ -45,5 +51,15 @@ public class Construction {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public String getStartDateStr() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return startDate.format(formatter);
+    }
+
+    public String getEndDateStr() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return endDate.format(formatter);
     }
 }
