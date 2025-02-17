@@ -22,7 +22,7 @@
 
         <!-- 햄버거 버튼과 X 버튼 -->
         <th:block th:if="${showCloseButton}">
-            <a th:href="@{/general/auth/login}"
+            <a th:href="@{${'/general/auth/login?constructionId=' + construction.id}}"
                class="w-10 h-10 flex items-center justify-center rounded-lg bg-white text-black">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                      stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
