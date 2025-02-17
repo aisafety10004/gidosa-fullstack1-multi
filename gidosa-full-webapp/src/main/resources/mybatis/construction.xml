@@ -7,7 +7,7 @@
         SELECT 
             id, name, location
         FROM 
-            constructions
+            construction
         WHERE 
             location LIKE CONCAT('%', #{keyword}, '%')
     </select>

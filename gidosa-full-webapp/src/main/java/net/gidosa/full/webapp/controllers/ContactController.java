@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.gidosa.full.webapp.models.dtos.RequestConstructionDto;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import jakarta.servlet.http.HttpSession;
 
 @Log4j2
 @Controller
@@ -28,16 +30,40 @@ public class ContactController {
 
     private final ContactService contactService;
 
-    @GetMapping("/request-site")
-    public String showContactForm(Model model) {
-        return "pages/contact/request-site";
+    @GetMapping("/request-construction")
+    public String showContactForm(Model model, HttpSession session) {
+//        // 세션에서 메시지 가져오기
+//        if (session.getAttribute("flashMessage") != null) {
+//            model.addAttribute("message", session.getAttribute("flashMessage"));
+//            session.removeAttribute("flashMessage");
+//        }
+//        if (session.getAttribute("flashError") != null) {
+//            model.addAttribute("error", session.getAttribute("flashError"));
+//            session.removeAttribute("flashError");
+//        }
+        return "pages/contact/request-construction";
     }
 
     @PostMapping("/submit")
-    public String submitContactForm(ContactRequest request, RedirectAttributes redirectAttributes) {
-        // TODO: 실제 문의 처리 로직 구현
-        redirectAttributes.addFlashAttribute("message", "문의가 성공적으로 접수되었습니다.");
-        return "redirect:/contact/request-site";
+    public String submitContactForm(RequestConstructionDto request, 
+                                  RedirectAttributes redirectAttributes,
+                                  HttpSession session) {
+        try {
+            contactService.submitRequest(request);
+
+            String message = "문의가 성공적으로 접수되었습니다.";
+            redirectAttributes.addFlashAttribute("message", message);
+//            // 세션에도 메시지 저장
+//            session.setAttribute("flashMessage", message);
+        } catch (Exception e) {
+            log.error("Error submitting contact form", e);
+
+            String error = "문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.";
+            redirectAttributes.addFlashAttribute("error", error);
+//            // 세션에도 에러 메시지 저장
+//            session.setAttribute("flashError", error);
+        }
+        return "redirect:/contact/request-construction";
     }
 
     @GetMapping("/example")
@@ -63,15 +89,6 @@ public class ContactController {
         return response;
     }
 }
-
-record ContactRequest(
-    String name,
-    String phone,
-    String churchName,
-    String position,
-    String message,
-    boolean agreement
-) {}
 
 // Building 클래스
 @Data

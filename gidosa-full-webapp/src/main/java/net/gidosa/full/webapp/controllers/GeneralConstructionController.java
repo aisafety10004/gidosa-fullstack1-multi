@@ -3,6 +3,7 @@ package net.gidosa.full.webapp.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.gidosa.full.webapp.services.GeneralConstructionService;
+import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,8 @@ public class GeneralConstructionController {
 
     @GetMapping("/construction/{constructionId}")
     public String index(@PathVariable Long constructionId, Model model) {
-        model.addAttribute("constructionId", constructionId);
-        model.addAttribute("menuText", "잘한다 건공");
+        Construction construction = generalConstructionService.getConstruction(constructionId);
+        model.addAttribute("construction", construction);
 
         return "pages/general/construction";
     }

@@ -3,6 +3,8 @@ package net.gidosa.full.webapp.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.gidosa.full.webapp.models.dtos.MemberRegisterDto;
+import net.gidosa.full.webapp.services.GeneralConstructionService;
+import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,8 +16,8 @@ import net.gidosa.full.webapp.services.GeneralMemberService;
 @RequiredArgsConstructor
 @RequestMapping("/general/member")
 public class GeneralMemberController {
-
     private final GeneralMemberService generalMemberService;
+    private final GeneralConstructionService generalConstructionService;
 
     @GetMapping("/register/agreement")
     public String registerAgreement(@RequestParam(value = "constructionId") Long constructionId, Model model) {
@@ -28,9 +30,11 @@ public class GeneralMemberController {
 
     @GetMapping("/register")
     public String registerForm(@RequestParam(value = "constructionId") Long constructionId, Model model) {
+//        model.addAttribute("constructionId", constructionId);
+        Construction construction = generalConstructionService.getConstruction(constructionId);
+        model.addAttribute("construction", construction);
         model.addAttribute("headerSubInvisible", true);
         model.addAttribute("memberRegisterDto", new MemberRegisterDto());
-        model.addAttribute("constructionId", constructionId);
 
         return "pages/general/member/register";
     }
@@ -40,15 +44,15 @@ public class GeneralMemberController {
                          BindingResult bindingResult,
                          Model model) {
         if (bindingResult.hasErrors()) {
-            return "pages/general/member/register";
+            return "pages/general/member/register?constructionId=" + memberRegisterDto.getConstructionId();
         }
 
         try {
             generalMemberService.register(memberRegisterDto);
-            return "redirect:/auth/login?registered";
+            return "redirect:/general/auth/login?constructionId=" + memberRegisterDto.getConstructionId() + "&registered";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "pages/general/member/register";
+            return "pages/general/member/register?constructionId=" +  + memberRegisterDto.getConstructionId();
         }
     }
 

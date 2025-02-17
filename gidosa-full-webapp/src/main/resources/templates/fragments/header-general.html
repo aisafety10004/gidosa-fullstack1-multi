@@ -8,15 +8,15 @@
     <nav class="flex items-center justify-between px-8 py-4 bg-white w-full"
          th:classappend="${headerInvisible ?: 'bg-gray-500/50'}">
         <div class="flex items-center">
-<!--            <a th:href="@{${constructionId != null ? ('/general/construction/' + constructionId) : '/general/construction/0'}}"-->
-            <a th:href="@{${'/general/construction/' + constructionId}}"
+<!--            <a th:href="@{${'/general/construction/' + construction.id}}"-->
+            <a th:href="@{${construction != null ? ('/general/construction/' + construction.id) : '/general/construction/' + constructionId}}"
                class="text-lg md:text-2xl font-bold text-primary focus:outline-none"
                onclick="if (headerInvisible) return false;">
                 건설공사현장
             </a>
-            <th:block th:if="${menuText}">
+            <th:block th:if="${construction}">
                 <span class="mx-2 md:mx-4 text-gray-300">|</span>
-                <span class="text-base md:text-xl text-gray-700" th:text="${menuText}"></span>
+                <span class="text-base md:text-xl text-gray-700" th:text="${construction.location}"></span>
             </th:block>
         </div>
 
@@ -55,7 +55,7 @@
 <!--                   onclick="if (headerInvisible) return false;">-->
                     검색
                 </a>
-                <a th:href="@{${'/general/auth/login?constructionId=' + constructionId}}"
+                <a th:href="@{${'/general/auth/login?constructionId=' + construction.id}}"
                    class="px-6 py-2 text-black rounded-md hover:bg-primaryDark transition-colors duration-300 focus:outline-none"
                    th:classappend="${headerInvisible != null and headerInvisible == true ? 'bg-gray-500/50 pointer-events-none' : ''}"
                    onclick="if (headerInvisible) return false;">
@@ -74,7 +74,7 @@
 <!--               onclick="closeMenu()">-->
                 검색
             </a>
-            <a th:href="@{${'/general/auth/login?constructionId=' + constructionId}}"
+            <a th:href="@{${'/general/auth/login?constructionId=' + construction.id}}"
                class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
                onclick="closeMenu()">
                 회원가입/로그인

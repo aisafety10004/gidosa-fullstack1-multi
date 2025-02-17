@@ -1,4 +1,4 @@
-package net.gidosa.full.webapp.config;
+package net.gidosa.full.webapp.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,12 +22,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
+            )
+//            .csrf(csrf -> csrf.disable())  // CSRF 보호는 필요에 따라 활성화하세요
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/*", "/general/auth/**", "/general/member/**", "/general/document/**", "/css/**", "/js/**", "/assets/**", "/error/**", "/contact/**", "/construction/**", "/general/construction/*").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/auth/login")
+                .loginPage("/general/auth/login")
                 .defaultSuccessUrl("/")
                 .permitAll()
             )

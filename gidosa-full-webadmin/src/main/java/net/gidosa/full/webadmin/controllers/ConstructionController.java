@@ -4,6 +4,9 @@ import groovy.util.logging.Log4j2;
 import lombok.RequiredArgsConstructor;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +19,9 @@ public class ConstructionController {
     private final ConstructionJpaRepository constructionJpaRepository;
 
     @GetMapping("/list")
-    public String list(Model model) {
-        model.addAttribute("constructions", constructionJpaRepository.findAll());
+    public String list(@PageableDefault(size = 10) Pageable pageable, Model model) {
+        Page<Construction> constructions = constructionJpaRepository.findAllByOrderByIdDesc(pageable);
+        model.addAttribute("constructions", constructions);
         return "main/construction/list";
     }
 

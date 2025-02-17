@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Setter
 @Builder
-@Table(name = "constructions")
 public class Construction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

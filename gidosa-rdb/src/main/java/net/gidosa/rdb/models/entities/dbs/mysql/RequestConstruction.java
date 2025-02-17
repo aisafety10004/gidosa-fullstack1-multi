@@ -1,41 +1,42 @@
 package net.gidosa.rdb.models.entities.dbs.mysql;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
 @NoArgsConstructor
-public class MemberGeneral {
-
+@AllArgsConstructor
+@Getter @Setter
+@Builder
+public class RequestConstruction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
-
-    @Column(nullable = false)
-    private String password;
-
     @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
+    
     @Column(nullable = false)
-    private String role = "ROLE_USER";
-
+    private String phone;
+    
+    @Column(nullable = false)
+    private String constructionLocation;
+    
+    @Column(nullable = false)
+    private String position;
+    
+    @Column(length = 1000)
+    private String message;
+    
+    @Column(nullable = false)
+    private boolean agreement;
+    
     @CreationTimestamp
     private LocalDateTime createdAt;
-
+    
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

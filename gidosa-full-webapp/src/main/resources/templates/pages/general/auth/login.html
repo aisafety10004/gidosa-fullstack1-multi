@@ -12,7 +12,7 @@
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">로그인</h2>
             <p class="mt-2 text-center text-sm text-gray-600">
                 또는
-                <a th:href="@{${'/general/member/register/agreement?constructionId=' + constructionId}}" class="font-medium text-primary hover:text-primary-dark">
+                <a th:href="@{${'/general/member/register/agreement?constructionId=' + construction.id}}" class="font-medium text-primary hover:text-primary-dark">
                     회원가입
                 </a>
             </p>
@@ -48,11 +48,11 @@
                 </div>
 
                 <div class="text-sm">
-                    <a th:href="@{${'/general/member/find-id?constructionId=' + constructionId}}" class="font-medium text-primary hover:text-primary-dark">
+                    <a th:href="@{${'/general/member/find-id?constructionId=' + construction.id}}" class="font-medium text-primary hover:text-primary-dark">
                         아이디 찾기
                     </a>
                     <span class="text-gray-500 mx-2">|</span>
-                    <a th:href="@{${'/general/member/find-pw?constructionId=' + constructionId}}" class="font-medium text-primary hover:text-primary-dark">
+                    <a th:href="@{${'/general/member/find-pw?constructionId=' + construction.id}}" class="font-medium text-primary hover:text-primary-dark">
                         비밀번호 찾기
                     </a>
                 </div>
