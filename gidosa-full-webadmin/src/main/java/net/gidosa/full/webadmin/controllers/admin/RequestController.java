@@ -1,4 +1,4 @@
-package net.gidosa.full.webadmin.controllers;
+package net.gidosa.full.webadmin.controllers.admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

@@ -594,7 +594,7 @@ progress {
   color: #6c757d;
 }
 .blockquote-footer::before {
-  content: "— ";
+  content: "— ";
 }
 
 .img-fluid {
@@ -10830,7 +10830,7 @@ textarea.form-control-lg {
 
 #sidebar-wrapper {
   min-height: 100vh;
-  margin-left: -15rem;
+  margin-left: -16.875rem; /* 기존 -15rem에서 변경 */
   transition: margin 0.25s ease-out;
 }
 
@@ -10840,7 +10840,7 @@ textarea.form-control-lg {
 }
 
 #sidebar-wrapper .list-group {
-  width: 15rem;
+  width: 16.875rem; /* 기존 15rem에서 변경 */
 }
 
 #page-content-wrapper {
@@ -10858,7 +10858,7 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
   width: 100%;
 }
 body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
-  margin-left: -15rem;
+  margin-left: -16.875rem; /* 기존 -15rem에서 변경 */
 }
 /*
 @media (min-width: 768px) {

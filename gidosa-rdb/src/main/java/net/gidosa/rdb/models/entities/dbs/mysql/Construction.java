@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -23,10 +24,10 @@ public class Construction {
     @Column(nullable = false)
     private String location;
 
-    @Column(name = "start_date")
+    @Column
     private LocalDateTime startDate;
 
-    @Column(name = "end_date")
+    @Column
     private LocalDateTime endDate;
 
     @Column
@@ -35,11 +36,14 @@ public class Construction {
     @Column
     private String description;
 
-    @Column(name = "created_at")
+    @Column
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "construction")
+    private List<MemberGeneral> memberGenerals;
 
     @PrePersist
     protected void onCreate() {

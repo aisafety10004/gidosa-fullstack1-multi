@@ -5,12 +5,15 @@ import lombok.RequiredArgsConstructor;
 import net.gidosa.full.webapp.models.dtos.MemberRegisterDto;
 import net.gidosa.full.webapp.services.GeneralConstructionService;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
+import net.gidosa.rdb.models.entities.dbs.mysql.MemberGeneral;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import net.gidosa.full.webapp.services.GeneralMemberService;
+
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,7 +37,6 @@ public class GeneralMemberController {
         Construction construction = generalConstructionService.getConstruction(constructionId);
         model.addAttribute("construction", construction);
         model.addAttribute("headerSubInvisible", true);
-        model.addAttribute("memberRegisterDto", new MemberRegisterDto());
 
         return "pages/general/member/register";
     }
@@ -42,24 +44,34 @@ public class GeneralMemberController {
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute MemberRegisterDto memberRegisterDto,
                          BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes,
                          Model model) {
+        Construction construction = generalConstructionService.getConstruction(memberRegisterDto.getConstructionId());
+        model.addAttribute("construction", construction);
+        model.addAttribute("headerSubInvisible", true);
+        model.addAttribute("memberRegisterDto", memberRegisterDto);
+
         if (bindingResult.hasErrors()) {
             return "pages/general/member/register?constructionId=" + memberRegisterDto.getConstructionId();
         }
 
         try {
-            generalMemberService.register(memberRegisterDto);
+            MemberGeneral memberGeneral = generalMemberService.register(memberRegisterDto, construction);
+            redirectAttributes.addFlashAttribute("construction", construction);
+            redirectAttributes.addFlashAttribute("memberGeneral", memberGeneral);
+
             return "redirect:/general/auth/login?constructionId=" + memberRegisterDto.getConstructionId() + "&registered";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "pages/general/member/register?constructionId=" +  + memberRegisterDto.getConstructionId();
+            return "pages/general/member/register";
         }
     }
 
     @GetMapping("/check-username")
     @ResponseBody
-    public boolean checkUsername(String username) {
-        return true;
+    public Map<String, Boolean> checkUsername(@RequestParam String username) {
+        boolean isAvailable = generalMemberService.isUsernameAvailable(username);
+        return Map.of("available", isAvailable);
     }
 
     @GetMapping("/find-id")

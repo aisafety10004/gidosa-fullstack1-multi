@@ -16,7 +16,11 @@
             </a>
             <th:block th:if="${construction}">
                 <span class="mx-2 md:mx-4 text-gray-300">|</span>
-                <span class="text-base md:text-xl text-gray-700" th:text="${construction.location}"></span>
+                <a th:href="@{${construction != null ? ('/general/construction/' + construction.id) : '/general/construction/' + constructionId}}"
+                   class="text-base md:text-xl text-gray-700 cursor-pointer"
+                   onclick="if (headerInvisible) return false;"
+                   th:text="${construction.location}">
+                </a>
             </th:block>
         </div>
 

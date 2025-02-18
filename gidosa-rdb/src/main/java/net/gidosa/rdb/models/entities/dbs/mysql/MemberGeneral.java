@@ -31,7 +31,14 @@ public class MemberGeneral {
     private String email;
 
     @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = false)
     private String role = "ROLE_USER";
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "constructionId", referencedColumnName = "id", updatable = false)
+    private Construction construction;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
