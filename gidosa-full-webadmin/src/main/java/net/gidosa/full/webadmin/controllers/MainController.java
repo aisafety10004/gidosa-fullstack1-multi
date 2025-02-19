@@ -14,12 +14,12 @@ import java.security.Principal;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/main")
+//@RequestMapping("/main")
 public class MainController {
     private final MainService mainService;
 //    private final AuthService authService;
 
-    @GetMapping
+    @GetMapping({"/", "/main"})
     public String index(Model model, Principal principal) {
 //        String test1 = authService.test1();
 
