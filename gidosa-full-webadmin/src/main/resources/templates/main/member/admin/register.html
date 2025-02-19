@@ -17,57 +17,66 @@
             <span th:text="${error}"></span>
         </div>
 
-        <form th:action="@{/member/admin/register}" th:object="${member}" 
+        <form th:action="@{/member/admin/register}" th:object="${memberAdminDto}"
               method="post" class="needs-validation" novalidate>
             <div class="mb-3">
-                <label for="username" class="form-label">사용자명 *</label>
+                <label for="username" class="form-label">로그인 아이디 *</label>
                 <input type="text" class="form-control" id="username" 
                        th:field="*{username}" required>
-                <div class="invalid-feedback">사용자명을 입력해주세요.</div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" 
+                     th:errors="*{username}" style="display: block;">로그인 아이디 오류</div>
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">비밀번호 *</label>
                 <input type="password" class="form-control" id="password" 
                        th:field="*{password}" required>
-                <div class="invalid-feedback">비밀번호를 입력해주세요.</div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}"
+                     th:errors="*{password}" style="display: block;">비밀번호 오류</div>
             </div>
 
             <div class="mb-3">
                 <label for="name" class="form-label">이름 *</label>
                 <input type="text" class="form-control" id="name" 
                        th:field="*{name}" required>
-                <div class="invalid-feedback">이름을 입력해주세요.</div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}"
+                     th:errors="*{name}" style="display: block;">이름 오류</div>
             </div>
 
             <div class="mb-3">
                 <label for="email" class="form-label">이메일 *</label>
                 <input type="email" class="form-control" id="email" 
                        th:field="*{email}" required>
-                <div class="invalid-feedback">올바른 이메일 주소를 입력해주세요.</div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
+                     th:errors="*{email}" style="display: block;">이메일 오류</div>
             </div>
 
             <div class="mb-3">
                 <label for="phone" class="form-label">전화번호 *</label>
                 <input type="tel" class="form-control" id="phone" 
-                       th:field="*{phone}">
+                       th:field="*{phone}" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}"
+                     th:errors="*{phone}" style="display: block;">전화번호 오류</div>
             </div>
 
             <div class="mb-3">
                 <label for="location" class="form-label">지역</label>
                 <input type="text" class="form-control" id="location" 
-                       th:field="*{location}" required>
-                <div class="invalid-feedback">지역을 입력해주세요.</div>
+                       th:field="*{location}">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('location')}"
+                     th:errors="*{location}" style="display: block;">지역 오류</div>
             </div>
 
             <!-- 건설공사현장 선택 필드 추가 -->
             <div class="mb-3">
                 <label for="construction" class="form-label">건설공사현장</label>
-                <select class="form-control" id="construction" name="construction.id">
+                <select class="form-select" id="construction" th:field="*{constructionId}">
                     <option value="">선택하세요</option>
                     <option th:each="construction : ${constructions}"
                             th:value="${construction.id}"
-                            th:text="${construction.location}">
+                            th:text="${construction.location}"
+                            th:selected="${constructionId == construction.id}"
+                    >
                     </option>
                 </select>
             </div>
@@ -75,8 +84,8 @@
             <div class="mb-3">
                 <label for="role" class="form-label">권한 *</label>
                 <select class="form-select" id="role" th:field="*{role}" required>
-                    <option value="ROLE_MANAGER">일반 관리자</option>
-                    <option value="ROLE_ADMIN">최고 관리자</option>
+                    <option value="ROLE_MANAGER" th:selected="*{role == 'ROLE_MANAGER'}">일반 관리자</option>
+                    <option value="ROLE_ADMIN" th:selected="*{role == 'ROLE_ADMIN'}">최고 관리자</option>
                 </select>
             </div>
 

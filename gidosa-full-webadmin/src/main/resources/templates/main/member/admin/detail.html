@@ -21,70 +21,70 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>ID:</strong></div>
-                    <div class="col-md-9" th:text="${member.id}"></div>
+                    <div class="col-md-9" th:text="${memberAdmin.id}"></div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-3"><strong>사용자명:</strong></div>
-                    <div class="col-md-9" th:text="${member.username}"></div>
+                    <div class="col-md-3"><strong>로그인 아이디:</strong></div>
+                    <div class="col-md-9" th:text="${memberAdmin.username}"></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>이름:</strong></div>
-                    <div class="col-md-9" th:text="${member.name}"></div>
+                    <div class="col-md-9" th:text="${memberAdmin.name}"></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>이메일:</strong></div>
-                    <div class="col-md-9" th:text="${member.email}"></div>
+                    <div class="col-md-9" th:text="${memberAdmin.email}"></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>전화번호:</strong></div>
-                    <div class="col-md-9" th:text="${member.phone}"></div>
+                    <div class="col-md-9" th:text="${memberAdmin.phone}"></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>지역:</strong></div>
-                    <div class="col-md-9" th:text="${member.location}"></div>
+                    <div class="col-md-9" th:text="${memberAdmin.location}"></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>건설공사현장:</strong></div>
-                    <div class="col-md-9" th:text="${member.construction != null ? member.construction.location : '-'}"></div>
+                    <div class="col-md-9" th:text="${memberAdmin.construction != null ? memberAdmin.construction.location : '-'}"></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>권한:</strong></div>
-                    <div class="col-md-9" th:text="${member.role}"></div>
+                    <div class="col-md-9" th:text="${memberAdmin.role}"></div>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-md-3"><strong>상태:</strong></div>
-                    <div class="col-md-9">
-                        <span th:class="${member.active ? 'badge bg-success' : 'badge bg-danger'}"
-                              th:text="${member.active ? '활성' : '비활성'}"></span>
-                    </div>
-                </div>
+<!--                <div class="row mb-3">-->
+<!--                    <div class="col-md-3"><strong>상태:</strong></div>-->
+<!--                    <div class="col-md-9">-->
+<!--                        <span th:class="${memberAdmin.active ? 'badge bg-success' : 'badge bg-danger'}"-->
+<!--                              th:text="${memberAdmin.active ? '활성' : '비활성'}"></span>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>가입일:</strong></div>
-                    <div class="col-md-9" th:text="${#temporals.format(member.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                    <div class="col-md-9" th:text="${#temporals.format(memberAdmin.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>수정일:</strong></div>
-                    <div class="col-md-9" th:text="${#temporals.format(member.updatedAt, 'yyyy-MM-dd HH:mm')}"></div>
+                    <div class="col-md-9" th:text="${#temporals.format(memberAdmin.updatedAt, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
             </div>
         </div>
 
         <div class="mt-4">
             <a th:href="@{/member/admin/list}" class="btn btn-secondary">목록으로</a>
-            <a th:href="@{/member/admin/update/{id}(id=${member.id})}" class="btn btn-warning">수정</a>
-            <form th:action="@{/member/admin/delete/{id}(id=${member.id})}" 
+            <a th:href="@{/member/admin/update/{id}(id=${memberAdmin.id})}" class="btn btn-warning">수정</a>
+            <form th:action="@{/member/admin/delete/{id}(id=${memberAdmin.id})}"
                   method="post" style="display: inline;">
                 <button type="submit" class="btn btn-danger"
                         onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
             </form>
             <!-- 계정 활성/비활성 토글 버튼 -->
-            <form th:action="@{/member/admin/toggle-status/{id}(id=${member.id})}" 
-                  method="post" style="display: inline;">
-                <button type="submit" th:class="${member.active ? 'btn btn-danger' : 'btn btn-success'}"
-                        onclick="return confirm('계정 상태를 변경하시겠습니까?');"
-                        th:text="${member.active ? '계정 비활성화' : '계정 활성화'}">
-                </button>
-            </form>
+<!--            <form th:action="@{/member/admin/toggle-status/{id}(id=${memberAdmin.id})}"-->
+<!--                  method="post" style="display: inline;">-->
+<!--                <button type="submit" th:class="${memberAdmin.active ? 'btn btn-danger' : 'btn btn-success'}"-->
+<!--                        onclick="return confirm('계정 상태를 변경하시겠습니까?');"-->
+<!--                        th:text="${memberAdmin.active ? '계정 비활성화' : '계정 활성화'}">-->
+<!--                </button>-->
+<!--            </form>-->
         </div>
     </div>
 </body>

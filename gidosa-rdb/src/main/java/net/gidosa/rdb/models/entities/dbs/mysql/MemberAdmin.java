@@ -20,6 +20,8 @@ public class MemberAdmin {
     private String password;
 
     @Column(nullable = false)
+//    @NotBlank(message = "이름은 필수 입력값입니다.")
+//    @Size(min = 2, max = 20, message = "이름은 2~20자 사이여야 합니다.")
     private String name;
 
     @Column(nullable = false)

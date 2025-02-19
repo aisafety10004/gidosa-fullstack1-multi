@@ -1,7 +1,10 @@
 package net.gidosa.full.webadmin.services;
 
+import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.gidosa.full.webadmin.models.dtos.MemberAdminRegisterDto;
+import net.gidosa.full.webadmin.models.dtos.MemberAdminUpdateDto;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberAdmin;
 import net.gidosa.rdb.repositories.mysql.jpa.MemberAdminJpaRepository;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Log4j2
@@ -25,45 +29,47 @@ public class MemberAdminService {
 
     // 전체 관리자 조회 (페이징)
     public Page<MemberAdmin> getAllMembersWithPaging(Pageable pageable) {
-        return memberAdminJpaRepository.findAllByOrderByIdDesc(pageable);
+        return memberAdminJpaRepository.findAllWithConstructionByOrderByIdDesc(pageable);
     }
 
     // ID로 관리자 조회
-    public Optional<MemberAdmin> getMemberById(Long id) {
-        return memberAdminJpaRepository.findById(id);
+    public Optional<MemberAdmin> getMemberAdminById(Long id) {
+        return memberAdminJpaRepository.findByIdWithConstruction(id);
     }
 
     // 사용자명으로 관리자 조회
-    public Optional<MemberAdmin> getMemberByUsername(String username) {
+    public Optional<MemberAdmin> getMemberAdminByUsername(String username) {
         return memberAdminJpaRepository.findByUsername(username);
     }
 
     // 이메일로 관리자 조회
-    public Optional<MemberAdmin> getMemberByEmail(String email) {
+    public Optional<MemberAdmin> getMemberAdminByEmail(String email) {
         return memberAdminJpaRepository.findByEmail(email);
     }
 
     // 관리자 정보 수정
     @Transactional
-    public MemberAdmin updateMember(Long id, MemberAdmin memberDetails) {
-        return memberAdminJpaRepository.findById(id)
+    public MemberAdmin updateMemberAdmin(MemberAdminUpdateDto memberAdminUpdateDto) {
+        return memberAdminJpaRepository.findById(memberAdminUpdateDto.getId())
             .map(memberAdmin -> {
-                memberAdmin.setName(memberDetails.getName());
-                memberAdmin.setPhone(memberDetails.getPhone());
-                memberAdmin.setEmail(memberDetails.getEmail());
-                memberAdmin.setLocation(memberDetails.getLocation());
-                memberAdmin.setConstruction(memberDetails.getConstruction());
-                if (memberDetails.getPassword() != null && !memberDetails.getPassword().isEmpty()) {
-                    memberAdmin.setPassword(passwordEncoder.encode(memberDetails.getPassword()));
+                memberAdmin.setName(memberAdminUpdateDto.getName());
+                memberAdmin.setPhone(memberAdminUpdateDto.getPhone());
+                memberAdmin.setEmail(memberAdminUpdateDto.getEmail());
+                memberAdmin.setLocation(memberAdminUpdateDto.getLocation());
+                if(!Objects.isNull(memberAdminUpdateDto.getConstructionId()))
+                    constructionJpaRepository.findById(memberAdminUpdateDto.getConstructionId())
+                            .ifPresent(memberAdmin::setConstruction);
+                if (!Strings.isNullOrEmpty(memberAdminUpdateDto.getPassword())) {
+                    memberAdmin.setPassword(passwordEncoder.encode(memberAdminUpdateDto.getPassword()));
                 }
                 return memberAdminJpaRepository.save(memberAdmin);
             })
-            .orElseThrow(() -> new RuntimeException("Admin member not found with id: " + id));
+            .orElseThrow(() -> new RuntimeException("Admin member not found with id: " + memberAdminUpdateDto.getId()));
     }
 
     // 관리자 삭제
     @Transactional
-    public void deleteMember(Long id) {
+    public void deleteMemberAdmin(Long id) {
         memberAdminJpaRepository.deleteById(id);
     }
 
@@ -79,7 +85,7 @@ public class MemberAdminService {
 
     // 관리자 계정 활성/비활성 토글
     @Transactional
-    public void toggleMemberStatus(Long id) {
+    public void toggleMemberAdminStatus(Long id) {
         memberAdminJpaRepository.findById(id)
             .ifPresent(memberAdmin -> {
                 memberAdmin.setActive(!memberAdmin.isActive());
@@ -89,7 +95,7 @@ public class MemberAdminService {
 
     // 관리자 권한 변경
     @Transactional
-    public void updateMemberRole(Long id, String role) {
+    public void updateMemberAdminRole(Long id, String role) {
         memberAdminJpaRepository.findById(id)
             .ifPresent(member -> {
                 member.setRole(role);
@@ -97,22 +103,30 @@ public class MemberAdminService {
             });
     }
 
-    // 관리자 등록
+    // 관리자 등록 (DTO 사용)
     @Transactional
-    public MemberAdmin registerMember(MemberAdmin memberAdmin) {
-        // 기본값 설정
+    public MemberAdmin registerMemberAdmin(MemberAdminRegisterDto dto) {
+        MemberAdmin memberAdmin = new MemberAdmin();
+        memberAdmin.setUsername(dto.getUsername());
+        memberAdmin.setPassword(passwordEncoder.encode(dto.getPassword()));
+        memberAdmin.setName(dto.getName());
+        memberAdmin.setEmail(dto.getEmail());
+        memberAdmin.setPhone(dto.getPhone());
+        memberAdmin.setLocation(dto.getLocation());
+        memberAdmin.setRole(dto.getRole());
         memberAdmin.setActive(true);
-        if (memberAdmin.getRole() == null) {
-            memberAdmin.setRole("ROLE_MANAGER"); // 기본 권한 설정
+
+        // Construction 설정
+        if (dto.getConstructionId() != null) {
+            constructionJpaRepository.findById(dto.getConstructionId())
+                .ifPresent(memberAdmin::setConstruction);
         }
-        // 비밀번호 암호화 처리가 필요한 경우 여기서 수행
-        memberAdmin.setPassword(passwordEncoder.encode(memberAdmin.getPassword()));
 
         return memberAdminJpaRepository.save(memberAdmin);
     }
 
     // 지역별 관리자 조회
-    public Page<MemberAdmin> getMembersByLocation(String location, Pageable pageable) {
+    public Page<MemberAdmin> getMemberAdminsByLocation(String location, Pageable pageable) {
         return memberAdminJpaRepository.findByLocation(location, pageable);
     }
 

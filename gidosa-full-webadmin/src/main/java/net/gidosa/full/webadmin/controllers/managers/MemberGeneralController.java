@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.data.web.PageableDefault;
 
+import java.security.Principal;
+
 @Log4j2
 @Controller
 @RequiredArgsConstructor
@@ -24,7 +26,7 @@ public class MemberGeneralController {
     // 회원 목록 조회 - 페이징 처리 추가
     @GetMapping("/list")
     public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                      Model model) {
+                       Model model, Principal principal) {
         Page<MemberGeneral> membersPage = memberGeneralService.getAllMembersWithPaging(pageable);
         model.addAttribute("members", membersPage);
         return "main/member/general/list";

@@ -26,32 +26,37 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>사용자명</th>
+                    <th>로그인 아이디</th>
                     <th>이름</th>
                     <th>이메일</th>
                     <th>전화번호</th>
                     <th>지역</th>
                     <th>건설공사현장</th>
                     <th>가입일</th>
+<!--                    <th>계정활성여부</th>-->
                     <th>관리</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="member : ${members.content}">
-                    <td th:text="${member.id}"></td>
-                    <td th:text="${member.username}"></td>
-                    <td th:text="${member.name}"></td>
-                    <td th:text="${member.email}"></td>
-                    <td th:text="${member.phone}"></td>
-                    <td th:text="${member.location}"></td>
-                    <td th:text="${member.construction != null ? member.construction.location : '-'}"></td>
-                    <td th:text="${#temporals.format(member.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <tr th:each="memberAdmin : ${memberAdminListPage.content}">
+                    <td th:text="${memberAdmin.id}"></td>
+                    <td th:text="${memberAdmin.username}"></td>
+                    <td th:text="${memberAdmin.name}"></td>
+                    <td th:text="${memberAdmin.email}"></td>
+                    <td th:text="${memberAdmin.phone}"></td>
+                    <td th:text="${memberAdmin.location}"></td>
+                    <td th:text="${memberAdmin.construction != null ? memberAdmin.construction.location : '-'}"></td>
+                    <td th:text="${#temporals.format(memberAdmin.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+<!--                    <td>-->
+<!--                        <span th:class="${memberAdmin.active ? 'badge bg-success' : 'badge bg-danger'}"-->
+<!--                              th:text="${memberAdmin.active ? '활성' : '비활성'}"></span>-->
+<!--                    </td>-->
                     <td>
-                        <a th:href="@{/member/admin/detail/{id}(id=${member.id})}" 
+                        <a th:href="@{/member/admin/detail/{id}(id=${memberAdmin.id})}"
                            class="btn btn-sm btn-info">상세</a>
-                        <a th:href="@{/member/admin/update/{id}(id=${member.id})}" 
+                        <a th:href="@{/member/admin/update/{id}(id=${memberAdmin.id})}"
                            class="btn btn-sm btn-warning">수정</a>
-                        <form th:action="@{/member/admin/delete/{id}(id=${member.id})}" 
+                        <form th:action="@{/member/admin/delete/{id}(id=${memberAdmin.id})}"
                               method="post" style="display: inline;">
                             <button type="submit" class="btn btn-sm btn-danger"
                                     onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
@@ -62,26 +67,26 @@
         </table>
 
         <!-- 페이징 네비게이션 -->
-        <nav aria-label="Page navigation" th:if="${members.totalPages > 0}">
+        <nav aria-label="Page navigation" th:if="${memberAdminListPage.totalPages > 0}">
             <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${!members.hasPrevious()} ? disabled">
-                    <a class="page-link" th:href="@{/member/admin/list(page=${members.number - 1})}"
-                       th:unless="${!members.hasPrevious()}">이전</a>
-                    <span class="page-link" th:if="${!members.hasPrevious()}">이전</span>
+                <li class="page-item" th:classappend="${!memberAdminListPage.hasPrevious()} ? disabled">
+                    <a class="page-link" th:href="@{/member/admin/list(page=${memberAdminListPage.number - 1})}"
+                       th:unless="${!memberAdminListPage.hasPrevious()}">이전</a>
+                    <span class="page-link" th:if="${!memberAdminListPage.hasPrevious()}">이전</span>
                 </li>
 
                 <li class="page-item" 
-                    th:each="pageNumber : ${#numbers.sequence(0, members.totalPages - 1)}"
-                    th:classappend="${pageNumber == members.number} ? active">
+                    th:each="pageNumber : ${#numbers.sequence(0, memberAdminListPage.totalPages - 1)}"
+                    th:classappend="${pageNumber == memberAdminListPage.number} ? active">
                     <a class="page-link" 
                        th:href="@{/member/admin/list(page=${pageNumber})}"
                        th:text="${pageNumber + 1}"></a>
                 </li>
 
-                <li class="page-item" th:classappend="${!members.hasNext()} ? disabled">
-                    <a class="page-link" th:href="@{/member/admin/list(page=${members.number + 1})}"
-                       th:unless="${!members.hasNext()}">다음</a>
-                    <span class="page-link" th:if="${!members.hasNext()}">다음</span>
+                <li class="page-item" th:classappend="${!memberAdminListPage.hasNext()} ? disabled">
+                    <a class="page-link" th:href="@{/member/admin/list(page=${memberAdminListPage.number + 1})}"
+                       th:unless="${!memberAdminListPage.hasNext()}">다음</a>
+                    <span class="page-link" th:if="${!memberAdminListPage.hasNext()}">다음</span>
                 </li>
             </ul>
         </nav>

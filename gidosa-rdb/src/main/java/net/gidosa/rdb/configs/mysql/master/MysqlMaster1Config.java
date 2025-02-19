@@ -14,19 +14,20 @@ import javax.sql.DataSource;
 //@RequiredArgsConstructor
 //@NoArgsConstructor
 public class MysqlMaster1Config {
-    private final String driverClassName;
     private final String jdbcUrl;
+    private final String driverClassName;
     private final String username;
     private final String password;
     private final Integer maxPoolSize;
 
-    public MysqlMaster1Config(@Value("${spring.datasource.mysql.master1.driver-class-name}") String driverClassName
-            , @Value("${spring.datasource.mysql.master1.jdbc-url}") String jdbcUrl
+    public MysqlMaster1Config(
+            @Value("${spring.datasource.mysql.master1.jdbc-url}") String jdbcUrl
+            , @Value("${spring.datasource.mysql.master1.driver-class-name}") String driverClassName
             , @Value("${spring.datasource.mysql.master1.max-pool-size}") int maxPoolSize
             , @Value("${spring.datasource.mysql.master1.username}") String username
             , @Value("${spring.datasource.mysql.master1.password}") String password) {
-        this.driverClassName = driverClassName;
         this.jdbcUrl = jdbcUrl;
+        this.driverClassName = driverClassName;
         this.maxPoolSize = maxPoolSize;
         this.username = username;
         this.password = password;
