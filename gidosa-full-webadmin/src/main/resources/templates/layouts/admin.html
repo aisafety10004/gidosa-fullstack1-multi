@@ -21,7 +21,6 @@
         <div class="list-group list-group-flush">
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/construction/list">건설공사현장 관리</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">건설공사현장 문의요청</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/general/list">건설공사현장 회원관리</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/admin/list">건설공사현장 매니저 관리</a>
 
             <!-- 서브메뉴가 있는 항목 예시 -->
@@ -111,7 +110,11 @@
                                <a class="dropdown-item" href="#!">Something else here</a>
                            </div>
                        </li>
-                        <li class="nav-item active"><a class="nav-link" href="/auth/login">Logout</a></li>
+                        <li class="nav-item active">
+                            <form th:action="@{/auth/logout}" method="post" style="display: inline;">
+                                <button type="submit" class="nav-link" style="background: none; border: none;">Logout</button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
             </div>

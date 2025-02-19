@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layouts/basic.html}">
+      layout:decorate="~{${layout}}">
 <head>
     <title>매니저 등록</title>
 </head>
@@ -48,23 +48,35 @@
             </div>
 
             <div class="mb-3">
-                <label for="phone" class="form-label">전화번호</label>
+                <label for="phone" class="form-label">전화번호 *</label>
                 <input type="tel" class="form-control" id="phone" 
                        th:field="*{phone}">
             </div>
 
             <div class="mb-3">
-                <label for="location" class="form-label">지역 *</label>
+                <label for="location" class="form-label">지역</label>
                 <input type="text" class="form-control" id="location" 
                        th:field="*{location}" required>
                 <div class="invalid-feedback">지역을 입력해주세요.</div>
             </div>
 
+            <!-- 건설공사현장 선택 필드 추가 -->
+            <div class="mb-3">
+                <label for="construction" class="form-label">건설공사현장</label>
+                <select class="form-control" id="construction" name="construction.id">
+                    <option value="">선택하세요</option>
+                    <option th:each="construction : ${constructions}"
+                            th:value="${construction.id}"
+                            th:text="${construction.location}">
+                    </option>
+                </select>
+            </div>
+
             <div class="mb-3">
                 <label for="role" class="form-label">권한 *</label>
                 <select class="form-select" id="role" th:field="*{role}" required>
-                    <option value="ROLE_ADMIN">일반 관리자</option>
-                    <option value="ROLE_SUPER_ADMIN">최고 관리자</option>
+                    <option value="ROLE_MANAGER">일반 관리자</option>
+                    <option value="ROLE_ADMIN">최고 관리자</option>
                 </select>
             </div>
 

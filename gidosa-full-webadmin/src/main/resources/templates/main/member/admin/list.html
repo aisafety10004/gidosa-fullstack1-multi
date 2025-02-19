@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layouts/basic.html}">
+      layout:decorate="~{${layout}}">
 <head>
     <title>매니저 목록</title>
 </head>
@@ -31,6 +31,7 @@
                     <th>이메일</th>
                     <th>전화번호</th>
                     <th>지역</th>
+                    <th>건설공사현장</th>
                     <th>가입일</th>
                     <th>관리</th>
                 </tr>
@@ -43,6 +44,7 @@
                     <td th:text="${member.email}"></td>
                     <td th:text="${member.phone}"></td>
                     <td th:text="${member.location}"></td>
+                    <td th:text="${member.construction != null ? member.construction.location : '-'}"></td>
                     <td th:text="${#temporals.format(member.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                     <td>
                         <a th:href="@{/member/admin/detail/{id}(id=${member.id})}" 

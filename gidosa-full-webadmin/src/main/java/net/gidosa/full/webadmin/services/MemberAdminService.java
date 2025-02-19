@@ -2,21 +2,26 @@ package net.gidosa.full.webadmin.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberAdmin;
 import net.gidosa.rdb.repositories.mysql.jpa.MemberAdminJpaRepository;
+import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class MemberAdminService {
-    
     private final MemberAdminJpaRepository memberAdminJpaRepository;
+    private final ConstructionJpaRepository constructionJpaRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 전체 관리자 조회 (페이징)
     public Page<MemberAdmin> getAllMembersWithPaging(Pageable pageable) {
@@ -46,8 +51,10 @@ public class MemberAdminService {
                 memberAdmin.setName(memberDetails.getName());
                 memberAdmin.setPhone(memberDetails.getPhone());
                 memberAdmin.setEmail(memberDetails.getEmail());
+                memberAdmin.setLocation(memberDetails.getLocation());
+                memberAdmin.setConstruction(memberDetails.getConstruction());
                 if (memberDetails.getPassword() != null && !memberDetails.getPassword().isEmpty()) {
-                    memberAdmin.setPassword(memberDetails.getPassword());
+                    memberAdmin.setPassword(passwordEncoder.encode(memberDetails.getPassword()));
                 }
                 return memberAdminJpaRepository.save(memberAdmin);
             })
@@ -96,11 +103,11 @@ public class MemberAdminService {
         // 기본값 설정
         memberAdmin.setActive(true);
         if (memberAdmin.getRole() == null) {
-            memberAdmin.setRole("ROLE_ADMIN"); // 기본 권한 설정
+            memberAdmin.setRole("ROLE_MANAGER"); // 기본 권한 설정
         }
-        
         // 비밀번호 암호화 처리가 필요한 경우 여기서 수행
-        
+        memberAdmin.setPassword(passwordEncoder.encode(memberAdmin.getPassword()));
+
         return memberAdminJpaRepository.save(memberAdmin);
     }
 
@@ -117,5 +124,10 @@ public class MemberAdminService {
                 member.setLocation(location);
                 memberAdminJpaRepository.save(member);
             });
+    }
+
+    // Construction 목록 조회 메서드 추가
+    public List<Construction> getAllConstructions() {
+        return constructionJpaRepository.findAll();
     }
 } 

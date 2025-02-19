@@ -43,7 +43,10 @@ public class Construction {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "construction")
-    private List<MemberGeneral> memberGenerals;
+    private List<MemberGeneral> memberGeneralList;
+
+    @OneToMany(mappedBy = "construction")
+    private List<MemberAdmin> memberAdminList;
 
     @PrePersist
     protected void onCreate() {

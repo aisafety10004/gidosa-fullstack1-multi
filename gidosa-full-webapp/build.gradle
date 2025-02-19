@@ -45,8 +45,8 @@ dependencies {
 
     // thymeleaf with dialect
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    //implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.4.0'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
     // mybatis 사용
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'

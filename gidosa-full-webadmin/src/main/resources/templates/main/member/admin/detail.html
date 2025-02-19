@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layouts/basic.html}">
+      layout:decorate="~{${layout}}">
 <head>
     <title>매니저 상세 정보</title>
 </head>
@@ -42,6 +42,10 @@
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>지역:</strong></div>
                     <div class="col-md-9" th:text="${member.location}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>건설공사현장:</strong></div>
+                    <div class="col-md-9" th:text="${member.construction != null ? member.construction.location : '-'}"></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>권한:</strong></div>

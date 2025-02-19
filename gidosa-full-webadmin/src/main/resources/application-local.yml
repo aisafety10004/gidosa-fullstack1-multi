@@ -9,7 +9,10 @@ server:
 #      force: true
   error:
     whitelabel:
-      enabled: true
+      enabled: true   # 스프링 기본 에러 페이지 비활성화
+    include-exception: true
+    include-stacktrace: always
+    path: /error       # 에러 발생시 이동할 경로
 
 # spring-web-jpa
 spring:

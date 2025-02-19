@@ -28,33 +28,36 @@
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">안전지도사 관리자 페이지</h1>
                                 </div>
-                                <form class="user">
+                                <form class="user" th:action="@{/auth/login}" method="post">
                                     <div class="form-group">
-                                        <input type="email" class="form-control form-control-user"
-                                               id="exampleInputEmail" aria-describedby="emailHelp"
-                                               placeholder="Enter Email Address...">
+                                        <input type="text" class="form-control form-control-user"
+                                               id="username" name="username" 
+                                               placeholder="Username">
                                     </div>
                                     <div class="form-group">
                                         <input type="password" class="form-control form-control-user"
-                                               id="exampleInputPassword" placeholder="Password">
+                                               id="password" name="password" 
+                                               placeholder="Password">
                                     </div>
                                     <div class="form-group">
                                         <div class="custom-control custom-checkbox small">
-                                            <input type="checkbox" class="custom-control-input" id="customCheck">
-                                            <label class="custom-control-label" for="customCheck">Remember
+                                            <input type="checkbox" class="custom-control-input" 
+                                                   id="remember-me" name="remember-me">
+                                            <label class="custom-control-label" for="remember-me">Remember
                                                 Me</label>
                                         </div>
                                     </div>
-                                    <a href="/main" class="btn btn-primary btn-user btn-block">
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">
                                         Login
-                                    </a>
-<!--                                    <hr>-->
-<!--                                    <a href="index.html" class="btn btn-google btn-user btn-block">-->
-<!--                                        <i class="fab fa-google fa-fw"></i> 구글 로그인-->
-<!--                                    </a>-->
-<!--                                    <a href="index.html" class="btn btn-kakao btn-user btn-block">-->
-<!--                                        <i class="fab fa-kakao-f fa-fw"></i> 카카오 로그인-->
-<!--                                    </a>-->
+                                    </button>
+
+                                    <!-- 로그인 실패 메시지 표시 -->
+                                    <div th:if="${param.error}" class="alert alert-danger mt-3">
+                                        <small>Invalid username or password.</small>
+                                    </div>
+                                    <div th:if="${param.logout}" class="alert alert-info mt-3">
+                                        <small>You have been logged out.</small>
+                                    </div>
                                 </form>
                                 <hr>
                                 <div class="text-center">
@@ -81,6 +84,8 @@
 
 <!-- Custom scripts for all pages-->
 <script src="/js/sb-admin-2.js"></script>
+<!-- Remember Me 기능을 위한 스크립트 -->
+<script src="/js/login.js"></script>
 
 </body>
 </html>

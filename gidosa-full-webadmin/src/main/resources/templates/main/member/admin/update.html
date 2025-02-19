@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layouts/basic.html}">
+      layout:decorate="~{${layout}}">
 <head>
     <title>매니저 정보 수정</title>
 </head>
@@ -32,10 +32,22 @@
             </div>
 
             <div class="mb-3">
-                <label for="location" class="form-label">지역 *</label>
+                <label for="location" class="form-label">지역</label>
                 <input type="text" class="form-control" id="location" 
-                       th:field="*{location}" required>
+                       th:field="*{location}">
                 <div class="invalid-feedback">지역을 입력해주세요.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="construction" class="form-label">건설공사현장</label>
+                <select class="form-control" id="construction" name="construction.id">
+                    <option value="">선택하세요</option>
+                    <option th:each="construction : ${constructions}"
+                            th:value="${construction.id}"
+                            th:text="${construction.location}"
+                            th:selected="${member.construction != null && member.construction.id == construction.id}">
+                    </option>
+                </select>
             </div>
 
             <div class="mb-3">

@@ -43,6 +43,7 @@ public class MemberAdminController {
     public String updateForm(@PathVariable Long id, Model model) {
         memberAdminService.getMemberById(id)
                 .ifPresent(member -> model.addAttribute("member", member));
+        model.addAttribute("constructions", memberAdminService.getAllConstructions());
         return "main/member/admin/update";
     }
 
@@ -104,6 +105,7 @@ public class MemberAdminController {
     @GetMapping("/register")
     public String registerForm(Model model) {
         model.addAttribute("member", new MemberAdmin());
+        model.addAttribute("constructions", memberAdminService.getAllConstructions());
         return "main/member/admin/register";
     }
 
