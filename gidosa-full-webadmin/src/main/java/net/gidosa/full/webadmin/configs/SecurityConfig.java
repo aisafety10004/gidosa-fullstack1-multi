@@ -29,11 +29,12 @@ public class SecurityConfig {
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false)
             )
+//            .csrf(csrf -> csrf.disable())  // CSRF 보호는 필요에 따라 활성화하세요
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/assets/**", "/vendor/**", "/error/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/member/admin/**", "/construction/**", "/request/construction/**").hasRole("ADMIN")
-                .requestMatchers("/member/general/**").hasAnyRole("MANAGER")
+                .requestMatchers("/member/general/**").hasRole("MANAGER")
                 .requestMatchers("/main/**").hasAnyRole("ADMIN", "MANAGER")
                 .anyRequest().authenticated()
 //                .anyRequest().permitAll()

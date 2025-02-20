@@ -1,4 +1,4 @@
-package net.gidosa.full.webapp.controllers;
+package net.gidosa.full.webapp.controllers.errors;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.boot.web.servlet.error.ErrorController;
 
@@ -33,5 +34,10 @@ public class CustomErrorController implements ErrorController {
         }
 
         return "error/500";  // 기본적으로 500 에러 페이지로 리다이렉트
+    }
+
+    @GetMapping("/error/403")
+    public String accessDenied(){
+        return "error/403";
     }
 }

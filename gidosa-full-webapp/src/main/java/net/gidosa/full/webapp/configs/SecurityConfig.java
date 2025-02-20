@@ -40,6 +40,9 @@ public class SecurityConfig {
             .logout(logout -> logout
                 .logoutSuccessUrl("/")
                 .permitAll()
+            )
+            .exceptionHandling(exception -> exception
+                    .accessDeniedPage("/error/403")
             );
 
         return http.build();

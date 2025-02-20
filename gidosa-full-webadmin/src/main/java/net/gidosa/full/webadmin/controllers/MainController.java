@@ -33,4 +33,9 @@ public class MainController {
 //        return "thymeleaf/main/main";
         return "main/main";
     }
+
+    @GetMapping("/error/403")
+    public String accessDenied(){
+        return "error/403";
+    }
 }

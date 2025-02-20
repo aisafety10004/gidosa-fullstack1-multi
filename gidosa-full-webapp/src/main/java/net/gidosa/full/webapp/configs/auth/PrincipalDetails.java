@@ -1,6 +1,5 @@
 package net.gidosa.full.webapp.configs.auth;
 
-import net.gidosa.rdb.models.entities.dbs.mysql.MemberAdmin;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberGeneral;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -36,7 +36,8 @@ spring:
       master1:
         driver-class-name: com.mysql.cj.jdbc.Driver
 #        jdbc-url: jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
-        jdbc-url: jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+        jdbc-url: jdbc:mysql://dev-inner-bastion.jobio.kr:1306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+#        jdbc-url: jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
         username: root
         password: password
         max-pool-size: 20
