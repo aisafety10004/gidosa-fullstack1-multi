@@ -27,4 +27,7 @@ public interface MemberAdminJpaRepository extends JpaRepository<MemberAdmin, Lon
 
     @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction WHERE m.id = :id")
     Optional<MemberAdmin> findByIdWithConstruction(@Param("id") Long id);
+
+    @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction WHERE m.username = :username")
+    Optional<MemberAdmin> findByUsernameWithConstruction(@Param("username") String username);
 }

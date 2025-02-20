@@ -37,9 +37,14 @@ public class MemberAdminService {
         return memberAdminJpaRepository.findByIdWithConstruction(id);
     }
 
-    // 사용자명으로 관리자 조회
+    // 로그인 아이디로 관리자 조회
     public Optional<MemberAdmin> getMemberAdminByUsername(String username) {
         return memberAdminJpaRepository.findByUsername(username);
+    }
+
+    // 로그인 아이디로 관리자 조회(With 건설공사현장(construction)
+    public Optional<MemberAdmin> getMemberAdminByUsernameWithConstruction(String username) {
+        return memberAdminJpaRepository.findByUsernameWithConstruction(username);
     }
 
     // 이메일로 관리자 조회

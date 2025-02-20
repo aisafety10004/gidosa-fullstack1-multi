@@ -1,7 +1,52 @@
 <!--<html layout:decorate="~{thymeleaf/layouts/admin.html}">-->
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{${layout}}">
+
 <div layout:fragment="content">
-    <div>왼쪽 혹은 상단의 메뉴를 클릭하세요</div>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">로그인 정보</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>이름:</strong> 
+                            <span sec:authentication="principal.memberAdmin.name">-</span>
+                        </p>
+                        <p><strong>아이디:</strong> 
+                            <span sec:authentication="name">-</span>
+                        </p>
+                        <p><strong>권한:</strong> 
+                            <span sec:authentication="principal.memberAdmin.role">-</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- Construction 정보 표시 -->
+                        <div sec:authorize="isAuthenticated()">
+                            <div th:with="construction=${#authentication.principal.memberAdmin.construction}">
+                                <div th:if="${construction != null}">
+                                    <p><strong>건설공사현장 ID:</strong> 
+                                        <span th:text="${construction.id}">-</span>
+                                    </p>
+                                    <p><strong>건설공사현장 위치:</strong> 
+                                        <span th:text="${construction.location}">-</span>
+                                    </p>
+                                </div>
+                                <div th:unless="${construction != null}">
+                                    <p class="text-muted">배정된 건설공사현장이 없습니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-4">
+            왼쪽 혹은 상단의 메뉴를 클릭하세요
+        </div>
+    </div>
 </div>

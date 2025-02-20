@@ -15,7 +15,10 @@
     <!-- Sidebar-->
     <div class="border-end bg-white" id="sidebar-wrapper">
         <div class="sidebar-heading border-bottom bg-light" style="padding-bottom: 20px; text-align: center;">
-            <a href="/main" style="text-decoration: none; color: inherit;">안전지도사<br>매니저</a>
+            <a href="/main" style="text-decoration: none; color: inherit;">
+                안전지도사<br>
+                매니저(<span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.memberAdmin.construction.location}" />)
+            </a>
         </div>
         <div class="list-group list-group-flush">
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/general/list">건설공사현장 회원관리</a>

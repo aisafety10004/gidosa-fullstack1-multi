@@ -13,4 +13,5 @@ public interface MemberGeneralJpaRepository extends JpaRepository<MemberGeneral,
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     Page<MemberGeneral> findAllByOrderByIdDesc(Pageable pageable);
+    Page<MemberGeneral> findByConstructionId(Long constructionId, Pageable pageable);
 }

@@ -2,18 +2,18 @@ package net.gidosa.full.webadmin.controllers.managers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.gidosa.full.webadmin.configs.auth.PrincipalDetails;
 import net.gidosa.full.webadmin.services.MemberGeneralService;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberGeneral;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.data.web.PageableDefault;
-
-import java.security.Principal;
 
 @Log4j2
 @Controller
@@ -26,8 +26,12 @@ public class MemberGeneralController {
     // 회원 목록 조회 - 페이징 처리 추가
     @GetMapping("/list")
     public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                       Model model, Principal principal) {
-        Page<MemberGeneral> membersPage = memberGeneralService.getAllMembersWithPaging(pageable);
+                       Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        // construction_id로 필터링된 회원 목록을 가져옴
+        Page<MemberGeneral> membersPage = memberGeneralService.getMembersByConstructionId(
+            principalDetails.getMemberAdmin().getConstruction().getId(),
+            pageable
+        );
         model.addAttribute("members", membersPage);
         return "main/member/general/list";
     }

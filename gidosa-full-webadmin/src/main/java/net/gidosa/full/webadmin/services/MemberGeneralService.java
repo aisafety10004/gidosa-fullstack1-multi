@@ -16,7 +16,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberGeneralService {
-    
     private final MemberGeneralJpaRepository memberGeneralJpaRepository;
 
     // 전체 회원 조회
@@ -71,5 +70,9 @@ public class MemberGeneralService {
     // 회원 존재 여부 확인 (이메일)
     public boolean existsByEmail(String email) {
         return memberGeneralJpaRepository.existsByEmail(email);
+    }
+
+    public Page<MemberGeneral> getMembersByConstructionId(Long constructionId, Pageable pageable) {
+        return memberGeneralJpaRepository.findByConstructionId(constructionId, pageable);
     }
 }
