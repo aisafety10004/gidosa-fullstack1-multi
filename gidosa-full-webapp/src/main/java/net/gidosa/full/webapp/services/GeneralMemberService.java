@@ -50,4 +50,12 @@ public class GeneralMemberService {
     public boolean isUsernameAvailable(String username) {
         return !memberGeneralJpaRepository.existsByUsername(username);
     }
+
+    public Optional<MemberGeneral> findByNameAndEmail(String name, String email) {
+        return memberGeneralJpaRepository.findByNameAndEmail(name, email);
+    }
+
+    public Optional<MemberGeneral> findByNameAndEmailAndConstructionId(String name, String email, Long constructionId) {
+        return memberGeneralJpaRepository.findByNameAndEmailAndConstructionId(name, email, constructionId);
+    }
 } 

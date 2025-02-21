@@ -11,9 +11,12 @@
                     <p>&copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}"></span> 안전지도사. All rights reserved.</p>
                 </div>
                 <div class="flex space-x-6">
-                    <a th:href="@{/document/terms1}" class="text-sm text-gray-600 hover:text-primary">이용약관</a>
-                    <a th:href="@{/document/privacy1}" class="text-sm text-gray-600 hover:text-primary">개인정보처리방침</a>
-                    <a th:href="@{/document/marketing1}" class="text-sm text-gray-600 hover:text-primary">프로모션 정보수신 동의</a>
+                    <a th:href="@{/general/document/terms1}" class="text-sm text-gray-600 hover:text-primary">이용약관</a>
+                    <a th:href="@{/general/document/privacy1}" class="text-sm text-gray-600 hover:text-primary">개인정보처리방침</a>
+                    <a th:href="@{/general/document/marketing1}" class="text-sm text-gray-600 hover:text-primary">프로모션 정보수신 동의</a>
+<!--                    <a href="#" class="text-sm text-gray-600 hover:text-primary">이용약관</a>-->
+<!--                    <a href="#" class="text-sm text-gray-600 hover:text-primary">개인정보처리방침</a>-->
+<!--                    <a href="#" class="text-sm text-gray-600 hover:text-primary">프로모션 정보수신 동의</a>-->
                 </div>
             </div>
         </div>

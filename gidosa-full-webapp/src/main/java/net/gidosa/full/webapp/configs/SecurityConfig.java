@@ -1,6 +1,7 @@
 package net.gidosa.full.webapp.configs;
 
 import lombok.RequiredArgsConstructor;
+import net.gidosa.full.webapp.configs.auth.PrincipalDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,14 +11,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import net.gidosa.full.webapp.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final PrincipalDetailsService principalDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -34,7 +34,7 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/general/auth/login")
-                .defaultSuccessUrl("/")
+                .defaultSuccessUrl("/general/main")
                 .permitAll()
             )
             .logout(logout -> logout

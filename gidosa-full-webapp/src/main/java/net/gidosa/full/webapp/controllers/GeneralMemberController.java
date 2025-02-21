@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import net.gidosa.full.webapp.services.GeneralMemberService;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -76,33 +77,40 @@ public class GeneralMemberController {
 
     @GetMapping("/find-id")
     public String findIdForm(@RequestParam(value = "constructionId") Long constructionId, Model model) {
+        Construction construction = generalConstructionService.getConstruction(constructionId);
+        model.addAttribute("construction", construction);
         model.addAttribute("headerSubInvisible", true);
-        model.addAttribute("constructionId", constructionId);
 
         return "pages/general/member/find-id";
     }
 
     @PostMapping("/find-id")
-    public String findId(String name, String email, Model model) {
-        // TODO: Implement find ID logic
-        boolean found = false;
-        String message = "일치하는 회원 정보를 찾을 수 없습니다.";
+    public String findId(String name, 
+                        String email, 
+                        @RequestParam(value = "constructionId") Long constructionId,
+                        Model model) {
+        Construction construction = generalConstructionService.getConstruction(constructionId);
+        model.addAttribute("construction", construction);
+        model.addAttribute("headerSubInvisible", true);
 
-        // 임시 로직 (실제로는 서비스 계층에서 처리)
-        if ("홍길동".equals(name) && "test@example.com".equals(email)) {
-            found = true;
-            message = "회원님의 아이디는 'hong123' 입니다.";
-        }
+        Optional<MemberGeneral> memberOpt = generalMemberService.findByNameAndEmailAndConstructionId(name, email, constructionId);
+        
+        boolean found = memberOpt.isPresent();
+        String message = found 
+            ? String.format("회원님의 아이디는 '%s' 입니다.", memberOpt.get().getUsername())
+            : "일치하는 회원 정보를 찾을 수 없습니다.";
 
         model.addAttribute("found", found);
         model.addAttribute("message", message);
+        
         return "pages/general/member/find-id";
     }
 
     @GetMapping("/find-pw")
     public String findPwForm(@RequestParam(value = "constructionId") Long constructionId, Model model) {
+        Construction construction = generalConstructionService.getConstruction(constructionId);
+        model.addAttribute("construction", construction);
         model.addAttribute("headerSubInvisible", true);
-        model.addAttribute("constructionId", constructionId);
 
         return "pages/general/member/find-pw";
     }

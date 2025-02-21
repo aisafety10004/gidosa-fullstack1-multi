@@ -6,6 +6,7 @@ import net.gidosa.rdb.models.entities.dbs.mysql.MemberGeneral;
 import net.gidosa.rdb.repositories.mysql.jpa.MemberGeneralJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberGeneralService {
     private final MemberGeneralJpaRepository memberGeneralJpaRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 전체 회원 조회
     public Page<MemberGeneral> getAllMembersWithPaging(Pageable pageable) {
@@ -49,7 +51,7 @@ public class MemberGeneralService {
                 member.setEmail(memberDetails.getEmail());
                 // 비밀번호는 별도의 암호화 처리가 필요할 수 있음
                 if (memberDetails.getPassword() != null && !memberDetails.getPassword().isEmpty()) {
-                    member.setPassword(memberDetails.getPassword());
+                    member.setPassword(passwordEncoder.encode(memberDetails.getPassword()));
                 }
                 return memberGeneralJpaRepository.save(member);
             })
