@@ -46,7 +46,7 @@ spring:
       timeout: 30m  # 세션 타임아웃 설정
       cookie:
         http-only: true
-        secure: true  # HTTPS 사용 시 true로 설정
+        secure: true  # HTTPS 사용하므로 true로 설정
 
   jpa:
     properties:

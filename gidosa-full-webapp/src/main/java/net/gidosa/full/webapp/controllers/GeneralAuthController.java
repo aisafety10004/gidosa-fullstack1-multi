@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Objects;
+
 @Log4j2
 @Controller
 @RequiredArgsConstructor
@@ -20,6 +22,10 @@ public class GeneralAuthController {
     @GetMapping("/login")
     public String loginForm(@RequestParam(value = "constructionId") Long constructionId, Model model) {
 //        model.addAttribute("constructionId", constructionId);
+//        if(!Objects.isNull(constructionId)) {
+//            Construction construction = generalConstructionService.getConstruction(constructionId);
+//            model.addAttribute("construction", construction);
+//        }
         Construction construction = generalConstructionService.getConstruction(constructionId);
         model.addAttribute("construction", construction);
         model.addAttribute("headerSubInvisible", true);

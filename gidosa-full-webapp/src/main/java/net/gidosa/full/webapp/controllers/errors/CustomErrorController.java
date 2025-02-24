@@ -20,17 +20,27 @@ public class CustomErrorController implements ErrorController {
         Object exception = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
 
         model.addAttribute("headerInvisible", true);
+        model.addAttribute("headerSubInvisible", false);
 
         if (status != null) {
             int statusCode = Integer.parseInt(status.toString());
 
-            if (statusCode == HttpStatus.NOT_FOUND.value()) {
+            if (statusCode == HttpStatus.BAD_REQUEST.value()) {
+                log.error("400 Error occurred with exception:", exception);
+                return "error/400";
+            }
+            else if (statusCode == HttpStatus.FORBIDDEN.value()) {
+                log.error("403 Error occurred with exception:", exception);
+                return "error/403";
+            }
+            else if (statusCode == HttpStatus.NOT_FOUND.value()) {
                 log.error("404 Error occurred. Path: {}", request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
                 return "error/404";
-            } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-                log.error("500 Error occurred with exception:", exception);
-                return "error/500";
             }
+//            else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+//                log.error("500 Error occurred with exception:", exception);
+//                return "error/500";
+//            }
         }
 
         return "error/500";  // 기본적으로 500 에러 페이지로 리다이렉트
