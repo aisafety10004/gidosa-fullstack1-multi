@@ -171,7 +171,6 @@ jobs:
           password: ${{ secrets.DEV_INNER1_SSH_PASSWORD }}
           #          key: ${{ secrets.DEV_INNER1_SSH_KEY }}
           script: | #// 버티컬바를 사용하면 여러 명령어를 순차 실행할 수 있다.
-            source ./apps-gidosa/start-gidosa-sec-env
             echo ${SMTP_MAIL_GIDOSA_HOST}
 #            unzip -o ./apps-gidosa/gidosa-full-webapp/*.zip -d ./apps-gidosa/gidosa-full-webapp
 #            ./apps-gidosa/gidosa-full-webapp/start-dev-inner.sh
