@@ -68,10 +68,10 @@ spring:
     #        default_batch_fetch_size: 500
 
   mail:
-    host: ${SMTP_MAIL_HOST}
-    port: ${SMTP_MAIL_PORT}
-    username: ${SMTP_MAIL_USERNAME}
-    password: ${SMTP_MAIL_PASSWORD}
+    host: ${SMTP_MAIL_GIDOSA_HOST}
+    port: ${SMTP_MAIL_GIDOSA_PORT}
+    username: ${SMTP_MAIL_GIDOSA_USERNAME}
+    password: ${SMTP_MAIL_GIDOSA_PASSWORD}
     sender-display: 위험안전 지도사
     properties:
       mail:
