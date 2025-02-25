@@ -116,20 +116,22 @@ public class GeneralMemberController {
     }
 
     @PostMapping("/find-pw")
-    public String findPw(String username, String email, Model model, RedirectAttributes redirectAttributes) {
-        // TODO: Implement find password logic
-        boolean sent = false;
-        String message = "일치하는 회원 정보를 찾을 수 없습니다.";
-
-        // 임시 로직 (실제로는 서비스 계층에서 처리)
-        if ("hong123".equals(username) && "test@example.com".equals(email)) {
-            sent = true;
-            message = "임시 비밀번호가 이메일로 발송되었습니다.";
-            // TODO: 실제 이메일 발송 로직 구현
-        }
-
+    public String findPw(String username, 
+                        String email, 
+                        @RequestParam(value = "constructionId") Long constructionId,
+                        Model model) {
+        Construction construction = generalConstructionService.getConstruction(constructionId);
+        model.addAttribute("construction", construction);
+        model.addAttribute("headerSubInvisible", true);
+        
+        boolean sent = generalMemberService.processFindPassword(username, email);
+        String message = sent 
+            ? "임시 비밀번호가 이메일로 발송되었습니다.(이메일 주소 확인요망(스팸함 포함))"
+            : "일치하는 회원 정보를 찾을 수 없습니다.";
+        
         model.addAttribute("sent", sent);
         model.addAttribute("message", message);
+        
         return "pages/general/member/find-pw";
     }
 }

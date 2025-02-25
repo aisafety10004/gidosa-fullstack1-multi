@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/general}">
+<head>
+    <title>개인정보 수정</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6">개인정보 수정</h2>
+    
+    <!-- 성공/에러 메시지 -->
+    <div th:if="${message}" class="mb-4 p-4 bg-green-100 text-green-700 rounded-md" th:text="${message}"></div>
+    <div th:if="${error}" class="mb-4 p-4 bg-red-100 text-red-700 rounded-md" th:text="${error}"></div>
+
+    <form th:action="@{/general/mypage/profile}" method="post" th:object="${memberUpdateDto}" class="space-y-6">
+        <div>
+            <label class="block text-sm font-medium text-gray-700">아이디</label>
+            <input type="text" th:field="*{username}" readonly
+                   class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">이름</label>
+            <input type="text" th:field="*{name}" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">이메일</label>
+            <input type="email" th:field="*{email}" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">전화번호</label>
+            <input type="tel" th:field="*{phone}" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">새 비밀번호 (변경시에만 입력)</label>
+            <input type="password" th:field="*{password}"
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+        </div>
+
+        <div class="flex justify-end space-x-4">
+            <button type="submit"
+                    class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primaryDark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                수정하기
+            </button>
+        </div>
+    </form>
+</div>
+</body>
+</html> 

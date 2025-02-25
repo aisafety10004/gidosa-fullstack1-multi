@@ -99,6 +99,19 @@ spring:
           fail_on_pagination_over_collection_fetch: true
     #        default_batch_fetch_size: 500
 
+  mail:
+    host:
+    port:
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true              # 사용자 인증 여부
+          timeout: 5000           # 이메일 전송 타임아웃 시간
+          starttls:
+            enable: true          # TLS를 통해 안전한 통신 사용 여부
+
 jwt:
   secret: vosdfay6ghfasdfasldfjasldfmxcfvojalksnfskdsdgfn
 

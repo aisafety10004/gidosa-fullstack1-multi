@@ -5,7 +5,6 @@ import lombok.extern.log4j.Log4j2;
 import net.gidosa.full.webapp.configs.auth.PrincipalDetails;
 import net.gidosa.full.webapp.services.GeneralMainService;
 import net.gidosa.full.webapp.services.GeneralConstructionService;
-import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

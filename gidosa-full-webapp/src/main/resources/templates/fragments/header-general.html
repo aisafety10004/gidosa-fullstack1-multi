@@ -11,17 +11,18 @@
          th:classappend="${headerInvisible ?: 'bg-gray-500/50'}"
          th:with="authConstruction=${construction == null ? #authentication.principal.memberGeneral.construction : construction}">
         <div class="flex items-center">
-            <a th:href="@{${(authConstruction != null ? '/general/construction/' + authConstruction.id : '/general/construction/' + constructionId)}}"
+            <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main' : '/general/construction/' + construction.id}}"
                class="text-lg md:text-2xl font-bold text-primary focus:outline-none"
                onclick="if (headerInvisible) return false;">
                 건설공사현장
             </a>
             <th:block th:if="${authConstruction != null || construction != null}">
                 <span class="mx-2 md:mx-4 text-gray-300">|</span>
-                <a th:href="@{${(authConstruction != null ? '/general/construction/' + authConstruction.id : '/general/construction/' + construction.id)}}"
+                <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main' : '/general/construction/' + construction.id}}"
                    class="text-base md:text-xl text-gray-700 cursor-pointer"
                    onclick="if (headerInvisible) return false;"
-                   th:text="${authConstruction != null ? authConstruction.location : construction.location}">
+                   th:text="${authConstruction != null ? authConstruction.location : construction.location}"
+                >
                 </a>
             </th:block>
         </div>
@@ -70,6 +71,28 @@
                     </a>
                 </th:block>
                 <th:block sec:authorize="isAuthenticated()">
+                    <!-- 마이페이지 드롭다운 추가 -->
+                    <div class="relative group">
+                        <button class="px-6 py-2 text-black rounded-md hover:bg-primaryDark transition-colors duration-300 focus:outline-none"
+                                th:classappend="${headerInvisible != null and headerInvisible == true ? 'bg-gray-500/50 pointer-events-none' : ''}">
+                            마이페이지
+                        </button>
+                        <!-- padding-top을 2로 설정하고, 메뉴 위에 투명한 영역 추가 -->
+                        <div class="absolute right-0 w-48 pt-2">
+                            <!-- 투명한 영역으로 간격 채우기 -->
+                            <div class="h-2"></div>
+                            <div class="bg-white rounded-md shadow-lg hidden group-hover:block z-50">
+                                <a th:href="@{/general/mypage/profile}"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-primaryDark hover:text-black">
+                                    개인정보 수정
+                                </a>
+                                <a href="#"
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-primaryDark hover:text-black">
+                                    서브메뉴2
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <form th:action="@{/general/auth/logout}" method="post" style="display: inline;">
                         <button type="submit" 
                                 class="px-6 py-2 text-black rounded-md hover:bg-primaryDark transition-colors duration-300 focus:outline-none"
@@ -100,6 +123,11 @@
                 </a>
             </th:block>
             <th:block sec:authorize="isAuthenticated()">
+                <a th:href="@{/general/mypage/profile}"
+                   class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
+                   onclick="closeMenu()">
+                    개인정보 수정
+                </a>
                 <form th:action="@{/general/auth/logout}" method="post" style="display: inline;">
                     <button type="submit" 
                             class="w-full my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"

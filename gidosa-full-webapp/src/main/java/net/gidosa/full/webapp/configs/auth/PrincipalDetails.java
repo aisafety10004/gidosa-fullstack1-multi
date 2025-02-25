@@ -54,4 +54,7 @@ public class PrincipalDetails implements UserDetails {
     public MemberGeneral getMemberGeneral() {
         return this.memberGeneral;
     }
+    public void setMemberGeneral(MemberGeneral memberGeneral) {
+        this.memberGeneral = memberGeneral;
+    }
 }

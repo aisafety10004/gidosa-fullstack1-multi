@@ -104,6 +104,19 @@ spring:
           fail_on_pagination_over_collection_fetch: true
     #        default_batch_fetch_size: 500
 
+  mail:
+    host:
+    port:
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
 jwt:
   secret: vosdfay6ghfasdfasldfjasldfmxcfvojalksnfskdsdgfn
 

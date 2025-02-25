@@ -10,6 +10,18 @@ spring:
         - common
         -
 
+  # mail:
+  #   host: 
+  #   port: 
+  #   username: 
+  #   password: 
+  #   properties:
+  #     mail:
+  #       smtp:
+  #         auth: true
+  #         starttls:
+  #           enable: true
+
 
 
 

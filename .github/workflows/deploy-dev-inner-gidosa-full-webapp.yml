@@ -21,6 +21,10 @@ env:
 #  JWT_SECRET_KEY_MEMBERMANAGER: ${{ secrets.JWT_DEV_SECRET_KEY_MEMBERMANAGER }}
 #  JWT_ISSUER_MEMBERUSER: ${{ secrets.JWT_DEV_ISSUER_MEMBERUSER }}
 #  JWT_ISSUER_MEMBERMANAGER: ${{ secrets.JWT_DEV_ISSUER_MEMBERMANAGER }}
+#  SMTP_MAIL_HOST: ${{ secrets.SMTP_MAIL_DEV_INNER_HOST }}
+#  SMTP_MAIL_PORT: ${{ secrets.SMTP_MAIL_DEV_INNER_PORT }}
+#  SMTP_MAIL_USERNAME: ${{ secrets.SMTP_MAIL_DEV_INNER_USERNAME }}
+#  SMTP_MAIL_PASSWORD: ${{ secrets.SMTP_MAIL_DEV_INNER_PASSWORD }}
 
 jobs:
   # 의존성 빌드 및 codedeploy event
@@ -75,6 +79,10 @@ jobs:
 #          spring.datasource.mysql.replication.slave1.jdbc-url: ${{ env.RDB_SLAVE_URL }}
 #          spring.datasource.mysql.replication.slave1.username: ${{ env.RDB_SLAVE_USERNAME }}
 #          spring.datasource.mysql.replication.slave1.password: ${{ env.RDB_SLAVE_PASSWORD }}
+#          spring.mail.host: ${{ env.SMTP_MAIL_HOST }}
+#          spring.mail.port: ${{ env.SMTP_MAIL_PORT }}
+#          spring.mail.username: ${{ env.SMTP_MAIL_USERNAME }}
+#          spring.mail.password: ${{ env.SMTP_MAIL_PASSWORD }}
 #          jwt.secret-key-memberuser: ${{ env.JWT_SECRET_KEY_MEMBERUSER }}
 #          jwt.secret-key-membermanager: ${{ env.JWT_SECRET_KEY_MEMBERMANAGER }}
 #          jwt.issuer-memberuser: ${{ env.JWT_ISSUER_MEMBERUSER }}
