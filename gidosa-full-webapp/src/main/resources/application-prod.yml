@@ -76,6 +76,7 @@ spring:
     port: ${SMTP_MAIL_PORT}
     username: ${SMTP_MAIL_USERNAME}
     password: ${SMTP_MAIL_PASSWORD}
+    sender-display: 위험안전 지도사
     properties:
       mail:
         smtp:

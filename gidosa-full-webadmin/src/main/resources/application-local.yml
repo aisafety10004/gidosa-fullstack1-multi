@@ -109,6 +109,7 @@ spring:
     port:
     username:
     password:
+    sender-display: 위험안전 지도사
     properties:
       mail:
         smtp:

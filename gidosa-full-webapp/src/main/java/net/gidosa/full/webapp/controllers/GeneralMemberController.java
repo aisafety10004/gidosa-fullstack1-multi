@@ -125,12 +125,16 @@ public class GeneralMemberController {
         model.addAttribute("headerSubInvisible", true);
         
         boolean sent = generalMemberService.processFindPassword(username, email);
-        String message = sent 
-            ? "임시 비밀번호가 이메일로 발송되었습니다.(이메일 주소 확인요망(스팸함 포함))"
+        String message1 = sent
+            ? "임시 비밀번호가 이메일로 발송되었습니다."
             : "일치하는 회원 정보를 찾을 수 없습니다.";
+        String message2 = sent
+                ? "(이메일 주소 확인요망(스팸함 포함))"
+                : "";
         
         model.addAttribute("sent", sent);
-        model.addAttribute("message", message);
+        model.addAttribute("message1", message1);
+        model.addAttribute("message2", message2);
         
         return "pages/general/member/find-pw";
     }

@@ -17,9 +17,9 @@
             
             <form class="mt-8 space-y-6" th:action="@{${'/general/member/find-pw?constructionId=' + construction.id}}" method="POST" id="findPwForm">
                 <!-- 결과 메시지 -->
-                <div th:if="${message}" class="rounded-md p-4" th:classappend="${sent ? 'bg-green-50' : 'bg-red-50'}">
-                    <div class="text-sm" th:classappend="${sent ? 'text-green-700' : 'text-red-700'}" th:text="${message}">
-                    </div>
+                <div th:if="${message1}" class="rounded-md p-4" th:classappend="${sent ? 'bg-green-50' : 'bg-red-50'}">
+                    <div class="text-sm" th:classappend="${sent ? 'text-green-700' : 'text-red-700'}" th:text="${message1}" />
+                    <div class="text-sm" th:classappend="${sent ? 'text-green-700' : 'text-red-700'}" th:text="${message2}" />
                 </div>
 
                 <!-- 아이디 입력 -->
