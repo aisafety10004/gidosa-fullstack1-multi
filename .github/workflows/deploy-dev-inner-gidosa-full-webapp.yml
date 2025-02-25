@@ -172,7 +172,6 @@ jobs:
           #          key: ${{ secrets.DEV_INNER1_SSH_KEY }}
           script: | #// 버티컬바를 사용하면 여러 명령어를 순차 실행할 수 있다.
             unzip -o ./apps-gidosa/gidosa-full-webapp/*.zip -d ./apps-gidosa/gidosa-full-webapp
-            ./apps-gidosa/start-gidosa-env.sh
             ./apps-gidosa/gidosa-full-webapp/start-dev-inner.sh
 #            source ~/.bashrc
 #            cd ./apps-gidosa/gidosa-full-webapp
