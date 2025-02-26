@@ -91,3 +91,7 @@ jwt:
 ##    map-underscore-to-camel-case: true
 
 # log
+
+file:
+  upload:
+    path: /path/to/upload/directory

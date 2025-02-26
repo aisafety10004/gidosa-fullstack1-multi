@@ -34,13 +34,14 @@ public class EmailService {
     @Value("${spring.mail.sender-display}")
     private String emailSenderDisplay;
 
-    public void sendTempPassword(String to, String username, String tempPassword) {
+    public void sendTempPassword(String to, String username, String tempPassword, String[] ccList) {
       MimeMessage message = mailSender.createMimeMessage();
 
       try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setFrom(new InternetAddress(emailSender, emailSenderDisplay));
+            helper.setCc(ccList);
             helper.setTo(to);
             helper.setSubject("[위험안전관리 지도] 임시 비밀번호 발급 안내");
             helper.setText(String.format("""
@@ -70,13 +71,21 @@ public class EmailService {
      */
     public void sendTxtEmail(MailTxtSendDto mailTxtSendDto) {
         SimpleMailMessage smm = new SimpleMailMessage();
-        smm.setTo(mailTxtSendDto.getEmailAddr());               // 받는 사람 이메일
-        //smm.setFrom(emailSender);
-        smm.setSubject(mailTxtSendDto.getSubject());            // 이메일 제목
-        smm.setText(mailTxtSendDto.getContent());               // 이메일 내용
+        smm.setTo(mailTxtSendDto.getEmailAddr());
+        
+        // CC와 BCC 설정
+        if (mailTxtSendDto.getCcList() != null && mailTxtSendDto.getCcList().length > 0) {
+            smm.setCc(mailTxtSendDto.getCcList());
+        }
+        if (mailTxtSendDto.getBccList() != null && mailTxtSendDto.getBccList().length > 0) {
+            smm.setBcc(mailTxtSendDto.getBccList());
+        }
+        
+        smm.setSubject(mailTxtSendDto.getSubject());
+        smm.setText(mailTxtSendDto.getContent());
 
         try {
-            mailSender.send(smm);                   // 메일 보내기
+            mailSender.send(smm);
             log.info("이메일 전송 성공!");
         } catch (MailException e) {
             log.error("[-] 이메일 전송중에 오류가 발생하였습니다 " + e.getMessage());
@@ -94,6 +103,16 @@ public class EmailService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
+            helper.setTo(mailHtmlSendDto.getEmailAddr());
+            
+            // CC와 BCC 설정
+            if (mailHtmlSendDto.getCcList() != null && mailHtmlSendDto.getCcList().length > 0) {
+                helper.setCc(mailHtmlSendDto.getCcList());
+            }
+            if (mailHtmlSendDto.getBccList() != null && mailHtmlSendDto.getBccList().length > 0) {
+                helper.setBcc(mailHtmlSendDto.getBccList());
+            }
+
             Context context = new Context();
             context.setVariable("subject", mailHtmlSendDto.getSubject());
             context.setVariable("message", mailHtmlSendDto.getContent());
@@ -107,7 +126,6 @@ public class EmailService {
             context.setVariable("logoImage", base64Image);
 
             String htmlContent = templateEngine.process("email-template", context);
-            helper.setTo(mailHtmlSendDto.getEmailAddr());
             helper.setSubject(mailHtmlSendDto.getSubject());
             helper.setText(htmlContent, true);
             helper.setFrom(emailSender);

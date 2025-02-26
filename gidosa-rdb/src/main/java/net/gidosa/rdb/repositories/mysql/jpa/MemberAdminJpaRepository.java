@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberAdminJpaRepository extends JpaRepository<MemberAdmin, Long>, PagingAndSortingRepository<MemberAdmin, Long> {
@@ -30,4 +31,9 @@ public interface MemberAdminJpaRepository extends JpaRepository<MemberAdmin, Lon
 
     @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction WHERE m.username = :username")
     Optional<MemberAdmin> findByUsernameWithConstruction(@Param("username") String username);
+
+    /**
+     * 특정 건설 현장의 활성화된 관리자 목록을 조회합니다.
+     */
+    List<MemberAdmin> findByConstructionIdAndIsActiveTrue(Long constructionId);
 }

@@ -21,11 +21,11 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class GeneralMemberService {
-
     private final MemberGeneralJpaRepository memberGeneralJpaRepository;
 //    private final ConstructionJpaRepository constructionJpaRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final AdminMemberService adminMemberService;
 
     @Transactional
     public MemberGeneral register(MemberRegisterDto registerDto, Construction construction) {
@@ -63,7 +63,7 @@ public class GeneralMemberService {
         return memberGeneralJpaRepository.findByNameAndEmailAndConstructionId(name, email, constructionId);
     }
 
-    public boolean processFindPassword(String username, String email) {
+    public boolean processFindPassword(String username, String email, Construction construction) {
         Optional<MemberGeneral> memberOpt = memberGeneralJpaRepository.findByUsernameAndEmail(username, email);
         
         if (memberOpt.isPresent()) {
@@ -71,8 +71,10 @@ public class GeneralMemberService {
             String tempPassword = PasswordUtil.generateTempPassword();
             member.setPassword(passwordEncoder.encode(tempPassword));
             memberGeneralJpaRepository.save(member);
-            
-            emailService.sendTempPassword(email, username, tempPassword);
+
+
+            String[] constructionManagerEmailCCList = adminMemberService.getAdminManagerMailList(construction.getId());
+            emailService.sendTempPassword(email, username, tempPassword, constructionManagerEmailCCList);
             return true;
         }
         return false;

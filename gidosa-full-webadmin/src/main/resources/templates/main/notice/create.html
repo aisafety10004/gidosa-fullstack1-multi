@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{${layout}}">
+<head>
+    <title>공지사항 등록</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2 class="mb-4">공지사항 등록</h2>
+
+        <form th:action="@{/notice/create}" method="post" 
+              enctype="multipart/form-data" onsubmit="return submitForm()">
+            <div class="mb-3">
+                <label for="title" class="form-label">제목</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="editor" class="form-label">내용</label>
+                <div id="editor"></div>
+                <input type="hidden" id="content" name="content">
+            </div>
+            <div class="mb-3">
+                <label for="files" class="form-label">첨부파일 (최대 5개)</label>
+                <input type="file" class="form-control" id="files" name="files" 
+                       multiple accept="*/*" onchange="validateFiles(this)">
+                <small class="text-muted">파일은 최대 5개까지 첨부 가능합니다.(Ctrl + 클릭 시 여러 파일 선택 가능)</small>
+            </div>
+            <button type="submit" class="btn btn-primary">등록</button>
+            <a href="/notice" class="btn btn-secondary">취소</a>
+        </form>
+    </div>
+
+    <th:block layout:fragment="script">
+    <script>
+        const editor = new toastui.Editor({
+            el: document.querySelector('#editor'),
+            height: '500px',
+            initialEditType: 'markdown',
+            previewStyle: 'vertical'
+        });
+
+        function submitForm() {
+            const content = editor.getMarkdown();
+            document.getElementById('content').value = content;
+            
+            // 파일 input의 값이 비어있으면 disabled 처리
+            const fileInput = document.getElementById('files');
+            if (fileInput.files.length === 0) {
+                fileInput.disabled = true;
+            }
+            
+            return true;
+        }
+
+        function validateFiles(input) {
+            if (input.files.length > 5) {
+                alert('첨부파일은 최대 5개까지만 가능합니다.');
+                input.value = '';
+                return false;
+            }
+            
+            // 선택된 각 파일의 크기가 0인지 확인
+            for (let i = 0; i < input.files.length; i++) {
+                if (input.files[i].size === 0) {
+                    alert('빈 파일은 업로드할 수 없습니다.');
+                    input.value = '';
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+    </th:block>
+</body>
+</html> 

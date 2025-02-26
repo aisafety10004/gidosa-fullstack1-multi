@@ -10,6 +10,13 @@
     <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
     <script src="/vendor/jquery/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Toast UI Editor CSS -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/theme/toastui-editor-dark.min.css" />
+    <!-- Toast UI Editor JS -->
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body class="">
 <div class="d-flex" id="wrapper">
@@ -22,6 +29,7 @@
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">건설공사현장 문의요청</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/construction/list">건설공사현장 관리</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/admin/list">건설공사현장 매니저 관리</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/notice">공지사항 관리</a>
 
             <!-- 서브메뉴가 있는 항목 예시 -->
             <div class="list-group-item list-group-item-light p-0">

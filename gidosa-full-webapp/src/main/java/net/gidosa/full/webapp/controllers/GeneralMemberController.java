@@ -124,7 +124,7 @@ public class GeneralMemberController {
         model.addAttribute("construction", construction);
         model.addAttribute("headerSubInvisible", true);
         
-        boolean sent = generalMemberService.processFindPassword(username, email);
+        boolean sent = generalMemberService.processFindPassword(username, email, construction);
         String message1 = sent
             ? "임시 비밀번호가 이메일로 발송되었습니다."
             : "일치하는 회원 정보를 찾을 수 없습니다.";

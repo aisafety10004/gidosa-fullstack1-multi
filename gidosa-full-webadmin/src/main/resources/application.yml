@@ -10,6 +10,10 @@ spring:
         - common
         -
 
+#file:
+#  upload:
+#    path: /path/to/upload/directory
+
 
 
 
