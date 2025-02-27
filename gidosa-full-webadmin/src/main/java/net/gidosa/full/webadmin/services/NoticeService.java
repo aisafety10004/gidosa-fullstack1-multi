@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.ArrayList;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 
 @Log4j2
 @Service
@@ -42,6 +43,9 @@ public class NoticeService {
 
     @Transactional
     public Notice createNotice(Notice notice, List<MultipartFile> files) {
+        if (notice.getNoticeDate() == null) {
+            notice.setNoticeDate(LocalDateTime.now());
+        }
         // 먼저 Notice를 저장하여 ID를 얻음
         notice = noticeRepository.save(notice);
         
@@ -75,6 +79,12 @@ public class NoticeService {
     public Notice updateNotice(Long id, Notice updatedNotice, List<MultipartFile> newFiles) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
+
+        if (updatedNotice.getNoticeDate() == null) {
+            updatedNotice.setNoticeDate(LocalDateTime.now());
+        } else {
+            notice.setNoticeDate(updatedNotice.getNoticeDate());
+         }
 
         notice.setTitle(updatedNotice.getTitle());
         notice.setContent(updatedNotice.getContent());

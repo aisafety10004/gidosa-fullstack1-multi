@@ -26,6 +26,7 @@
                 <tr>
                     <th>번호</th>
                     <th>제목</th>
+                    <th>공지일자</th>
                     <th>등록일</th>
                     <th>수정일</th>
                     <th>관리</th>
@@ -38,6 +39,7 @@
                         <a th:href="@{/notice/detail/{id}(id=${notice.id})}" 
                            th:text="${notice.title}"></a>
                     </td>
+                    <td th:text="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd HH:mm')}"></td>
                     <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                     <td th:text="${#temporals.format(notice.updatedAt, 'yyyy-MM-dd HH:mm')}"></td>
                     <td>

@@ -72,7 +72,6 @@ public class GeneralMemberService {
             member.setPassword(passwordEncoder.encode(tempPassword));
             memberGeneralJpaRepository.save(member);
 
-
             String[] constructionManagerEmailCCList = adminMemberService.getAdminManagerMailList(construction.getId());
             emailService.sendTempPassword(email, username, tempPassword, constructionManagerEmailCCList);
             return true;

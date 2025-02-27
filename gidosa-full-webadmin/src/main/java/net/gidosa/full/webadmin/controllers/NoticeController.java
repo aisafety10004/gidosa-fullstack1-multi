@@ -26,7 +26,7 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @GetMapping
-    public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    public String list(@PageableDefault(size = 10, sort = "noticeDate", direction = Sort.Direction.DESC) Pageable pageable,
                       Model model) {
         Page<Notice> noticePage = noticeService.getAllNotices(pageable);
         model.addAttribute("notices", noticePage);

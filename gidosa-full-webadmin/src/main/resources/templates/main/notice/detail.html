@@ -14,6 +14,8 @@
                 <h5 class="card-title" th:text="${notice.title}"></h5>
                 <div class="mb-3">
                     <small class="text-muted">
+                        공지일자: <span th:text="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd HH:mm')}"></span>
+                        <br>
                         등록일: <span th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                         | 수정일: <span th:text="${#temporals.format(notice.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
                     </small>

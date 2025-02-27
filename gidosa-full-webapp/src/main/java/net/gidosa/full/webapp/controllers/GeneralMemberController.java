@@ -6,6 +6,7 @@ import net.gidosa.full.webapp.models.dtos.MemberRegisterDto;
 import net.gidosa.full.webapp.services.GeneralConstructionService;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberGeneral;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -115,27 +116,20 @@ public class GeneralMemberController {
         return "pages/general/member/find-pw";
     }
 
-    @PostMapping("/find-pw")
-    public String findPw(String username, 
-                        String email, 
-                        @RequestParam(value = "constructionId") Long constructionId,
-                        Model model) {
+    @PostMapping(value = "/async-find-pw", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Map<String, Object> findPwApi(@RequestBody Map<String, Object> request) {
+        String username = (String) request.get("username");
+        String email = (String) request.get("email");
+        Long constructionId = Long.valueOf(request.get("constructionId").toString());
+        
         Construction construction = generalConstructionService.getConstruction(constructionId);
-        model.addAttribute("construction", construction);
-        model.addAttribute("headerSubInvisible", true);
-        
         boolean sent = generalMemberService.processFindPassword(username, email, construction);
-        String message1 = sent
-            ? "임시 비밀번호가 이메일로 발송되었습니다."
-            : "일치하는 회원 정보를 찾을 수 없습니다.";
-        String message2 = sent
-                ? "(이메일 주소 확인요망(스팸함 포함))"
-                : "";
         
-        model.addAttribute("sent", sent);
-        model.addAttribute("message1", message1);
-        model.addAttribute("message2", message2);
-        
-        return "pages/general/member/find-pw";
+        return Map.of(
+            "sent", sent,
+            "message1", sent ? "임시 비밀번호가 이메일로 발송되었습니다." : "일치하는 회원 정보를 찾을 수 없습니다.",
+            "message2", sent ? "(이메일 주소 확인요망(스팸함 포함))" : ""
+        );
     }
 }

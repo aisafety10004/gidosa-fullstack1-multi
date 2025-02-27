@@ -54,6 +54,9 @@ public class Notice {
     @JoinColumn(name = "file_attachment5_id")
     private FileAttachment fileAttachment5;
 
+    @Column(name = "notice_date")
+    private LocalDateTime noticeDate;
+
     // 첨부파일 목록 조회를 위한 편의 메서드
     @Transient
     public List<FileAttachment> getAttachments() {

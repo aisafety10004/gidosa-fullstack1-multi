@@ -17,6 +17,11 @@
                        th:value="${notice.title}" required>
             </div>
             <div class="mb-3">
+                <label for="noticeDate" class="form-label">공지일자</label>
+                <input type="datetime-local" class="form-control" id="noticeDate" name="noticeDate"
+                       th:value="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd''T''HH:mm')}" required>
+            </div>
+            <div class="mb-3">
                 <label for="editor" class="form-label">내용</label>
                 <div id="editor"></div>
                 <input type="hidden" id="content" name="content">
@@ -41,12 +46,12 @@
             </div>
 
             <!-- 새로운 첨부파일 추가 -->
-<!--            <div class="mb-3">-->
-<!--                <label for="files" class="form-label">새 첨부파일 추가 (최대 5개)</label>-->
-<!--                <input type="file" class="form-control" id="files" name="files" -->
-<!--                       multiple accept="*/*" onchange="validateFiles(this)">-->
-<!--                <small class="text-muted">파일은 최대 5개까지 첨부 가능합니다.(Ctrl + 클릭 시 여러 파일 선택 가능)</small>-->
-<!--            </div>-->
+            <div class="mb-3">
+                <label for="files" class="form-label">새 첨부파일 추가 (최대 5개)</label>
+                <input type="file" class="form-control" id="files" name="files"
+                       multiple accept="*/*" onchange="validateFiles(this)">
+                <small class="text-muted">파일은 최대 5개까지 첨부 가능합니다.(Ctrl + 클릭 시 여러 파일 선택 가능)</small>
+            </div>
 
             <button type="submit" class="btn btn-primary">수정</button>
             <a th:href="@{/notice/detail/{id}(id=${notice.id})}" class="btn btn-secondary">취소</a>

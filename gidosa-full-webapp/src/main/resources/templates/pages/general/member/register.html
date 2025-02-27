@@ -100,6 +100,10 @@
 
     <th:block layout:fragment="script">
         <script th:inline="javascript">
+            // 아이디 중복 확인 여부를 추적하는 변수 추가
+            let isUsernameChecked = false;
+            let lastCheckedUsername = '';
+
             function checkUsername() {
                 const username = document.getElementById('username').value;
                 const errorElement = document.getElementById('username-error');
@@ -108,11 +112,10 @@
                 if (!/^[A-Za-z0-9]{6,20}$/.test(username)) {
                     errorElement.textContent = '아이디는 영문, 숫자 조합 6-20자로 입력해주세요.';
                     errorElement.classList.remove('hidden');
+                    isUsernameChecked = false;
                     return;
                 }
 
-                // TODO: 서버에 중복 확인 요청
-                //fetch('/api/general/member/check-username?username=' + username)
                 fetch('/general/member/check-username?username=' + username)
                     .then(response => response.json())
                     .then(data => {
@@ -120,18 +123,44 @@
                             errorElement.textContent = '사용 가능한 아이디입니다.';
                             errorElement.classList.remove('text-red-600');
                             errorElement.classList.add('text-green-600');
+                            isUsernameChecked = true;
+                            lastCheckedUsername = username;
                         } else {
                             errorElement.textContent = '이미 사용중인 아이디입니다.';
                             errorElement.classList.add('text-red-600');
                             errorElement.classList.remove('text-green-600');
+                            isUsernameChecked = false;
                         }
                         errorElement.classList.remove('hidden');
+                    }).catch(e => {
+                        alert('중복확인 도중 에러가 발생하였습니다.\n\n관리자에게 문의하세요.');
+                        isUsernameChecked = false;
                     });
             }
+
+            // username input의 변경을 감지하여 중복확인 상태 초기화
+            // document.getElementById('username').addEventListener('input', function() {
+            //     if (this.value !== lastCheckedUsername) {
+            //         isUsernameChecked = false;
+
+            //         const errorElement = document.getElementById('username-error');
+            //         errorElement.textContent = '중복확인이 필요합니다.';
+            //         errorElement.classList.add('text-red-600');
+            //         errorElement.classList.remove('text-green-600');
+            //         errorElement.classList.remove('hidden');
+            //     }
+            // });
 
             document.getElementById('registerForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 
+                // 중복확인 여부 검사
+                const username = document.getElementById('username').value;
+                if (!isUsernameChecked || username !== lastCheckedUsername) {
+                    alert('아이디 중복확인을 해주세요.');
+                    return;
+                }
+
                 // 비밀번호 유효성 검사
                 const password = document.getElementById('password').value;
                 const passwordConfirm = document.getElementById('password-confirm').value;
