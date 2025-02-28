@@ -23,6 +23,56 @@
         <div class="list-group list-group-flush">
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/general/list">건설공사현장 회원관리</a>
         </div>
+        
+        <!-- 동적으로 관리 메뉴 표시 -->
+        <th:block th:if="${#authentication.principal.memberAdmin.construction.managementMenus != null}">
+            <!-- 공정관리 메뉴 -->
+            <div class="list-group-item list-group-item-light p-0" th:if="${#arrays.contains(#authentication.principal.memberAdmin.construction.managementMenus, '공정관리')}">
+                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#processManagementSubmenu" role="button">
+                    <span>공정관리</span>
+                    <i class="bi bi-chevron-down"></i>
+                </a>
+                <div class="collapse" id="processManagementSubmenu">
+                    <div class="list-group list-group-flush ps-4">
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/process/sub1">서브메뉴 1</a>
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/process/sub2">서브메뉴 2</a>
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/process/sub3">서브메뉴 3</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 품질관리 메뉴 -->
+            <div class="list-group-item list-group-item-light p-0" th:if="${#arrays.contains(#authentication.principal.memberAdmin.construction.managementMenus, '품질관리')}">
+                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#qualityManagementSubmenu" role="button">
+                    <span>품질관리</span>
+                    <i class="bi bi-chevron-down"></i>
+                </a>
+                <div class="collapse" id="qualityManagementSubmenu">
+                    <div class="list-group list-group-flush ps-4">
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/quality/sub1">서브메뉴 1</a>
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/quality/sub2">서브메뉴 2</a>
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/quality/sub3">서브메뉴 3</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 안전관리 메뉴 -->
+            <div class="list-group-item list-group-item-light p-0" th:if="${#arrays.contains(#authentication.principal.memberAdmin.construction.managementMenus, '안전관리')}">
+                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#safetyManagementSubmenu" role="button">
+                    <span>안전관리</span>
+                    <i class="bi bi-chevron-down"></i>
+                </a>
+                <div class="collapse" id="safetyManagementSubmenu">
+                    <div class="list-group list-group-flush ps-4">
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/safety/sub1">서브메뉴 1</a>
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/safety/sub2">서브메뉴 2</a>
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/safety/sub3">서브메뉴 3</a>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+        
+        <!-- 위험요인관리 메뉴 (기존 메뉴) -->
         <div class="list-group-item list-group-item-light p-0">
             <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#shortcutsSubmenu" role="button">
                 <span>위험요인관리</span>

@@ -25,7 +25,10 @@
             <tbody>
                 <tr th:each="construction : ${constructions}">
                     <td th:text="${construction.id}"></td>
-                    <td th:text="${construction.name}"></td>
+                    <td>
+                        <a th:href="@{/construction/detail/{id}(id=${construction.id})}" 
+                           th:text="${construction.name}"></a>
+                    </td>
                     <td th:text="${construction.location}"></td>
                     <td th:text="${#temporals.format(construction.startDate, 'yyyy-MM-dd')}"></td>
                     <td th:text="${#temporals.format(construction.endDate, 'yyyy-MM-dd')}"></td>

@@ -17,7 +17,7 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        MemberAdmin memberAdmin = memberAdminRepository.findByUsernameWithConstruction(username)
+        MemberAdmin memberAdmin = memberAdminRepository.findByUsernameWithConstructionAndManagementMenus(username)
                 .orElseThrow(() -> new UsernameNotFoundException("MemberAdmin User not found with username: " + username));
         
         return new PrincipalDetails(memberAdmin);

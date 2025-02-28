@@ -48,6 +48,9 @@ public class Construction {
     @OneToMany(mappedBy = "construction")
     private List<MemberAdmin> memberAdminList;
 
+    @ElementCollection
+    private List<String> managementMenus;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

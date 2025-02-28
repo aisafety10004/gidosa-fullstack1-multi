@@ -2,8 +2,8 @@ package net.gidosa.full.webadmin.controllers.admin;
 
 import groovy.util.logging.Log4j2;
 import lombok.RequiredArgsConstructor;
+import net.gidosa.full.webadmin.services.ConstructionService;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
-import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/construction")
 public class ConstructionController {
-    private final ConstructionJpaRepository constructionJpaRepository;
+    private final ConstructionService constructionService;
 
     @GetMapping("/list")
     public String list(@PageableDefault(size = 10) Pageable pageable, Model model) {
-        Page<Construction> constructions = constructionJpaRepository.findAllByOrderByIdDesc(pageable);
+        Page<Construction> constructions = constructionService.findAllConstructions(pageable);
         model.addAttribute("constructions", constructions);
         return "main/construction/list";
     }
@@ -33,14 +33,13 @@ public class ConstructionController {
 
     @PostMapping("/register")
     public String register(@ModelAttribute Construction construction) {
-        constructionJpaRepository.save(construction);
+        constructionService.saveConstruction(construction);
         return "redirect:/construction/list";
     }
 
     @GetMapping("/update/{id}")
     public String updateForm(@PathVariable Long id, Model model) {
-        Construction construction = constructionJpaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid construction Id:" + id));
+        Construction construction = constructionService.getConstructionWithManagementMenus(id);
         model.addAttribute("construction", construction);
         return "main/construction/update";
     }
@@ -48,13 +47,20 @@ public class ConstructionController {
     @PostMapping("/update/{id}")
     public String update(@PathVariable Long id, @ModelAttribute Construction construction) {
         construction.setId(id);
-        constructionJpaRepository.save(construction);
+        constructionService.saveConstruction(construction);
         return "redirect:/construction/list";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
-        constructionJpaRepository.deleteById(id);
+        constructionService.deleteConstruction(id);
         return "redirect:/construction/list";
+    }
+
+    @GetMapping("/detail/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+        Construction construction = constructionService.getConstructionWithManagementMenus(id);
+        model.addAttribute("construction", construction);
+        return "main/construction/detail";
     }
 }

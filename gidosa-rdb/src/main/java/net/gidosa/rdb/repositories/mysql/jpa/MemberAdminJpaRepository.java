@@ -32,6 +32,9 @@ public interface MemberAdminJpaRepository extends JpaRepository<MemberAdmin, Lon
     @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction WHERE m.username = :username")
     Optional<MemberAdmin> findByUsernameWithConstruction(@Param("username") String username);
 
+    @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction c LEFT JOIN FETCH c.managementMenus WHERE m.username = :username")
+    Optional<MemberAdmin> findByUsernameWithConstructionAndManagementMenus(@Param("username") String username);
+
     /**
      * 특정 건설 현장의 활성화된 관리자 목록을 조회합니다.
      */
