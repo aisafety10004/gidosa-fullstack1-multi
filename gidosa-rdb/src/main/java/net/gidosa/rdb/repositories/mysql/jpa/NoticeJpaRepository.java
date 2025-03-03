@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface NoticeJpaRepository extends JpaRepository<Notice, Long> {
@@ -15,6 +16,14 @@ public interface NoticeJpaRepository extends JpaRepository<Notice, Long> {
     
     // ID 기준 내림차순 정렬된 페이징 처리된 공지사항 목록 조회
     Page<Notice> findAllByOrderByIdDesc(Pageable pageable);
+    
+    // 특정 건설현장 ID에 해당하는 공지사항 또는 모든 공지사항(construction_id가 null인 경우) 조회
+    @Query("SELECT n FROM Notice n WHERE n.construction.id = :constructionId OR n.construction IS NULL ORDER BY n.id DESC")
+    Page<Notice> findByConstructionIdOrConstructionIsNullOrderByIdDesc(@Param("constructionId") Long constructionId, Pageable pageable);
+    
+    // construction_id가 null인 공지사항만 조회 (모든 사용자에게 보이는 공지사항)
+    @Query("SELECT n FROM Notice n WHERE n.construction IS NULL ORDER BY n.id DESC")
+    Page<Notice> findByConstructionIsNullOrderByIdDesc(Pageable pageable);
 
     @Query("SELECT n FROM Notice n " +
            "LEFT JOIN FETCH n.fileAttachment1 " +
@@ -25,4 +34,27 @@ public interface NoticeJpaRepository extends JpaRepository<Notice, Long> {
            "WHERE n.id = :id")
     Optional<Notice> findByIdWithAttachments(@Param("id") Long id);
 
+    // 특정 공지사항 조회 - 첨부파일과 건설현장 정보 모두 포함
+    @Query("SELECT n FROM Notice n " +
+           "LEFT JOIN FETCH n.construction " +
+           "LEFT JOIN FETCH n.fileAttachment1 " +
+           "LEFT JOIN FETCH n.fileAttachment2 " +
+           "LEFT JOIN FETCH n.fileAttachment3 " +
+           "LEFT JOIN FETCH n.fileAttachment4 " +
+           "LEFT JOIN FETCH n.fileAttachment5 " +
+           "WHERE n.id = :id")
+    Optional<Notice> findByIdWithAttachmentsAndConstruction(@Param("id") Long id);
+
+    // 특정 건설현장 ID에 해당하는 공지사항 또는 모든 공지사항(construction_id가 null인 경우) 조회 - Construction 정보 포함
+    @Query("SELECT n FROM Notice n LEFT JOIN FETCH n.construction WHERE n.construction.id = :constructionId OR n.construction IS NULL ORDER BY n.id DESC")
+    Page<Notice> findByConstructionIdOrConstructionIsNullWithConstructionOrderByIdDesc(@Param("constructionId") Long constructionId, Pageable pageable);
+    
+    // 모든 공지사항 조회 - Construction 정보 포함
+    @Query("SELECT n FROM Notice n LEFT JOIN FETCH n.construction ORDER BY n.id DESC")
+    List<Notice> findAllWithConstructionOrderByIdDesc();
+    
+    // ID 기준 내림차순 정렬된 페이징 처리된 공지사항 목록 조회 - Construction 정보 포함
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction",
+           countQuery = "SELECT COUNT(n) FROM Notice n")
+    Page<Notice> findAllWithConstructionOrderByIdDesc(Pageable pageable);
 } 

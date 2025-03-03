@@ -19,6 +19,33 @@ ENGINE=InnoDB
 -- ^;
 ;
 
+-- -- 관리자 메뉴 테이블
+-- CREATE TABLE IF NOT EXISTS admin_menu (
+--     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+--     name VARCHAR(100) NOT NULL,
+--     url VARCHAR(255) NOT NULL,
+--     icon VARCHAR(100),
+--     parent_id BIGINT,
+--     sort_order INT DEFAULT 0,
+--     is_active BOOLEAN DEFAULT TRUE,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--     FOREIGN KEY (parent_id) REFERENCES admin_menu(id) ON DELETE CASCADE
+-- );
+
+-- -- 관리자 권한 테이블
+-- CREATE TABLE IF NOT EXISTS admin_role (
+--     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+--     name VARCHAR(100) NOT NULL,
+--     description VARCHAR(255),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+-- );
+
+-- -- Notice 테이블에 construction_id 컬럼 추가
+-- ALTER TABLE notice ADD COLUMN construction_id BIGINT NULL;
+-- ALTER TABLE notice ADD CONSTRAINT fk_notice_construction FOREIGN KEY (construction_id) REFERENCES construction(id);
+
 
 
 

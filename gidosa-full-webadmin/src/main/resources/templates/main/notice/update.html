@@ -21,6 +21,28 @@
                 <input type="datetime-local" class="form-control" id="noticeDate" name="noticeDate"
                        th:value="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd''T''HH:mm')}" required>
             </div>
+            
+            <!-- 관리자인 경우 건설현장 선택 드롭다운 표시 -->
+            <div class="mb-3" th:if="${isAdmin}">
+                <label for="constructionId" class="form-label">건설현장</label>
+                <select class="form-select" id="constructionId" name="constructionId">
+                    <option value="">전체 공지사항 (모든 사용자에게 표시)</option>
+                    <option th:each="construction : ${constructions}"
+                            th:value="${construction.id}"
+                            th:text="${construction.name + ' (' + construction.location + ')'}"
+                            th:selected="${notice.construction != null && notice.construction.id == construction.id}">
+                    </option>
+                </select>
+                <small class="text-muted">건설현장을 선택하지 않으면 모든 사용자에게 공지사항이 표시됩니다.</small>
+            </div>
+            
+            <!-- 매니저인 경우 자신의 건설현장 정보 표시 -->
+            <div class="mb-3" th:if="${!isAdmin && notice.construction != null}">
+                <label class="form-label">건설현장</label>
+                <p class="form-control-static" th:text="${notice.construction.name + ' (' + notice.construction.location + ')'}"></p>
+                <small class="text-muted">해당 건설현장에 속한 사용자들에게만 공지사항이 표시됩니다.</small>
+            </div>
+            
             <div class="mb-3">
                 <label for="editor" class="form-label">내용</label>
                 <div id="editor"></div>
@@ -32,15 +54,18 @@
                 <label class="form-label">기존 첨부파일</label>
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between align-items-center" 
-                        th:each="attachment : ${notice.attachments}">
+                        th:each="attachment, status : ${notice.attachments}">
                         <span>
                             <a th:href="@{/common/file/download/{id}(id=${attachment.id})}"
                                th:text="${attachment.originalFilename}"></a>
                             (<span th:text="${#numbers.formatDecimal(attachment.fileSize/1024, 0, 'COMMA', 2, 'POINT')}">
                             </span> KB)
                         </span>
-                        <button type="button" class="btn btn-danger btn-sm"
-                                th:onclick="'deleteAttachment(' + ${attachment.id} + ')'">삭제</button>
+                        <form th:action="@{/notice/attachment/{noticeId}/remove/{attachmentIndex}(noticeId=${notice.id}, attachmentIndex=${status.index + 1})}" 
+                              method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('첨부파일을 삭제하시겠습니까?');">삭제</button>
+                        </form>
                     </li>
                 </ul>
             </div>
@@ -92,37 +117,6 @@
                 return false;
             }
             return true;
-        }
-
-        function deleteAttachment(attachmentId) {
-            if (confirm('첨부파일을 삭제하시겠습니까?')) {
-                const noticeId = /*[[${notice.id}]]*/ '';
-                const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-
-                fetch(`/notice/attachment/${noticeId}/${attachmentId}/delete`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        [csrfHeader]: csrfToken
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.text().then(text => {
-                            throw new Error(text || '첨부파일 삭제 중 오류가 발생했습니다.');
-                        });
-                    }
-                    return response;
-                })
-                .then(() => {
-                    location.reload();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert(error.message || '첨부파일 삭제 중 오류가 발생했습니다.');
-                });
-            }
         }
     </script>
     </th:block>

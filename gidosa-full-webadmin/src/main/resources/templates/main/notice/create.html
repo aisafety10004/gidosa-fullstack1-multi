@@ -19,6 +19,28 @@
                 <label for="noticeDate" class="form-label">공지일자</label>
                 <input type="datetime-local" class="form-control" id="noticeDate" name="noticeDate" required>
             </div>
+            
+            <!-- 관리자인 경우 건설현장 선택 드롭다운 표시 -->
+            <div class="mb-3" th:if="${isAdmin}">
+                <label for="constructionId" class="form-label">건설현장</label>
+                <select class="form-select" id="constructionId" name="constructionId">
+                    <option value="">전체 공지사항 (모든 사용자에게 표시)</option>
+                    <option th:each="construction : ${constructions}"
+                            th:value="${construction.id}"
+                            th:text="${construction.name + ' (' + construction.location + ')'}">
+                    </option>
+                </select>
+                <small class="text-muted">건설현장을 선택하지 않으면 모든 사용자에게 공지사항이 표시됩니다.</small>
+            </div>
+            
+            <!-- 매니저인 경우 자신의 건설현장 정보 표시 -->
+            <div class="mb-3" th:if="${!isAdmin && construction != null}">
+                <label class="form-label">건설현장</label>
+                <p class="form-control-static" th:text="${construction.name + ' (' + construction.location + ')'}"></p>
+                <input type="hidden" name="constructionId" th:value="${construction.id}">
+                <small class="text-muted">해당 건설현장에 속한 사용자들에게만 공지사항이 표시됩니다.</small>
+            </div>
+            
             <div class="mb-3">
                 <label for="editor" class="form-label">내용</label>
                 <div id="editor"></div>

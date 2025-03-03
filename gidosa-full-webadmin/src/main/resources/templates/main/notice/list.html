@@ -26,9 +26,9 @@
                 <tr>
                     <th>번호</th>
                     <th>제목</th>
+                    <th>건설현장</th>
                     <th>공지일자</th>
                     <th>등록일</th>
-                    <th>수정일</th>
                     <th>관리</th>
                 </tr>
             </thead>
@@ -39,9 +39,12 @@
                         <a th:href="@{/notice/detail/{id}(id=${notice.id})}" 
                            th:text="${notice.title}"></a>
                     </td>
+                    <td>
+                        <span th:if="${notice.construction != null}" th:text="${notice.construction.name}"></span>
+                        <span th:if="${notice.construction == null}" class="badge bg-primary">전체</span>
+                    </td>
                     <td th:text="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd HH:mm')}"></td>
                     <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
-                    <td th:text="${#temporals.format(notice.updatedAt, 'yyyy-MM-dd HH:mm')}"></td>
                     <td>
                         <a th:href="@{/notice/update/{id}(id=${notice.id})}" 
                            class="btn btn-sm btn-warning">수정</a>
@@ -63,15 +66,10 @@
                        th:unless="${!notices.hasPrevious()}">이전</a>
                     <span class="page-link" th:if="${!notices.hasPrevious()}">이전</span>
                 </li>
-
-                <li class="page-item" 
-                    th:each="pageNumber : ${#numbers.sequence(0, notices.totalPages - 1)}"
-                    th:classappend="${pageNumber == notices.number} ? active">
-                    <a class="page-link" 
-                       th:href="@{/notice(page=${pageNumber})}"
-                       th:text="${pageNumber + 1}"></a>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, notices.totalPages - 1)}"
+                    th:classappend="${notices.number == i} ? active">
+                    <a class="page-link" th:href="@{/notice(page=${i})}" th:text="${i + 1}"></a>
                 </li>
-
                 <li class="page-item" th:classappend="${!notices.hasNext()} ? disabled">
                     <a class="page-link" th:href="@{/notice(page=${notices.number + 1})}"
                        th:unless="${!notices.hasNext()}">다음</a>

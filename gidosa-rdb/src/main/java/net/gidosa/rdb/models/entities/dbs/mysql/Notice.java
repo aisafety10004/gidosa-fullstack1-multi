@@ -56,6 +56,10 @@ public class Notice {
 
     @Column(name = "notice_date")
     private LocalDateTime noticeDate;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "construction_id")
+    private Construction construction;
 
     // 첨부파일 목록 조회를 위한 편의 메서드
     @Transient
