@@ -43,4 +43,6 @@ storages/
 .cursorrules
 .windsurfrules
 
+**/src/main/generated/
+
 

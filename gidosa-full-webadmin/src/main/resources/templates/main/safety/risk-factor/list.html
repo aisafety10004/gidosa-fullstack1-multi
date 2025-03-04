@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/manager}">
+<head>
+    <title>위험요인 관리</title>
+    <style>
+        .search-form {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .search-form .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .search-form .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .search-form .btn-group .btn {
+            margin: 0 5px;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-PENDING {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+        
+        .status-IN_PROGRESS {
+            background-color: #cfe2ff;
+            color: #0d6efd;
+        }
+        
+        .status-COMPLETED {
+            background-color: #d1e7dd;
+            color: #198754;
+        }
+        
+        .status-RISK_IDENTIFIED {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+        
+        .risk-LOW {
+            background-color: #d1e7dd;
+            color: #198754;
+        }
+        
+        .risk-MEDIUM {
+            background-color: #fff3cd;
+            color: #ffc107;
+        }
+        
+        .risk-HIGH {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+        
+        .risk-CRITICAL {
+            background-color: #842029;
+            color: #ffffff;
+        }
+        
+        /* 반응형 스타일 */
+        @media (max-width: 768px) {
+            .search-form .row {
+                flex-direction: column;
+            }
+            
+            .search-form .col-md-6,
+            .search-form .col-md-3 {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">사업장 유해 위험요인 관리</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="/main">홈</a></li>
+            <li class="breadcrumb-item active">공정관리 / 위험요인 관리</li>
+        </ol>
+        
+        <!-- 검색 폼 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-search me-1"></i>
+                검색 조건
+            </div>
+            <div class="card-body">
+                <form th:action="@{/safety/risk-factor/list}" method="get" class="search-form">
+                    <div class="row">
+                        <!-- <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">현장명</label>
+                            <input type="text" class="form-control" id="name" name="name" th:value="${searchDto?.name}" placeholder="현장명을 입력하세요">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">기간 선택</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control" name="startDate" th:value="${searchDto?.startDate}" placeholder="시작일">
+                                <span class="input-group-text">~</span>
+                                <input type="date" class="form-control" name="endDate" th:value="${searchDto?.endDate}" placeholder="종료일">
+                            </div>
+                        </div> -->
+                        <div class="col-md-12 mb-3">
+                            <label for="name" class="form-label">현장명</label>
+                            <input type="text" class="form-control" id="name" name="name" th:value="${searchDto?.name}" placeholder="현장명을 입력하세요">
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">기간 선택</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control" name="startDate" th:value="${searchDto?.startDate}" placeholder="시작일">
+                                <span class="input-group-text">~</span>
+                                <input type="date" class="form-control" name="endDate" th:value="${searchDto?.endDate}" placeholder="종료일">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> 검색
+                                </button>
+                                <a th:href="@{/safety/risk-factor/list}" class="btn btn-secondary">
+                                    <i class="fas fa-redo"></i> 초기화
+                                </a>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-12">
+                            <div class="btn-group">
+                                <a th:href="@{/safety/risk-factor/register}" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> 신규등록
+                                </a>
+                            </div>
+                        </div> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 알림 메시지 -->
+        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${message}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- 신규등록 버튼 -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="btn-group" style="width: 100%;">
+                    <a th:href="@{/safety/risk-factor/register}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> 신규등록
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 탭 메뉴 -->
+        <!-- <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" th:href="@{/safety/risk-factor/list}">전체</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/safety/risk-factor/list(status=PENDING)}">대기</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/safety/risk-factor/list(status=IN_PROGRESS)}">진행</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/safety/risk-factor/list(status=COMPLETED)}">완료</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/safety/risk-factor/list(status=RISK_IDENTIFIED)}">위험요인</a>
+            </li>
+        </ul> -->
+
+        <!-- 위험요인 목록 -->
+        <div class="card mb-4">
+            <!-- <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                위험요인 목록
+            </div> -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>번호</th>
+                                <th>현장명</th>
+                                <th>위치</th>
+                                <th>기간</th>
+                                <th>상태</th>
+                                <th>위험도</th>
+                                <th>관리</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${riskFactors.empty}">
+                                <td colspan="7" class="text-center">등록된 위험요인이 없습니다.</td>
+                            </tr>
+                            <tr th:each="riskFactor : ${riskFactors}">
+                                <td th:text="${riskFactor.id}"></td>
+                                <td>
+                                    <a th:href="@{/safety/risk-factor/detail/{id}(id=${riskFactor.id})}" 
+                                       th:text="${riskFactor.name}"></a>
+                                </td>
+                                <td th:text="${riskFactor.locationDetail}"></td>
+                                <td>
+                                    <span th:text="${#temporals.format(riskFactor.startDate, 'yyyy-MM-dd')}"></span>
+                                    ~
+                                    <span th:text="${#temporals.format(riskFactor.endDate, 'yyyy-MM-dd')}"></span>
+                                </td>
+                                <td>
+                                    <span th:class="'status-badge status-' + ${riskFactor.status}"
+                                          th:text="${riskFactor.status.displayName}"></span>
+                                </td>
+                                <td>
+                                    <span th:if="${riskFactor.riskLevel != null}" 
+                                          th:class="'status-badge risk-' + ${riskFactor.riskLevel}"
+                                          th:text="${riskFactor.riskLevel.displayName}"></span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a th:href="@{/safety/risk-factor/detail/{id}(id=${riskFactor.id})}" 
+                                           class="btn btn-outline-primary">상세</a>
+                                        <a th:href="@{/safety/risk-factor/update/{id}(id=${riskFactor.id})}" 
+                                           class="btn btn-outline-warning">수정</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- 페이징 -->
+                <nav th:if="${!riskFactors.empty}" aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${riskFactors.first} ? 'disabled'">
+                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=0, name=${searchDto?.name}, startDate=${searchDto?.startDate}, endDate=${searchDto?.endDate}, status=${searchDto?.status})}" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${riskFactors.first} ? 'disabled'">
+                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${riskFactors.number - 1}, name=${searchDto?.name}, startDate=${searchDto?.startDate}, endDate=${searchDto?.endDate}, status=${searchDto?.status})}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, riskFactors.totalPages - 1)}" 
+                            th:if="${i >= riskFactors.number - 2 and i <= riskFactors.number + 2}"
+                            th:classappend="${i == riskFactors.number} ? 'active'">
+                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${i}, name=${searchDto?.name}, startDate=${searchDto?.startDate}, endDate=${searchDto?.endDate}, status=${searchDto?.status})}" th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${riskFactors.last} ? 'disabled'">
+                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${riskFactors.number + 1}, name=${searchDto?.name}, startDate=${searchDto?.startDate}, endDate=${searchDto?.endDate}, status=${searchDto?.status})}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${riskFactors.last} ? 'disabled'">
+                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${riskFactors.totalPages - 1}, name=${searchDto?.name}, startDate=${searchDto?.startDate}, endDate=${searchDto?.endDate}, status=${searchDto?.status})}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html> 

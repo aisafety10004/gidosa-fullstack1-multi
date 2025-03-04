@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/manager}">
+<head>
+    <title>위험요인 상세</title>
+    <style>
+        .detail-section {
+            margin-bottom: 30px;
+        }
+        
+        .detail-section h5 {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        
+        .detail-item {
+            margin-bottom: 15px;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .detail-value {
+            color: #212529;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-PENDING {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+        
+        .status-IN_PROGRESS {
+            background-color: #cfe2ff;
+            color: #0d6efd;
+        }
+        
+        .status-COMPLETED {
+            background-color: #d1e7dd;
+            color: #198754;
+        }
+        
+        .status-RISK_IDENTIFIED {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+        
+        .risk-LOW {
+            background-color: #d1e7dd;
+            color: #198754;
+        }
+        
+        .risk-MEDIUM {
+            background-color: #fff3cd;
+            color: #ffc107;
+        }
+        
+        .risk-HIGH {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+        
+        .risk-CRITICAL {
+            background-color: #842029;
+            color: #ffffff;
+        }
+        
+        /* 반응형 스타일 */
+        @media (max-width: 768px) {
+            .detail-section .row {
+                flex-direction: column;
+            }
+            
+            .detail-section .col-md-6 {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">위험요인 상세</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="/main">홈</a></li>
+            <li class="breadcrumb-item"><a href="/safety/risk-factor/list">위험요인 관리</a></li>
+            <li class="breadcrumb-item active">위험요인 상세</li>
+        </ol>
+        
+        <!-- 알림 메시지 -->
+        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${message}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-info-circle me-1"></i>
+                    위험요인 상세 정보
+                </div>
+                <div>
+                    <a th:href="@{/safety/risk-factor/update/{id}(id=${riskFactor.id})}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit"></i> 수정
+                    </a>
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="fas fa-trash"></i> 삭제
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- 기본 정보 섹션 -->
+                <div class="detail-section">
+                    <h5>기본 정보</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">현장명</div>
+                                <div class="detail-value" th:text="${riskFactor.name}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">위치 상세</div>
+                                <div class="detail-value" th:text="${riskFactor.locationDetail ?: '-'}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">시작일</div>
+                                <div class="detail-value" th:text="${#temporals.format(riskFactor.startDate, 'yyyy-MM-dd')}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">종료일</div>
+                                <div class="detail-value" th:text="${#temporals.format(riskFactor.endDate, 'yyyy-MM-dd')}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 상태 및 위험도 섹션 -->
+                <div class="detail-section">
+                    <h5>상태 및 위험도</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">상태</div>
+                                <div class="detail-value">
+                                    <span th:class="'status-badge status-' + ${riskFactor.status}"
+                                          th:text="${riskFactor.status.displayName}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">위험도</div>
+                                <div class="detail-value">
+                                    <span th:if="${riskFactor.riskLevel != null}" 
+                                          th:class="'status-badge risk-' + ${riskFactor.riskLevel}"
+                                          th:text="${riskFactor.riskLevel.displayName}"></span>
+                                    <span th:unless="${riskFactor.riskLevel != null}">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 상세 설명 섹션 -->
+                <div class="detail-section">
+                    <h5>상세 설명</h5>
+                    <div class="detail-item">
+                        <div class="detail-label">설명</div>
+                        <div class="detail-value">
+                            <p th:if="${riskFactor.description}" th:text="${riskFactor.description}" style="white-space: pre-line;"></p>
+                            <p th:unless="${riskFactor.description}">-</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 등록 정보 섹션 -->
+                <div class="detail-section">
+                    <h5>등록 정보</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">등록일</div>
+                                <div class="detail-value" th:text="${#temporals.format(riskFactor.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">최종 수정일</div>
+                                <div class="detail-value" th:text="${#temporals.format(riskFactor.updatedAt, 'yyyy-MM-dd HH:mm')}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 버튼 그룹 -->
+                <div class="d-flex justify-content-center mt-4">
+                    <a th:href="@{/safety/risk-factor/list}" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> 목록으로
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 삭제 확인 모달 -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">위험요인 삭제</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>정말로 이 위험요인을 삭제하시겠습니까?</p>
+                    <p>이 작업은 되돌릴 수 없습니다.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <form th:action="@{/safety/risk-factor/delete/{id}(id=${riskFactor.id})}" method="post">
+                        <button type="submit" class="btn btn-danger">삭제</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html> 
