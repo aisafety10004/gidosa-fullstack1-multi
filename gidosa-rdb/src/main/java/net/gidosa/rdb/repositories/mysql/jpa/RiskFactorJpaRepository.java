@@ -15,32 +15,29 @@ public interface RiskFactorJpaRepository extends JpaRepository<RiskFactor, Long>
     Page<RiskFactor> findByConstructionId(Long constructionId, Pageable pageable);
     
     // Find risk factors by name containing the search term
-    @Query("SELECT rf FROM RiskFactor rf WHERE rf.construction.id = :constructionId AND rf.name LIKE CONCAT('%', :name, '%')")
+    @Query("SELECT rf FROM RiskFactor rf WHERE rf.construction.id = :constructionId AND rf.siteName LIKE CONCAT('%', :siteName, '%')")
     Page<RiskFactor> findByConstructionIdAndNameContaining(
             @Param("constructionId") Long constructionId, 
-            @Param("name") String name, 
+            @Param("siteName") String siteName,
             Pageable pageable);
     
-    // Find risk factors by date range
+    // Find risk factors by execution date range
     @Query("SELECT rf FROM RiskFactor rf WHERE rf.construction.id = :constructionId " +
-           "AND (rf.startDate <= :endDate AND rf.endDate >= :startDate)")
-    Page<RiskFactor> findByConstructionIdAndDateRange(
+           "AND (rf.executionDate >= :executionDateStart AND rf.executionDate <= :executionDateEnd)")
+    Page<RiskFactor> findByConstructionIdAndExecutionDateRange(
             @Param("constructionId") Long constructionId,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
+            @Param("executionDateStart") LocalDate executionDateStart,
+            @Param("executionDateEnd") LocalDate executionDateEnd,
             Pageable pageable);
     
-    // Find risk factors by name and date range
+    // Find risk factors by name and execution date range
     @Query("SELECT rf FROM RiskFactor rf WHERE rf.construction.id = :constructionId " +
-           "AND rf.name LIKE CONCAT('%', :name, '%') " +
-           "AND (rf.startDate <= :endDate AND rf.endDate >= :startDate)")
-    Page<RiskFactor> findByConstructionIdAndNameContainingAndDateRange(
+           "AND rf.siteName LIKE CONCAT('%', :siteName, '%') " +
+           "AND (rf.executionDate >= :executionDateStart AND rf.executionDate <= :executionDateEnd)")
+    Page<RiskFactor> findByConstructionIdAndNameContainingAndExecutionDateRange(
             @Param("constructionId") Long constructionId,
-            @Param("name") String name,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
+            @Param("siteName") String siteName,
+            @Param("executionDateStart") LocalDate executionDateStart,
+            @Param("executionDateEnd") LocalDate executionDateEnd,
             Pageable pageable);
-    
-    // Find risk factors by status
-    Page<RiskFactor> findByConstructionIdAndStatus(Long constructionId, RiskFactor.RiskStatus status, Pageable pageable);
-} 
+}

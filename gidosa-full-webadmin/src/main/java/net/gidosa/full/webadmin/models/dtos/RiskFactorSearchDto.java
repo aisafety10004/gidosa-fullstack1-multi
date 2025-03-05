@@ -15,13 +15,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class RiskFactorSearchDto {
     
-    private String name;
+    private String siteName;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startDate;
+    private LocalDate executionDateStart;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate endDate;
-    
-    private RiskFactor.RiskStatus status;
+    private LocalDate executionDateEnd;
 } 

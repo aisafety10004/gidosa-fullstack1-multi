@@ -110,8 +110,8 @@
                 <form th:action="@{/safety/risk-factor/list}" method="get" class="search-form">
                     <div class="row">
                         <!-- <div class="col-md-6 mb-3">
-                            <label for="name" class="form-label">현장명</label>
-                            <input type="text" class="form-control" id="name" name="name" th:value="${searchDto?.name}" placeholder="현장명을 입력하세요">
+                            <label for="siteName" class="form-label">현장명</label>
+                            <input type="text" class="form-control" id="name" name="siteName" th:value="${searchDto?.siteName}" placeholder="현장명을 입력하세요">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">기간 선택</label>
@@ -123,14 +123,14 @@
                         </div> -->
                         <div class="col-md-12 mb-3">
                             <label for="name" class="form-label">현장명</label>
-                            <input type="text" class="form-control" id="name" name="name" th:value="${searchDto?.name}" placeholder="현장명을 입력하세요">
+                            <input type="text" class="form-control" id="name" name="siteName" th:value="${searchDto?.siteName}" placeholder="현장명을 입력하세요">
                         </div>
                         <div class="col-md-12 mb-3">
-                            <label class="form-label">기간 선택</label>
+                            <label class="form-label">실시일자 검색</label>
                             <div class="input-group">
-                                <input type="date" class="form-control" name="startDate" th:value="${searchDto?.startDate}" placeholder="시작일">
+                                <input type="date" class="form-control" name="executionDateStart" th:value="${searchDto?.executionDateStart}" placeholder="시작일">
                                 <span class="input-group-text">~</span>
-                                <input type="date" class="form-control" name="endDate" th:value="${searchDto?.endDate}" placeholder="종료일">
+                                <input type="date" class="form-control" name="executionDateEnd" th:value="${searchDto?.executionDateEnd}" placeholder="종료일">
                             </div>
                         </div>
                     </div>
@@ -211,10 +211,7 @@
                             <tr>
                                 <th>번호</th>
                                 <th>현장명</th>
-                                <th>위치</th>
-                                <th>기간</th>
-                                <th>상태</th>
-                                <th>위험도</th>
+                                <th>실시일자</th>
                                 <th>관리</th>
                             </tr>
                         </thead>
@@ -226,30 +223,18 @@
                                 <td th:text="${riskFactor.id}"></td>
                                 <td>
                                     <a th:href="@{/safety/risk-factor/detail/{id}(id=${riskFactor.id})}" 
-                                       th:text="${riskFactor.name}"></a>
-                                </td>
-                                <td th:text="${riskFactor.locationDetail}"></td>
-                                <td>
-                                    <span th:text="${#temporals.format(riskFactor.startDate, 'yyyy-MM-dd')}"></span>
-                                    ~
-                                    <span th:text="${#temporals.format(riskFactor.endDate, 'yyyy-MM-dd')}"></span>
+                                       th:text="${riskFactor.siteName}"></a>
                                 </td>
                                 <td>
-                                    <span th:class="'status-badge status-' + ${riskFactor.status}"
-                                          th:text="${riskFactor.status.displayName}"></span>
+                                    <span th:text="${#temporals.format(riskFactor.executionDate, 'yyyy-MM-dd')}"></span>
                                 </td>
                                 <td>
-                                    <span th:if="${riskFactor.riskLevel != null}" 
-                                          th:class="'status-badge risk-' + ${riskFactor.riskLevel}"
-                                          th:text="${riskFactor.riskLevel.displayName}"></span>
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
+                                    <!-- <div class="btn-group btn-group-sm">
                                         <a th:href="@{/safety/risk-factor/detail/{id}(id=${riskFactor.id})}" 
                                            class="btn btn-outline-primary">상세</a>
                                         <a th:href="@{/safety/risk-factor/update/{id}(id=${riskFactor.id})}" 
                                            class="btn btn-outline-warning">수정</a>
-                                    </div>
+                                    </div> -->
                                 </td>
                             </tr>
                         </tbody>
@@ -260,27 +245,27 @@
                 <nav th:if="${!riskFactors.empty}" aria-label="Page navigation">
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:classappend="${riskFactors.first} ? 'disabled'">
-                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=0, name=${searchDto?.name}, startDate=${searchDto?.startDate}, endDate=${searchDto?.endDate}, status=${searchDto?.status})}" aria-label="First">
+                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=0, name=${searchDto?.siteName}, executionDateStart=${searchDto?.executionDateStart}, executionDateEnd=${searchDto?.executionDateEnd})}" aria-label="First">
                                 <span aria-hidden="true">&laquo;&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item" th:classappend="${riskFactors.first} ? 'disabled'">
-                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${riskFactors.number - 1}, name=${searchDto?.name}, startDate=${searchDto?.startDate}, endDate=${searchDto?.endDate}, status=${searchDto?.status})}" aria-label="Previous">
+                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${riskFactors.number - 1}, name=${searchDto?.siteName}, executionDateStart=${searchDto?.executionDateStart}, executionDateEnd=${searchDto?.executionDateEnd})}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, riskFactors.totalPages - 1)}" 
                             th:if="${i >= riskFactors.number - 2 and i <= riskFactors.number + 2}"
                             th:classappend="${i == riskFactors.number} ? 'active'">
-                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${i}, name=${searchDto?.name}, startDate=${searchDto?.startDate}, endDate=${searchDto?.endDate}, status=${searchDto?.status})}" th:text="${i + 1}"></a>
+                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${i}, name=${searchDto?.siteName}, executionDateStart=${searchDto?.executionDateStart}, executionDateEnd=${searchDto?.executionDateEnd})}" th:text="${i + 1}"></a>
                         </li>
                         <li class="page-item" th:classappend="${riskFactors.last} ? 'disabled'">
-                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${riskFactors.number + 1}, name=${searchDto?.name}, startDate=${searchDto?.startDate}, endDate=${searchDto?.endDate}, status=${searchDto?.status})}" aria-label="Next">
+                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${riskFactors.number + 1}, name=${searchDto?.siteName}, executionDateStart=${searchDto?.executionDateStart}, executionDateEnd=${searchDto?.executionDateEnd})}" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
                         <li class="page-item" th:classappend="${riskFactors.last} ? 'disabled'">
-                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${riskFactors.totalPages - 1}, name=${searchDto?.name}, startDate=${searchDto?.startDate}, endDate=${searchDto?.endDate}, status=${searchDto?.status})}" aria-label="Last">
+                            <a class="page-link" th:href="@{/safety/risk-factor/list(page=${riskFactors.totalPages - 1}, name=${searchDto?.siteName}, executionDateStart=${searchDto?.executionDateStart}, executionDateEnd=${searchDto?.executionDateEnd})}" aria-label="Last">
                                 <span aria-hidden="true">&raquo;&raquo;</span>
                             </a>
                         </li>

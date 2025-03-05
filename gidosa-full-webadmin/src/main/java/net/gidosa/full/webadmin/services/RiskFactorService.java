@@ -28,21 +28,16 @@ public class RiskFactorService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RiskFactor> searchRiskFactors(Long constructionId, String name, LocalDate startDate, LocalDate endDate, Pageable pageable) {
-        if (name != null && !name.isEmpty() && startDate != null && endDate != null) {
-            return riskFactorRepository.findByConstructionIdAndNameContainingAndDateRange(constructionId, name, startDate, endDate, pageable);
-        } else if (name != null && !name.isEmpty()) {
-            return riskFactorRepository.findByConstructionIdAndNameContaining(constructionId, name, pageable);
-        } else if (startDate != null && endDate != null) {
-            return riskFactorRepository.findByConstructionIdAndDateRange(constructionId, startDate, endDate, pageable);
+    public Page<RiskFactor> searchRiskFactorsByExecutionDate(Long constructionId, String siteName, LocalDate executionDateStart, LocalDate executionDateEnd, Pageable pageable) {
+        if (siteName != null && !siteName.isEmpty() && executionDateStart != null && executionDateEnd != null) {
+            return riskFactorRepository.findByConstructionIdAndNameContainingAndExecutionDateRange(constructionId, siteName, executionDateStart, executionDateEnd, pageable);
+        } else if (siteName != null && !siteName.isEmpty()) {
+            return riskFactorRepository.findByConstructionIdAndNameContaining(constructionId, siteName, pageable);
+        } else if (executionDateStart != null && executionDateEnd != null) {
+            return riskFactorRepository.findByConstructionIdAndExecutionDateRange(constructionId, executionDateStart, executionDateEnd, pageable);
         } else {
             return riskFactorRepository.findByConstructionId(constructionId, pageable);
         }
-    }
-
-    @Transactional(readOnly = true)
-    public Page<RiskFactor> getRiskFactorsByStatus(Long constructionId, RiskFactor.RiskStatus status, Pageable pageable) {
-        return riskFactorRepository.findByConstructionIdAndStatus(constructionId, status, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -69,13 +64,31 @@ public class RiskFactorService {
         RiskFactor existingRiskFactor = riskFactorRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Risk factor not found with ID: " + id));
         
-        existingRiskFactor.setName(riskFactorDetails.getName());
-        existingRiskFactor.setStartDate(riskFactorDetails.getStartDate());
-        existingRiskFactor.setEndDate(riskFactorDetails.getEndDate());
-        existingRiskFactor.setDescription(riskFactorDetails.getDescription());
-        existingRiskFactor.setStatus(riskFactorDetails.getStatus());
-        existingRiskFactor.setLocationDetail(riskFactorDetails.getLocationDetail());
-        existingRiskFactor.setRiskLevel(riskFactorDetails.getRiskLevel());
+        // 기본 정보 업데이트
+        existingRiskFactor.setSiteName(riskFactorDetails.getSiteName());
+
+        // 추가 필드 업데이트
+        existingRiskFactor.setWorkProcess(riskFactorDetails.getWorkProcess());
+        existingRiskFactor.setWorkLocation(riskFactorDetails.getWorkLocation());
+        
+        // 이미지 URL은 null이 아닌 경우에만 업데이트 (파일 업로드 처리를 위해)
+        if (riskFactorDetails.getWorkImage1Url() != null) {
+            existingRiskFactor.setWorkImage1Url(riskFactorDetails.getWorkImage1Url());
+        }
+        if (riskFactorDetails.getWorkImage2Url() != null) {
+            existingRiskFactor.setWorkImage2Url(riskFactorDetails.getWorkImage2Url());
+        }
+        
+        existingRiskFactor.setRiskClassification(riskFactorDetails.getRiskClassification());
+        existingRiskFactor.setRiskDetailFactor(riskFactorDetails.getRiskDetailFactor());
+        existingRiskFactor.setRiskSituationResult(riskFactorDetails.getRiskSituationResult());
+        existingRiskFactor.setCurrentSafetyMeasure(riskFactorDetails.getCurrentSafetyMeasure());
+        existingRiskFactor.setRiskPossibility(riskFactorDetails.getRiskPossibility());
+        existingRiskFactor.setRiskCriticality(riskFactorDetails.getRiskCriticality());
+        
+        existingRiskFactor.setRiskReductionMeasure1(riskFactorDetails.getRiskReductionMeasure1());
+        existingRiskFactor.setRiskReductionMeasure2(riskFactorDetails.getRiskReductionMeasure2());
+        existingRiskFactor.setIsRiskMeasureCompletion(riskFactorDetails.getIsRiskMeasureCompletion());
         
         return riskFactorRepository.save(existingRiskFactor);
     }

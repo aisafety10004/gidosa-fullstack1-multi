@@ -16,120 +16,115 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "risk_factors")
 public class RiskFactor {
     // --- 신규등록 관련
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @CreationTimestamp
     @Column(nullable = false)
-    private String name;                  // 현장명
+    private LocalDate executionDate;                    // 실시일자(후 입력)
 
-    // @Column(nullable = false)
-    // private String workProcess;          // 작업공정
+    @Enumerated(EnumType.STRING)
+    @Column
+    private RiskFactorEvaluationType riskFactorEvaluationType;     // 평가구분(후 입력)
 
-    // @Column
-    // private String workLocation;          // 작업위치(위치층수)
+    @OneToOne
+    private MasterAuthorityDivision authorityDivision;          // 관할구분(후 입력)
 
-    // @Column(nullable = false)
-    // private String workImage1Url;          // 현장사진1
+    @Enumerated(EnumType.STRING)
+    @Column
+    private RiskFactorAuthorityDivisionLevel authorityDivisionLevel;     // 관할급(후 입력)
 
-    // @Column
-    // private String workImage2Url;          // 현장사진2
+    @OneToOne
+    private MasterDivisionDetail divisionDetail;                // 기관명(후 입력)
 
-    // @Column
-    // private Double latitude;               // 현장 위도값
+    // -------------------------------------------------------------------
+    @Column(nullable = false)
+    private String siteName;             // 현장명
+
+    @Column(nullable = false)
+    private String workProcess;          // 작업공정
+
+    @Column
+    private String workLocation;          // 작업위치(위치층수)
+
+    @Column(nullable = false)
+    private String workImage1Url;          // 현장사진1
+
+    @Column
+    private String workImage2Url;          // 현장사진2
+
+    @Column
+    private Double latitude;               // 현장 위도값(후 입력)
     
-    // @Column
-    // private Double longitude;              // 현장 경도값
+    @Column
+    private Double longitude;              // 현장 경도값(후 입력)
 
-    // @Enumerated(EnumType.STRING)
-    // @Column(nullable = false)
-    // private RiskClassification riskClassification;      // 위험 분류
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RiskClassification riskClassification;      // 위험 분류
 
-    // @Enumerated(EnumType.STRING)
-    // @Column(nullable = false)
-    // private RiskDetailFactor riskDetailFactor;          // 위험 요인(상세)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RiskDetailFactor riskDetailFactor;          // 위험 요인(상세)
 
-    // @Column(nullable = false)
-    // private String riskSituationResult;    // (예상)위험상황 및 결과
+    @Column(nullable = false)
+    private String riskSituationResult;    // (예상)위험상황 및 결과
 
-    // @Column
-    // private String currentSafetyMeasure;    // 현재안전조치
+    @Column
+    private String currentSafetyMeasure;    // 현재안전조치
 
-    // @Column(nullable = false)
-    // private byte riskPossibility;    // 가능성
+    @Column(nullable = false)
+    private byte riskPossibility;    // 가능성
 
-    // @Column(nullable = false)
-    // private byte riskCriticality;    // 중대성
+    @Column(nullable = false)
+    private byte riskCriticality;    // 중대성
 
-    // @Column(nullable = false)
-    // private short riskSize;   // 위험성크기(가능성 * 중대성)
+//    @Column(nullable = false)
+//    private short riskSize;   // 위험성크기(가능성 * 중대성)
 
-    // @Enumerated(EnumType.STRING)
-    // @Column(nullable = false)
-    // private RiskReductionMeasureFirst riskReductionMeasure1;   // 위험성 감소대책1(선택박스)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RiskReductionMeasureFirst riskReductionMeasure1;   // 위험성 감소대책1(선택박스)
 
-    // @Column(nullable = false)
-    // private String riskReductionMeasure2;   // 위험성 감소대책2(수기)
+    @Column(nullable = false)
+    private String riskReductionMeasure2;   // 위험성 감소대책2(수기)
 
-    // @Enumerated(EnumType.STRING)
-    // @Column
-    // private RiskMeasureCompletion isRiskMeasureCompletion;   // 조치여부
+    @Enumerated(EnumType.STRING)
+    @Column
+    private RiskMeasureCompletion isRiskMeasureCompletion;   // 조치여부
 
-    // @Column
-    // private String relatedLaw;   // 관련법령
+    @Column
+    private String relatedLaw;   // 관련법령(후 입력)
 
-    // @Column
-    // private Boolean isRiskReductionMeasure;   // 위험성감소 대책수립 여부
+    @Column
+    private Boolean isRiskReductionMeasure;   // 위험성감소 대책수립 여부(후 입력)
 
-    // @Column
-    // private String evaluator1;   // 평가자1
+    @Column
+    private String evaluator1;   // 평가자1(후 입력)
 
-    // @Column
-    // private String evaluator2;   // 평가자2
+    @Column
+    private String evaluator2;   // 평가자2(후 입력)
 
-    // // --- 개선등록 관련
-    // @Column
-    // private String impResult;   // 개선결과
+    // --- 개선등록 관련
+    @Column
+    private String impResult;   // 개선결과
 
-    // @Column
-    // private byte impRiskPossibility;    // 개선 가능성
+    @Column
+    private byte impRiskPossibility;    // 개선 가능성
 
-    // @Column
-    // private byte impRiskCriticality;    // 개선 중대성
+    @Column
+    private byte impRiskCriticality;    // 개선 중대성
 
-    // @Column(nullable = false)
-    // private short impRiskSize;          // 개선 위험성크기(가능성 * 중대성)
-
-
-
+//    @Column(nullable = false)
+//    private short impRiskSize;          // 개선 위험성크기(가능성 * 중대성)
 
     // ------------------------------------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "construction_id", nullable = false)
     private Construction construction;
-    
-    @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
-    
-    @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
-    
-    @Column(length = 1000)
-    private String description;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private RiskStatus status;
-    
-    @Column(name = "location_detail")
-    private String locationDetail;
-    
-    @Column(name = "risk_level")
-    @Enumerated(EnumType.STRING)
-    private RiskLevel riskLevel;
     
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -139,42 +134,44 @@ public class RiskFactor {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    public enum RiskStatus {
-        PENDING("대기"),
-        IN_PROGRESS("진행"),
-        COMPLETED("완료"),
-        RISK_IDENTIFIED("위험요인"),
-        ;
-        
-        private final String displayName;
-        
-        RiskStatus(String displayName) {
-            this.displayName = displayName;
-        }
-        
-        public String getDisplayName() {
-            return displayName;
-        }
-    }
-    
-    public enum RiskLevel {
-        LOW("낮음"),
-        MEDIUM("중간"),
-        HIGH("높음"),
-        CRITICAL("심각"),
-        ;
-        
-        private final String displayName;
-        
-        RiskLevel(String displayName) {
-            this.displayName = displayName;
-        }
-        
-        public String getDisplayName() {
-            return displayName;
-        }
-    }
     // ------------------------------------------------------------------------
+
+    public enum RiskFactorEvaluationType {
+        REGULAR("정기"),
+        OCCASIONAL("수시"),
+        INITIAL("최초"),
+        ;
+        private final String displayName;
+
+        RiskFactorEvaluationType(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }   
+    }
+
+    public enum RiskFactorAuthorityDivisionLevel {
+        LEVEL1("지원청"),
+        LEVEL2("유"),
+        LEVEL3("초"),
+        LEVEL4("중"),
+        LEVEL5("고"),
+        LEVEL6("대"),
+        LEVEL_OTHER("기타"),
+        ;
+
+        private final String displayName;
+
+        RiskFactorAuthorityDivisionLevel(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
 
     public enum RiskClassification {
         MECHANICAL_EQUIPMENT("기계(설비)적요인"),
