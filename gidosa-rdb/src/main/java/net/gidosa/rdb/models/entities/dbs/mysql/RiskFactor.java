@@ -118,8 +118,8 @@ public class RiskFactor {
     @Column
     private byte impRiskCriticality;    // 개선 중대성
 
-//    @Column(nullable = false)
-//    private short impRiskSize;          // 개선 위험성크기(가능성 * 중대성)
+    // @Column(nullable = false)
+    // private short impRiskSize;          // 개선 위험성크기(가능성 * 중대성)
 
     // ------------------------------------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY)
