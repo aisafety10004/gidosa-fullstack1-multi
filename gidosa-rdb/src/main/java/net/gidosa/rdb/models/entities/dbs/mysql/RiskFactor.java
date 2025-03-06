@@ -40,7 +40,8 @@ public class RiskFactor {
     @OneToOne
     private MasterDivisionDetail divisionDetail;                // 기관명(후 입력)
 
-    // -------------------------------------------------------------------
+    ////////////////////////////////////////////////////////////////
+    // ----------------------------------------------- 신규등록 관련
     @Column(nullable = false)
     private String siteName;             // 현장명
 
@@ -55,12 +56,6 @@ public class RiskFactor {
 
     @Column
     private String workImage2Url;          // 현장사진2
-
-    @Column
-    private Double latitude;               // 현장 위도값(후 입력)
-    
-    @Column
-    private Double longitude;              // 현장 경도값(후 입력)
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -96,8 +91,15 @@ public class RiskFactor {
     @Column
     private RiskMeasureCompletion isRiskMeasureCompletion;   // 조치여부
 
+    ////////////////////////////////////////////////////////////////
     @Column
-    private String relatedLaw;   // 관련법령(후 입력)
+    private Double latitude;               // 현장 위도값(후 입력)
+    
+    @Column
+    private Double longitude;              // 현장 경도값(후 입력)
+
+    @Column
+    private String relatedLaw;              // 관련법령(후 입력)
 
     @Column
     private Boolean isRiskReductionMeasure;   // 위험성감소 대책수립 여부(후 입력)
@@ -108,7 +110,8 @@ public class RiskFactor {
     @Column
     private String evaluator2;   // 평가자2(후 입력)
 
-    // --- 개선등록 관련
+    ////////////////////////////////////////////////////////////////
+    // -----------------------------------------------  개선등록 관련
     @Column
     private String impResult;   // 개선결과
 
@@ -120,6 +123,8 @@ public class RiskFactor {
 
     // @Column(nullable = false)
     // private short impRiskSize;          // 개선 위험성크기(가능성 * 중대성)
+
+    
 
     // ------------------------------------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY)

@@ -69,28 +69,55 @@
             background-color: #842029;
             color: #ffffff;
         }
+
+        .btn-hazard-new {
+            background-color: #2876cd;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+            max-width: none;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .btn-hazard-new:hover,
+        .btn-hazard-new:focus,
+        .btn-hazard-new:active {
+            background-color: #2876cd !important;
+        }
     </style>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="container-fluid px-4">
-        <h1 class="mt-4">위험요인 등록</h1>
-        <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a href="/main">홈</a></li>
-            <li class="breadcrumb-item"><a href="/safety/risk-factor/list">위험요인 관리</a></li>
-            <li class="breadcrumb-item active">위험요인 등록</li>
-        </ol>
+        <h1 class="mt-4">신규 위험요인 등록</h1>
+<!--        <h1 class="mt-4">위험요인 등록</h1>-->
+<!--        <ol class="breadcrumb mb-4">-->
+<!--            <li class="breadcrumb-item"><a href="/main">홈</a></li>-->
+<!--            <li class="breadcrumb-item"><a href="/safety/risk-factor/list">위험요인 관리</a></li>-->
+<!--            <li class="breadcrumb-item active">위험요인 등록</li>-->
+<!--        </ol>-->
         
         <div class="card mb-4">
-            <div class="card-header">
+            <div class="card-header" style="text-align: center;">
                 <i class="fas fa-edit me-1"></i>
-                위험요인 등록 양식
+                신규 위험요인 등록 양식
             </div>
             <div class="card-body">
                 <form th:action="@{/safety/risk-factor/register}" method="post" th:object="${riskFactorDto}" enctype="multipart/form-data">
                     <!-- 기본 정보 섹션 -->
                     <div class="form-section">
-                        <h5>기본 정보</h5>
+                        <div class="row">
+                            <div class="col-12 text-center mb-3">
+                                <div class="btn btn-hazard-new">
+                                    신규 유해위험 등록 시스템
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <label for="siteName" class="form-label required-label">현장명</label>
@@ -99,7 +126,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="workProcess" class="form-label required-label">작업공정</label>
+                                <label for="workProcess" class="form-label required-label">공정</label>
                                 <input type="text" class="form-control" id="workProcess" th:field="*{workProcess}" required>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -183,7 +210,7 @@
                         <div class="mb-3">
                             <label class="form-label">위험성 크기</label>
                             <div id="riskSizeDisplay" class="risk-size-display">
-                                위험성 크기: 0 (가능성 × 중대성)
+                                위험성 크기: 1 (가능성 × 중대성)
                             </div>
                         </div>
                     </div>
@@ -192,16 +219,16 @@
                     <div class="form-section">
                         <h5>위험성 감소대책</h5>
                         <div class="mb-3">
-                            <label for="riskReductionMeasure1" class="form-label required-label">위험성 감소대책1</label>
+                            <label for="riskReductionMeasure1" class="form-label required-label">감소대책1</label>
                             <select class="form-select" id="riskReductionMeasure1" th:field="*{riskReductionMeasure1}" required>
-                                <option value="">-- 위험성 감소대책 선택 --</option>
+                                <option value="">-- 감소대책 선택 --</option>
                                 <option th:each="option : ${riskReductionMeasureFirstOptions}"
                                         th:value="${option}"
                                         th:text="${option.displayName}"></option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="riskReductionMeasure2" class="form-label required-label">위험성 감소대책2</label>
+                            <label for="riskReductionMeasure2" class="form-label required-label">감소대책2</label>
                             <textarea class="form-control" id="riskReductionMeasure2" th:field="*{riskReductionMeasure2}" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
@@ -217,12 +244,12 @@
                     
                     <!-- 버튼 그룹 -->
                     <div class="d-flex justify-content-center mt-4">
-                        <button type="submit" class="btn btn-primary me-2">
-                            <i class="fas fa-save"></i> 등록
+                        <button type="submit" class="btn btn-primary me-2" style="background-color: #2876cd;">
+                            <i class="fas fa-save"></i> 위험보고 등록
                         </button>
-                        <a th:href="@{/safety/risk-factor/list}" class="btn btn-secondary">
+                        <!-- <a th:href="@{/safety/risk-factor/list}" class="btn btn-secondary">
                             <i class="fas fa-times"></i> 취소
-                        </a>
+                        </a> -->
                     </div>
                 </form>
             </div>
@@ -239,23 +266,23 @@
             const riskSizeDisplay = document.getElementById('riskSizeDisplay');
             
             function calculateRiskSize() {
-                const possibility = parseInt(riskPossibilitySelect.value) || 0;
-                const criticality = parseInt(riskCriticalitySelect.value) || 0;
+                const possibility = parseInt(riskPossibilitySelect.value) || 1;
+                const criticality = parseInt(riskCriticalitySelect.value) || 1;
                 const riskSize = possibility * criticality;
                 
                 riskSizeDisplay.textContent = `위험성 크기: ${riskSize} (가능성 × 중대성)`;
                 
                 // 위험성 크기에 따른 스타일 변경
                 riskSizeDisplay.className = 'risk-size-display';
-                if (riskSize >= 6) {
-                    riskSizeDisplay.classList.add('risk-critical');
-                } else if (riskSize >= 4) {
-                    riskSizeDisplay.classList.add('risk-high');
-                } else if (riskSize >= 2) {
-                    riskSizeDisplay.classList.add('risk-medium');
-                } else if (riskSize > 0) {
-                    riskSizeDisplay.classList.add('risk-low');
-                }
+                // if (riskSize >= 6) {
+                //     riskSizeDisplay.classList.add('risk-critical');
+                // } else if (riskSize >= 4) {
+                //     riskSizeDisplay.classList.add('risk-high');
+                // } else if (riskSize >= 2) {
+                //     riskSizeDisplay.classList.add('risk-medium');
+                // } else if (riskSize > 0) {
+                //     riskSizeDisplay.classList.add('risk-low');
+                // }
             }
             
             riskPossibilitySelect.addEventListener('change', calculateRiskSize);

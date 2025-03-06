@@ -2,6 +2,7 @@ package net.gidosa.full.webadmin.configs;
 
 import lombok.RequiredArgsConstructor;
 import net.gidosa.full.webadmin.configs.auth.PrincipalDetailsService;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,16 +14,21 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 //@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final DataSource mysqlJpaMaster1DataSource;                                // MariaDB와 JAVA의 연결소스(고리)
     private final PrincipalDetailsService userDetailsService;
 
     @Bean
@@ -59,12 +65,21 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/auth/login")
-                .loginProcessingUrl("/auth/login")
-                .defaultSuccessUrl("/main")
+//                .loginProcessingUrl("/auth/login")
+//                .defaultSuccessUrl("/main")
+                .successHandler((request, response, auth) -> {
+                    String refererUrl = (String)request.getSession().getAttribute("previousUrl");
+                    if(Strings.isNotBlank(refererUrl)) {
+                        request.getSession().removeAttribute("previousUrl");
+
+                        response.sendRedirect(refererUrl);
+                    } else {
+                        response.sendRedirect("/main");
+                    }
+                })
                 .failureUrl("/auth/login?error=true")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/auth/logout")
@@ -80,16 +95,24 @@ public class SecurityConfig {
 //                .logoutSuccessHandler((request, response, authentication) -> {
 //                    response.sendRedirect("/auth/login");
 //                }) // 로그아웃 성공 핸들러
+                .logoutSuccessHandler((request, response, auth) -> {
+                    String refererUrl = request.getHeader("Referer");  // 로그아웃 전 페이지 정보
+                    if(Strings.isNotBlank(refererUrl)) {
+                        request.getSession().setAttribute("previousUrl", refererUrl);
+                    }
+                    response.sendRedirect("/auth/login");  // 로그아웃 후 로그인 페이지로 이동
+                })
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
-                .permitAll()
             )
-            // .rememberMe(remember -> remember
-            //     .key("uniqueAndSecret")
-            //     .tokenValiditySeconds(86400) // 24시간
-            //     .rememberMeParameter("remember-me")
-            //     .userDetailsService(userDetailsService)
-            // )
+             .rememberMe(remember -> remember
+                 .key("uniqueAndSecret")
+                 .tokenValiditySeconds(60 * 60 * 24) // 24시간
+//                 .rememberMeParameter("remember-me")          // 안해도 될듯~
+//                 .rememberMeCookieName("remember-me-cookie")
+                 .userDetailsService(userDetailsService)
+                 .tokenRepository(persistentTokenRepository())
+             )
             .exceptionHandling(exception -> exception
                 .accessDeniedPage("/error/403")
             );
@@ -112,4 +135,12 @@ public class SecurityConfig {
 //        auth.userDetailsService(userDetailsService)
 //            .passwordEncoder(passwordEncoder());
 //    }
+
+    @Bean
+    PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
+        repo.setDataSource(mysqlJpaMaster1DataSource);
+
+        return repo;
+    }
 }

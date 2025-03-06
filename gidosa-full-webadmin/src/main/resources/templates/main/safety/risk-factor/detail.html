@@ -132,14 +132,14 @@
                     <i class="fas fa-info-circle me-1"></i>
                     위험요인 상세 정보
                 </div>
-<!--                <div>-->
+                <div>
 <!--                    <a th:href="@{/safety/risk-factor/update/{id}(id=${riskFactor.id})}" class="btn btn-warning btn-sm">-->
 <!--                        <i class="fas fa-edit"></i> 수정-->
 <!--                    </a>-->
-<!--                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">-->
-<!--                        <i class="fas fa-trash"></i> 삭제-->
-<!--                    </button>-->
-<!--                </div>-->
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="fas fa-trash"></i> 삭제
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <!-- 기본 정보 섹션 -->
@@ -156,7 +156,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="detail-item">
-                                <div class="detail-label">작업공정</div>
+                                <div class="detail-label">공정</div>
                                 <div class="detail-value" th:text="${riskFactor.workProcess}"></div>
                             </div>
                         </div>
@@ -164,6 +164,91 @@
                             <div class="detail-item">
                                 <div class="detail-label">작업위치(위치층수)</div>
                                 <div class="detail-value" th:text="${riskFactor.workLocation ?: '-'}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 추가 정보 섹션 (후 입력) -->
+                <div class="detail-section">
+                    <h5>추가 정보</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">실시일자</div>
+                                <div class="detail-value" th:text="${riskFactor.executionDate != null ? #temporals.format(riskFactor.executionDate, 'yyyy-MM-dd') : '-'}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">평가구분</div>
+                                <div class="detail-value" th:text="${riskFactor.riskFactorEvaluationType?.displayName ?: '-'}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">관할구분</div>
+                                <div class="detail-value" th:text="${riskFactor.authorityDivision?.name ?: '-'}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">관할급</div>
+                                <div class="detail-value" th:text="${riskFactor.authorityDivisionLevel?.displayName ?: '-'}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="detail-item">
+                                <div class="detail-label">기관명</div>
+                                <div class="detail-value" th:text="${riskFactor.divisionDetail?.name ?: '-'}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">현장 위도값</div>
+                                <div class="detail-value" th:text="${riskFactor.latitude != null ? riskFactor.latitude : '-'}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">현장 경도값</div>
+                                <div class="detail-value" th:text="${riskFactor.longitude != null ? riskFactor.longitude : '-'}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="detail-item">
+                                <div class="detail-label">관련법령</div>
+                                <div class="detail-value" th:text="${riskFactor.relatedLaw ?: '-'}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="detail-item">
+                                <div class="detail-label">위험성감소 대책수립 여부</div>
+                                <div class="detail-value" th:text="${riskFactor.isRiskReductionMeasure != null ? (riskFactor.isRiskReductionMeasure ? '예' : '아니오') : '-'}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">평가자1</div>
+                                <div class="detail-value" th:text="${riskFactor.evaluator1 ?: '-'}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">평가자2</div>
+                                <div class="detail-value" th:text="${riskFactor.evaluator2 ?: '-'}"></div>
                             </div>
                         </div>
                     </div>
@@ -177,7 +262,7 @@
                             <div class="detail-item">
                                 <div class="detail-label">현장사진1</div>
                                 <div class="detail-value">
-                                    <img th:if="${riskFactor.workImage1Url}" th:src="${riskFactor.workImage1Url}" class="work-image" alt="현장사진1">
+                                    <img th:if="${riskFactor.workImage1Url}" th:src="|/common/file/view/${riskFactor.workImage1Url}|" class="work-image" alt="현장사진1">
                                     <span th:unless="${riskFactor.workImage1Url}">-</span>
                                 </div>
                             </div>
@@ -186,7 +271,7 @@
                             <div class="detail-item">
                                 <div class="detail-label">현장사진2</div>
                                 <div class="detail-value">
-                                    <img th:if="${riskFactor.workImage2Url}" th:src="${riskFactor.workImage2Url}" class="work-image" alt="현장사진2">
+                                    <img th:if="${riskFactor.workImage2Url}" th:src="|/common/file/view/${riskFactor.workImage2Url}|" class="work-image" alt="현장사진2">
                                     <span th:unless="${riskFactor.workImage2Url}">-</span>
                                 </div>
                             </div>
@@ -252,11 +337,11 @@
                 <div class="detail-section">
                     <h5>위험성 감소대책</h5>
                     <div class="detail-item">
-                        <div class="detail-label">위험성 감소대책1</div>
+                        <div class="detail-label">감소대책1</div>
                         <div class="detail-value" th:text="${riskFactor.riskReductionMeasure1?.displayName ?: '-'}"></div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">위험성 감소대책2</div>
+                        <div class="detail-label">감소대책2</div>
                         <div class="detail-value" th:text="${riskFactor.riskReductionMeasure2 ?: '-'}" style="white-space: pre-line;"></div>
                     </div>
                     <div class="detail-item">

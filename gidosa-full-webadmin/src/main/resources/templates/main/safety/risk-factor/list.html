@@ -73,6 +73,50 @@
             color: #ffffff;
         }
         
+        /* 이미지 미리보기 스타일 */
+        .preview-row {
+            display: none;
+            background-color: #f8f9fa;
+        }
+        
+        .preview-cell {
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        tr.clickable {
+            cursor: pointer;
+        }
+        
+        tr.active-row {
+            background-color: #e2f0ff !important;
+        }
+        
+        /* 개선등록 버튼 스타일 */
+        .btn-improve {
+            background-color: #2c3e8f;
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+            width: 100%;
+            max-width: 400px;
+            padding: 8px 15px;
+            border: none;
+            margin-top: 10px;
+        }
+        
+        .btn-improve:hover {
+            background-color: #1e2b6a;
+            color: white;
+        }
+        
         /* 반응형 스타일 */
         @media (max-width: 768px) {
             .search-form .row {
@@ -87,6 +131,10 @@
             
             .table-responsive {
                 font-size: 0.9rem;
+            }
+            
+            .preview-image {
+                max-height: 200px;
             }
         }
     </style>
@@ -172,7 +220,7 @@
         <div class="row mb-3">
             <div class="col-md-12">
                 <div class="btn-group" style="width: 100%;">
-                    <a th:href="@{/safety/risk-factor/register}" class="btn btn-success">
+                    <a th:href="@{/safety/risk-factor/register}" class="btn btn-success" style="background-color: #2876cd;">
                         <i class="fas fa-plus"></i> 신규등록
                     </a>
                 </div>
@@ -206,36 +254,39 @@
             </div> -->
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover" id="riskFactorTable">
                         <thead class="table-light">
                             <tr>
                                 <th>번호</th>
                                 <th>현장명</th>
                                 <th>실시일자</th>
-                                <th>관리</th>
+                                <th>공정</th>
+<!--                                <th>관리</th>-->
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:if="${riskFactors.empty}">
                                 <td colspan="7" class="text-center">등록된 위험요인이 없습니다.</td>
                             </tr>
-                            <tr th:each="riskFactor : ${riskFactors}">
+                            <tr th:each="riskFactor : ${riskFactors}" class="data-row clickable" th:data-id="${riskFactor.id}" th:data-image="${riskFactor.workImage1Url}">
                                 <td th:text="${riskFactor.id}"></td>
-                                <td>
-                                    <a th:href="@{/safety/risk-factor/detail/{id}(id=${riskFactor.id})}" 
-                                       th:text="${riskFactor.siteName}"></a>
-                                </td>
+<!--                                <td>-->
+<!--                                    <a th:href="@{/safety/risk-factor/detail/{id}(id=${riskFactor.id})}" -->
+<!--                                       th:text="${riskFactor.siteName}" onclick="event.stopPropagation();"></a>-->
+<!--                                </td>-->
+                                <td th:text="${riskFactor.siteName}"></td>
                                 <td>
                                     <span th:text="${#temporals.format(riskFactor.executionDate, 'yyyy-MM-dd')}"></span>
                                 </td>
-                                <td>
-                                    <!-- <div class="btn-group btn-group-sm">
-                                        <a th:href="@{/safety/risk-factor/detail/{id}(id=${riskFactor.id})}" 
-                                           class="btn btn-outline-primary">상세</a>
-                                        <a th:href="@{/safety/risk-factor/update/{id}(id=${riskFactor.id})}" 
-                                           class="btn btn-outline-warning">수정</a>
-                                    </div> -->
-                                </td>
+                                <td th:text="${riskFactor.workProcess}"></td>
+<!--                                <td>-->
+<!--                                    <div class="btn-group btn-group-sm">-->
+<!--                                        <a th:href="@{/safety/risk-factor/detail/{id}(id=${riskFactor.id})}"-->
+<!--                                           class="btn btn-outline-primary" onclick="event.stopPropagation();">상세</a>-->
+<!--                                        <a th:href="@{/safety/risk-factor/update/{id}(id=${riskFactor.id})}"-->
+<!--                                           class="btn btn-outline-warning" onclick="event.stopPropagation();">수정</a>-->
+<!--                                    </div>-->
+<!--                                </td>-->
                             </tr>
                         </tbody>
                     </table>
@@ -274,6 +325,95 @@
             </div>
         </div>
     </div>
+    
+    <!-- 이미지 미리보기 JavaScript -->
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.getElementById('riskFactorTable');
+            const rows = table.querySelectorAll('tr.data-row');
+            
+            rows.forEach(row => {
+                row.addEventListener('click', function() {
+                    const rowId = this.getAttribute('data-id');
+                    const imageUrl = this.getAttribute('data-image');
+                    
+                    // 이미 미리보기가 열려있는지 확인
+                    const existingPreview = document.getElementById('preview-' + rowId);
+                    
+                    // 모든 행의 active 클래스 제거
+                    rows.forEach(r => r.classList.remove('active-row'));
+                    
+                    // 모든 미리보기 행 제거
+                    const allPreviews = document.querySelectorAll('.preview-row');
+                    allPreviews.forEach(preview => {
+                        if (preview.id !== 'preview-' + rowId) {
+                            preview.remove();
+                        }
+                    });
+                    
+                    // 미리보기가 이미 있으면 제거하고 종료
+                    if (existingPreview) {
+                        existingPreview.remove();
+                        return;
+                    }
+                    
+                    // 현재 행에 active 클래스 추가
+                    this.classList.add('active-row');
+                    
+                    // 이미지 URL이 있는 경우에만 미리보기 생성
+                    if (imageUrl) {
+                        // 새 행 생성
+                        const previewRow = document.createElement('tr');
+                        previewRow.id = 'preview-' + rowId;
+                        previewRow.className = 'preview-row';
+                        
+                        // 셀 생성
+                        const previewCell = document.createElement('td');
+                        previewCell.className = 'preview-cell';
+                        previewCell.colSpan = 4; // 모든 열을 병합
+                        
+                        // 이미지 요소 생성
+                        const img = document.createElement('img');
+                        img.src = '/common/file/view/' + imageUrl;
+                        img.className = 'preview-image';
+                        img.alt = '현장사진1';
+                        
+                        // 셀에 이미지 추가
+                        previewCell.appendChild(img);
+                        
+                        // 버튼 컨테이너 생성
+                        const buttonContainer = document.createElement('div');
+                        buttonContainer.className = 'mt-3';
+                        
+                        // 개선등록 버튼 생성
+                        const improveButton = document.createElement('a');
+                        improveButton.href = `/safety/risk-factor/update/${rowId}`;
+                        improveButton.className = 'btn btn-improve';
+                        improveButton.textContent = '개선등록';
+                        improveButton.onclick = function(event) {
+                            event.stopPropagation();
+                        };
+                        
+                        // 버튼 컨테이너에 버튼 추가
+                        buttonContainer.appendChild(improveButton);
+                        
+                        // 버튼 컨테이너를 셀에 추가
+                        previewCell.appendChild(buttonContainer);
+                        
+                        previewRow.appendChild(previewCell);
+                        
+                        // 현재 행 다음에 미리보기 행 삽입
+                        this.insertAdjacentElement('afterend', previewRow);
+                        
+                        // 애니메이션 효과로 표시
+                        setTimeout(() => {
+                            previewRow.style.display = 'table-row';
+                        }, 10);
+                    }
+                });
+            });
+        });
+    </script>
 </div>
 </body>
 </html> 

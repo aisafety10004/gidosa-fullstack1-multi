@@ -19,7 +19,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileStorageService {
 
-    @Value("${file.upload-dir:./uploads}")
+    // @Value("${file.upload-dir:./uploads}")
+    // private String uploadDir;
+    @Value("${file.upload.path}")
     private String uploadDir;
 
     /**
@@ -39,7 +41,8 @@ public class FileStorageService {
         String newFileName = UUID.randomUUID().toString() + fileExtension;
         
         // 저장 경로 생성
-        Path uploadPath = Paths.get(uploadDir, subDirectory);
+        //Path uploadPath = Paths.get(uploadDir, subDirectory);
+        Path uploadPath = Paths.get(uploadDir);
         
         // 디렉토리가 없으면 생성
         if (!Files.exists(uploadPath)) {
@@ -51,7 +54,10 @@ public class FileStorageService {
         Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
         
         // 접근 URL 반환 (상대 경로)
-        return "/uploads/" + subDirectory + "/" + newFileName;
+        //return "/uploads/" + subDirectory + "/" + newFileName;
+        //return uploadDir + "\\" + subDirectory + "\\" + newFileName;
+        //return subDirectory + "/" + newFileName;
+        return newFileName;
     }
     
     /**

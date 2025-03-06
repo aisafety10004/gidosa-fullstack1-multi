@@ -1,13 +1,17 @@
 package net.gidosa.full.webadmin.controllers.managers;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.gidosa.full.webadmin.configs.auth.PrincipalDetails;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorDto;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorSearchDto;
+import net.gidosa.full.webadmin.models.dtos.RiskFactorUpdateDto;
 import net.gidosa.full.webadmin.services.FileStorageService;
 import net.gidosa.full.webadmin.services.RiskFactorService;
 import net.gidosa.rdb.models.entities.dbs.mysql.RiskFactor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Log4j2
@@ -98,10 +104,10 @@ public class RiskFactorController {
             
             RiskFactor riskFactor = riskFactorDto.toEntity();
             riskFactorService.createRiskFactor(constructionId, riskFactor);
-            redirectAttributes.addFlashAttribute("message", "위험요인이 성공적으로 등록되었습니다.");
+            redirectAttributes.addFlashAttribute("message", "위험요인이 성공적으로 신규등록되었습니다.");
         } catch (Exception e) {
             log.error("Error registering risk factor", e);
-            redirectAttributes.addFlashAttribute("error", "위험요인 등록 중 오류가 발생했습니다: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "위험요인 신규등록 중 오류가 발생했습니다: " + e.getMessage());
         }
         
         return "redirect:/safety/risk-factor/list";
@@ -121,20 +127,20 @@ public class RiskFactorController {
         Optional<RiskFactor> riskFactorOpt = riskFactorService.getRiskFactorById(id);
         if (riskFactorOpt.isPresent()) {
             RiskFactor riskFactor = riskFactorOpt.get();
-            RiskFactorDto riskFactorDto = RiskFactorDto.fromEntity(riskFactor);
+            RiskFactorUpdateDto riskFactorUpdateDto = RiskFactorUpdateDto.fromEntity(riskFactor);
             
             // Ensure values are not null or zero
-            if (riskFactorDto.getRiskPossibility() == 0) {
-                riskFactorDto.setRiskPossibility((byte) 1);
+            if (riskFactorUpdateDto.getRiskPossibility() == 0) {
+                riskFactorUpdateDto.setRiskPossibility((byte) 1);
             }
-            if (riskFactorDto.getRiskCriticality() == 0) {
-                riskFactorDto.setRiskCriticality((byte) 1);
+            if (riskFactorUpdateDto.getRiskCriticality() == 0) {
+                riskFactorUpdateDto.setRiskCriticality((byte) 1);
             }
-            if (riskFactorDto.getRiskSize() == 0) {
-                riskFactorDto.setRiskSize((short) 1);
+            if (riskFactorUpdateDto.getRiskSize() == 0) {
+                riskFactorUpdateDto.setRiskSize((short) 1);
             }
             
-            model.addAttribute("riskFactorDto", riskFactorDto);
+            model.addAttribute("riskFactorDto", riskFactorUpdateDto);
             addCommonModelAttributes(model);
             return "main/safety/risk-factor/update";
         }
@@ -144,31 +150,30 @@ public class RiskFactorController {
     @PostMapping("/update/{id}")
     public String update(
             @PathVariable Long id,
-            @ModelAttribute RiskFactorDto riskFactorDto,
+            @ModelAttribute("riskFactorDto") RiskFactorUpdateDto riskFactorUpdateDto,
             RedirectAttributes redirectAttributes) {
         
         try {
             // 파일 업로드 처리
-            processFileUploads(riskFactorDto);
+            processFileUploads(riskFactorUpdateDto);
             
             // 빈 값 처리 (null 또는 0인 경우 기본값 설정)
-            if (riskFactorDto.getRiskPossibility() == 0) {
-                riskFactorDto.setRiskPossibility((byte) 1);
+            if (riskFactorUpdateDto.getRiskPossibility() == 0) {
+                riskFactorUpdateDto.setRiskPossibility((byte) 1);
             }
             
-            if (riskFactorDto.getRiskCriticality() == 0) {
-                riskFactorDto.setRiskCriticality((byte) 1);
+            if (riskFactorUpdateDto.getRiskCriticality() == 0) {
+                riskFactorUpdateDto.setRiskCriticality((byte) 1);
             }
             
             // 위험성 크기 계산 (가능성 * 중대성)
-            riskFactorDto.setRiskSize((short) (riskFactorDto.getRiskPossibility() * riskFactorDto.getRiskCriticality()));
+            riskFactorUpdateDto.setRiskSize((short) (riskFactorUpdateDto.getRiskPossibility() * riskFactorUpdateDto.getRiskCriticality()));
             
-            RiskFactor riskFactor = riskFactorDto.toEntity();
-            riskFactorService.updateRiskFactor(id, riskFactor);
-            redirectAttributes.addFlashAttribute("message", "위험요인이 성공적으로 수정되었습니다.");
+            riskFactorService.updateRiskFactorFromUpdateDto(id, riskFactorUpdateDto);
+            redirectAttributes.addFlashAttribute("message", "위험요인이 성공적으로 개선되었습니다.");
         } catch (Exception e) {
             log.error("Error updating risk factor", e);
-            redirectAttributes.addFlashAttribute("error", "위험요인 수정 중 오류가 발생했습니다: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "위험요인 개선 중 오류가 발생했습니다: " + e.getMessage());
         }
         
         return "redirect:/safety/risk-factor/detail/" + id;
@@ -193,19 +198,58 @@ public class RiskFactorController {
         model.addAttribute("riskDetailFactorOptions", RiskFactor.RiskDetailFactor.values());
         model.addAttribute("riskReductionMeasureFirstOptions", RiskFactor.RiskReductionMeasureFirst.values());
         model.addAttribute("riskMeasureCompletionOptions", RiskFactor.RiskMeasureCompletion.values());
+        
+        // 추가 필드 옵션
+        model.addAttribute("riskFactorEvaluationTypeOptions", RiskFactor.RiskFactorEvaluationType.values());
+        model.addAttribute("authorityDivisionLevelOptions", RiskFactor.RiskFactorAuthorityDivisionLevel.values());
+        
+        // 관계 엔티티 옵션 - 실제 구현에서는 서비스에서 가져와야 함
+        // 임시 구현 (실제 프로젝트에서는 서비스를 통해 DB에서 가져와야 함)
+        model.addAttribute("authorityDivisionOptions", getMockAuthorityDivisions());
+        model.addAttribute("divisionDetailOptions", getMockDivisionDetails());
+    }
+    
+    // 임시 구현: 실제 프로젝트에서는 서비스를 통해 DB에서 가져와야 함
+    private List<MockEntityOption> getMockAuthorityDivisions() {
+        List<MockEntityOption> options = new ArrayList<>();
+        options.add(new MockEntityOption(1L, "서울특별시교육청"));
+        options.add(new MockEntityOption(2L, "경기도교육청"));
+        options.add(new MockEntityOption(3L, "인천광역시교육청"));
+        return options;
+    }
+    
+    // 임시 구현: 실제 프로젝트에서는 서비스를 통해 DB에서 가져와야 함
+    private List<MockEntityOption> getMockDivisionDetails() {
+        List<MockEntityOption> options = new ArrayList<>();
+        options.add(new MockEntityOption(1L, "서울특별시교육청 본청"));
+        options.add(new MockEntityOption(2L, "서울특별시동부교육지원청"));
+        options.add(new MockEntityOption(3L, "서울특별시서부교육지원청"));
+        options.add(new MockEntityOption(4L, "경기도교육청 본청"));
+        options.add(new MockEntityOption(5L, "경기도수원교육지원청"));
+        return options;
+    }
+    
+    // 임시 엔티티 옵션 클래스
+    @Data
+    @AllArgsConstructor
+    private static class MockEntityOption {
+        private Long id;
+        private String name;
     }
     
     // 파일 업로드 처리 메서드
     private void processFileUploads(RiskFactorDto riskFactorDto) throws IOException {
         MultipartFile workImage1File = riskFactorDto.getWorkImage1File();
         if (workImage1File != null && !workImage1File.isEmpty()) {
-            String workImage1Url = fileStorageService.storeFile(workImage1File, "risk-factors");
+            //String workImage1Url = fileStorageService.storeFile(workImage1File, "risk-factors");
+            String workImage1Url = fileStorageService.storeFile(workImage1File, Strings.EMPTY);
             riskFactorDto.setWorkImage1Url(workImage1Url);
         }
         
         MultipartFile workImage2File = riskFactorDto.getWorkImage2File();
         if (workImage2File != null && !workImage2File.isEmpty()) {
-            String workImage2Url = fileStorageService.storeFile(workImage2File, "risk-factors");
+            //String workImage2Url = fileStorageService.storeFile(workImage2File, "risk-factors");
+            String workImage2Url = fileStorageService.storeFile(workImage2File, Strings.EMPTY);
             riskFactorDto.setWorkImage2Url(workImage2Url);
         }
     }

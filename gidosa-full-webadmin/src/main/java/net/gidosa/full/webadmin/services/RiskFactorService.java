@@ -1,7 +1,9 @@
 package net.gidosa.full.webadmin.services;
 
+import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.gidosa.full.webadmin.models.dtos.RiskFactorUpdateDto;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.RiskFactor;
 import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
@@ -21,11 +23,6 @@ public class RiskFactorService {
 
     private final RiskFactorJpaRepository riskFactorRepository;
     private final ConstructionJpaRepository constructionRepository;
-
-    @Transactional(readOnly = true)
-    public Page<RiskFactor> getRiskFactorsByConstructionId(Long constructionId, Pageable pageable) {
-        return riskFactorRepository.findByConstructionId(constructionId, pageable);
-    }
 
     @Transactional(readOnly = true)
     public Page<RiskFactor> searchRiskFactorsByExecutionDate(Long constructionId, String siteName, LocalDate executionDateStart, LocalDate executionDateEnd, Pageable pageable) {
@@ -72,10 +69,10 @@ public class RiskFactorService {
         existingRiskFactor.setWorkLocation(riskFactorDetails.getWorkLocation());
         
         // 이미지 URL은 null이 아닌 경우에만 업데이트 (파일 업로드 처리를 위해)
-        if (riskFactorDetails.getWorkImage1Url() != null) {
+        if (!Strings.isNullOrEmpty(riskFactorDetails.getWorkImage1Url())) {
             existingRiskFactor.setWorkImage1Url(riskFactorDetails.getWorkImage1Url());
         }
-        if (riskFactorDetails.getWorkImage2Url() != null) {
+        if (!Strings.isNullOrEmpty(riskFactorDetails.getWorkImage2Url())) {
             existingRiskFactor.setWorkImage2Url(riskFactorDetails.getWorkImage2Url());
         }
         
@@ -90,11 +87,79 @@ public class RiskFactorService {
         existingRiskFactor.setRiskReductionMeasure2(riskFactorDetails.getRiskReductionMeasure2());
         existingRiskFactor.setIsRiskMeasureCompletion(riskFactorDetails.getIsRiskMeasureCompletion());
         
+        // 추가 정보 필드 업데이트 (후 입력)
+        existingRiskFactor.setExecutionDate(riskFactorDetails.getExecutionDate());
+        existingRiskFactor.setRiskFactorEvaluationType(riskFactorDetails.getRiskFactorEvaluationType());
+        existingRiskFactor.setAuthorityDivision(riskFactorDetails.getAuthorityDivision());
+        existingRiskFactor.setAuthorityDivisionLevel(riskFactorDetails.getAuthorityDivisionLevel());
+        existingRiskFactor.setDivisionDetail(riskFactorDetails.getDivisionDetail());
+        existingRiskFactor.setLatitude(riskFactorDetails.getLatitude());
+        existingRiskFactor.setLongitude(riskFactorDetails.getLongitude());
+        existingRiskFactor.setRelatedLaw(riskFactorDetails.getRelatedLaw());
+        existingRiskFactor.setIsRiskReductionMeasure(riskFactorDetails.getIsRiskReductionMeasure());
+        existingRiskFactor.setEvaluator1(riskFactorDetails.getEvaluator1());
+        existingRiskFactor.setEvaluator2(riskFactorDetails.getEvaluator2());
+        
+        // 개선등록 관련 필드 업데이트
+        existingRiskFactor.setImpResult(riskFactorDetails.getImpResult());
+        existingRiskFactor.setImpRiskPossibility(riskFactorDetails.getImpRiskPossibility());
+        existingRiskFactor.setImpRiskCriticality(riskFactorDetails.getImpRiskCriticality());
+        
         return riskFactorRepository.save(existingRiskFactor);
     }
 
     @Transactional
     public void deleteRiskFactor(Long id) {
         riskFactorRepository.deleteById(id);
+    }
+
+    @Transactional
+    public RiskFactor updateRiskFactorFromUpdateDto(Long id, RiskFactorUpdateDto updateDto) {
+        RiskFactor existingRiskFactor = riskFactorRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Risk factor not found with ID: " + id));
+        
+        // 기본 정보 업데이트 (RiskFactorDto 필드)
+        existingRiskFactor.setSiteName(updateDto.getSiteName());
+        existingRiskFactor.setWorkProcess(updateDto.getWorkProcess());
+        existingRiskFactor.setWorkLocation(updateDto.getWorkLocation());
+        
+        // 이미지 URL은 null이 아닌 경우에만 업데이트 (파일 업로드 처리를 위해)
+        if (!Strings.isNullOrEmpty(updateDto.getWorkImage1Url())) {
+            existingRiskFactor.setWorkImage1Url(updateDto.getWorkImage1Url());
+        }
+        if (!Strings.isNullOrEmpty(updateDto.getWorkImage2Url())) {
+            existingRiskFactor.setWorkImage2Url(updateDto.getWorkImage2Url());
+        }
+        
+        existingRiskFactor.setRiskClassification(updateDto.getRiskClassification());
+        existingRiskFactor.setRiskDetailFactor(updateDto.getRiskDetailFactor());
+        existingRiskFactor.setRiskSituationResult(updateDto.getRiskSituationResult());
+        existingRiskFactor.setCurrentSafetyMeasure(updateDto.getCurrentSafetyMeasure());
+        existingRiskFactor.setRiskPossibility(updateDto.getRiskPossibility());
+        existingRiskFactor.setRiskCriticality(updateDto.getRiskCriticality());
+        existingRiskFactor.setRiskReductionMeasure1(updateDto.getRiskReductionMeasure1());
+        existingRiskFactor.setRiskReductionMeasure2(updateDto.getRiskReductionMeasure2());
+        existingRiskFactor.setIsRiskMeasureCompletion(updateDto.getIsRiskMeasureCompletion());
+        
+        // 추가 정보 필드 업데이트 (후 입력)
+        existingRiskFactor.setExecutionDate(updateDto.getExecutionDate());
+        existingRiskFactor.setRiskFactorEvaluationType(updateDto.getRiskFactorEvaluationType());
+        
+        // 관계 엔티티는 컨트롤러에서 처리하도록 함
+        existingRiskFactor.setAuthorityDivisionLevel(updateDto.getAuthorityDivisionLevel());
+        
+        existingRiskFactor.setLatitude(updateDto.getLatitude());
+        existingRiskFactor.setLongitude(updateDto.getLongitude());
+        existingRiskFactor.setRelatedLaw(updateDto.getRelatedLaw());
+        existingRiskFactor.setIsRiskReductionMeasure(updateDto.getIsRiskReductionMeasure());
+        existingRiskFactor.setEvaluator1(updateDto.getEvaluator1());
+        existingRiskFactor.setEvaluator2(updateDto.getEvaluator2());
+        
+        // 개선등록 관련 필드 업데이트
+        existingRiskFactor.setImpResult(updateDto.getImpResult());
+        existingRiskFactor.setImpRiskPossibility(updateDto.getImpRiskPossibility());
+        existingRiskFactor.setImpRiskCriticality(updateDto.getImpRiskCriticality());
+        
+        return riskFactorRepository.save(existingRiskFactor);
     }
 } 

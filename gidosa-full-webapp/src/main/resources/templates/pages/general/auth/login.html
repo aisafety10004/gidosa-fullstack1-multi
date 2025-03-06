@@ -46,12 +46,20 @@
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <input id="remember-me" name="remember-me" type="checkbox"
+                    <input id="id-save" type="checkbox"
                            class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
-                    <label for="remember-me" class="ml-2 block text-sm text-gray-900">
+                    <label for="id-save" class="ml-2 block text-sm text-gray-900">
                         아이디 저장
                     </label>
                 </div>
+
+<!--                <div class="flex items-center">-->
+<!--                    <input id="remember-me" type="checkbox"-->
+<!--                           class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">-->
+<!--                    <label for="remember-me" class="ml-2 block text-sm text-gray-900">-->
+<!--                        자동 로그인-->
+<!--                    </label>-->
+<!--                </div>-->
 
                 <div class="text-sm">
                     <a th:href="@{${'/general/member/find-id?constructionId=' + construction.id}}" class="font-medium text-primary hover:text-primary-dark">
@@ -81,14 +89,14 @@
             const savedUsername = localStorage.getItem('savedUsername');
             if (savedUsername) {
                 document.getElementById('username').value = savedUsername;
-                document.getElementById('remember-me').checked = true;
+                document.getElementById('id-save').checked = true;
             }
 
             // 폼 제출 시 자동 로그인 처리
             document.querySelector('form').addEventListener('submit', function() {
-                const rememberMe = document.getElementById('remember-me').checked;
                 const username = document.getElementById('username').value;
-                
+                const rememberMe = document.getElementById('id-save').checked;
+
                 if (rememberMe) {
                     localStorage.setItem('savedUsername', username);
                 } else {

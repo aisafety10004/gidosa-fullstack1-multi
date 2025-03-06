@@ -23,14 +23,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const savedUsername = getCookie('rememberedUsername');
     if (savedUsername) {
         document.getElementById('username').value = savedUsername;
-        document.getElementById('remember-me').checked = true;
+        document.getElementById('id-save').checked = true;
     }
 });
 
 // 로그인 폼 제출 시 Remember Me 체크 여부에 따라 쿠키 저장
 document.querySelector('.user').addEventListener('submit', function(e) {
     const username = document.getElementById('username').value;
-    const rememberMe = document.getElementById('remember-me').checked;
+    const rememberMe = document.getElementById('id-save').checked;
     
     if (rememberMe) {
         setCookie('rememberedUsername', username, 14); // 14일 동안 저장
