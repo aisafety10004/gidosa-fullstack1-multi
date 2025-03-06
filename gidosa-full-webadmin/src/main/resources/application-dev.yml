@@ -96,4 +96,5 @@ jwt:
 
 file:
   upload:
-    path: ~/apps-gidosa/attachment-files
+#    path: ~/apps-gidosa/attachment-files
+    path: /home/gapture/apps-gidosa/attachment-files
