@@ -412,8 +412,11 @@
                         <button type="submit" class="btn btn-primary me-2" style="background-color: #2b3990;">
                             <i class="fas fa-save"></i> 개선결과 등록
                         </button>
+                        <a th:href="@{/safety/risk-factor/list}" class="btn btn-info">
+                            <i class="fas fa-times"></i> 목록(처음)
+                        </a>
                         <a th:href="@{/safety/risk-factor/detail/{id}(id=${riskFactorDto.id})}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> 취소
+                            <i class="fas fa-times"></i> 읽기전용
                         </a>
                     </div>
                 </form>
