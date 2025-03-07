@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorUpdateDto;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
+import net.gidosa.rdb.models.entities.dbs.mysql.FileAttachment;
 import net.gidosa.rdb.models.entities.dbs.mysql.RiskFactor;
 import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
+import net.gidosa.rdb.repositories.mysql.jpa.FileAttachmentJpaRepository;
 import net.gidosa.rdb.repositories.mysql.jpa.RiskFactorJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,7 @@ public class RiskFactorService {
 
     private final RiskFactorJpaRepository riskFactorRepository;
     private final ConstructionJpaRepository constructionRepository;
+    private final FileAttachmentJpaRepository fileAttachmentRepository;
 
     @Transactional(readOnly = true)
     public Page<RiskFactor> searchRiskFactorsByExecutionDate(Long constructionId, String siteName, LocalDate executionDateStart, LocalDate executionDateEnd, Pageable pageable) {
@@ -105,6 +108,26 @@ public class RiskFactorService {
         existingRiskFactor.setImpRiskPossibility(riskFactorDetails.getImpRiskPossibility());
         existingRiskFactor.setImpRiskCriticality(riskFactorDetails.getImpRiskCriticality());
         
+        // 개선 이미지 URL은 null이 아닌 경우에만 업데이트 (파일 업로드 처리를 위해)
+        if (!Strings.isNullOrEmpty(riskFactorDetails.getImpWorkImage1Url())) {
+            existingRiskFactor.setImpWorkImage1Url(riskFactorDetails.getImpWorkImage1Url());
+        }
+        if (!Strings.isNullOrEmpty(riskFactorDetails.getImpWorkImage2Url())) {
+            existingRiskFactor.setImpWorkImage2Url(riskFactorDetails.getImpWorkImage2Url());
+        }
+        
+        // 개선조치 관련 정보 업데이트
+        existingRiskFactor.setImpCountCorrectAction(riskFactorDetails.getImpCountCorrectAction());
+        existingRiskFactor.setImpCountNoCorrectAction(riskFactorDetails.getImpCountNoCorrectAction());
+        existingRiskFactor.setImpNoCorrectContent(riskFactorDetails.getImpNoCorrectContent());
+        existingRiskFactor.setImpNoCorrectContentPlan(riskFactorDetails.getImpNoCorrectContentPlan());
+        existingRiskFactor.setImpCorrectDate(riskFactorDetails.getImpCorrectDate());
+        existingRiskFactor.setImpCorrectPerson(riskFactorDetails.getImpCorrectPerson());
+        existingRiskFactor.setImpCorrectCompletionDate(riskFactorDetails.getImpCorrectCompletionDate());
+        existingRiskFactor.setImpCorrectConfirmPerson(riskFactorDetails.getImpCorrectConfirmPerson());
+        
+        // FileAttachment 처리는 별도로 해야 함 (컨트롤러에서 처리)
+        
         return riskFactorRepository.save(existingRiskFactor);
     }
 
@@ -159,6 +182,31 @@ public class RiskFactorService {
         existingRiskFactor.setImpResult(updateDto.getImpResult());
         existingRiskFactor.setImpRiskPossibility(updateDto.getImpRiskPossibility());
         existingRiskFactor.setImpRiskCriticality(updateDto.getImpRiskCriticality());
+        
+        // 개선 이미지 URL은 null이 아닌 경우에만 업데이트 (파일 업로드 처리를 위해)
+        if (!Strings.isNullOrEmpty(updateDto.getImpWorkImage1Url())) {
+            existingRiskFactor.setImpWorkImage1Url(updateDto.getImpWorkImage1Url());
+        }
+        if (!Strings.isNullOrEmpty(updateDto.getImpWorkImage2Url())) {
+            existingRiskFactor.setImpWorkImage2Url(updateDto.getImpWorkImage2Url());
+        }
+        
+        // 개선조치 관련 정보 업데이트
+        existingRiskFactor.setImpCountCorrectAction(updateDto.getImpCountCorrectAction());
+        existingRiskFactor.setImpCountNoCorrectAction(updateDto.getImpCountNoCorrectAction());
+        existingRiskFactor.setImpNoCorrectContent(updateDto.getImpNoCorrectContent());
+        existingRiskFactor.setImpNoCorrectContentPlan(updateDto.getImpNoCorrectContentPlan());
+        existingRiskFactor.setImpCorrectDate(updateDto.getImpCorrectDate());
+        existingRiskFactor.setImpCorrectPerson(updateDto.getImpCorrectPerson());
+        existingRiskFactor.setImpCorrectCompletionDate(updateDto.getImpCorrectCompletionDate());
+        existingRiskFactor.setImpCorrectConfirmPerson(updateDto.getImpCorrectConfirmPerson());
+        
+        // FileAttachment 처리
+        if (updateDto.getFileAttachment1Id() != null) {
+            FileAttachment fileAttachment = fileAttachmentRepository.findById(updateDto.getFileAttachment1Id())
+                    .orElse(null);
+            existingRiskFactor.setFileAttachment1(fileAttachment);
+        }
         
         return riskFactorRepository.save(existingRiskFactor);
     }

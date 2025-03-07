@@ -11,6 +11,7 @@ import net.gidosa.full.webadmin.models.dtos.RiskFactorUpdateDto;
 import net.gidosa.full.webadmin.services.FileStorageService;
 import net.gidosa.full.webadmin.services.RiskFactorService;
 import net.gidosa.rdb.models.entities.dbs.mysql.RiskFactor;
+import net.gidosa.rdb.models.entities.dbs.mysql.FileAttachment;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,11 +23,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.beans.factory.annotation.Value;
+import net.gidosa.rdb.repositories.mysql.jpa.FileAttachmentJpaRepository;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Controller
@@ -36,6 +42,10 @@ public class RiskFactorController {
     
     private final RiskFactorService riskFactorService;
     private final FileStorageService fileStorageService;
+    private final FileAttachmentJpaRepository fileAttachmentJpaRepository;
+    
+    @Value("${file.upload.path}")
+    private String uploadDir;
     
     @GetMapping({"", "/"})
     public String index() {
@@ -169,6 +179,19 @@ public class RiskFactorController {
             // 위험성 크기 계산 (가능성 * 중대성)
             riskFactorUpdateDto.setRiskSize((short) (riskFactorUpdateDto.getRiskPossibility() * riskFactorUpdateDto.getRiskCriticality()));
             
+            // 개선 관련 필드 처리
+            if (riskFactorUpdateDto.getImpRiskPossibility() == 0) {
+                riskFactorUpdateDto.setImpRiskPossibility((byte) 1);
+            }
+            
+            if (riskFactorUpdateDto.getImpRiskCriticality() == 0) {
+                riskFactorUpdateDto.setImpRiskCriticality((byte) 1);
+            }
+            
+            // 개선 위험성 크기 계산 (가능성 * 중대성) - UI 표시용으로만 사용
+            // Entity에는 저장되지 않음
+            riskFactorUpdateDto.setImpRiskSize((short) (riskFactorUpdateDto.getImpRiskPossibility() * riskFactorUpdateDto.getImpRiskCriticality()));
+            
             riskFactorService.updateRiskFactorFromUpdateDto(id, riskFactorUpdateDto);
             redirectAttributes.addFlashAttribute("message", "위험요인이 성공적으로 개선되었습니다.");
         } catch (Exception e) {
@@ -195,7 +218,44 @@ public class RiskFactorController {
     // 공통 모델 속성 추가 메서드
     private void addCommonModelAttributes(Model model) {
         model.addAttribute("riskClassificationOptions", RiskFactor.RiskClassification.values());
-        model.addAttribute("riskDetailFactorOptions", RiskFactor.RiskDetailFactor.values());
+        
+        // Create JavaScript-friendly maps for risk detail factor options
+        List<Map<String, String>> mechanicalEquipmentOptions = Arrays.stream(RiskFactor.RiskDetailFactorMechanicalEquipment.values())
+                .map(option -> Map.of("value", option.name(), "text", option.getDisplayName()))
+                .collect(Collectors.toList());
+        
+        List<Map<String, String>> electricalOptions = Arrays.stream(RiskFactor.RiskDetailFactorElectrical.values())
+                .map(option -> Map.of("value", option.name(), "text", option.getDisplayName()))
+                .collect(Collectors.toList());
+        
+        List<Map<String, String>> chemicalSubstanceOptions = Arrays.stream(RiskFactor.RiskDetailFactorChemicalSubstance.values())
+                .map(option -> Map.of("value", option.name(), "text", option.getDisplayName()))
+                .collect(Collectors.toList());
+        
+        List<Map<String, String>> biologicalOptions = Arrays.stream(RiskFactor.RiskDetailFactorBiological.values())
+                .map(option -> Map.of("value", option.name(), "text", option.getDisplayName()))
+                .collect(Collectors.toList());
+        
+        List<Map<String, String>> workCharacteristicsOptions = Arrays.stream(RiskFactor.RiskDetailFactorWorkCharacteristics.values())
+                .map(option -> Map.of("value", option.name(), "text", option.getDisplayName()))
+                .collect(Collectors.toList());
+        
+        List<Map<String, String>> workEnvironmentOptions = Arrays.stream(RiskFactor.RiskDetailFactorWorkEnvironment.values())
+                .map(option -> Map.of("value", option.name(), "text", option.getDisplayName()))
+                .collect(Collectors.toList());
+        
+        List<Map<String, String>> testOptions = Arrays.stream(RiskFactor.RiskDetailFactorTest.values())
+                .map(option -> Map.of("value", option.name(), "text", option.getDisplayName()))
+                .collect(Collectors.toList());
+        
+        model.addAttribute("mechanicalEquipmentOptions", mechanicalEquipmentOptions);
+        model.addAttribute("electricalOptions", electricalOptions);
+        model.addAttribute("chemicalSubstanceOptions", chemicalSubstanceOptions);
+        model.addAttribute("biologicalOptions", biologicalOptions);
+        model.addAttribute("workCharacteristicsOptions", workCharacteristicsOptions);
+        model.addAttribute("workEnvironmentOptions", workEnvironmentOptions);
+        model.addAttribute("testOptions", testOptions);
+        
         model.addAttribute("riskReductionMeasureFirstOptions", RiskFactor.RiskReductionMeasureFirst.values());
         model.addAttribute("riskMeasureCompletionOptions", RiskFactor.RiskMeasureCompletion.values());
         
@@ -251,6 +311,48 @@ public class RiskFactorController {
             //String workImage2Url = fileStorageService.storeFile(workImage2File, "risk-factors");
             String workImage2Url = fileStorageService.storeFile(workImage2File, Strings.EMPTY);
             riskFactorDto.setWorkImage2Url(workImage2Url);
+        }
+        
+        // 개선 관련 파일 처리
+        if (riskFactorDto instanceof RiskFactorUpdateDto) {
+            RiskFactorUpdateDto updateDto = (RiskFactorUpdateDto) riskFactorDto;
+            
+            // 개선 현장사진1 처리
+            MultipartFile impWorkImage1File = updateDto.getImpWorkImage1File();
+            if (impWorkImage1File != null && !impWorkImage1File.isEmpty()) {
+                String impWorkImage1Url = fileStorageService.storeFile(impWorkImage1File, Strings.EMPTY);
+                updateDto.setImpWorkImage1Url(impWorkImage1Url);
+            }
+            
+            // 개선 현장사진2 처리
+            MultipartFile impWorkImage2File = updateDto.getImpWorkImage2File();
+            if (impWorkImage2File != null && !impWorkImage2File.isEmpty()) {
+                String impWorkImage2Url = fileStorageService.storeFile(impWorkImage2File, Strings.EMPTY);
+                updateDto.setImpWorkImage2Url(impWorkImage2Url);
+            }
+            
+            // 첨부파일 처리
+            MultipartFile fileAttachment1File = updateDto.getFileAttachment1File();
+            if (fileAttachment1File != null && !fileAttachment1File.isEmpty()) {
+                try {
+                    // 파일 저장
+                    String storedFilename = fileStorageService.storeFile(fileAttachment1File, Strings.EMPTY);
+                    
+                    // FileAttachment 엔티티 생성 및 저장
+                    FileAttachment fileAttachment = new FileAttachment();
+                    fileAttachment.setOriginalFilename(fileAttachment1File.getOriginalFilename());
+                    fileAttachment.setStoredFilename(storedFilename);
+                    fileAttachment.setContentType(fileAttachment1File.getContentType());
+                    fileAttachment.setFileSize(fileAttachment1File.getSize());
+                    fileAttachment.setFilePath(uploadDir + "/" + storedFilename);
+                    
+                    // FileAttachment 저장
+                    FileAttachment savedFileAttachment = fileAttachmentJpaRepository.save(fileAttachment);
+                    updateDto.setFileAttachment1Id(savedFileAttachment.getId());
+                } catch (Exception e) {
+                    log.error("Error processing file attachment", e);
+                }
+            }
         }
     }
 }

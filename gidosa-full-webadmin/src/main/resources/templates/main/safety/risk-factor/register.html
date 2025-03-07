@@ -169,10 +169,7 @@
                             <div class="col-md-6 mb-3">
                                 <label for="riskDetailFactor" class="form-label required-label">위험 요인(상세)</label>
                                 <select class="form-select" id="riskDetailFactor" th:field="*{riskDetailFactor}" required>
-                                    <option value="">-- 위험 요인 선택 --</option>
-                                    <option th:each="option : ${riskDetailFactorOptions}"
-                                            th:value="${option}"
-                                            th:text="${option.displayName}"></option>
+                                    <option value="">-- 위험 분류를 선택하세요 --</option>
                                 </select>
                             </div>
                         </div>
@@ -258,12 +255,56 @@
 </div>
 
 <th:block layout:fragment="script">
-    <script>
+    <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function() {
             // 위험성 크기 계산
             const riskPossibilitySelect = document.getElementById('riskPossibility');
             const riskCriticalitySelect = document.getElementById('riskCriticality');
             const riskSizeDisplay = document.getElementById('riskSizeDisplay');
+            
+            // 위험 분류와 위험 요인(상세) 드롭다운 요소
+            const riskClassificationSelect = document.getElementById('riskClassification');
+            const riskDetailFactorSelect = document.getElementById('riskDetailFactor');
+            
+            // 위험 분류에 따른 위험 요인(상세) 옵션 매핑
+            const detailFactorOptions = {
+                'MECHANICAL_EQUIPMENT': /*[[${mechanicalEquipmentOptions}]]*/ [],
+                'ELECTRICAL': /*[[${electricalOptions}]]*/ [],
+                'CHEMICAL_SUBSTANCE': /*[[${chemicalSubstanceOptions}]]*/ [],
+                'BIOLOGICAL': /*[[${biologicalOptions}]]*/ [],
+                'WORK_CHARACTERISTICS': /*[[${workCharacteristicsOptions}]]*/ [],
+                'WORK_ENVIRONMENT': /*[[${workEnvironmentOptions}]]*/ []
+            };
+            
+            // 위험 분류 변경 시 위험 요인(상세) 옵션 업데이트
+            function updateRiskDetailFactorOptions() {
+                const selectedClassification = riskClassificationSelect.value;
+                
+                // 기존 옵션 제거
+                riskDetailFactorSelect.innerHTML = '';
+                
+                // 기본 옵션 추가
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.text = selectedClassification ? '-- 위험 요인(상세) 선택 --' : '-- 위험 분류를 선택하세요 --';
+                riskDetailFactorSelect.appendChild(defaultOption);
+                
+                // 선택된 위험 분류에 따른 옵션 추가
+                if (selectedClassification && detailFactorOptions[selectedClassification]) {
+                    detailFactorOptions[selectedClassification].forEach(option => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option.value;
+                        optionElement.text = option.text;
+                        riskDetailFactorSelect.appendChild(optionElement);
+                    });
+                }
+            }
+            
+            // 위험 분류 변경 이벤트 리스너 등록
+            riskClassificationSelect.addEventListener('change', updateRiskDetailFactorOptions);
+            
+            // 초기 로드 시 위험 요인(상세) 옵션 설정
+            updateRiskDetailFactorOptions();
             
             function calculateRiskSize() {
                 const possibility = parseInt(riskPossibilitySelect.value) || 1;

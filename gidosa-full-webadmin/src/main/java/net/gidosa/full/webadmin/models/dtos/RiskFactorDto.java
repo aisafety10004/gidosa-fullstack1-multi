@@ -35,7 +35,8 @@ public class RiskFactorDto {
     
     private RiskFactor.RiskClassification riskClassification;
     
-    private RiskFactor.RiskDetailFactor riskDetailFactor;
+    //private RiskFactor.RiskDetailFactor riskDetailFactor;
+    private String riskDetailFactor;
     
     private String riskSituationResult;
     

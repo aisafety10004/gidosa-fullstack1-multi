@@ -6,8 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import net.gidosa.rdb.models.entities.dbs.mysql.FileAttachment;
 import net.gidosa.rdb.models.entities.dbs.mysql.RiskFactor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -48,6 +50,37 @@ public class RiskFactorUpdateDto extends RiskFactorDto {
     
     private byte impRiskCriticality;
     
+    private short impRiskSize;
+    
+    // 개선 관련 필드
+    private String impWorkImage1Url;
+    private MultipartFile impWorkImage1File;
+    
+    private String impWorkImage2Url;
+    private MultipartFile impWorkImage2File;
+    
+    private Short impCountCorrectAction;
+    
+    private Short impCountNoCorrectAction;
+    
+    private String impNoCorrectContent;
+    
+    private String impNoCorrectContentPlan;
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate impCorrectDate;
+    
+    private String impCorrectPerson;
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate impCorrectCompletionDate;
+    
+    private String impCorrectConfirmPerson;
+    
+    private MultipartFile fileAttachment1File;
+    private Long fileAttachment1Id;
+    private FileAttachment fileAttachment1;
+    
     // Convert DTO to Entity (overriding the parent method)
     @Override
     public RiskFactor toEntity() {
@@ -68,7 +101,20 @@ public class RiskFactorUpdateDto extends RiskFactorDto {
         riskFactor.setImpResult(impResult);
         riskFactor.setImpRiskPossibility(impRiskPossibility);
         riskFactor.setImpRiskCriticality(impRiskCriticality);
+        riskFactor.setImpWorkImage1Url(impWorkImage1Url);
+        riskFactor.setImpWorkImage2Url(impWorkImage2Url);
+        riskFactor.setImpCountCorrectAction(impCountCorrectAction);
+        riskFactor.setImpCountNoCorrectAction(impCountNoCorrectAction);
+        riskFactor.setImpNoCorrectContent(impNoCorrectContent);
+        riskFactor.setImpNoCorrectContentPlan(impNoCorrectContentPlan);
+        riskFactor.setImpCorrectDate(impCorrectDate);
+        riskFactor.setImpCorrectPerson(impCorrectPerson);
+        riskFactor.setImpCorrectCompletionDate(impCorrectCompletionDate);
+        riskFactor.setImpCorrectConfirmPerson(impCorrectConfirmPerson);
         
+        // FileAttachment 처리는 서비스 레이어에서 별도로 처리해야 함
+        //riskFactor.setFileAttachment1(fileAttachment1);
+
         return riskFactor;
     }
     
@@ -125,6 +171,22 @@ public class RiskFactorUpdateDto extends RiskFactorDto {
         dto.setImpResult(riskFactor.getImpResult());
         dto.setImpRiskPossibility(riskFactor.getImpRiskPossibility());
         dto.setImpRiskCriticality(riskFactor.getImpRiskCriticality());
+        dto.setImpWorkImage1Url(riskFactor.getImpWorkImage1Url());
+        dto.setImpWorkImage2Url(riskFactor.getImpWorkImage2Url());
+        dto.setImpCountCorrectAction(riskFactor.getImpCountCorrectAction());
+        dto.setImpCountNoCorrectAction(riskFactor.getImpCountNoCorrectAction());
+        dto.setImpNoCorrectContent(riskFactor.getImpNoCorrectContent());
+        dto.setImpNoCorrectContentPlan(riskFactor.getImpNoCorrectContentPlan());
+        dto.setImpCorrectDate(riskFactor.getImpCorrectDate());
+        dto.setImpCorrectPerson(riskFactor.getImpCorrectPerson());
+        dto.setImpCorrectCompletionDate(riskFactor.getImpCorrectCompletionDate());
+        dto.setImpCorrectConfirmPerson(riskFactor.getImpCorrectConfirmPerson());
+        
+        // FileAttachment 처리
+        if (riskFactor.getFileAttachment1() != null) {
+            dto.setFileAttachment1Id(riskFactor.getFileAttachment1().getId());
+            dto.setFileAttachment1(riskFactor.getFileAttachment1());
+        }
         
         return dto;
     }

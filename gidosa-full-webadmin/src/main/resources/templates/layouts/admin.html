@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>안전지도사 관리 어드민</title>
     <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
-    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
     <script src="/vendor/jquery/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Toast UI Editor CSS -->
@@ -21,7 +22,7 @@
 <body class="">
 <div class="d-flex" id="wrapper">
     <!-- Sidebar-->
-    <div class="border-end bg-white" id="sidebar-wrapper">
+    <div class="border-end bg-white" id="sidebar-wrapper" style="overflow: hidden;">
         <div class="sidebar-heading border-bottom bg-light" style="padding-bottom: 20px; text-align: center;">
             <a href="/main" style="text-decoration: none; color: inherit;">안전지도사<br>관리 어드민</a>
         </div>

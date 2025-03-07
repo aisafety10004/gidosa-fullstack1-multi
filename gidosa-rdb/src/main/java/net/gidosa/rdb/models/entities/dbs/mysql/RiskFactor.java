@@ -61,9 +61,11 @@ public class RiskFactor {
     @Column(nullable = false)
     private RiskClassification riskClassification;      // 위험 분류
 
-    @Enumerated(EnumType.STRING)
+    // @Enumerated(EnumType.STRING)
+    // @Column(nullable = false)
+    // private RiskDetailFactor riskDetailFactor;          // 위험 요인(상세)
     @Column(nullable = false)
-    private RiskDetailFactor riskDetailFactor;          // 위험 요인(상세)
+    private String riskDetailFactor;          // 위험 요인(상세)
 
     @Column(nullable = false)
     private String riskSituationResult;    // (예상)위험상황 및 결과
@@ -121,10 +123,42 @@ public class RiskFactor {
     @Column
     private byte impRiskCriticality;    // 개선 중대성
 
-    // @Column(nullable = false)
+    // @Column
     // private short impRiskSize;          // 개선 위험성크기(가능성 * 중대성)
 
-    
+    @Column
+    private String impWorkImage1Url;       // 개선 현장사진1
+
+    @Column
+    private String impWorkImage2Url;          // 개선 현장사진2
+
+    @Column
+    private Short impCountCorrectAction;      // 개선조치 이행건수
+
+    @Column
+    private Short impCountNoCorrectAction;    // 미개선 조치건수
+
+    @Column
+    private String impNoCorrectContent;        // 미개선 조치내용
+
+    @Column
+    private String impNoCorrectContentPlan;    // 미개선사항 조치계획
+
+    @Column
+    private LocalDate impCorrectDate;      // 개선조치일
+
+    @Column
+    private String impCorrectPerson;    // 개선조치 담당자
+
+    @Column
+    private LocalDate impCorrectCompletionDate;      // 개선조치 완료일
+
+    @Column
+    private String impCorrectConfirmPerson;      // 개선조치 확인자
+
+    @OneToOne
+    @JoinColumn(name = "file_attachment1_id")
+    private FileAttachment fileAttachment1;
 
     // ------------------------------------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY)
@@ -198,7 +232,107 @@ public class RiskFactor {
         }
     }
 
-    public enum RiskDetailFactor {
+    // 기계(설비)적 요인
+    public enum RiskDetailFactorMechanicalEquipment {
+        MECHANICAL_EQUIPMENT_STUCKNESS("끼임(감김)"),
+        MECHANICAL_EQUIPMENT_SURFACE("위험한 표면(절단, 베임 등)"),
+        MECHANICAL_EQUIPMENT_DROPPING_UPDOWN("기계(설비)의 낙하, 비래, 전복, 전도"),
+        MECHANICAL_EQUIPMENT_COLLISION("충돌위험"),
+        MECHANICAL_EQUIPMENT_COLLAPSE("넘어짐(미끄러짐, 걸림 등)"),
+        MECHANICAL_EQUIPMENT_FALLING_RISK("추락위험(개구부)"),
+        ;
+
+        private final String displayName;
+
+        RiskDetailFactorMechanicalEquipment(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
+    // 전기적 요인
+    public enum RiskDetailFactorElectrical {
+        ELECTRICAL_SHOCK("감전(안전전압초과)"),
+        ELECTRICAL_SURFACE("아크"),
+        ELECTRICAL_STATIC("정전기"),
+        ELECTRICAL_EXPLOSION("화재/폭발 위험"),
+        ;
+
+        private final String displayName;
+
+        RiskDetailFactorElectrical(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
+    // 화학(물질)적 요인
+    public enum RiskDetailFactorChemicalSubstance {
+        CHEMICAL_SUBSTANCE_GAS("가스"),
+        CHEMICAL_SUBSTANCE_STEAM("증기"),
+        ;
+
+        private final String displayName;
+
+        RiskDetailFactorChemicalSubstance(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
+    // 생물학적 요인
+    public enum RiskDetailFactorBiological {
+        BIOLOGICAL_PATHOGEN("병원성 미생물, 바이러스 감염"),
+        ;
+
+        private final String displayName;
+
+        RiskDetailFactorBiological(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
+    // 작업특성 요인
+    public enum RiskDetailFactorWorkCharacteristics {
+        WORK_CHARACTERISTICS_NOISE("소음"),
+        ;
+
+        private final String displayName;
+
+        RiskDetailFactorWorkCharacteristics(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
+    // 작업환경 요인
+    public enum RiskDetailFactorWorkEnvironment {
+        WORK_ENVIRONMENT_CLIMATE("기후/고온/한랭"),
+        ;
+
+        private final String displayName;
+
+        RiskDetailFactorWorkEnvironment(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
+
+    public enum RiskDetailFactorTest {
         FALLING("떨어짐"),
         SLIPPING("넘어짐"),
         COLLISION_CONTACT("부딪힘/접촉"),
@@ -215,7 +349,7 @@ public class RiskFactor {
 
         private final String displayName;
 
-        RiskDetailFactor(String displayName) {
+        RiskDetailFactorTest(String displayName) {
             this.displayName = displayName;
         }
 
@@ -223,6 +357,8 @@ public class RiskFactor {
             return displayName;
         }
     }
+
+
 
     public enum RiskReductionMeasureFirst {
         EXAMPLE1("1. 위험한 작업의 폐지·변경, 유해·위험물질 대체 등의 조치, 설계나 계획 단계에서 위험성을 제거 또는 저감하는 조치"),
