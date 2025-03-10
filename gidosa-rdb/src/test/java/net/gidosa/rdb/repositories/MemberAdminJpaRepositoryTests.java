@@ -8,5 +8,5 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
-public class MemberAdminJpaRepositoryTests extends SpringBootTestSupport{
+public class MemberAdminJpaRepositoryTests extends SpringBootTestSupport {
 }

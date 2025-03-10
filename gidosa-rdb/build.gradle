@@ -61,7 +61,9 @@ dependencies {
 //    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
 
 //    testImplementation platform('org.junit:junit-bom:5.9.1')
-//    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'com.h2database:h2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 // Querydsl 설정부
