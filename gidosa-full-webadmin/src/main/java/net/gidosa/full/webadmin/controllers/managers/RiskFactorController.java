@@ -244,9 +244,9 @@ public class RiskFactorController {
                 .map(option -> Map.of("value", option.name(), "text", option.getDisplayName()))
                 .collect(Collectors.toList());
         
-        List<Map<String, String>> testOptions = Arrays.stream(RiskFactor.RiskDetailFactorTest.values())
-                .map(option -> Map.of("value", option.name(), "text", option.getDisplayName()))
-                .collect(Collectors.toList());
+//        List<Map<String, String>> testOptions = Arrays.stream(RiskFactor.RiskDetailFactorTest.values())
+//                .map(option -> Map.of("value", option.name(), "text", option.getDisplayName()))
+//                .collect(Collectors.toList());
         
         model.addAttribute("mechanicalEquipmentOptions", mechanicalEquipmentOptions);
         model.addAttribute("electricalOptions", electricalOptions);
@@ -254,7 +254,7 @@ public class RiskFactorController {
         model.addAttribute("biologicalOptions", biologicalOptions);
         model.addAttribute("workCharacteristicsOptions", workCharacteristicsOptions);
         model.addAttribute("workEnvironmentOptions", workEnvironmentOptions);
-        model.addAttribute("testOptions", testOptions);
+//        model.addAttribute("testOptions", testOptions);
         
         model.addAttribute("riskReductionMeasureFirstOptions", RiskFactor.RiskReductionMeasureFirst.values());
         model.addAttribute("riskMeasureCompletionOptions", RiskFactor.RiskMeasureCompletion.values());

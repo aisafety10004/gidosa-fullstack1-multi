@@ -273,7 +273,14 @@ public class RiskFactor {
     // 화학(물질)적 요인
     public enum RiskDetailFactorChemicalSubstance {
         CHEMICAL_SUBSTANCE_GAS("가스"),
-        CHEMICAL_SUBSTANCE_STEAM("증기"),
+        CHEMICAL_SUBSTANCE_VAPOR("증기"),
+        CHEMICAL_SUBSTANCE_AEROSOL("에어로졸-흠"),
+        CHEMICAL_SUBSTANCE_LIQUID_MIST("액체, 미스트"),
+        CHEMICAL_SUBSTANCE_SOLID("고체(분진)"),
+        CHEMICAL_SUBSTANCE_REACTIVE_SUBSTANCE("반응성 물질"),
+        CHEMICAL_SUBSTANCE_RADIATION("방사선"),
+        CHEMICAL_SUBSTANCE_EXPLOSIVES_DETONATION("화재/폭발"),
+        CHEMICAL_SUBSTANCE_COMBUSTION_EXPLOSION("복사열/폭발과압"),
         ;
 
         private final String displayName;
@@ -289,6 +296,10 @@ public class RiskFactor {
     // 생물학적 요인
     public enum RiskDetailFactorBiological {
         BIOLOGICAL_PATHOGEN("병원성 미생물, 바이러스 감염"),
+        BIOLOGICAL_GENETICALLY_ORGANISMS("유전자 변형물질(GMO)"),
+        BIOLOGICAL_ALLERGENS_MICROORGANISMS("알러지 및 미생물"),
+        BIOLOGICAL_ANIMALS("동물"),
+        BIOLOGICAL_PLANTS("식물"),
         ;
 
         private final String displayName;
@@ -304,6 +315,16 @@ public class RiskFactor {
     // 작업특성 요인
     public enum RiskDetailFactorWorkCharacteristics {
         WORK_CHARACTERISTICS_NOISE("소음"),
+        WORK_CHARACTERISTICS_SHOCKWAVE("초음파-초저주파음"),
+        WORK_CHARACTERISTICS_VIBRATION("진동"),
+        WORK_CHARACTERISTICS_WORKER_MISTAKE("근로자의 실수(휴먼에러)"),
+        WORK_CHARACTERISTICS_LOW_HIGH_TEMPERATURE ("저압 또는 고압상태"),
+        WORK_CHARACTERISTICS_THERMAL_HAZARD("질식위험-산소결핍"),
+        WORK_CHARACTERISTICS_HEAVY_LIFTING("중량물 취급작업"),
+        WORK_CHARACTERISTICS_REPETITIVE_TASKS("반복작업"),
+        WORK_CHARACTERISTICS_UNSTABLE_WORKING("불안정한 작업자세"),
+        WORK_CHARACTERISTICS_WORK_TOOLS("작업(조작)도구"),
+        WORK_CHARACTERISTICS_CLIMATE_ALTITUDE_COLD("기후/고온/한랭"),
         ;
 
         private final String displayName;
@@ -318,7 +339,14 @@ public class RiskFactor {
     }
     // 작업환경 요인
     public enum RiskDetailFactorWorkEnvironment {
-        WORK_ENVIRONMENT_CLIMATE("기후/고온/한랭"),
+        WORK_ENVIRONMENT_CLIMATE_ALTITUDE_COLD("기후/고온/한랭"),
+        WORK_ENVIRONMENT_LIGHTING("조명"),
+        WORK_ENVIRONMENT_SPACE_MOVEMENT("공간 및 이동통로"),
+        WORK_ENVIRONMENT_WORK_POSTURE("주변 근로자"),
+        WORK_ENVIRONMENT_WORKING_HOURS("작업시간"),
+        WORK_ENVIRONMENT_ORGANIZATIONAL_SAFETY_CULTURE("조직 안전문화"),
+        WORK_ENVIRONMENT_CHEMICAL_BURNS("화상"),
+        WORK_ENVIRONMENT_WORK_TOOLS("작업(조작)도구"),
         ;
 
         private final String displayName;
@@ -332,33 +360,31 @@ public class RiskFactor {
         }
     }
 
-    public enum RiskDetailFactorTest {
-        FALLING("떨어짐"),
-        SLIPPING("넘어짐"),
-        COLLISION_CONTACT("부딪힘/접촉"),
-        CAUGHT_IN_ENTANGLEMENT("끼임"),
-        COLLAPSE("무너짐"),
-        CUTTING_LACERATION_PUNCTURE("절단/베임/찔림"),
-        STRUCK_BY_OBJECT("맞음"),
-        ELECTRIC_SHOCK("감전"),
-        FIRE_EXPLOSION("화재/폭발"),
-        MUSCULOSKELETAL_DISORDER("근골질환"),
-        EXPOSURE_TO_EXTREME_TEMPERATURES("이상온도 노출, 접촉"),
-        OTHER("기타"),
-        ;
-
-        private final String displayName;
-
-        RiskDetailFactorTest(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public String getDisplayName() {
-            return displayName;
-        }
-    }
-
-
+//    public enum RiskDetailFactorTest {
+//        FALLING("떨어짐"),
+//        SLIPPING("넘어짐"),
+//        COLLISION_CONTACT("부딪힘/접촉"),
+//        CAUGHT_IN_ENTANGLEMENT("끼임"),
+//        COLLAPSE("무너짐"),
+//        CUTTING_LACERATION_PUNCTURE("절단/베임/찔림"),
+//        STRUCK_BY_OBJECT("맞음"),
+//        ELECTRIC_SHOCK("감전"),
+//        FIRE_EXPLOSION("화재/폭발"),
+//        MUSCULOSKELETAL_DISORDER("근골질환"),
+//        EXPOSURE_TO_EXTREME_TEMPERATURES("이상온도 노출, 접촉"),
+//        OTHER("기타"),
+//        ;
+//
+//        private final String displayName;
+//
+//        RiskDetailFactorTest(String displayName) {
+//            this.displayName = displayName;
+//        }
+//
+//        public String getDisplayName() {
+//            return displayName;
+//        }
+//    }
 
     public enum RiskReductionMeasureFirst {
         EXAMPLE1("1. 위험한 작업의 폐지·변경, 유해·위험물질 대체 등의 조치, 설계나 계획 단계에서 위험성을 제거 또는 저감하는 조치"),
