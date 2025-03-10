@@ -60,7 +60,9 @@
                 <label for="files" class="form-label">첨부파일 (최대 5개)</label>
                 <input type="file" class="form-control" id="files" name="files"
                        multiple accept="*/*" onchange="validateFiles(this)">
-                <small class="text-muted">파일은 최대 5개까지 첨부 가능합니다.(Ctrl + 클릭 시 여러 파일 선택 가능)</small>
+                <small class="text-muted">* 파일은 최대 5개까지 첨부 가능합니다.(Ctrl + 클릭 시 여러 파일 선택 가능)</small>
+                <br>
+                <small class="text-muted">* 파일크기는 15MB를 넘을 수 없습니다.</small>
             </div>
             <button type="submit" class="btn btn-primary">등록</button>
             <a href="/notice" class="btn btn-secondary">취소</a>
