@@ -61,6 +61,9 @@ public class Notice {
     @JoinColumn(name = "construction_id")
     private Construction construction;
 
+    @Column(columnDefinition = "TEXT")
+    private String mermaidCode;
+
     // 첨부파일 목록 조회를 위한 편의 메서드
     @Transient
     public List<FileAttachment> getAttachments() {

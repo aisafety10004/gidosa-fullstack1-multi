@@ -110,6 +110,7 @@ public class NoticeService {
         notice.setTitle(updatedNotice.getTitle());
         notice.setContent(updatedNotice.getContent());
         notice.setNoticeDate(updatedNotice.getNoticeDate());
+        notice.setMermaidCode(updatedNotice.getMermaidCode());
         
         // Construction 정보 업데이트
         notice.setConstruction(updatedNotice.getConstruction());

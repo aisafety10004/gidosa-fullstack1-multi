@@ -49,6 +49,13 @@
                 <input type="hidden" id="content" name="content">
             </div>
 
+            <div class="mb-3">
+                <h2>Mermaid 코드 입력</h2>
+                <textarea id="mermaid-input" name="mermaidCode" placeholder="Mermaid 코드를 입력하세요." cols="100" rows="10" style="resize: both;" th:text="${notice.mermaidCode}"></textarea>
+                <h3>Mermaid 다이어그램 미리보기</h3>
+                <div id="mermaid-preview" class="preview-box"></div>
+            </div>
+
             <!-- 기존 첨부파일 목록 -->
             <div class="mb-3" th:if="${!notice.attachments.empty}">
                 <label class="form-label">기존 첨부파일</label>
@@ -84,6 +91,7 @@
     </div>
 
     <th:block layout:fragment="script">
+    <script src="/js/mermaid/mermaid.min.js"></script>
     <script th:inline="javascript">
         const initialContent = /*[[${notice.content}]]*/ '';
         const editor = new toastui.Editor({
@@ -92,6 +100,33 @@
             initialEditType: 'markdown',
             previewStyle: 'vertical',
             initialValue: initialContent
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            mermaid.initialize({ startOnLoad: false });
+
+            const inputField = document.getElementById("mermaid-input");
+            const preview = document.getElementById("mermaid-preview");
+
+            const renderMermaid = () => {
+                const code = inputField.value.trim();
+                if (code === "") {
+                    preview.innerHTML = "<p style='color:red;'>Mermaid 코드가 없습니다.</p>";
+                    return;
+                }
+
+                mermaid.render("mermaid-diagram", code)
+                    .then(({ svg }) => {
+                        preview.innerHTML = svg;
+                    })
+                    .catch(err => {
+                        console.error("Mermaid Rendering Error:", err);
+                        preview.innerHTML = "<p style='color:red;'>잘못된 Mermaid 코드입니다.</p>";
+                    });
+            };
+
+            inputField.addEventListener("input", renderMermaid);
+            renderMermaid(); // 초기값 렌더링
         });
 
         function submitForm() {
@@ -115,6 +150,15 @@
                 alert('첨부파일은 최대 ' + maxFiles + '개까지만 추가 가능합니다.');
                 input.value = '';
                 return false;
+            }
+            
+            // 선택된 각 파일의 크기가 0인지 확인
+            for (let i = 0; i < input.files.length; i++) {
+                if (input.files[i].size === 0) {
+                    alert('빈 파일은 업로드할 수 없습니다.');
+                    input.value = '';
+                    return false;
+                }
             }
             return true;
         }

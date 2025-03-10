@@ -83,6 +83,7 @@ public class NoticeController {
     public String create(@ModelAttribute Notice notice, 
                         @RequestParam(value = "files", required = false) List<MultipartFile> files,
                         @RequestParam(value = "constructionId", required = false) Long constructionId,
+                        @RequestParam(value = "mermaidCode", required = false) String mermaidCode,
                         @AuthenticationPrincipal UserDetails userDetails,
                         RedirectAttributes redirectAttributes) {
         try {
@@ -94,6 +95,9 @@ public class NoticeController {
                     constructionId = construction.getId();
                 }
             }
+            
+            // Mermaid 코드 설정
+            notice.setMermaidCode(mermaidCode);
             
             noticeService.createNotice(notice, files, constructionId);
             redirectAttributes.addFlashAttribute("message", "공지사항이 성공적으로 등록되었습니다.");
@@ -160,6 +164,7 @@ public class NoticeController {
                         @ModelAttribute Notice notice,
                         @RequestParam(value = "files", required = false) List<MultipartFile> files,
                         @RequestParam(value = "constructionId", required = false) Long constructionId,
+                        @RequestParam(value = "mermaidCode", required = false) String mermaidCode,
                         @AuthenticationPrincipal UserDetails userDetails,
                         RedirectAttributes redirectAttributes) {
         try {
@@ -187,6 +192,9 @@ public class NoticeController {
                 // constructionId가 null이면 전체 공지사항으로 설정
                 notice.setConstruction(null);
             }
+            
+            // Mermaid 코드 설정
+            notice.setMermaidCode(mermaidCode);
             
             // 파일이 비어있는지 확인하고 필터링
             List<MultipartFile> validFiles = null;

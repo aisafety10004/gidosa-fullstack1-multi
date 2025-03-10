@@ -46,12 +46,15 @@ ENGINE=InnoDB
 -- ALTER TABLE notice ADD COLUMN construction_id BIGINT NULL;
 -- ALTER TABLE notice ADD CONSTRAINT fk_notice_construction FOREIGN KEY (construction_id) REFERENCES construction(id);
 
+-- Notice 테이블에 mermaidCode 컬럼 추가
+-- ALTER TABLE notice ADD COLUMN mermaid_code TEXT NULL;
+
 -- 자동 로그인(remember-me) 기능을 위한 테이블
 create table persistent_logins (
-	series varchar(64) primary key,			-- 내부id(series)
-	username varchar(64) not null,			-- loginId
-	token varchar(64) not null,				-- 자동로그인의 유효한 값
-	last_used timestamp not null			-- 자동로그인 마지막 사용 여부
+	username varchar(64) not null,
+	series varchar(64) primary key,
+	token varchar(64) not null,
+	last_used timestamp not null
 );
 
 
