@@ -47,10 +47,14 @@
                     <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                     <td>
                         <a th:href="@{/notice/update/{id}(id=${notice.id})}" 
+                           th:if="${(notice.construction != null && #authentication.principal.memberAdmin.construction != null && #authentication.principal.memberAdmin.construction.id == notice.construction.id) 
+                                        || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
                            class="btn btn-sm btn-warning">수정</a>
                         <form th:action="@{/notice/delete/{id}(id=${notice.id})}" 
                               method="post" style="display: inline;">
                             <button type="submit" class="btn btn-sm btn-danger"
+                            th:if="${(notice.construction != null && #authentication.principal.memberAdmin.construction != null && #authentication.principal.memberAdmin.construction.id == notice.construction.id)
+                                        || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
                                     onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
                         </form>
                     </td>
