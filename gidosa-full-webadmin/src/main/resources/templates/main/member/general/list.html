@@ -17,6 +17,49 @@
             <span th:text="${error}"></span>
         </div>
 
+        <!-- 검색 폼 추가 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-search"></i> 회원 검색
+            </div>
+            <div class="card-body">
+                <form th:action="@{/member/general/list}" method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="searchType" class="form-label">검색 항목</label>
+                        <select class="form-select" id="searchType" name="searchType">
+                            <option value="">-- 선택 --</option>
+                            <option value="username" th:selected="${searchType != null && searchType == 'username'}">사용자명</option>
+                            <option value="name" th:selected="${searchType != null && searchType == 'name'}">이름</option>
+                            <option value="email" th:selected="${searchType != null && searchType == 'email'}">이메일</option>
+                            <option value="phone" th:selected="${searchType != null && searchType == 'phone'}">전화번호</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="searchKeyword" class="form-label">검색어</label>
+                        <input type="text" class="form-control" id="searchKeyword" name="searchKeyword" 
+                               th:value="${searchKeyword != null ? searchKeyword : ''}" placeholder="검색어를 입력하세요">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">가입일 검색</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="startDate" name="startDate" 
+                                   th:value="${startDate != null ? startDate : ''}" placeholder="시작일">
+                            <span class="input-group-text">~</span>
+                            <input type="date" class="form-control" id="endDate" name="endDate" 
+                                   th:value="${endDate != null ? endDate : ''}" placeholder="종료일">
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-primary">검색</button>
+                        <a th:href="@{/member/general/list}" class="btn btn-secondary">초기화</a>
+                    </div>
+                    
+                    <!-- 페이징 정보 유지를 위한 hidden 필드 -->
+                    <input type="hidden" name="page" value="0">
+                </form>
+            </div>
+        </div>
+
         <table class="table">
             <thead>
                 <tr>
@@ -49,15 +92,24 @@
                         </form>
                     </td>
                 </tr>
+                <!-- 검색 결과가 없는 경우 메시지 표시 -->
+                <tr th:if="${members.content.empty}">
+                    <td colspan="7" class="text-center">검색 결과가 없습니다.</td>
+                </tr>
             </tbody>
         </table>
 
-        <!-- 페이징 네비게이션 추가 -->
+        <!-- 페이징 네비게이션 수정 - 검색 조건 유지 -->
         <nav aria-label="Page navigation" th:if="${members.totalPages > 0}">
             <ul class="pagination justify-content-center">
                 <!-- 이전 페이지 -->
                 <li class="page-item" th:classappend="${!members.hasPrevious()} ? disabled">
-                    <a class="page-link" th:href="@{/member/general/list(page=${members.number - 1})}"
+                    <a class="page-link" 
+                       th:href="@{/member/general/list(page=${members.number - 1}, 
+                                                     searchType=${searchType != null ? searchType : ''}, 
+                                                     searchKeyword=${searchKeyword != null ? searchKeyword : ''}, 
+                                                     startDate=${startDate != null ? startDate : ''}, 
+                                                     endDate=${endDate != null ? endDate : ''})}"
                        th:unless="${!members.hasPrevious()}">이전</a>
                     <span class="page-link" th:if="${!members.hasPrevious()}">이전</span>
                 </li>
@@ -67,13 +119,22 @@
                     th:each="pageNumber : ${#numbers.sequence(0, members.totalPages - 1)}"
                     th:classappend="${pageNumber == members.number} ? active">
                     <a class="page-link" 
-                       th:href="@{/member/general/list(page=${pageNumber})}"
+                       th:href="@{/member/general/list(page=${pageNumber}, 
+                                                     searchType=${searchType != null ? searchType : ''}, 
+                                                     searchKeyword=${searchKeyword != null ? searchKeyword : ''}, 
+                                                     startDate=${startDate != null ? startDate : ''}, 
+                                                     endDate=${endDate != null ? endDate : ''})}"
                        th:text="${pageNumber + 1}"></a>
                 </li>
 
                 <!-- 다음 페이지 -->
                 <li class="page-item" th:classappend="${!members.hasNext()} ? disabled">
-                    <a class="page-link" th:href="@{/member/general/list(page=${members.number + 1})}"
+                    <a class="page-link" 
+                       th:href="@{/member/general/list(page=${members.number + 1}, 
+                                                     searchType=${searchType != null ? searchType : ''}, 
+                                                     searchKeyword=${searchKeyword != null ? searchKeyword : ''}, 
+                                                     startDate=${startDate != null ? startDate : ''}, 
+                                                     endDate=${endDate != null ? endDate : ''})}"
                        th:unless="${!members.hasNext()}">다음</a>
                     <span class="page-link" th:if="${!members.hasNext()}">다음</span>
                 </li>

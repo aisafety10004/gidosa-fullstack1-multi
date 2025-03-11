@@ -26,13 +26,39 @@ public class MemberGeneralController {
     // 회원 목록 조회 - 페이징 처리 추가
     @GetMapping("/list")
     public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                       @RequestParam(required = false) String searchType,
+                       @RequestParam(required = false) String searchKeyword,
+                       @RequestParam(required = false) String startDate,
+                       @RequestParam(required = false) String endDate,
                        Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        // construction_id로 필터링된 회원 목록을 가져옴
-        Page<MemberGeneral> membersPage = memberGeneralService.getMembersByConstructionId(
-            principalDetails.getMemberAdmin().getConstruction().getId(),
-            pageable
-        );
+        
+        Long constructionId = principalDetails.getMemberAdmin().getConstruction().getId();
+        Page<MemberGeneral> membersPage;
+        
+        try {
+            // 검색 조건이 있는 경우
+            if (searchType != null && !searchType.isEmpty() && searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+                membersPage = memberGeneralService.searchMembers(constructionId, searchType, searchKeyword, startDate, endDate, pageable);
+            } else if ((startDate != null && !startDate.isEmpty()) || (endDate != null && !endDate.isEmpty())) {
+                // 날짜 검색만 있는 경우
+                membersPage = memberGeneralService.searchMembersByDate(constructionId, startDate, endDate, pageable);
+            } else {
+                // 검색 조건이 없는 경우 전체 목록 조회
+                membersPage = memberGeneralService.getMembersByConstructionId(constructionId, pageable);
+            }
+        } catch (Exception e) {
+            log.error("Error during member search", e);
+            // 오류 발생 시 기본 목록 조회
+            membersPage = memberGeneralService.getMembersByConstructionId(constructionId, pageable);
+            model.addAttribute("error", "검색 중 오류가 발생했습니다. 기본 목록을 표시합니다.");
+        }
+        
         model.addAttribute("members", membersPage);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("searchKeyword", searchKeyword);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        
         return "main/member/general/list";
     }
 
