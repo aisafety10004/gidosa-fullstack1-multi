@@ -3,6 +3,7 @@ package net.gidosa.full.webadmin.services;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.gidosa.full.webadmin.models.dtos.RiskFactorAdvancedSearchDto;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorUpdateDto;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.FileAttachment;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Log4j2
@@ -41,13 +43,24 @@ public class RiskFactorService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<RiskFactor> getRiskFactorById(Long id) {
-        return riskFactorRepository.findById(id);
+    public Page<RiskFactor> advancedSearchWithDto(Long constructionId, RiskFactorAdvancedSearchDto searchDto, Pageable pageable) {
+        return riskFactorRepository.advancedSearch(
+            constructionId, 
+            searchDto.getSiteName(), 
+            searchDto.getExecutionDateStart(), 
+            searchDto.getExecutionDateEnd(), 
+            searchDto.getWorkProcess(), 
+            searchDto.getWorkLocation(), 
+            searchDto.getRiskClassification(), 
+            searchDto.getRiskDetailFactor(),
+            searchDto.getImpResult(),
+            pageable
+        );
     }
 
-    @Transactional
-    public RiskFactor saveRiskFactor(RiskFactor riskFactor) {
-        return riskFactorRepository.save(riskFactor);
+    @Transactional(readOnly = true)
+    public Optional<RiskFactor> getRiskFactorById(Long id) {
+        return riskFactorRepository.findById(id);
     }
 
     @Transactional
@@ -209,5 +222,24 @@ public class RiskFactorService {
         }
         
         return riskFactorRepository.save(existingRiskFactor);
+    }
+
+    /**
+     * Retrieves all risk factors matching the search criteria without pagination
+     * Used for exporting data to Excel/CSV
+     */
+    @Transactional(readOnly = true)
+    public List<RiskFactor> getAllRiskFactorsForExport(Long constructionId, RiskFactorAdvancedSearchDto searchDto) {
+        return riskFactorRepository.findAllForExport(
+            constructionId, 
+            searchDto.getSiteName(), 
+            searchDto.getExecutionDateStart(), 
+            searchDto.getExecutionDateEnd(), 
+            searchDto.getWorkProcess(), 
+            searchDto.getWorkLocation(), 
+            searchDto.getRiskClassification(), 
+            searchDto.getRiskDetailFactor(),
+            searchDto.getImpResult()
+        );
     }
 } 

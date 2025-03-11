@@ -5,11 +5,15 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.gidosa.full.webadmin.configs.auth.PrincipalDetails;
+import net.gidosa.full.webadmin.models.dtos.RiskFactorAdvancedSearchDto;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorDto;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorSearchDto;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorUpdateDto;
 import net.gidosa.full.webadmin.services.FileStorageService;
 import net.gidosa.full.webadmin.services.RiskFactorService;
+import net.gidosa.full.webadmin.utils.ExcelExportUtil;
+import net.gidosa.full.webadmin.utils.CsvExportUtil;
+import net.gidosa.full.webadmin.utils.PdfExportUtil;
 import net.gidosa.rdb.models.entities.dbs.mysql.RiskFactor;
 import net.gidosa.rdb.models.entities.dbs.mysql.FileAttachment;
 import org.apache.logging.log4j.util.Strings;
@@ -17,6 +21,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Log4j2
 @Controller
@@ -58,9 +68,9 @@ public class RiskFactorController {
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             Model model,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        
+        // 현재 로그인한 사용자의 건설 ID 가져오기
         Long constructionId = principalDetails.getMemberAdmin().getConstruction().getId();
-        
+
         Page<RiskFactor> riskFactorsPage = riskFactorService.searchRiskFactorsByExecutionDate(
                 constructionId,
                 searchDto.getSiteName(),
@@ -68,11 +78,44 @@ public class RiskFactorController {
                 searchDto.getExecutionDateEnd(),
                 pageable
         );
-        
+
         model.addAttribute("riskFactors", riskFactorsPage);
         model.addAttribute("searchDto", searchDto);
 
         return "main/safety/risk-factor/list";
+    }
+    
+    @GetMapping("/list-pc")
+    public String listPc(
+            @ModelAttribute RiskFactorAdvancedSearchDto searchDto,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        // 현재 로그인한 사용자의 건설 ID 가져오기
+        Long constructionId = principalDetails.getMemberAdmin().getConstruction().getId();
+        
+        // 고급 검색 수행
+        Page<RiskFactor> riskFactorsPage = riskFactorService.advancedSearchWithDto(
+            constructionId,
+            searchDto,
+            pageable
+        );
+        
+        model.addAttribute("riskFactors", riskFactorsPage);
+        model.addAttribute("searchDto", searchDto);
+        
+        // 페이지네이션을 위한 정보 추가
+//        model.addAttribute("currentPage", riskFactorsPage.getNumber());
+//        model.addAttribute("totalPages", riskFactorsPage.getTotalPages());
+//        model.addAttribute("totalItems", riskFactorsPage.getTotalElements());
+        
+        // 위험분류 목록 추가
+        model.addAttribute("riskClassifications", RiskFactor.RiskClassification.values());
+        
+        // 공통 모델 속성 추가
+        addCommonModelAttributes(model);
+        
+        return "main/safety/risk-factor/list-pc";
     }
     
     @GetMapping("/register")
@@ -125,11 +168,141 @@ public class RiskFactorController {
     
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id, Model model) {
-        riskFactorService.getRiskFactorById(id)
-                .ifPresent(riskFactor -> {
-                    model.addAttribute("riskFactor", riskFactor);
-                });
-        return "main/safety/risk-factor/detail";
+        Optional<RiskFactor> riskFactorOpt = riskFactorService.getRiskFactorById(id);
+        if (riskFactorOpt.isPresent()) {
+            RiskFactor riskFactor = riskFactorOpt.get();
+            model.addAttribute("riskFactor", riskFactor);
+            return "main/safety/risk-factor/detail";
+        }
+        return "redirect:/safety/risk-factor/list";
+    }
+
+    @GetMapping("/detail-pc/{id}")
+    public String detailPc(@PathVariable Long id, Model model) {
+        Optional<RiskFactor> riskFactorOpt = riskFactorService.getRiskFactorById(id);
+        if (riskFactorOpt.isPresent()) {
+            RiskFactor riskFactor = riskFactorOpt.get();
+            model.addAttribute("riskFactor", riskFactor);
+            return "main/safety/risk-factor/detail-pc";
+        }
+        return "redirect:/safety/risk-factor/list-pc";
+    }
+    
+    /**
+     * 위험요인 목록을 엑셀 파일로 내보내기
+     */
+    @GetMapping("/export-to-excel")
+    public ResponseEntity<byte[]> exportToExcel(
+            @ModelAttribute RiskFactorAdvancedSearchDto searchDto,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        // 현재 로그인한 사용자의 건설 ID 가져오기
+        Long constructionId = principalDetails.getMemberAdmin().getConstruction().getId();
+
+        // 검색 조건에 맞는 모든 위험요인 데이터 가져오기 (페이징 없이)
+        List<RiskFactor> allRiskFactors = riskFactorService.getAllRiskFactorsForExport(
+                constructionId,
+                searchDto
+        );
+
+        try {
+            // 엑셀 파일 생성
+            byte[] excelBytes = ExcelExportUtil.exportRiskFactorsToExcel(allRiskFactors);
+            
+            // 현재 날짜를 파일명에 포함
+            String fileName = "위험요인목록_" + LocalDate.now() + ".xlsx";
+            String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString())
+                    .replaceAll("\\+", "%20");
+            
+            // HTTP 응답 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.setContentDispositionFormData("attachment", encodedFileName);
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(excelBytes);
+        } catch (Exception e) {
+            log.error("Excel export failed", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    /**
+     * 위험요인 목록을 CSV 파일로 내보내기
+     */
+    @GetMapping("/export-to-csv")
+    public ResponseEntity<byte[]> exportToCsv(
+            @ModelAttribute RiskFactorAdvancedSearchDto searchDto,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        // 현재 로그인한 사용자의 건설 ID 가져오기
+        Long constructionId = principalDetails.getMemberAdmin().getConstruction().getId();
+
+        // 검색 조건에 맞는 모든 위험요인 데이터 가져오기 (페이징 없이)
+        List<RiskFactor> allRiskFactors = riskFactorService.getAllRiskFactorsForExport(
+                constructionId,
+                searchDto
+        );
+
+        try {
+            // CSV 파일 생성
+            byte[] csvBytes = CsvExportUtil.exportRiskFactorsToCsv(allRiskFactors);
+            
+            // 현재 날짜를 파일명에 포함
+            String fileName = "위험요인목록_" + LocalDate.now() + ".csv";
+            String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString())
+                    .replaceAll("\\+", "%20");
+            
+            // HTTP 응답 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("text/csv;charset=UTF-8"));
+            headers.setContentDispositionFormData("attachment", encodedFileName);
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(csvBytes);
+        } catch (Exception e) {
+            log.error("CSV export failed", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    /**
+     * 위험요인 목록을 PDF 파일로 내보내기
+     */
+    @GetMapping("/export-to-pdf")
+    public ResponseEntity<byte[]> exportToPdf(
+            @ModelAttribute RiskFactorAdvancedSearchDto searchDto,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        // 현재 로그인한 사용자의 건설 ID 가져오기
+        Long constructionId = principalDetails.getMemberAdmin().getConstruction().getId();
+
+        // 검색 조건에 맞는 모든 위험요인 데이터 가져오기 (페이징 없이)
+        List<RiskFactor> allRiskFactors = riskFactorService.getAllRiskFactorsForExport(
+                constructionId,
+                searchDto
+        );
+
+        try {
+            // PDF 파일 생성
+            byte[] pdfBytes = PdfExportUtil.exportRiskFactorsToPdf(allRiskFactors);
+            
+            // 현재 날짜를 파일명에 포함
+            String fileName = "위험요인목록_" + LocalDate.now() + ".pdf";
+            String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString())
+                    .replaceAll("\\+", "%20");
+            
+            // HTTP 응답 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", encodedFileName);
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(pdfBytes);
+        } catch (Exception e) {
+            log.error("PDF export failed", e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
     
     @GetMapping("/update/{id}")

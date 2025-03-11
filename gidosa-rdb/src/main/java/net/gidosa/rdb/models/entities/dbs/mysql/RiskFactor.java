@@ -419,4 +419,36 @@ public class RiskFactor {
             return displayName;
         }
     }
+
+    /**
+     * 위험 분류에 따른 위험 요인(상세)의 displayName을 반환합니다.
+     * @return 위험 요인(상세)의 displayName
+     */
+    public String getRiskDetailFactorDisplayName() {
+        if (riskDetailFactor == null || riskClassification == null) {
+            return riskDetailFactor;
+        }
+
+        try {
+            switch (riskClassification) {
+                case MECHANICAL_EQUIPMENT:
+                    return RiskDetailFactorMechanicalEquipment.valueOf(riskDetailFactor).getDisplayName();
+                case ELECTRICAL:
+                    return RiskDetailFactorElectrical.valueOf(riskDetailFactor).getDisplayName();
+                case CHEMICAL_SUBSTANCE:
+                    return RiskDetailFactorChemicalSubstance.valueOf(riskDetailFactor).getDisplayName();
+                case BIOLOGICAL:
+                    return RiskDetailFactorBiological.valueOf(riskDetailFactor).getDisplayName();
+                case WORK_CHARACTERISTICS:
+                    return RiskDetailFactorWorkCharacteristics.valueOf(riskDetailFactor).getDisplayName();
+                case WORK_ENVIRONMENT:
+                    return RiskDetailFactorWorkEnvironment.valueOf(riskDetailFactor).getDisplayName();
+                default:
+                    return riskDetailFactor;
+            }
+        } catch (IllegalArgumentException e) {
+            // 해당 Enum에 일치하는 값이 없는 경우 원래 문자열 반환
+            return riskDetailFactor;
+        }
+    }
 } 
