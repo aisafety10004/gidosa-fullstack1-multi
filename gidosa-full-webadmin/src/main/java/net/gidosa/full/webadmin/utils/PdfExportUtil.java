@@ -1,8 +1,8 @@
 package net.gidosa.full.webadmin.utils;
 
 import com.itextpdf.text.*;
-
 import com.itextpdf.text.Font;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -33,9 +33,14 @@ public class PdfExportUtil {
         // Open document
         document.open();
         
+        // Create Korean font using iText Asian fonts
+        BaseFont baseFont = BaseFont.createFont("HYGoThic-Medium", "UniKS-UCS2-H", BaseFont.NOT_EMBEDDED);
+        Font koreanTitleFont = new Font(baseFont, 16, Font.BOLD);
+        Font koreanHeaderFont = new Font(baseFont, 10, Font.BOLD);
+        Font koreanDataFont = new Font(baseFont, 9, Font.NORMAL);
+        
         // Add title
-        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
-        Paragraph title = new Paragraph("위험요인 목록", titleFont);
+        Paragraph title = new Paragraph("위험요인 목록", koreanTitleFont);
         title.setAlignment(Element.ALIGN_CENTER);
         title.setSpacingAfter(20);
         document.add(title);
@@ -53,12 +58,10 @@ public class PdfExportUtil {
             "번호", "현장명", "작업공정", "작업위치", "위험분류", "위험요인", "실시일자", "개선결과"
         };
         
-        Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10);
-        // For iText 4.2.2, use Color instead of BaseColor
         BaseColor headerBgColor = new BaseColor(220, 220, 220);
         
         for (String header : headers) {
-            PdfPCell cell = new PdfPCell(new Phrase(header, headerFont));
+            PdfPCell cell = new PdfPCell(new Phrase(header, koreanHeaderFont));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setBackgroundColor(headerBgColor);
@@ -68,27 +71,26 @@ public class PdfExportUtil {
         
         // Add data rows
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
         
         for (int i = 0; i < riskFactors.size(); i++) {
             RiskFactor riskFactor = riskFactors.get(i);
             
             // 번호 (순번)
-            PdfPCell cell0 = new PdfPCell(new Phrase(String.valueOf(riskFactors.size() - i), dataFont));
+            PdfPCell cell0 = new PdfPCell(new Phrase(String.valueOf(riskFactors.size() - i), koreanDataFont));
             cell0.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell0.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell0.setPadding(5);
             table.addCell(cell0);
             
             // 현장명
-            PdfPCell cell1 = new PdfPCell(new Phrase(riskFactor.getSiteName(), dataFont));
+            PdfPCell cell1 = new PdfPCell(new Phrase(riskFactor.getSiteName(), koreanDataFont));
             cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell1.setPadding(5);
             table.addCell(cell1);
             
             // 작업공정
-            PdfPCell cell2 = new PdfPCell(new Phrase(riskFactor.getWorkProcess(), dataFont));
+            PdfPCell cell2 = new PdfPCell(new Phrase(riskFactor.getWorkProcess(), koreanDataFont));
             cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell2.setPadding(5);
@@ -96,7 +98,7 @@ public class PdfExportUtil {
             
             // 작업위치
             PdfPCell cell3 = new PdfPCell(new Phrase(
-                    riskFactor.getWorkLocation() != null ? riskFactor.getWorkLocation() : "", dataFont));
+                    riskFactor.getWorkLocation() != null ? riskFactor.getWorkLocation() : "", koreanDataFont));
             cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell3.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell3.setPadding(5);
@@ -105,7 +107,7 @@ public class PdfExportUtil {
             // 위험분류
             PdfPCell cell4 = new PdfPCell(new Phrase(
                     riskFactor.getRiskClassification() != null ? 
-                    riskFactor.getRiskClassification().getDisplayName() : "", dataFont));
+                    riskFactor.getRiskClassification().getDisplayName() : "", koreanDataFont));
             cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell4.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell4.setPadding(5);
@@ -114,7 +116,7 @@ public class PdfExportUtil {
             // 위험요인
             PdfPCell cell5 = new PdfPCell(new Phrase(
                     riskFactor.getRiskDetailFactor() != null ? 
-                    riskFactor.getRiskDetailFactorDisplayName() : "", dataFont));
+                    riskFactor.getRiskDetailFactorDisplayName() : "", koreanDataFont));
             cell5.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell5.setPadding(5);
@@ -123,7 +125,7 @@ public class PdfExportUtil {
             // 실시일자
             PdfPCell cell6 = new PdfPCell(new Phrase(
                     riskFactor.getExecutionDate() != null ? 
-                    riskFactor.getExecutionDate().format(dateFormatter) : "", dataFont));
+                    riskFactor.getExecutionDate().format(dateFormatter) : "", koreanDataFont));
             cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell6.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell6.setPadding(5);
@@ -131,7 +133,7 @@ public class PdfExportUtil {
             
             // 개선결과
             PdfPCell cell7 = new PdfPCell(new Phrase(
-                    riskFactor.getImpResult() != null ? riskFactor.getImpResult() : "", dataFont));
+                    riskFactor.getImpResult() != null ? riskFactor.getImpResult() : "", koreanDataFont));
             cell7.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell7.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell7.setPadding(5);
