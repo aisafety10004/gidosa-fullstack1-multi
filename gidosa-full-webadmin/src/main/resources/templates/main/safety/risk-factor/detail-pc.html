@@ -133,8 +133,8 @@
         <h1 class="mt-4">위험요인 상세</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="/main">홈</a></li>
-            <li class="breadcrumb-item"><a href="/safety/risk-factor/list-pc">위험요인 관리</a></li>
-            <li class="breadcrumb-item active">위험요인 상세</li>
+            <li class="breadcrumb-item"><a href="/safety/risk-factor/list-pc">위험요인 관리(PC)</a></li>
+            <li class="breadcrumb-item active">위험요인 상세(PC)</li>
         </ol>
         
         <!-- 알림 메시지 -->
@@ -152,9 +152,15 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div>
                     <i class="fas fa-info-circle me-1"></i>
-                    위험요인 상세 정보
+                    위험요인 상세 정보(PC)
                 </div>
                 <div>
+                    <a th:href="@{/safety/risk-factor/list-pc}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-list"></i> 목록으로(처음)
+                    </a>
+                    <a th:href="@{/safety/risk-factor/update-pc/{id}(id=${riskFactor.id})}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit"></i> 수정
+                    </a>
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <i class="fas fa-trash"></i> 삭제
                     </button>

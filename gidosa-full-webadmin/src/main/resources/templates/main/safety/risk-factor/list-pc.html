@@ -333,7 +333,8 @@
                                 <td colspan="9" class="text-center">등록된 위험요인이 없습니다.</td>
                             </tr>
                             <tr th:each="riskFactor, stat : ${riskFactors}" th:onclick="'location.href=\'' + @{/safety/risk-factor/detail-pc/{id}(id=${riskFactor.id})} + '\''" style="cursor: pointer;">
-                                <td th:text="${riskFactors.totalElements - (riskFactors.number * riskFactors.size) - stat.index}"></td>
+<!--                                <td th:text="${riskFactors.totalElements - (riskFactors.number * riskFactors.size) - stat.index}"></td>-->
+                                <td th:text="${riskFactor.id}"></td>
                                 <td th:text="${riskFactor.siteName}"></td>
                                 <td th:text="${riskFactor.workProcess}"></td>
                                 <td th:text="${riskFactor.workLocation}"></td>

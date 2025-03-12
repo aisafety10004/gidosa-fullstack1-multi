@@ -9,6 +9,7 @@ import net.gidosa.full.webadmin.models.dtos.RiskFactorAdvancedSearchDto;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorDto;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorSearchDto;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorUpdateDto;
+import net.gidosa.full.webadmin.models.dtos.RiskFactorUpdatePCDto;
 import net.gidosa.full.webadmin.services.FileStorageService;
 import net.gidosa.full.webadmin.services.RiskFactorService;
 import net.gidosa.full.webadmin.utils.ExcelExportUtil;
@@ -374,6 +375,76 @@ public class RiskFactorController {
         
         return "redirect:/safety/risk-factor/detail/" + id;
     }
+
+    @GetMapping("/update-pc/{id}")
+    public String updateFormPc(@PathVariable Long id, Model model) {
+        Optional<RiskFactor> riskFactorOpt = riskFactorService.getRiskFactorById(id);
+        if (riskFactorOpt.isPresent()) {
+            RiskFactor riskFactor = riskFactorOpt.get();
+            RiskFactorUpdateDto riskFactorUpdateDto = RiskFactorUpdateDto.fromEntity(riskFactor);
+
+            // Ensure values are not null or zero
+            if (riskFactorUpdateDto.getRiskPossibility() == 0) {
+                riskFactorUpdateDto.setRiskPossibility((byte) 1);
+            }
+            if (riskFactorUpdateDto.getRiskCriticality() == 0) {
+                riskFactorUpdateDto.setRiskCriticality((byte) 1);
+            }
+            if (riskFactorUpdateDto.getRiskSize() == 0) {
+                riskFactorUpdateDto.setRiskSize((short) 1);
+            }
+
+            model.addAttribute("riskFactorDto", riskFactorUpdateDto);
+            addCommonModelAttributes(model);
+            return "main/safety/risk-factor/update-pc";
+        }
+        return "redirect:/safety/risk-factor/list-pc";
+    }
+
+    @PostMapping("/update-pc/{id}")
+    public String updatePc(
+            @PathVariable Long id,
+            @ModelAttribute("riskFactorDto") RiskFactorUpdatePCDto riskFactorUpdatePCDto,
+            RedirectAttributes redirectAttributes) {
+        
+        try {
+            // 파일 업로드 처리
+            processFileUploads(riskFactorUpdatePCDto);
+            
+            // 빈 값 처리 (null 또는 0인 경우 기본값 설정)
+            if (riskFactorUpdatePCDto.getRiskPossibility() == 0) {
+                riskFactorUpdatePCDto.setRiskPossibility((byte) 1);
+            }
+            
+            if (riskFactorUpdatePCDto.getRiskCriticality() == 0) {
+                riskFactorUpdatePCDto.setRiskCriticality((byte) 1);
+            }
+            
+            // 위험성 크기 계산 (가능성 * 중대성)
+            riskFactorUpdatePCDto.setRiskSize((short) (riskFactorUpdatePCDto.getRiskPossibility() * riskFactorUpdatePCDto.getRiskCriticality()));
+            
+            // 개선 관련 필드 처리
+            if (riskFactorUpdatePCDto.getImpRiskPossibility() == 0) {
+                riskFactorUpdatePCDto.setImpRiskPossibility((byte) 1);
+            }
+            
+            if (riskFactorUpdatePCDto.getImpRiskCriticality() == 0) {
+                riskFactorUpdatePCDto.setImpRiskCriticality((byte) 1);
+            }
+            
+            // 개선 위험성 크기 계산 (가능성 * 중대성) - UI 표시용으로만 사용
+            // Entity에는 저장되지 않음
+            riskFactorUpdatePCDto.setImpRiskSize((short) (riskFactorUpdatePCDto.getImpRiskPossibility() * riskFactorUpdatePCDto.getImpRiskCriticality()));
+            
+            riskFactorService.updateRiskFactorFromUpdatePCDto(id, riskFactorUpdatePCDto);
+            redirectAttributes.addFlashAttribute("message", "위험요인이 성공적으로 개선되었습니다.");
+        } catch (Exception e) {
+            log.error("Error updating risk factor", e);
+            redirectAttributes.addFlashAttribute("error", "위험요인 개선 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        
+        return "redirect:/safety/risk-factor/detail-pc/" + id;
+    }
     
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -487,25 +558,46 @@ public class RiskFactorController {
         }
         
         // 개선 관련 파일 처리
-        if (riskFactorDto instanceof RiskFactorUpdateDto) {
-            RiskFactorUpdateDto updateDto = (RiskFactorUpdateDto) riskFactorDto;
+        if (riskFactorDto instanceof RiskFactorUpdateDto || riskFactorDto instanceof RiskFactorUpdatePCDto) {
+            // 공통 필드 처리를 위한 변수
+            MultipartFile impWorkImage1File = null;
+            MultipartFile impWorkImage2File = null;
+            MultipartFile fileAttachment1File = null;
+            
+            // DTO 타입에 따라 필드 설정
+            if (riskFactorDto instanceof RiskFactorUpdateDto) {
+                RiskFactorUpdateDto updateDto = (RiskFactorUpdateDto) riskFactorDto;
+                impWorkImage1File = updateDto.getImpWorkImage1File();
+                impWorkImage2File = updateDto.getImpWorkImage2File();
+                fileAttachment1File = updateDto.getFileAttachment1File();
+            } else if (riskFactorDto instanceof RiskFactorUpdatePCDto) {
+                RiskFactorUpdatePCDto updatePCDto = (RiskFactorUpdatePCDto) riskFactorDto;
+                impWorkImage1File = updatePCDto.getImpWorkImage1File();
+                impWorkImage2File = updatePCDto.getImpWorkImage2File();
+                fileAttachment1File = updatePCDto.getFileAttachment1File();
+            }
             
             // 개선 현장사진1 처리
-            MultipartFile impWorkImage1File = updateDto.getImpWorkImage1File();
             if (impWorkImage1File != null && !impWorkImage1File.isEmpty()) {
                 String impWorkImage1Url = fileStorageService.storeFile(impWorkImage1File, Strings.EMPTY);
-                updateDto.setImpWorkImage1Url(impWorkImage1Url);
+                if (riskFactorDto instanceof RiskFactorUpdateDto) {
+                    ((RiskFactorUpdateDto) riskFactorDto).setImpWorkImage1Url(impWorkImage1Url);
+                } else if (riskFactorDto instanceof RiskFactorUpdatePCDto) {
+                    ((RiskFactorUpdatePCDto) riskFactorDto).setImpWorkImage1Url(impWorkImage1Url);
+                }
             }
             
             // 개선 현장사진2 처리
-            MultipartFile impWorkImage2File = updateDto.getImpWorkImage2File();
             if (impWorkImage2File != null && !impWorkImage2File.isEmpty()) {
                 String impWorkImage2Url = fileStorageService.storeFile(impWorkImage2File, Strings.EMPTY);
-                updateDto.setImpWorkImage2Url(impWorkImage2Url);
+                if (riskFactorDto instanceof RiskFactorUpdateDto) {
+                    ((RiskFactorUpdateDto) riskFactorDto).setImpWorkImage2Url(impWorkImage2Url);
+                } else if (riskFactorDto instanceof RiskFactorUpdatePCDto) {
+                    ((RiskFactorUpdatePCDto) riskFactorDto).setImpWorkImage2Url(impWorkImage2Url);
+                }
             }
             
             // 첨부파일 처리
-            MultipartFile fileAttachment1File = updateDto.getFileAttachment1File();
             if (fileAttachment1File != null && !fileAttachment1File.isEmpty()) {
                 try {
                     // 파일 저장
@@ -521,7 +613,13 @@ public class RiskFactorController {
                     
                     // FileAttachment 저장
                     FileAttachment savedFileAttachment = fileAttachmentJpaRepository.save(fileAttachment);
-                    updateDto.setFileAttachment1Id(savedFileAttachment.getId());
+                    
+                    // DTO 타입에 따라 필드 설정
+                    if (riskFactorDto instanceof RiskFactorUpdateDto) {
+                        ((RiskFactorUpdateDto) riskFactorDto).setFileAttachment1Id(savedFileAttachment.getId());
+                    } else if (riskFactorDto instanceof RiskFactorUpdatePCDto) {
+                        ((RiskFactorUpdatePCDto) riskFactorDto).setFileAttachment1Id(savedFileAttachment.getId());
+                    }
                 } catch (Exception e) {
                     log.error("Error processing file attachment", e);
                 }

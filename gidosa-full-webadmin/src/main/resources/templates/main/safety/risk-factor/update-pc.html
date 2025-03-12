@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/manager}">
 <head>
-    <title>위험요인 수정</title>
+    <title>위험요인 수정(PC)</title>
     <style>
         .form-section {
             margin-bottom: 30px;
@@ -127,21 +127,14 @@
 <body>
 <div layout:fragment="content">
     <div class="container-fluid px-4">
-        <h1 class="mt-4">유해위험요인 개선등록</h1>
-<!--        <h1 class="mt-4">위험요인 수정</h1>-->
-<!--        <ol class="breadcrumb mb-4">-->
-<!--            <li class="breadcrumb-item"><a href="/main">홈</a></li>-->
-<!--            <li class="breadcrumb-item"><a href="/safety/risk-factor/list">위험요인 관리</a></li>-->
-<!--            <li class="breadcrumb-item active">위험요인 수정</li>-->
-<!--        </ol>-->
-        
+        <h1 class="mt-4">유해위험요인 수정 (PC)</h1>
         <div class="card mb-4">
             <div class="card-header" style="text-align: center;">
                 <i class="fas fa-edit me-1"></i>
-                유해위험요인 개선등록 양식
+                유해위험요인 수정 양식 (PC)
             </div>
             <div class="card-body">
-                <form th:action="@{/safety/risk-factor/update/{id}(id=${riskFactorDto.id})}" method="post" th:object="${riskFactorDto}" enctype="multipart/form-data">
+                <form th:action="@{/safety/risk-factor/update-pc/{id}(id=${riskFactorDto.id})}" method="post" th:object="${riskFactorDto}" enctype="multipart/form-data">
                     <input type="hidden" th:field="*{id}">
                     <input type="hidden" th:field="*{constructionId}">
                     <input type="hidden" th:field="*{workImage1Url}">
@@ -151,30 +144,32 @@
                     <input type="hidden" th:field="*{impWorkImage1Url}">
                     <input type="hidden" th:field="*{impWorkImage2Url}">
                     <input type="hidden" th:field="*{fileAttachment1Id}" th:if="${riskFactorDto.fileAttachment1Id != null}">
+                    <!-- <input type="hidden" id="impRiskSize" name="impRiskSize" value="0"> -->
+                    <input type="hidden" th:field="*{impRiskSize}">
                     
                     <!-- 기본 정보 섹션 -->
                     <div class="form-section">
                         <div class="row">
                             <div class="col-12 text-center mb-3">
                                 <div class="btn btn-hazard-add" style="pointer-events: none;">
-                                    유해위험요인 개선등록 시스템
+                                    유해위험요인 등록 시스템 (PC)
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <label for="siteName" class="form-label required-label">현장명</label>
-                                <input type="text" class="form-control" id="siteName" th:field="*{siteName}" required readonly>
+                                <input type="text" class="form-control" id="siteName" th:field="*{siteName}" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="workProcess" class="form-label required-label">작업공정</label>
-                                <input type="text" class="form-control" id="workProcess" th:field="*{workProcess}" required readonly>
+                                <input type="text" class="form-control" id="workProcess" th:field="*{workProcess}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="workLocation" class="form-label">작업위치(위치층수)</label>
-                                <input type="text" class="form-control" id="workLocation" th:field="*{workLocation}" readonly>
+                                <input type="text" class="form-control" id="workLocation" th:field="*{workLocation}">
                             </div>
                         </div>
                     </div>
@@ -185,19 +180,17 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="workImage1File" class="form-label">현장사진1</label>
-<!--                                <input type="file" class="form-control" id="workImage1File" accept="image/*" disabled>-->
+                                <input type="file" class="form-control" id="workImage1File" name="workImage1File" accept="image/*">
                                 <div id="workImage1Preview" class="mt-2">
                                     <img th:if="${riskFactorDto.workImage1Url}" th:src="|/common/file/view/${riskFactorDto.workImage1Url}|" class="image-preview" alt="현장사진1">
                                 </div>
-<!--                                <small class="text-muted">새 이미지를 업로드하지 않으면 기존 이미지가 유지됩니다.</small>-->
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="workImage2File" class="form-label">현장사진2</label>
-<!--                                <input type="file" class="form-control" id="workImage2File" accept="image/*" disabled>-->
+                                <input type="file" class="form-control" id="workImage2File" name="workImage2File" accept="image/*">
                                 <div id="workImage2Preview" class="mt-2">
                                     <img th:if="${riskFactorDto.workImage2Url}" th:src="|/common/file/view/${riskFactorDto.workImage2Url}|" class="image-preview" alt="현장사진2">
                                 </div>
-<!--                                <small class="text-muted">새 이미지를 업로드하지 않으면 기존 이미지가 유지됩니다.</small>-->
                             </div>
                         </div>
                     </div>
@@ -208,18 +201,17 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="riskClassification" class="form-label required-label">위험 분류</label>
-                                <select class="form-select" id="riskClassification" disabled>
+                                <select class="form-select" id="riskClassification" th:field="*{riskClassification}" required>
                                     <option value="">-- 위험 분류 선택 --</option>
                                     <option th:each="option : ${riskClassificationOptions}"
                                             th:value="${option}"
                                             th:text="${option.displayName}"
                                             th:selected="${option == riskFactorDto.riskClassification}"></option>
                                 </select>
-                                <input type="hidden" th:field="*{riskClassification}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="riskDetailFactor" class="form-label required-label">위험 요인(상세)</label>
-                                <select class="form-select" id="riskDetailFactor" disabled>
+                                <select class="form-select" id="riskDetailFactor" required>
                                     <option value="">-- 위험 분류를 선택하세요 --</option>
                                 </select>
                                 <input type="hidden" th:field="*{riskDetailFactor}">
@@ -227,11 +219,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="riskSituationResult" class="form-label required-label">(예상)위험상황 및 결과</label>
-                            <textarea class="form-control" id="riskSituationResult" th:field="*{riskSituationResult}" rows="3" required readonly></textarea>
+                            <textarea class="form-control" id="riskSituationResult" th:field="*{riskSituationResult}" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="currentSafetyMeasure" class="form-label">현재안전조치</label>
-                            <textarea class="form-control" id="currentSafetyMeasure" th:field="*{currentSafetyMeasure}" rows="3" readonly></textarea>
+                            <textarea class="form-control" id="currentSafetyMeasure" th:field="*{currentSafetyMeasure}" rows="3"></textarea>
                         </div>
                     </div>
                     
@@ -241,21 +233,19 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="riskPossibility" class="form-label required-label">가능성</label>
-                                <select class="form-control" id="riskPossibility" disabled>
+                                <select class="form-select" id="riskPossibility" th:field="*{riskPossibility}" required>
                                     <option value="1" th:selected="${riskFactorDto.riskPossibility == 1 || riskFactorDto.riskPossibility == 0}">1 - 낮음</option>
                                     <option value="2" th:selected="${riskFactorDto.riskPossibility == 2}">2 - 보통</option>
                                     <option value="3" th:selected="${riskFactorDto.riskPossibility == 3}">3 - 높음</option>
                                 </select>
-                                <input type="hidden" th:field="*{riskPossibility}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="riskCriticality" class="form-label required-label">중대성</label>
-                                <select class="form-control" id="riskCriticality" disabled>
+                                <select class="form-select" id="riskCriticality" th:field="*{riskCriticality}" required>
                                     <option value="1" th:selected="${riskFactorDto.riskCriticality == 1 || riskFactorDto.riskCriticality == 0}">1 - 경미</option>
                                     <option value="2" th:selected="${riskFactorDto.riskCriticality == 2}">2 - 중간</option>
                                     <option value="3" th:selected="${riskFactorDto.riskCriticality == 3}">3 - 심각</option>
                                 </select>
-                                <input type="hidden" th:field="*{riskCriticality}">
                             </div>
                         </div>
                         <div class="mb-3">
@@ -271,7 +261,7 @@
                         <h5>위험성 감소대책</h5>
                         <div class="mb-3">
                             <label for="riskReductionMeasure1" class="form-label required-label">감소대책1</label>
-                            <select class="form-select" id="riskReductionMeasure1" disabled>
+                            <select class="form-select" id="riskReductionMeasure1" th:field="*{riskReductionMeasure1}" required>
                                 <option value="">-- 감소대책 선택 --</option>
                                 <option th:each="option : ${riskReductionMeasureFirstOptions}"
                                         th:value="${option}"
@@ -282,11 +272,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="riskReductionMeasure2" class="form-label required-label">감소대책2</label>
-                            <textarea class="form-control" id="riskReductionMeasure2" th:field="*{riskReductionMeasure2}" rows="3" required readonly></textarea>
+                            <textarea class="form-control" id="riskReductionMeasure2" th:field="*{riskReductionMeasure2}" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="isRiskMeasureCompletion" class="form-label">조치여부</label>
-                            <select class="form-select" id="isRiskMeasureCompletion" disabled>
+                            <select class="form-select" id="isRiskMeasureCompletion" th:field="*{isRiskMeasureCompletion}">
                                 <option value="">-- 조치여부 선택 --</option>
                                 <option th:each="option : ${riskMeasureCompletionOptions}"
                                         th:value="${option}"
@@ -302,7 +292,7 @@
                         <div class="row">
                             <div class="col-12 text-center mb-3">
                                 <div class="btn btn-hazard-add" style="pointer-events: none;">
-                                    유해위험요인 추가 입력하기
+                                    유해위험요인 추가 입력하기 (PC)
                                 </div>
                             </div>
                         </div>
@@ -399,7 +389,7 @@
                         <div class="row">
                             <div class="col-12 text-center mb-3">
                                 <div class="btn btn-hazard-improvement" style="pointer-events: none;">
-                                    유해위험요인 개선결과 입력하기
+                                    유해위험요인 개선결과 입력하기 (PC)
                                 </div>
                             </div>
                         </div>
@@ -442,14 +432,14 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="impWorkImage1File" class="form-label">개선 현장사진1</label>
-                                <input type="file" class="form-control" id="impWorkImage1File" name="impWorkImage1File" accept="image/*">
+                                <input type="file" class="form-control" id="impWorkImage1File" th:field="*{impWorkImage1File}" accept="image/*">
                                 <div id="impWorkImage1Preview" class="mt-2">
                                     <img th:if="${riskFactorDto.impWorkImage1Url}" th:src="|/common/file/view/${riskFactorDto.impWorkImage1Url}|" class="image-preview" alt="개선 현장사진1">
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="impWorkImage2File" class="form-label">개선 현장사진2</label>
-                                <input type="file" class="form-control" id="impWorkImage2File" name="impWorkImage2File" accept="image/*">
+                                <input type="file" class="form-control" id="impWorkImage2File" th:field="*{impWorkImage2File}" accept="image/*">
                                 <div id="impWorkImage2Preview" class="mt-2">
                                     <img th:if="${riskFactorDto.impWorkImage2Url}" th:src="|/common/file/view/${riskFactorDto.impWorkImage2Url}|" class="image-preview" alt="개선 현장사진2">
                                 </div>
@@ -507,12 +497,10 @@
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <label for="fileAttachment1" class="form-label">첨부파일</label>
-                                <input type="file" class="form-control" id="fileAttachment1" name="fileAttachment1File">
-                                <div class="mt-2" th:if="${riskFactorDto.fileAttachment1 != null}">
-                                <!-- <div class="mt-2" th:if="${riskFactorDto.fileAttachment1Id != null}"> -->
+                                <input type="file" class="form-control" id="fileAttachment1" th:field="*{fileAttachment1File}">
+                               <div class="mt-2" th:if="${riskFactorDto.fileAttachment1 != null}">
                                     <span>현재 파일: </span>
                                    <a th:href="|/common/file/download/${riskFactorDto.fileAttachment1.id}|" th:text="${riskFactorDto.fileAttachment1.originalFilename}"></a>
-                                    <!-- <a th:href="|/common/file/download/${riskFactorDto.fileAttachment1Id}|" th:text="${riskFactorDto.fileAttachment1Id}"></a> -->
                                 </div>
                                 <small class="text-muted">* 파일크기는 15MB를 넘을 수 없습니다.</small>
                             </div>
@@ -522,15 +510,8 @@
                     <!-- 버튼 그룹 -->
                     <div class="d-flex justify-content-center mt-4">
                         <button type="submit" class="btn btn-primary me-2" style="background-color: #2b3990;">
-                            <i class="fas fa-save"></i> 개선결과 등록
+                            <i class="fas fa-save"></i> 수정
                         </button>
-                        <!-- <a th:href="@{/safety/risk-factor/list}" class="btn btn-info">
-                            <i class="fas fa-times"></i> 목록(처음)
-                        </a>
-                        &nbsp;&nbsp;
-                        <a th:href="@{/safety/risk-factor/detail/{id}(id=${riskFactorDto.id})}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> 읽기전용
-                        </a> -->
                     </div>
                 </form>
             </div>
@@ -617,15 +598,6 @@
                 
                 // 위험성 크기에 따른 스타일 변경
                 riskSizeDisplay.className = 'risk-size-display';
-                // if (riskSize >= 6) {
-                //     riskSizeDisplay.classList.add('risk-critical');
-                // } else if (riskSize >= 4) {
-                //     riskSizeDisplay.classList.add('risk-high');
-                // } else if (riskSize >= 2) {
-                //     riskSizeDisplay.classList.add('risk-medium');
-                // } else if (riskSize > 0) {
-                //     riskSizeDisplay.classList.add('risk-low');
-                // }
             }
             
             // 개선 위험성 크기 계산 함수
@@ -639,15 +611,6 @@
                 
                 // 위험성 크기에 따른 스타일 변경
                 impRiskSizeDisplay.className = 'risk-size-display';
-                // if (impRiskSize >= 6) {
-                //     impRiskSizeDisplay.classList.add('risk-critical');
-                // } else if (impRiskSize >= 4) {
-                //     impRiskSizeDisplay.classList.add('risk-high');
-                // } else if (impRiskSize >= 2) {
-                //     impRiskSizeDisplay.classList.add('risk-medium');
-                // } else if (impRiskSize > 0) {
-                //     impRiskSizeDisplay.classList.add('risk-low');
-                // }
             }
             
             riskPossibilitySelect.addEventListener('change', calculateRiskSize);
@@ -660,15 +623,6 @@
             // 초기 위험성 크기 스타일 설정
             const initialRiskSize = parseInt(riskSizeDisplay.querySelector('span').textContent) || 0;
             riskSizeDisplay.className = 'risk-size-display';
-            // if (initialRiskSize >= 6) {
-            //     riskSizeDisplay.classList.add('risk-critical');
-            // } else if (initialRiskSize >= 4) {
-            //     riskSizeDisplay.classList.add('risk-high');
-            // } else if (initialRiskSize >= 2) {
-            //     riskSizeDisplay.classList.add('risk-medium');
-            // } else if (initialRiskSize > 0) {
-            //     riskSizeDisplay.classList.add('risk-low');
-            // }
             
             // 초기 개선 위험성 크기 스타일 설정
             calculateImpRiskSize();
@@ -676,15 +630,6 @@
             // 초기 개선 위험성 크기 색상 적용
             const initialImpRiskSize = parseInt(impRiskSizeDisplay.querySelector('span').textContent) || 1;
             impRiskSizeDisplay.className = 'risk-size-display';
-            // if (initialImpRiskSize >= 6) {
-            //     impRiskSizeDisplay.classList.add('risk-critical');
-            // } else if (initialImpRiskSize >= 4) {
-            //     impRiskSizeDisplay.classList.add('risk-high');
-            // } else if (initialImpRiskSize >= 2) {
-            //     impRiskSizeDisplay.classList.add('risk-medium');
-            // } else if (initialImpRiskSize > 0) {
-            //     impRiskSizeDisplay.classList.add('risk-low');
-            // }
             
             // 이미지 미리보기
             function previewImage(input, previewId) {
@@ -798,4 +743,4 @@
     </script>
 </th:block>
 </body>
-</html> 
+</html>

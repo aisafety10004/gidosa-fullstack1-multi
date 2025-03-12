@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorAdvancedSearchDto;
 import net.gidosa.full.webadmin.models.dtos.RiskFactorUpdateDto;
+import net.gidosa.full.webadmin.models.dtos.RiskFactorUpdatePCDto;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.FileAttachment;
 import net.gidosa.rdb.models.entities.dbs.mysql.RiskFactor;
@@ -151,6 +152,81 @@ public class RiskFactorService {
 
     @Transactional
     public RiskFactor updateRiskFactorFromUpdateDto(Long id, RiskFactorUpdateDto updateDto) {
+        RiskFactor existingRiskFactor = riskFactorRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Risk factor not found with ID: " + id));
+        
+        // 기본 정보 업데이트 (RiskFactorDto 필드)
+        existingRiskFactor.setSiteName(updateDto.getSiteName());
+        existingRiskFactor.setWorkProcess(updateDto.getWorkProcess());
+        existingRiskFactor.setWorkLocation(updateDto.getWorkLocation());
+        
+        // 이미지 URL은 null이 아닌 경우에만 업데이트 (파일 업로드 처리를 위해)
+        if (!Strings.isNullOrEmpty(updateDto.getWorkImage1Url())) {
+            existingRiskFactor.setWorkImage1Url(updateDto.getWorkImage1Url());
+        }
+        if (!Strings.isNullOrEmpty(updateDto.getWorkImage2Url())) {
+            existingRiskFactor.setWorkImage2Url(updateDto.getWorkImage2Url());
+        }
+        
+        existingRiskFactor.setRiskClassification(updateDto.getRiskClassification());
+        existingRiskFactor.setRiskDetailFactor(updateDto.getRiskDetailFactor());
+        existingRiskFactor.setRiskSituationResult(updateDto.getRiskSituationResult());
+        existingRiskFactor.setCurrentSafetyMeasure(updateDto.getCurrentSafetyMeasure());
+        existingRiskFactor.setRiskPossibility(updateDto.getRiskPossibility());
+        existingRiskFactor.setRiskCriticality(updateDto.getRiskCriticality());
+        existingRiskFactor.setRiskReductionMeasure1(updateDto.getRiskReductionMeasure1());
+        existingRiskFactor.setRiskReductionMeasure2(updateDto.getRiskReductionMeasure2());
+        existingRiskFactor.setIsRiskMeasureCompletion(updateDto.getIsRiskMeasureCompletion());
+        
+        // 추가 정보 필드 업데이트 (후 입력)
+        existingRiskFactor.setExecutionDate(updateDto.getExecutionDate());
+        existingRiskFactor.setRiskFactorEvaluationType(updateDto.getRiskFactorEvaluationType());
+        
+        // 관계 엔티티는 컨트롤러에서 처리하도록 함
+        existingRiskFactor.setAuthorityDivisionLevel(updateDto.getAuthorityDivisionLevel());
+        
+        existingRiskFactor.setLatitude(updateDto.getLatitude());
+        existingRiskFactor.setLongitude(updateDto.getLongitude());
+        existingRiskFactor.setRelatedLaw(updateDto.getRelatedLaw());
+        existingRiskFactor.setIsRiskReductionMeasure(updateDto.getIsRiskReductionMeasure());
+        existingRiskFactor.setEvaluator1(updateDto.getEvaluator1());
+        existingRiskFactor.setEvaluator2(updateDto.getEvaluator2());
+        
+        // 개선등록 관련 필드 업데이트
+        existingRiskFactor.setImpResult(updateDto.getImpResult());
+        existingRiskFactor.setImpRiskPossibility(updateDto.getImpRiskPossibility());
+        existingRiskFactor.setImpRiskCriticality(updateDto.getImpRiskCriticality());
+        
+        // 개선 이미지 URL은 null이 아닌 경우에만 업데이트 (파일 업로드 처리를 위해)
+        if (!Strings.isNullOrEmpty(updateDto.getImpWorkImage1Url())) {
+            existingRiskFactor.setImpWorkImage1Url(updateDto.getImpWorkImage1Url());
+        }
+        if (!Strings.isNullOrEmpty(updateDto.getImpWorkImage2Url())) {
+            existingRiskFactor.setImpWorkImage2Url(updateDto.getImpWorkImage2Url());
+        }
+        
+        // 개선조치 관련 정보 업데이트
+        existingRiskFactor.setImpCountCorrectAction(updateDto.getImpCountCorrectAction());
+        existingRiskFactor.setImpCountNoCorrectAction(updateDto.getImpCountNoCorrectAction());
+        existingRiskFactor.setImpNoCorrectContent(updateDto.getImpNoCorrectContent());
+        existingRiskFactor.setImpNoCorrectContentPlan(updateDto.getImpNoCorrectContentPlan());
+        existingRiskFactor.setImpCorrectDate(updateDto.getImpCorrectDate());
+        existingRiskFactor.setImpCorrectPerson(updateDto.getImpCorrectPerson());
+        existingRiskFactor.setImpCorrectCompletionDate(updateDto.getImpCorrectCompletionDate());
+        existingRiskFactor.setImpCorrectConfirmPerson(updateDto.getImpCorrectConfirmPerson());
+        
+        // FileAttachment 처리
+        if (updateDto.getFileAttachment1Id() != null) {
+            FileAttachment fileAttachment = fileAttachmentRepository.findById(updateDto.getFileAttachment1Id())
+                    .orElse(null);
+            existingRiskFactor.setFileAttachment1(fileAttachment);
+        }
+        
+        return riskFactorRepository.save(existingRiskFactor);
+    }
+
+    @Transactional
+    public RiskFactor updateRiskFactorFromUpdatePCDto(Long id, RiskFactorUpdatePCDto updateDto) {
         RiskFactor existingRiskFactor = riskFactorRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Risk factor not found with ID: " + id));
         

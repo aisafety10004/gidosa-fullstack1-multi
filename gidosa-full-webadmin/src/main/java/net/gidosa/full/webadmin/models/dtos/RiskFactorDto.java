@@ -18,6 +18,10 @@ public class RiskFactorDto {
     
     private Long id;
     
+    // 위도, 경도 필드 추가
+    private Double latitude;
+    private Double longitude;
+    
     private String siteName;
     
     private Long constructionId;
@@ -59,6 +63,9 @@ public class RiskFactorDto {
         return RiskFactor.builder()
                 .id(id)
                 .siteName(siteName)
+                // 위도, 경도 추가
+                .latitude(latitude)
+                .longitude(longitude)
                 // 추가된 필드들
                 .workProcess(workProcess)
                 .workLocation(workLocation)
@@ -82,6 +89,9 @@ public class RiskFactorDto {
                 .id(riskFactor.getId())
                 .siteName(riskFactor.getSiteName())
                 .constructionId(riskFactor.getConstruction().getId())
+                // 위도, 경도 추가
+                .latitude(riskFactor.getLatitude())
+                .longitude(riskFactor.getLongitude())
                 // 추가된 필드들
                 .workProcess(riskFactor.getWorkProcess())
                 .workLocation(riskFactor.getWorkLocation())
