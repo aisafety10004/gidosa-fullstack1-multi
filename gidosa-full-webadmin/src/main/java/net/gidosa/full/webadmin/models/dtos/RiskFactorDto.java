@@ -80,6 +80,7 @@ public class RiskFactorDto {
                 .riskReductionMeasure1(riskReductionMeasure1)
                 .riskReductionMeasure2(riskReductionMeasure2)
                 .isRiskMeasureCompletion(isRiskMeasureCompletion)
+                .executionDate(LocalDate.now())
                 .build();
     }
     

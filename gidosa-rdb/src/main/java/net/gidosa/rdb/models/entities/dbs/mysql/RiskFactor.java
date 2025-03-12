@@ -22,7 +22,7 @@ public class RiskFactor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @CreationTimestamp
+//    @CreationTimestamp
     @Column(nullable = false)
     private LocalDate executionDate;                    // 실시일자(후 입력)
 

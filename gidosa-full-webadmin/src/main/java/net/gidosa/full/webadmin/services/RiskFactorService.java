@@ -318,4 +318,98 @@ public class RiskFactorService {
             searchDto.getImpResult()
         );
     }
+
+    /**
+     * Copy a RiskFactor with the execution date set to one year later
+     * @param id The ID of the RiskFactor to copy
+     * @return The ID of the newly created RiskFactor
+     */
+    @Transactional
+    public Long copyRiskFactor(Long id) {
+        Optional<RiskFactor> riskFactorOpt = riskFactorRepository.findById(id);
+        if (riskFactorOpt.isPresent()) {
+            RiskFactor original = riskFactorOpt.get();
+            
+            // Create a new RiskFactor with the same properties as the original
+            RiskFactor copy = RiskFactor.builder()
+                    .siteName(original.getSiteName())
+                    .workProcess(original.getWorkProcess())
+                    .workLocation(original.getWorkLocation())
+                    .workImage1Url(original.getWorkImage1Url())
+                    .workImage2Url(original.getWorkImage2Url())
+                    .riskClassification(original.getRiskClassification())
+                    .riskDetailFactor(original.getRiskDetailFactor())
+                    .riskSituationResult(original.getRiskSituationResult())
+                    .currentSafetyMeasure(original.getCurrentSafetyMeasure())
+                    .riskPossibility(original.getRiskPossibility())
+                    .riskCriticality(original.getRiskCriticality())
+                    .riskReductionMeasure1(original.getRiskReductionMeasure1())
+                    .riskReductionMeasure2(original.getRiskReductionMeasure2())
+                    .isRiskMeasureCompletion(original.getIsRiskMeasureCompletion())
+                    .relatedLaw(original.getRelatedLaw())
+                    .isRiskReductionMeasure(original.getIsRiskReductionMeasure())
+                    .evaluator1(original.getEvaluator1())
+                    .evaluator2(original.getEvaluator2())
+                    .riskFactorEvaluationType(original.getRiskFactorEvaluationType())
+                    .authorityDivisionLevel(original.getAuthorityDivisionLevel())
+                    .latitude(original.getLatitude())
+                    .longitude(original.getLongitude())
+                    .construction(original.getConstruction())
+                    .impResult(original.getImpResult())
+                    .impRiskPossibility(original.getImpRiskPossibility())
+                    .impRiskCriticality(original.getImpRiskCriticality())
+                    .impWorkImage1Url(original.getImpWorkImage1Url())
+                    .impWorkImage2Url(original.getImpWorkImage2Url())
+                    .impCountCorrectAction(original.getImpCountCorrectAction())
+                    .impCountNoCorrectAction(original.getImpCountNoCorrectAction())
+                    .impNoCorrectContent(original.getImpNoCorrectContent())
+                    .impNoCorrectContentPlan(original.getImpNoCorrectContentPlan())
+                    .impCorrectDate(original.getImpCorrectDate())
+                    .impCorrectPerson(original.getImpCorrectPerson())
+                    .impCorrectCompletionDate(original.getImpCorrectCompletionDate())
+                    .impCorrectConfirmPerson(original.getImpCorrectConfirmPerson())
+                    .build();
+            
+            // Set the execution date to one year later
+            LocalDate originalDate = original.getExecutionDate();
+            LocalDate oneYearLater = originalDate.plusYears(1);
+            copy.setExecutionDate(oneYearLater);
+            
+            // Handle @OneToOne relationships
+            
+            // // 1. Handle authorityDivision - use the same reference since it's a lookup entity
+            // if (original.getAuthorityDivision() != null) {
+            //     copy.setAuthorityDivision(original.getAuthorityDivision());
+            // }
+            
+            // // 2. Handle divisionDetail - use the same reference since it's a lookup entity
+            // if (original.getDivisionDetail() != null) {
+            //     copy.setDivisionDetail(original.getDivisionDetail());
+            // }
+            
+            // 3. Handle fileAttachment1 - create a new copy if it exists
+            if (original.getFileAttachment1() != null) {
+                FileAttachment originalAttachment = original.getFileAttachment1();
+                
+                // Create a new FileAttachment with the same properties
+                FileAttachment newAttachment = new FileAttachment();
+                newAttachment.setOriginalFilename(originalAttachment.getOriginalFilename());
+                newAttachment.setStoredFilename(originalAttachment.getStoredFilename());
+                newAttachment.setContentType(originalAttachment.getContentType());
+                newAttachment.setFileSize(originalAttachment.getFileSize());
+                newAttachment.setFilePath(originalAttachment.getFilePath());
+                
+                // Save the new attachment
+                FileAttachment savedAttachment = fileAttachmentRepository.save(newAttachment);
+                
+                // Set the new attachment to the copy
+                copy.setFileAttachment1(savedAttachment);
+            }
+            
+            // Save the copy
+            RiskFactor savedCopy = riskFactorRepository.save(copy);
+            return savedCopy.getId();
+        }
+        return null;
+    }
 } 

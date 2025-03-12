@@ -459,6 +459,21 @@ public class RiskFactorController {
         return "redirect:/safety/risk-factor/list";
     }
     
+    /**
+     * 위험요인 복사 (실시일자를 1년 후로 설정)
+     */
+    @GetMapping("/copy/{id}")
+    public String copyRiskFactor(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Long newId = riskFactorService.copyRiskFactor(id);
+        if (newId != null) {
+            redirectAttributes.addFlashAttribute("message", "위험요인이 성공적으로 복사되었습니다. (실시일자: 1년 후)");
+            return "redirect:/safety/risk-factor/detail-pc/" + newId;
+        } else {
+            redirectAttributes.addFlashAttribute("error", "위험요인 복사 중 오류가 발생했습니다.");
+            return "redirect:/safety/risk-factor/list-pc";
+        }
+    }
+    
     // 공통 모델 속성 추가 메서드
     private void addCommonModelAttributes(Model model) {
         model.addAttribute("riskClassificationOptions", RiskFactor.RiskClassification.values());

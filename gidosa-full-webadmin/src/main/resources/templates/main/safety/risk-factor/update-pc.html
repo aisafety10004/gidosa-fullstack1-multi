@@ -520,6 +520,8 @@
 </div>
 
 <th:block layout:fragment="script">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
+    <script src="/js/utils.js"></script>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function() {
             // 디버깅: 파일 입력 요소 확인
@@ -545,6 +547,11 @@
             const riskDetailFactorSelect = document.getElementById('riskDetailFactor');
             const riskDetailFactorHidden = document.querySelector('input[name="riskDetailFactor"]');
             
+            // 위도, 경도 hidden 필드
+            // const latitudeInput = document.getElementById('latitude');
+            // const longitudeInput = document.getElementById('longitude');
+            // const gpsInfoDisplay = document.getElementById('gpsInfo');
+
             // 위험 분류에 따른 위험 요인(상세) 옵션 매핑
             const detailFactorOptions = {
                 'MECHANICAL_EQUIPMENT': /*[[${mechanicalEquipmentOptions}]]*/ [],
@@ -668,6 +675,31 @@
                     } catch (e) {
                         console.error(`Exception reading file for ${previewId}:`, e);
                     }
+
+                    // EXIF 데이터 추출 (workImage1File인 경우에만)
+                    // if (input.id === 'workImage1File') {
+                    //     extractExifData2(file).then(exifData => {
+                    //         if (exifData && exifData.latitude && exifData.longitude) {
+                    //             // hidden 필드에 위도, 경도 설정
+                    //             latitudeInput.value = exifData.latitude;
+                    //             longitudeInput.value = exifData.longitude;
+                                
+                    //             // 위치 정보 표시
+                    //             //gpsInfoDisplay.textContent = `위치 정보가 이미지에서 추출되었습니다.(위도: ${exifData.latitude.toFixed(6)}, 경도: ${exifData.longitude.toFixed(6)})`;
+                    //             gpsInfoDisplay.innerHTML = `위치 정보가 이미지에서 추출되었습니다.<br>(위도: ${exifData.latitude.toFixed(6)}, 경도: ${exifData.longitude.toFixed(6)})`;
+                    //         } else {
+                    //             // 위치 정보가 없는 경우
+                    //             latitudeInput.value = '';
+                    //             longitudeInput.value = '';
+                    //             gpsInfoDisplay.textContent = '이미지에 위치 정보가 없습니다.';
+                    //         }
+                    //     }).catch(error => {
+                    //         console.error('EXIF 데이터 추출 오류:', error);
+                    //         latitudeInput.value = '';
+                    //         longitudeInput.value = '';
+                    //         gpsInfoDisplay.textContent = 'EXIF 데이터를 읽는 중 오류가 발생했습니다.';
+                    //     });
+                    // }
                 } else {
                     console.log(`No file selected for ${previewId}`);
                 }
