@@ -30,14 +30,14 @@ public class RiskFactor {
     @Column
     private RiskFactorEvaluationType riskFactorEvaluationType;     // 평가구분(후 입력)
 
-    @OneToOne
+    @ManyToOne
     private MasterAuthorityDivision authorityDivision;          // 관할구분(후 입력)
 
     @Enumerated(EnumType.STRING)
     @Column
     private RiskFactorAuthorityDivisionLevel authorityDivisionLevel;     // 관할급(후 입력)
 
-    @OneToOne
+    @ManyToOne
     private MasterDivisionDetail divisionDetail;                // 기관명(후 입력)
 
     ////////////////////////////////////////////////////////////////

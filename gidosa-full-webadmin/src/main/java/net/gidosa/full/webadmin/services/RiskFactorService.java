@@ -352,6 +352,8 @@ public class RiskFactorService {
                     .evaluator2(original.getEvaluator2())
                     .riskFactorEvaluationType(original.getRiskFactorEvaluationType())
                     .authorityDivisionLevel(original.getAuthorityDivisionLevel())
+                    .authorityDivision(original.getAuthorityDivision())
+                    .divisionDetail(original.getDivisionDetail())
                     .latitude(original.getLatitude())
                     .longitude(original.getLongitude())
                     .construction(original.getConstruction())
@@ -376,18 +378,8 @@ public class RiskFactorService {
             copy.setExecutionDate(oneYearLater);
             
             // Handle @OneToOne relationships
-            
-            // // 1. Handle authorityDivision - use the same reference since it's a lookup entity
-            // if (original.getAuthorityDivision() != null) {
-            //     copy.setAuthorityDivision(original.getAuthorityDivision());
-            // }
-            
-            // // 2. Handle divisionDetail - use the same reference since it's a lookup entity
-            // if (original.getDivisionDetail() != null) {
-            //     copy.setDivisionDetail(original.getDivisionDetail());
-            // }
-            
-            // 3. Handle fileAttachment1 - create a new copy if it exists
+
+            // 1. Handle fileAttachment1 - create a new copy if it exists
             if (original.getFileAttachment1() != null) {
                 FileAttachment originalAttachment = original.getFileAttachment1();
                 
