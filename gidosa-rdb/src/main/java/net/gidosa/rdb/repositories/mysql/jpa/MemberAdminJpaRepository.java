@@ -39,4 +39,17 @@ public interface MemberAdminJpaRepository extends JpaRepository<MemberAdmin, Lon
      * 특정 건설 현장의 활성화된 관리자 목록을 조회합니다.
      */
     List<MemberAdmin> findByConstructionIdAndIsActiveTrue(Long constructionId);
+    
+    // 검색 기능을 위한 메서드 추가
+    @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction WHERE m.username LIKE %:keyword% ORDER BY m.id DESC")
+    Page<MemberAdmin> findByUsernameContainingOrderByIdDesc(@Param("keyword") String keyword, Pageable pageable);
+    
+    @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction WHERE m.name LIKE %:keyword% ORDER BY m.id DESC")
+    Page<MemberAdmin> findByNameContainingOrderByIdDesc(@Param("keyword") String keyword, Pageable pageable);
+    
+    @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction WHERE m.email LIKE %:keyword% ORDER BY m.id DESC")
+    Page<MemberAdmin> findByEmailContainingOrderByIdDesc(@Param("keyword") String keyword, Pageable pageable);
+    
+    @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction WHERE m.phone LIKE %:keyword% ORDER BY m.id DESC")
+    Page<MemberAdmin> findByPhoneContainingOrderByIdDesc(@Param("keyword") String keyword, Pageable pageable);
 }

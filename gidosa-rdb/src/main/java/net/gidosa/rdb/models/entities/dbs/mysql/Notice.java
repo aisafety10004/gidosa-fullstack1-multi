@@ -64,6 +64,9 @@ public class Notice {
     @Column(columnDefinition = "TEXT")
     private String mermaidCode;
 
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean published = false;
+
     // 첨부파일 목록 조회를 위한 편의 메서드
     @Transient
     public List<FileAttachment> getAttachments() {

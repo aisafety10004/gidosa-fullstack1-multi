@@ -21,6 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Log4j2
 @Controller
@@ -32,31 +37,116 @@ public class NoticeController {
 
     @GetMapping
     public String list(@PageableDefault(size = 10, sort = "noticeDate", direction = Sort.Direction.DESC) Pageable pageable,
+                      @RequestParam(required = false) String searchTitle,
+                      @RequestParam(required = false) String startDate,
+                      @RequestParam(required = false) String endDate,
+                      @RequestParam(required = false, defaultValue = "all") String viewMode,
                       Model model,
                       @AuthenticationPrincipal UserDetails userDetails) {
         Page<Notice> noticePage;
         
+        // 날짜 변환 처리
+        LocalDateTime startDateTime = null;
+        LocalDateTime endDateTime = null;
+        
+        if (startDate != null && !startDate.trim().isEmpty()) {
+            startDateTime = LocalDate.parse(startDate).atStartOfDay();
+        }
+        
+        if (endDate != null && !endDate.trim().isEmpty()) {
+            endDateTime = LocalDate.parse(endDate).atTime(LocalTime.MAX);
+        }
+        
+        // 검색 파라미터를 모델에 추가
+        model.addAttribute("searchTitle", searchTitle);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("viewMode", viewMode);
+        
         // 권한에 따라 공지사항 목록 조회
-        if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            // 관리자는 모든 공지사항 조회
-            noticePage = noticeService.getAllNotices(pageable);
-            // 관리자에게는 모든 건설현장 정보 제공 (필터링 목적)
-            //model.addAttribute("constructions", constructionService.findAllConstructionsWithManagementMenus());
-        } else {
+//        if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+//            // 관리자는 모든 공지사항 검색 가능
+//            if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+//                if (startDateTime != null || endDateTime != null) {
+//                    // 제목과 날짜 범위로 검색
+//                    noticePage = noticeService.searchNoticesByTitleAndDateRange(searchTitle, startDateTime, endDateTime, pageable);
+//                } else {
+//                    // 제목으로만 검색
+//                    noticePage = noticeService.searchNoticesByTitle(searchTitle, pageable);
+//                }
+//            } else if (startDateTime != null || endDateTime != null) {
+//                // 날짜 범위로만 검색
+//                noticePage = noticeService.searchNoticesByDateRange(startDateTime, endDateTime, pageable);
+//            } else {
+//                // 검색 조건 없음
+//                noticePage = noticeService.getAllNotices(pageable);
+//            }
+//        } else {
             // 매니저는 자신의 건설현장 공지사항과 전체 공지사항만 조회
             MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
             Construction construction = memberAdmin.getConstruction();
-            
+
             if (construction != null) {
-                noticePage = noticeService.getNoticesByConstructionId(construction.getId(), pageable);
-                // 매니저에게는 자신의 건설현장 정보만 제공
-                //model.addAttribute("construction", construction);
+                Long constructionId = construction.getId();
+
+                if ("unpublished".equals(viewMode)) {
+                    // 게시되지 않은 공지사항만 조회 (자신의 건설현장만)
+                    if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+                        if (startDateTime != null || endDateTime != null) {
+                            // 제목과 날짜 범위로 검색 (미게시 공지사항)
+                            noticePage = noticeService.searchNoticesByTitleAndDateRangeAndConstructionId(
+                                searchTitle, startDateTime, endDateTime, constructionId, pageable);
+                        } else {
+                            // 제목으로만 검색 (미게시 공지사항)
+                            noticePage = noticeService.searchNoticesByTitleAndConstructionId(searchTitle, constructionId, pageable);
+                        }
+                    } else if (startDateTime != null || endDateTime != null) {
+                        // 날짜 범위로만 검색 (미게시 공지사항)
+                        noticePage = noticeService.searchNoticesByDateRangeAndConstructionId(startDateTime, endDateTime, constructionId, pageable);
+                    } else {
+                        // 검색 조건 없음 (미게시 공지사항)
+                        noticePage = noticeService.getUnpublishedNoticesByConstructionId(constructionId, pageable);
+                    }
+                } else {
+                    // 게시된 공지사항만 조회 (자신의 건설현장 + 전체 공지사항)
+                    if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+                        if (startDateTime != null || endDateTime != null) {
+                            // 제목과 날짜 범위로 검색 (게시된 공지사항)
+                            noticePage = noticeService.searchPublishedNoticesByTitleAndDateRangeAndConstructionId(
+                                searchTitle, startDateTime, endDateTime, constructionId, pageable);
+                        } else {
+                            // 제목으로만 검색 (게시된 공지사항)
+                            noticePage = noticeService.searchPublishedNoticesByTitleAndConstructionId(searchTitle, constructionId, pageable);
+                        }
+                    } else if (startDateTime != null || endDateTime != null) {
+                        // 날짜 범위로만 검색 (게시된 공지사항)
+                        noticePage = noticeService.searchPublishedNoticesByDateRangeAndConstructionId(startDateTime, endDateTime, constructionId, pageable);
+                    } else {
+                        // 검색 조건 없음 (게시된 공지사항)
+                        noticePage = noticeService.getPublishedNoticesByConstructionId(constructionId, pageable);
+                    }
+                }
             } else {
-                // 건설현장이 없는 매니저는 전체 공지사항만 조회
-                noticePage = noticeService.getGlobalNotices(pageable);
+                // 건설현장이 없는 매니저는 전체 공지사항만 조회 (construction이 null인 공지사항만)
+                if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+                    if (startDateTime != null || endDateTime != null) {
+                        // 제목과 날짜 범위로 검색 - 전역 공지사항만
+                        noticePage = noticeService.searchGlobalNoticesByTitleAndDateRange(
+                            searchTitle, startDateTime, endDateTime, pageable);
+                    } else {
+                        // 제목으로만 검색 - 전역 공지사항만
+                        noticePage = noticeService.searchGlobalNoticesByTitle(searchTitle, pageable);
+                    }
+                } else if (startDateTime != null || endDateTime != null) {
+                    // 날짜 범위로만 검색 - 전역 공지사항만
+                    noticePage = noticeService.searchGlobalNoticesByDateRange(startDateTime, endDateTime, pageable);
+                } else {
+                    // 검색 조건 없음 - 전역 공지사항만
+                    noticePage = noticeService.getGlobalNotices(pageable);
+                }
             }
-        }
-        
+//        }
+
         model.addAttribute("notices", noticePage);
         return "main/notice/list";
     }
@@ -87,25 +177,46 @@ public class NoticeController {
                         @AuthenticationPrincipal UserDetails userDetails,
                         RedirectAttributes redirectAttributes) {
         try {
-            // 매니저인 경우 자신의 건설현장 ID 설정
-            if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            // 공지일자가 없으면 현재 시간으로 설정
+            if (notice.getNoticeDate() == null) {
+                notice.setNoticeDate(LocalDateTime.now());
+            }
+            
+            // 머메이드 코드 설정
+            notice.setMermaidCode(mermaidCode);
+            
+            // 기본적으로 미게시 상태로 설정
+            notice.setPublished(false);
+            
+            // 권한에 따라 건설현장 설정
+            if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+                // 관리자는 모든 건설현장에 대한 공지사항 작성 가능
+                if (constructionId != null) {
+                    // 특정 건설현장 선택
+                    noticeService.createNotice(notice, files, constructionId);
+                } else {
+                    // 전체 공지사항 (construction_id = null)
+                    noticeService.createNotice(notice, files);
+                }
+            } else {
+                // 매니저는 자신의 건설현장에 대한 공지사항만 작성 가능
                 MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
                 Construction construction = memberAdmin.getConstruction();
+                
                 if (construction != null) {
-                    constructionId = construction.getId();
+                    noticeService.createNotice(notice, files, construction.getId());
+                } else {
+                    throw new IllegalStateException("건설현장이 없는 매니저는 공지사항을 작성할 수 없습니다.");
                 }
             }
             
-            // Mermaid 코드 설정
-            notice.setMermaidCode(mermaidCode);
-            
-            noticeService.createNotice(notice, files, constructionId);
             redirectAttributes.addFlashAttribute("message", "공지사항이 성공적으로 등록되었습니다.");
+            return "redirect:/notice";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "공지사항 등록 중 오류가 발생했습니다.");
-            log.error("Error creating notice", e);
+            log.error("공지사항 등록 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "공지사항 등록 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/notice/create";
         }
-        return "redirect:/notice";
     }
 
     @GetMapping("/detail/{id}")
@@ -276,5 +387,50 @@ public class NoticeController {
             log.error("Error removing attachment", e);
         }
         return "redirect:/notice/update/" + noticeId;
+    }
+
+    @PostMapping("/publish/{id}")
+    public String publishNotice(@PathVariable Long id, 
+                              @RequestParam(defaultValue = "true") boolean publish,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            // 권한 확인
+            boolean hasPermission = false;
+            MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+
+            //if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            if (memberAdmin.getRole().equals("ROLE_ADMIN")) {
+                // 관리자는 모든 공지사항에 대한 권한이 있음
+                hasPermission = true;
+            } else {
+                // 매니저는 자신의 건설현장 공지사항에 대한 권한만 있음
+                Construction construction = memberAdmin.getConstruction();
+                
+                if (construction != null) {
+                    Optional<Notice> noticeOpt = noticeService.getNoticeById(id);
+                    if (noticeOpt.isPresent()) {
+                        Notice notice = noticeOpt.get();
+                        if (notice.getConstruction() != null && 
+                            notice.getConstruction().getId().equals(construction.getId())) {
+                            hasPermission = true;
+                        }
+                    }
+                }
+            }
+            
+            if (hasPermission) {
+                noticeService.publishNotice(id, publish);
+                redirectAttributes.addFlashAttribute("message", 
+                    publish ? "공지사항이 성공적으로 게시되었습니다." : "공지사항이 성공적으로 게시 취소되었습니다.");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "해당 공지사항에 대한 권한이 없습니다.");
+            }
+        } catch (Exception e) {
+            log.error("공지사항 게시 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "공지사항 게시 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        
+        return "redirect:/notice";
     }
 }

@@ -287,4 +287,173 @@ public class NoticeService {
     private String generateStoredFilename(String originalFilename) {
         return UUID.randomUUID().toString() + "_" + originalFilename;
     }
+
+    // 검색 기능 - 제목으로 검색
+    public Page<Notice> searchNoticesByTitle(String searchTitle, Pageable pageable) {
+        if (searchTitle == null || searchTitle.trim().isEmpty()) {
+            return noticeRepository.findAll(pageable);
+        }
+        return noticeRepository.findByTitleContainingIgnoreCase(searchTitle.trim(), pageable);
+    }
+    
+    // 검색 기능 - 특정 건설현장 공지사항 중 제목으로 검색
+    public Page<Notice> searchNoticesByTitleAndConstructionId(String searchTitle, Long constructionId, Pageable pageable) {
+        if (searchTitle == null || searchTitle.trim().isEmpty()) {
+            return getNoticesByConstructionId(constructionId, pageable);
+        }
+        return noticeRepository.findUnpublishedByConstructionIdAndTitleContainingIgnoreCase(
+            constructionId, searchTitle.trim(), pageable);
+    }
+    
+    // 검색 기능 - 공지일자 범위로 검색
+    public Page<Notice> searchNoticesByDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        if (startDate == null) {
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0); // 과거 기본값
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusDays(1); // 미래 기본값 (오늘 포함)
+        }
+        return noticeRepository.findByNoticeDateBetween(startDate, endDate, pageable);
+    }
+    
+    // 검색 기능 - 특정 건설현장 공지사항 중 공지일자 범위로 검색
+    public Page<Notice> searchNoticesByDateRangeAndConstructionId(LocalDateTime startDate, LocalDateTime endDate, 
+                                                                Long constructionId, Pageable pageable) {
+        if (startDate == null) {
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0); // 과거 기본값
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusDays(1); // 미래 기본값 (오늘 포함)
+        }
+        return noticeRepository.findByConstructionIdOrConstructionIsNullAndNoticeDateBetween(
+            constructionId, startDate, endDate, pageable);
+    }
+    
+    // 검색 기능 - 제목과 공지일자 범위로 검색
+    public Page<Notice> searchNoticesByTitleAndDateRange(String searchTitle, LocalDateTime startDate, 
+                                                       LocalDateTime endDate, Pageable pageable) {
+        if (searchTitle == null || searchTitle.trim().isEmpty()) {
+            return searchNoticesByDateRange(startDate, endDate, pageable);
+        }
+        
+        if (startDate == null) {
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0); // 과거 기본값
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusDays(1); // 미래 기본값 (오늘 포함)
+        }
+        
+        return noticeRepository.findByTitleContainingIgnoreCaseAndNoticeDateBetween(
+            searchTitle.trim(), startDate, endDate, pageable);
+    }
+    
+    // 검색 기능 - 특정 건설현장 공지사항 중 제목과 공지일자 범위로 검색
+    public Page<Notice> searchNoticesByTitleAndDateRangeAndConstructionId(String searchTitle, LocalDateTime startDate, 
+                                                                        LocalDateTime endDate, Long constructionId, 
+                                                                        Pageable pageable) {
+        if (searchTitle == null || searchTitle.trim().isEmpty()) {
+            return searchNoticesByDateRangeAndConstructionId(startDate, endDate, constructionId, pageable);
+        }
+        
+        if (startDate == null) {
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0); // 과거 기본값
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusDays(1); // 미래 기본값 (오늘 포함)
+        }
+        
+        return noticeRepository.findByConstructionIdOrConstructionIsNullAndTitleContainingIgnoreCaseAndNoticeDateBetween(
+            constructionId, searchTitle.trim(), startDate, endDate, pageable);
+    }
+    
+    // 게시된 공지사항만 조회 (특정 건설현장 또는 전체 공지사항)
+    public Page<Notice> getPublishedNoticesByConstructionId(Long constructionId, Pageable pageable) {
+        return noticeRepository.findPublishedByConstructionIdOrConstructionIsNullOrderByIdDesc(constructionId, pageable);
+    }
+    
+    // 게시되지 않은 공지사항만 조회 (특정 건설현장만)
+    public Page<Notice> getUnpublishedNoticesByConstructionId(Long constructionId, Pageable pageable) {
+        return noticeRepository.findUnpublishedByConstructionIdOrderByIdDesc(constructionId, pageable);
+    }
+    
+    // 제목으로 게시된 공지사항 검색 (특정 건설현장 또는 전체 공지사항)
+    public Page<Notice> searchPublishedNoticesByTitleAndConstructionId(String searchTitle, Long constructionId, Pageable pageable) {
+        return noticeRepository.findPublishedByConstructionIdOrConstructionIsNullAndTitleContainingIgnoreCase(constructionId, searchTitle, pageable);
+    }
+    
+    // 공지일자 범위로 게시된 공지사항 검색 (특정 건설현장 또는 전체 공지사항)
+    public Page<Notice> searchPublishedNoticesByDateRangeAndConstructionId(LocalDateTime startDate, LocalDateTime endDate, Long constructionId, Pageable pageable) {
+        if (startDate == null) {
+            startDate = LocalDateTime.of(1970, 1, 1, 0, 0);
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusYears(100);
+        }
+        
+        return noticeRepository.findPublishedByConstructionIdOrConstructionIsNullAndNoticeDateBetween(constructionId, startDate, endDate, pageable);
+    }
+    
+    // 제목과 공지일자 범위로 게시된 공지사항 검색 (특정 건설현장 또는 전체 공지사항)
+    public Page<Notice> searchPublishedNoticesByTitleAndDateRangeAndConstructionId(String searchTitle, LocalDateTime startDate, LocalDateTime endDate, Long constructionId, Pageable pageable) {
+        if (startDate == null) {
+            startDate = LocalDateTime.of(1970, 1, 1, 0, 0);
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusYears(100);
+        }
+        
+        return noticeRepository.findPublishedByConstructionIdOrConstructionIsNullAndTitleContainingIgnoreCaseAndNoticeDateBetween(constructionId, searchTitle, startDate, endDate, pageable);
+    }
+    
+    // 공지사항 게시 상태 변경
+    @Transactional
+    public Notice publishNotice(Long id, boolean publish) {
+        Optional<Notice> optionalNotice = noticeRepository.findById(id);
+        if (optionalNotice.isPresent()) {
+            Notice notice = optionalNotice.get();
+            notice.setPublished(publish);
+            return noticeRepository.save(notice);
+        } else {
+            throw new IllegalArgumentException("해당 ID의 공지사항이 존재하지 않습니다: " + id);
+        }
+    }
+
+    // 검색 기능 - 전역 공지사항 중 제목으로 검색 (construction이 null인 경우만)
+    public Page<Notice> searchGlobalNoticesByTitle(String searchTitle, Pageable pageable) {
+        if (searchTitle == null || searchTitle.trim().isEmpty()) {
+            return getGlobalNotices(pageable);
+        }
+        
+        return noticeRepository.findByConstructionIsNullAndTitleContainingIgnoreCase(searchTitle.trim(), pageable);
+    }
+    
+    // 검색 기능 - 전역 공지사항 중 공지일자 범위로 검색 (construction이 null인 경우만)
+    public Page<Notice> searchGlobalNoticesByDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        if (startDate == null) {
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0); // 과거 기본값
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusDays(1); // 미래 기본값 (오늘 포함)
+        }
+        
+        return noticeRepository.findByConstructionIsNullAndNoticeDateBetween(startDate, endDate, pageable);
+    }
+    
+    // 검색 기능 - 전역 공지사항 중 제목과 공지일자 범위로 검색 (construction이 null인 경우만)
+    public Page<Notice> searchGlobalNoticesByTitleAndDateRange(String searchTitle, LocalDateTime startDate, 
+                                                             LocalDateTime endDate, Pageable pageable) {
+        if (searchTitle == null || searchTitle.trim().isEmpty()) {
+            return searchGlobalNoticesByDateRange(startDate, endDate, pageable);
+        }
+        
+        if (startDate == null) {
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0); // 과거 기본값
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusDays(1); // 미래 기본값 (오늘 포함)
+        }
+        
+        return noticeRepository.findByConstructionIsNullAndTitleContainingIgnoreCaseAndNoticeDateBetween(
+                searchTitle.trim(), startDate, endDate, pageable);
+    }
 }

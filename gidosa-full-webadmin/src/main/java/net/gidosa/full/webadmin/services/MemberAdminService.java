@@ -149,4 +149,26 @@ public class MemberAdminService {
     public List<Construction> getAllConstructions() {
         return constructionJpaRepository.findAll();
     }
+
+    // 검색 기능 추가
+    public Page<MemberAdmin> searchMemberAdmins(String searchType, String keyword, Pageable pageable) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return getAllMembersWithPaging(pageable);
+        }
+        
+        keyword = keyword.trim();
+        
+        switch (searchType) {
+            case "username":
+                return memberAdminJpaRepository.findByUsernameContainingOrderByIdDesc(keyword, pageable);
+            case "name":
+                return memberAdminJpaRepository.findByNameContainingOrderByIdDesc(keyword, pageable);
+            case "email":
+                return memberAdminJpaRepository.findByEmailContainingOrderByIdDesc(keyword, pageable);
+            case "phone":
+                return memberAdminJpaRepository.findByPhoneContainingOrderByIdDesc(keyword, pageable);
+            default:
+                return getAllMembersWithPaging(pageable);
+        }
+    }
 } 

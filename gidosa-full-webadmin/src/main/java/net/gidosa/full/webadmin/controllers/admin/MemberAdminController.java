@@ -30,8 +30,22 @@ public class MemberAdminController {
     // 관리자 목록 조회 - 페이징 처리 추가
     @GetMapping("/list")
     public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                      @RequestParam(required = false) String searchType,
+                      @RequestParam(required = false) String keyword,
                       Model model) {
-        Page<MemberAdmin> memberAdminsPage = memberAdminService.getAllMembersWithPaging(pageable);
+        Page<MemberAdmin> memberAdminsPage;
+        
+        if (searchType != null && keyword != null && !keyword.trim().isEmpty()) {
+            memberAdminsPage = memberAdminService.searchMemberAdmins(searchType, keyword, pageable);
+            model.addAttribute("searchType", searchType);
+            model.addAttribute("keyword", keyword);
+        } else {
+            memberAdminsPage = memberAdminService.getAllMembersWithPaging(pageable);
+            if (searchType != null) {
+                model.addAttribute("searchType", searchType);
+            }
+        }
+        
         model.addAttribute("memberAdminListPage", memberAdminsPage);
         return "main/member/admin/list";
     }

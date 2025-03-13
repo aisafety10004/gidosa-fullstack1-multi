@@ -9,8 +9,23 @@
     <div layout:fragment="content">
         <h2 class="mb-4">공지사항 관리</h2>
 
-        <div class="mb-3">
+        <div class="mb-3 d-flex justify-content-between">
             <a href="/notice/create" class="btn btn-primary">새 공지사항 등록</a>
+            
+            <!-- 뷰 모드 선택 (매니저만 볼 수 있음) -->
+            <div th:if="${#authentication.principal.authorities.![authority].contains('ROLE_MANAGER') || 
+                          (#authentication.principal.memberAdmin != null && #authentication.principal.memberAdmin.construction != null)}">
+                <div class="btn-group" role="group" aria-label="View Mode">
+                    <a th:href="@{/notice(viewMode='all', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}" 
+                       class="btn" th:classappend="${viewMode == 'all' || viewMode == null} ? 'btn-primary' : 'btn-outline-primary'">
+                        모든 공지사항
+                    </a>
+                    <a th:href="@{/notice(viewMode='unpublished', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}" 
+                       class="btn" th:classappend="${viewMode == 'unpublished'} ? 'btn-primary' : 'btn-outline-primary'">
+                        미게시 공지사항
+                    </a>
+                </div>
+            </div>
         </div>
 
         <!-- 메시지 표시 -->
@@ -21,15 +36,48 @@
             <span th:text="${error}"></span>
         </div>
 
+        <!-- 검색 폼 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/notice}" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="searchTitle" class="form-label">제목</label>
+                        <input type="text" class="form-control" id="searchTitle" name="searchTitle" 
+                               th:value="${searchTitle}" placeholder="제목으로 검색">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="startDate" class="form-label">공지 시작일자</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate" 
+                               th:value="${startDate}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="endDate" class="form-label">공지 종료일자</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate" 
+                               th:value="${endDate}">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">검색</button>
+                    </div>
+                    
+                    <!-- 페이지 정보 유지를 위한 hidden 필드 -->
+                    <input type="hidden" name="page" th:value="${notices.number}">
+                    <input type="hidden" name="size" th:value="${notices.size}">
+                    <input type="hidden" name="viewMode" th:value="${viewMode}">
+                </form>
+            </div>
+        </div>
+
         <table class="table">
             <thead>
                 <tr>
                     <th>번호</th>
                     <th>제목</th>
-                    <th>건설현장</th>
+                    <!-- <th>건설현장</th> -->
+                    <th>첨부파일</th>
                     <th>공지일자</th>
-                    <th>등록일</th>
-                    <th>관리</th>
+                    <!-- <th>등록일</th> -->
+                    <!-- <th>상태</th> -->
+                    <th>메뉴</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,12 +87,25 @@
                         <a th:href="@{/notice/detail/{id}(id=${notice.id})}" 
                            th:text="${notice.title}"></a>
                     </td>
-                    <td>
+                    <!-- <td>
                         <span th:if="${notice.construction != null}" th:text="${notice.construction.name}"></span>
                         <span th:if="${notice.construction == null}" class="badge bg-primary">전체</span>
+                    </td> -->
+                    <td>
+                        <a th:if="${notice.fileAttachment1 != null}" 
+                           th:href="@{/common/file/download/{id}(id=${notice.fileAttachment1.id})}" 
+                           class="text-decoration-none">
+                            <i class="fas fa-file-download"></i>
+                            <span th:text="${#strings.abbreviate(notice.fileAttachment1.originalFilename, 15)}"></span>
+                        </a>
+                        <span th:unless="${notice.fileAttachment1 != null}">-</span>
                     </td>
-                    <td th:text="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd HH:mm')}"></td>
-                    <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd')}"></td>
+                    <!-- <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td> -->
+                    <!-- <td>
+                        <span th:if="${notice.published}" class="badge bg-success">게시됨</span>
+                        <span th:unless="${notice.published}" class="badge bg-warning">미게시</span>
+                    </td> -->
                     <td>
                         <a th:href="@{/notice/update/{id}(id=${notice.id})}" 
                            th:if="${(notice.construction != null && #authentication.principal.memberAdmin.construction != null && #authentication.principal.memberAdmin.construction.id == notice.construction.id) 
@@ -57,7 +118,23 @@
                                         || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
                                     onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
                         </form>
+                        
+                        <!-- 게시/게시취소 버튼 -->
+                        <form th:if="${(notice.construction != null && #authentication.principal.memberAdmin.construction != null && #authentication.principal.memberAdmin.construction.id == notice.construction.id)
+                                        || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
+                              th:action="@{/notice/publish/{id}(id=${notice.id})}" 
+                              method="post" style="display: inline;">
+                            <input type="hidden" name="publish" th:value="${!notice.published}">
+                            <button type="submit" class="btn btn-sm" 
+                                    th:classappend="${notice.published ? 'btn-secondary' : 'btn-success'}"
+                                    th:text="${notice.published ? '게시취소' : '게시'}"
+                                    th:attr="onclick=|return confirm('${notice.published ? '게시를 취소하시겠습니까? 다른 사용자들이 더 이상 이 공지사항을 볼 수 없게 됩니다.' : '이 공지사항을 게시하시겠습니까? 모든 사용자들이 이 공지사항을 볼 수 있게 됩니다.'}');|">
+                            </button>
+                        </form>
                     </td>
+                </tr>
+                <tr th:if="${notices.totalElements == 0}">
+                    <td colspan="5" class="text-center">검색된 공지사항이 없습니다.</td>
                 </tr>
             </tbody>
         </table>
@@ -66,16 +143,20 @@
         <nav aria-label="Page navigation" th:if="${notices.totalPages > 0}">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${!notices.hasPrevious()} ? disabled">
-                    <a class="page-link" th:href="@{/notice(page=${notices.number - 1})}"
+                    <a class="page-link" 
+                       th:href="@{/notice(page=${notices.number - 1}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
                        th:unless="${!notices.hasPrevious()}">이전</a>
                     <span class="page-link" th:if="${!notices.hasPrevious()}">이전</span>
                 </li>
                 <li class="page-item" th:each="i : ${#numbers.sequence(0, notices.totalPages - 1)}"
                     th:classappend="${notices.number == i} ? active">
-                    <a class="page-link" th:href="@{/notice(page=${i})}" th:text="${i + 1}"></a>
+                    <a class="page-link" 
+                       th:href="@{/notice(page=${i}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}" 
+                       th:text="${i + 1}"></a>
                 </li>
                 <li class="page-item" th:classappend="${!notices.hasNext()} ? disabled">
-                    <a class="page-link" th:href="@{/notice(page=${notices.number + 1})}"
+                    <a class="page-link" 
+                       th:href="@{/notice(page=${notices.number + 1}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
                        th:unless="${!notices.hasNext()}">다음</a>
                     <span class="page-link" th:if="${!notices.hasNext()}">다음</span>
                 </li>
@@ -85,7 +166,25 @@
 
     <th:block layout:fragment="script">
     <script th:inline="javascript">
-        
+        // 달력 최소 날짜를 현재 날짜로 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            
+            // 시작 날짜가 변경되면 종료 날짜의 최소값 설정
+            startDateInput.addEventListener('change', function() {
+                if (startDateInput.value) {
+                    endDateInput.min = startDateInput.value;
+                }
+            });
+            
+            // 종료 날짜가 변경되면 시작 날짜의 최대값 설정
+            endDateInput.addEventListener('change', function() {
+                if (endDateInput.value) {
+                    startDateInput.max = endDateInput.value;
+                }
+            });
+        });
     </script>
     <script type="module">
         //import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';

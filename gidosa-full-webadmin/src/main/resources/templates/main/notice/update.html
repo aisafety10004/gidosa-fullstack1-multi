@@ -79,10 +79,10 @@
 
             <!-- 새로운 첨부파일 추가 -->
             <div class="mb-3">
-                <label for="files" class="form-label">새 첨부파일 추가 (최대 5개)</label>
+                <label for="files" class="form-label">새 첨부파일 추가 (최대 3개)</label>
                 <input type="file" class="form-control" id="files" name="files"
                        multiple accept="*/*" onchange="validateFiles(this)">
-                <small class="text-muted">* 파일은 최대 5개까지 첨부 가능합니다.(Ctrl + 클릭 시 여러 파일 선택 가능)</small>
+                <small class="text-muted">* 파일은 최대 3개까지 첨부 가능합니다.(Ctrl + 클릭 시 여러 파일 선택 가능)</small>
                 <br>
                 <small class="text-muted">* 파일크기는 15MB를 넘을 수 없습니다.</small>
             </div>
@@ -146,7 +146,7 @@
 
         function validateFiles(input) {
             const currentAttachments = /*[[${notice.attachments.size()}]]*/ 0;
-            const maxFiles = 5 - currentAttachments;
+            const maxFiles = 3 - currentAttachments;
             
             if (input.files.length > maxFiles) {
                 alert('첨부파일은 최대 ' + maxFiles + '개까지만 추가 가능합니다.');

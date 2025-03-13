@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -19,6 +20,57 @@ public class ConstructionService {
     private final ConstructionJpaRepository constructionJpaRepository;
 
     public Page<Construction> findAllConstructions(Pageable pageable) {
+        return constructionJpaRepository.findAllByOrderByIdDesc(pageable);
+    }
+
+    // 검색 기능을 위한 메소드 추가 - JPQL 쿼리 사용
+    public Page<Construction> searchConstructions(String name, String location, String status, Pageable pageable) {
+        // 빈 문자열이나 null인 경우 빈 문자열로 처리 (LIKE 검색에서 '%'로 처리됨)
+        name = StringUtils.hasText(name) ? name : "";
+        location = StringUtils.hasText(location) ? location : "";
+        status = StringUtils.hasText(status) ? status : "";
+        
+        // 모든 필드가 빈 문자열인 경우 전체 목록 반환
+        if (name.isEmpty() && location.isEmpty() && status.isEmpty()) {
+            return constructionJpaRepository.findAllByOrderByIdDesc(pageable);
+        }
+        
+        // 모든 검색 조건이 있는 경우
+        if (!name.isEmpty() && !location.isEmpty() && !status.isEmpty()) {
+            return constructionJpaRepository.findByNameContainingAndLocationContainingAndStatusContainingOrderByIdDesc(
+                    name, location, status, pageable);
+        }
+        
+        // 두 가지 검색 조건이 있는 경우
+        if (!name.isEmpty() && !location.isEmpty()) {
+            return constructionJpaRepository.findByNameContainingAndLocationContainingOrderByIdDesc(
+                    name, location, pageable);
+        }
+        
+        if (!name.isEmpty() && !status.isEmpty()) {
+            return constructionJpaRepository.findByNameContainingAndStatusContainingOrderByIdDesc(
+                    name, status, pageable);
+        }
+        
+        if (!location.isEmpty() && !status.isEmpty()) {
+            return constructionJpaRepository.findByLocationContainingAndStatusContainingOrderByIdDesc(
+                    location, status, pageable);
+        }
+        
+        // 한 가지 검색 조건만 있는 경우
+        if (!name.isEmpty()) {
+            return constructionJpaRepository.findByNameContainingOrderByIdDesc(name, pageable);
+        }
+        
+        if (!location.isEmpty()) {
+            return constructionJpaRepository.findByLocationContainingOrderByIdDesc(location, pageable);
+        }
+        
+        if (!status.isEmpty()) {
+            return constructionJpaRepository.findByStatusContainingOrderByIdDesc(status, pageable);
+        }
+        
+        // 기본 반환 (위의 조건들로 모두 처리되어야 하지만, 안전을 위해 추가)
         return constructionJpaRepository.findAllByOrderByIdDesc(pageable);
     }
 

@@ -20,4 +20,22 @@ public class RequestService {
     public Page<RequestConstruction> getRequestConstructions(Pageable pageable) {
         return requestConstructionRepository.findAllByOrderByIdDesc(pageable);
     }
+
+    @Transactional(readOnly = true)
+    public Page<RequestConstruction> searchRequestConstructions(String searchType, String searchKeyword, Pageable pageable) {
+        if (searchKeyword == null || searchKeyword.trim().isEmpty()) {
+            return getRequestConstructions(pageable);
+        }
+
+        switch (searchType) {
+            case "name":
+                return requestConstructionRepository.findByNameContainingOrderByIdDesc(searchKeyword, pageable);
+            case "phone":
+                return requestConstructionRepository.findByPhoneContainingOrderByIdDesc(searchKeyword, pageable);
+            case "location":
+                return requestConstructionRepository.findByConstructionLocationContainingOrderByIdDesc(searchKeyword, pageable);
+            default:
+                return getRequestConstructions(pageable);
+        }
+    }
 } 

@@ -9,9 +9,55 @@
 <body>
     <div layout:fragment="content">
         <h2>건설공사현장 목록</h2>
-        <a href="/construction/register" class="btn btn-primary mb-3">신규 등록</a>
-        <table class="table">
-            <thead>
+        
+        <!-- 검색 폼 추가 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">검색 항목</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/construction/list}" method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="name" class="form-label">현장명</label>
+                        <input type="text" class="form-control" id="name" name="name" th:value="${name}" 
+                               placeholder="현장명을 입력하세요">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="location" class="form-label">위치</label>
+                        <input type="text" class="form-control" id="location" name="location" th:value="${location}" 
+                               placeholder="위치를 입력하세요">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">상태</label>
+                        <input type="text" class="form-control" id="status" name="status" th:value="${status}" 
+                               placeholder="상태를 입력하세요">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-search"></i> 검색
+                        </button>
+                        <a th:href="@{/construction/list}" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> 초기화
+                        </a>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted">* 대소문자를 구분하지 않고 검색합니다. 부분 검색이 가능합니다.</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between mb-3">
+            <div>
+                <span class="text-muted">총 <strong th:text="${constructions.totalElements}">0</strong>개의 건설공사현장이 있습니다.</span>
+            </div>
+            <div>
+                <a href="/construction/register" class="btn btn-primary">신규 등록</a>
+            </div>
+        </div>
+        
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
                 <tr>
                     <th>ID</th>
                     <th>현장명</th>
@@ -41,6 +87,9 @@
                            onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
                     </td>
                 </tr>
+                <tr th:if="${constructions.empty}">
+                    <td colspan="7" class="text-center">검색 결과가 없습니다.</td>
+                </tr>
             </tbody>
         </table>
 
@@ -48,19 +97,19 @@
         <nav aria-label="Page navigation" th:if="${constructions.totalPages > 0}">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${!constructions.hasPrevious()} ? disabled">
-                    <a class="page-link" th:href="@{/construction/list(page=${constructions.number - 1})}"
+                    <a class="page-link" th:href="@{/construction/list(page=${constructions.number - 1}, name=${name}, location=${location}, status=${status})}"
                        th:unless="${!constructions.hasPrevious()}">이전</a>
                     <span class="page-link" th:if="${!constructions.hasPrevious()}">이전</span>
                 </li>
 
                 <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, constructions.totalPages - 1)}"
                     th:classappend="${pageNumber == constructions.number} ? active">
-                    <a class="page-link" th:href="@{/construction/list(page=${pageNumber})}"
+                    <a class="page-link" th:href="@{/construction/list(page=${pageNumber}, name=${name}, location=${location}, status=${status})}"
                        th:text="${pageNumber + 1}"></a>
                 </li>
 
                 <li class="page-item" th:classappend="${!constructions.hasNext()} ? disabled">
-                    <a class="page-link" th:href="@{/construction/list(page=${constructions.number + 1})}"
+                    <a class="page-link" th:href="@{/construction/list(page=${constructions.number + 1}, name=${name}, location=${location}, status=${status})}"
                        th:unless="${!constructions.hasNext()}">다음</a>
                     <span class="page-link" th:if="${!constructions.hasNext()}">다음</span>
                 </li>

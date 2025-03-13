@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,14 +16,18 @@ public interface NoticeJpaRepository extends JpaRepository<Notice, Long> {
     // 기본적인 CRUD 작업은 JpaRepository에서 제공
     
     // ID 기준 내림차순 정렬된 페이징 처리된 공지사항 목록 조회
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1",
+           countQuery = "SELECT COUNT(n) FROM Notice n")
     Page<Notice> findAllByOrderByIdDesc(Pageable pageable);
     
     // 특정 건설현장 ID에 해당하는 공지사항 또는 모든 공지사항(construction_id가 null인 경우) 조회
-    @Query("SELECT n FROM Notice n WHERE n.construction.id = :constructionId OR n.construction IS NULL ORDER BY n.id DESC")
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction.id = :constructionId OR n.construction IS NULL ORDER BY n.id DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction.id = :constructionId OR n.construction IS NULL")
     Page<Notice> findByConstructionIdOrConstructionIsNullOrderByIdDesc(@Param("constructionId") Long constructionId, Pageable pageable);
     
     // construction_id가 null인 공지사항만 조회 (모든 사용자에게 보이는 공지사항)
-    @Query("SELECT n FROM Notice n WHERE n.construction IS NULL ORDER BY n.id DESC")
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction IS NULL ORDER BY n.id DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction IS NULL")
     Page<Notice> findByConstructionIsNullOrderByIdDesc(Pageable pageable);
 
     @Query("SELECT n FROM Notice n " +
@@ -46,15 +51,91 @@ public interface NoticeJpaRepository extends JpaRepository<Notice, Long> {
     Optional<Notice> findByIdWithAttachmentsAndConstruction(@Param("id") Long id);
 
     // 특정 건설현장 ID에 해당하는 공지사항 또는 모든 공지사항(construction_id가 null인 경우) 조회 - Construction 정보 포함
-    @Query("SELECT n FROM Notice n LEFT JOIN FETCH n.construction WHERE n.construction.id = :constructionId OR n.construction IS NULL ORDER BY n.id DESC")
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction.id = :constructionId OR n.construction IS NULL ORDER BY n.id DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction.id = :constructionId OR n.construction IS NULL")
     Page<Notice> findByConstructionIdOrConstructionIsNullWithConstructionOrderByIdDesc(@Param("constructionId") Long constructionId, Pageable pageable);
     
     // 모든 공지사항 조회 - Construction 정보 포함
-    @Query("SELECT n FROM Notice n LEFT JOIN FETCH n.construction ORDER BY n.id DESC")
+    @Query("SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 ORDER BY n.id DESC")
     List<Notice> findAllWithConstructionOrderByIdDesc();
     
     // ID 기준 내림차순 정렬된 페이징 처리된 공지사항 목록 조회 - Construction 정보 포함
-    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction",
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1",
            countQuery = "SELECT COUNT(n) FROM Notice n")
     Page<Notice> findAllWithConstructionOrderByIdDesc(Pageable pageable);
+    
+    // 제목으로 공지사항 검색 (모든 공지사항)
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%'))")
+    Page<Notice> findByTitleContainingIgnoreCase(@Param("searchTitle") String searchTitle, Pageable pageable);
+    
+    // 공지일자 범위로 공지사항 검색 (모든 공지사항)
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE n.noticeDate BETWEEN :startDate AND :endDate ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.noticeDate BETWEEN :startDate AND :endDate")
+    Page<Notice> findByNoticeDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+    
+    // 제목과 공지일자 범위로 공지사항 검색 (모든 공지사항)
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND n.noticeDate BETWEEN :startDate AND :endDate ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND n.noticeDate BETWEEN :startDate AND :endDate")
+    Page<Notice> findByTitleContainingIgnoreCaseAndNoticeDateBetween(@Param("searchTitle") String searchTitle, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+    
+    // 제목으로 공지사항 검색 (특정 건설현장 또는 전체 공지사항)
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%'))")
+    Page<Notice> findByConstructionIdOrConstructionIsNullAndTitleContainingIgnoreCase(@Param("constructionId") Long constructionId, @Param("searchTitle") String searchTitle, Pageable pageable);
+
+    // 제목으로 공지사항 검색 (특정 건설현장 또는 전체 공지사항)
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE (n.construction.id = :constructionId) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND n.published = false ORDER BY n.noticeDate DESC",
+            countQuery = "SELECT COUNT(n) FROM Notice n WHERE (n.construction.id = :constructionId) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%'))")
+    Page<Notice> findUnpublishedByConstructionIdAndTitleContainingIgnoreCase(@Param("constructionId") Long constructionId, @Param("searchTitle") String searchTitle, Pageable pageable);
+    
+    // 공지일자 범위로 공지사항 검색 (특정 건설현장 또는 전체 공지사항)
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND n.noticeDate BETWEEN :startDate AND :endDate ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND n.noticeDate BETWEEN :startDate AND :endDate")
+    Page<Notice> findByConstructionIdOrConstructionIsNullAndNoticeDateBetween(@Param("constructionId") Long constructionId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+    
+    // 제목과 공지일자 범위로 공지사항 검색 (특정 건설현장 또는 전체 공지사항)
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND n.noticeDate BETWEEN :startDate AND :endDate ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND n.noticeDate BETWEEN :startDate AND :endDate")
+    Page<Notice> findByConstructionIdOrConstructionIsNullAndTitleContainingIgnoreCaseAndNoticeDateBetween(@Param("constructionId") Long constructionId, @Param("searchTitle") String searchTitle, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+    
+    // 특정 건설현장 ID에 해당하는 공지사항 또는 모든 공지사항(construction_id가 null인 경우) 중 게시된 공지사항만 조회
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND n.published = true ORDER BY n.id DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND n.published = true")
+    Page<Notice> findPublishedByConstructionIdOrConstructionIsNullOrderByIdDesc(@Param("constructionId") Long constructionId, Pageable pageable);
+    
+    // 특정 건설현장 ID에 해당하는 공지사항 또는 모든 공지사항(construction_id가 null인 경우) 중 게시되지 않은 공지사항만 조회
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction.id = :constructionId AND n.published = false ORDER BY n.id DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction.id = :constructionId AND n.published = false")
+    Page<Notice> findUnpublishedByConstructionIdOrderByIdDesc(@Param("constructionId") Long constructionId, Pageable pageable);
+    
+    // 제목으로 공지사항 검색 (특정 건설현장 또는 전체 공지사항) - 게시된 공지사항만
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND n.published = true ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND n.published = true")
+    Page<Notice> findPublishedByConstructionIdOrConstructionIsNullAndTitleContainingIgnoreCase(@Param("constructionId") Long constructionId, @Param("searchTitle") String searchTitle, Pageable pageable);
+    
+    // 공지일자 범위로 공지사항 검색 (특정 건설현장 또는 전체 공지사항) - 게시된 공지사항만
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND n.noticeDate BETWEEN :startDate AND :endDate AND n.published = true ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND n.noticeDate BETWEEN :startDate AND :endDate AND n.published = true")
+    Page<Notice> findPublishedByConstructionIdOrConstructionIsNullAndNoticeDateBetween(@Param("constructionId") Long constructionId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+    
+    // 제목과 공지일자 범위로 공지사항 검색 (특정 건설현장 또는 전체 공지사항) - 게시된 공지사항만
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.construction LEFT JOIN FETCH n.fileAttachment1 WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND n.noticeDate BETWEEN :startDate AND :endDate AND n.published = true ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE (n.construction.id = :constructionId OR n.construction IS NULL) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND n.noticeDate BETWEEN :startDate AND :endDate AND n.published = true")
+    Page<Notice> findPublishedByConstructionIdOrConstructionIsNullAndTitleContainingIgnoreCaseAndNoticeDateBetween(@Param("constructionId") Long constructionId, @Param("searchTitle") String searchTitle, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+
+    // 제목으로 전역 공지사항 검색 (construction이 null인 경우만)
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction IS NULL AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction IS NULL AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%'))")
+    Page<Notice> findByConstructionIsNullAndTitleContainingIgnoreCase(@Param("searchTitle") String searchTitle, Pageable pageable);
+    
+    // 공지일자 범위로 전역 공지사항 검색 (construction이 null인 경우만)
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction IS NULL AND n.noticeDate BETWEEN :startDate AND :endDate ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction IS NULL AND n.noticeDate BETWEEN :startDate AND :endDate")
+    Page<Notice> findByConstructionIsNullAndNoticeDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+    
+    // 제목과 공지일자 범위로 전역 공지사항 검색 (construction이 null인 경우만)
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction IS NULL AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND n.noticeDate BETWEEN :startDate AND :endDate ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction IS NULL AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND n.noticeDate BETWEEN :startDate AND :endDate")
+    Page<Notice> findByConstructionIsNullAndTitleContainingIgnoreCaseAndNoticeDateBetween(@Param("searchTitle") String searchTitle, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
 } 

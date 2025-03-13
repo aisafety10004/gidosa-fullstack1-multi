@@ -13,6 +13,35 @@
         <div class="mb-3">
             <a th:href="@{/member/admin/register}" class="btn btn-primary">새 매니저 등록</a>
         </div>
+        
+        <!-- 검색 폼 추가 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/member/admin/list}" method="get" class="row g-3 align-items-end" id="searchForm" onsubmit="return validateSearchForm()">
+                    <div class="col-md-3">
+                        <label for="searchType" class="form-label">검색 항목</label>
+                        <select id="searchType" name="searchType" class="form-select">
+                            <option value="username" th:selected="${searchType == 'username'}">로그인 아이디</option>
+                            <option value="name" th:selected="${searchType == 'name'}">이름</option>
+                            <option value="email" th:selected="${searchType == 'email'}">이메일</option>
+                            <option value="phone" th:selected="${searchType == 'phone'}">전화번호</option>
+                        </select>
+                    </div>
+                    <div class="col-md-7">
+                        <label for="keyword" class="form-label">검색어</label>
+                        <input type="text" id="keyword" name="keyword" class="form-control" 
+                               th:value="${keyword}" placeholder="검색어를 입력하세요">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">검색</button>
+                    </div>
+                </form>
+                <div class="mt-2" th:if="${keyword != null && keyword != ''}">
+                    <a th:href="@{/member/admin/list}" class="btn btn-outline-secondary">검색 초기화</a>
+                    <span class="ms-2">검색 결과: 총 <strong th:text="${memberAdminListPage.totalElements}"></strong>건</span>
+                </div>
+            </div>
+        </div>
 
         <!-- 메시지 표시 -->
         <div th:if="${message}" class="alert alert-success" role="alert">
@@ -70,7 +99,8 @@
         <nav aria-label="Page navigation" th:if="${memberAdminListPage.totalPages > 0}">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${!memberAdminListPage.hasPrevious()} ? disabled">
-                    <a class="page-link" th:href="@{/member/admin/list(page=${memberAdminListPage.number - 1})}"
+                    <a class="page-link" 
+                       th:href="@{/member/admin/list(page=${memberAdminListPage.number - 1}, searchType=${searchType}, keyword=${keyword})}"
                        th:unless="${!memberAdminListPage.hasPrevious()}">이전</a>
                     <span class="page-link" th:if="${!memberAdminListPage.hasPrevious()}">이전</span>
                 </li>
@@ -79,17 +109,31 @@
                     th:each="pageNumber : ${#numbers.sequence(0, memberAdminListPage.totalPages - 1)}"
                     th:classappend="${pageNumber == memberAdminListPage.number} ? active">
                     <a class="page-link" 
-                       th:href="@{/member/admin/list(page=${pageNumber})}"
+                       th:href="@{/member/admin/list(page=${pageNumber}, searchType=${searchType}, keyword=${keyword})}"
                        th:text="${pageNumber + 1}"></a>
                 </li>
 
                 <li class="page-item" th:classappend="${!memberAdminListPage.hasNext()} ? disabled">
-                    <a class="page-link" th:href="@{/member/admin/list(page=${memberAdminListPage.number + 1})}"
+                    <a class="page-link" 
+                       th:href="@{/member/admin/list(page=${memberAdminListPage.number + 1}, searchType=${searchType}, keyword=${keyword})}"
                        th:unless="${!memberAdminListPage.hasNext()}">다음</a>
                     <span class="page-link" th:if="${!memberAdminListPage.hasNext()}">다음</span>
                 </li>
             </ul>
         </nav>
     </div>
+    
+    <!-- JavaScript for form validation -->
+    <script layout:fragment="script" th:inline="javascript">
+        function validateSearchForm() {
+            const keyword = document.getElementById('keyword').value.trim();
+            if (keyword === '') {
+                alert('검색어를 입력하세요');
+                document.getElementById('keyword').focus();
+                return false;
+            }
+            return true;
+        }
+    </script>
 </body>
 </html> 

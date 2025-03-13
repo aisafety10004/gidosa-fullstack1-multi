@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Log4j2
 @Controller
@@ -23,8 +24,10 @@ public class RequestController {
     @GetMapping("/construction/list")
     public String listConstructionRequests(
             @PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String searchKeyword,
             Model model) {
-        Page<RequestConstruction> requests = requestService.getRequestConstructions(pageable);
+        Page<RequestConstruction> requests = requestService.searchRequestConstructions(searchType, searchKeyword, pageable);
         model.addAttribute("requests", requests);
         return "main/request/construction-list";
     }
