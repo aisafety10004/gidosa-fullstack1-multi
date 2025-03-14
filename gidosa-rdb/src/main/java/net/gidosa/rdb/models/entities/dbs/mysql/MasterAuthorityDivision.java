@@ -2,6 +2,7 @@ package net.gidosa.rdb.models.entities.dbs.mysql;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -11,8 +12,10 @@ import lombok.*;
 public class MasterAuthorityDivision {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Comment("마스터 권한 구분 고유 식별자")
+    private Integer id; // 마스터 권한 구분 고유 식별자
 
     @Column(nullable = false)
-    private String name;
+    @Comment("마스터 권한 구분 이름")
+    private String name; // 마스터 권한 구분 이름
 }

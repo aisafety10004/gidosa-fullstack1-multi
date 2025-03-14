@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -20,63 +21,80 @@ public class RiskFactor {
     // --- 신규등록 관련
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Comment("위험요소 고유 식별자")
+    private Long id; // 위험요소 고유 식별자
     
 //    @CreationTimestamp
     @Column(nullable = false)
+    @Comment("실시일자(후 입력)")
     private LocalDate executionDate;                    // 실시일자(후 입력)
 
     @Enumerated(EnumType.STRING)
     @Column
+    @Comment("평가구분(후 입력)")
     private RiskFactorEvaluationType riskFactorEvaluationType;     // 평가구분(후 입력)
 
     @ManyToOne
+    @Comment("관할구분(후 입력)")
     private MasterAuthorityDivision authorityDivision;          // 관할구분(후 입력)
 
     @Enumerated(EnumType.STRING)
     @Column
+    @Comment("관할급(후 입력)")
     private RiskFactorAuthorityDivisionLevel authorityDivisionLevel;     // 관할급(후 입력)
 
     @ManyToOne
+    @Comment("기관명(후 입력)")
     private MasterDivisionDetail divisionDetail;                // 기관명(후 입력)
 
     ////////////////////////////////////////////////////////////////
     // ----------------------------------------------- 신규등록 관련
     @Column(nullable = false)
+    @Comment("현장명")
     private String siteName;             // 현장명
 
     @Column(nullable = false)
+    @Comment("작업공정")
     private String workProcess;          // 작업공정
 
     @Column
+    @Comment("작업위치(위치층수)")
     private String workLocation;          // 작업위치(위치층수)
 
     @Column(nullable = false)
+    @Comment("현장사진1")
     private String workImage1Url;          // 현장사진1
 
     @Column
+    @Comment("현장사진2")
     private String workImage2Url;          // 현장사진2
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Comment("위험 분류")
     private RiskClassification riskClassification;      // 위험 분류
 
     // @Enumerated(EnumType.STRING)
     // @Column(nullable = false)
     // private RiskDetailFactor riskDetailFactor;          // 위험 요인(상세)
     @Column(nullable = false)
+    @Comment("위험 요인(상세)")
     private String riskDetailFactor;          // 위험 요인(상세)
 
     @Column(nullable = false)
+    @Comment("(예상)위험상황 및 결과")
     private String riskSituationResult;    // (예상)위험상황 및 결과
 
     @Column
+    @Comment("현재안전조치")
     private String currentSafetyMeasure;    // 현재안전조치
 
     @Column(nullable = false)
+    @Comment("가능성")
     private byte riskPossibility;    // 가능성
 
     @Column(nullable = false)
+    @Comment("중대성")
     private byte riskCriticality;    // 중대성
 
 //    @Column(nullable = false)
@@ -84,94 +102,120 @@ public class RiskFactor {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Comment("위험성 감소대책1(선택박스)")
     private RiskReductionMeasureFirst riskReductionMeasure1;   // 위험성 감소대책1(선택박스)
 
     @Column(nullable = false)
+    @Comment("위험성 감소대책2(수기)")
     private String riskReductionMeasure2;   // 위험성 감소대책2(수기)
 
     @Enumerated(EnumType.STRING)
     @Column
+    @Comment("조치여부")
     private RiskMeasureCompletion isRiskMeasureCompletion;   // 조치여부
 
     ////////////////////////////////////////////////////////////////
     @Column
+    @Comment("현장 위도값(후 입력)")
     private Double latitude;               // 현장 위도값(후 입력)
     
     @Column
+    @Comment("현장 경도값(후 입력)")
     private Double longitude;              // 현장 경도값(후 입력)
 
     @Column
+    @Comment("관련법령(후 입력)")
     private String relatedLaw;              // 관련법령(후 입력)
 
     @Column
+    @Comment("위험성감소 대책수립 여부(후 입력)")
     private Boolean isRiskReductionMeasure;   // 위험성감소 대책수립 여부(후 입력)
 
     @Column
+    @Comment("평가자1(후 입력)")
     private String evaluator1;   // 평가자1(후 입력)
 
     @Column
+    @Comment("평가자2(후 입력)")
     private String evaluator2;   // 평가자2(후 입력)
 
     ////////////////////////////////////////////////////////////////
     // -----------------------------------------------  개선등록 관련
     @Column
+    @Comment("개선결과")
     private String impResult;   // 개선결과
 
     @Column
+    @Comment("개선 가능성")
     private byte impRiskPossibility;    // 개선 가능성
 
     @Column
+    @Comment("개선 중대성")
     private byte impRiskCriticality;    // 개선 중대성
 
     // @Column
     // private short impRiskSize;          // 개선 위험성크기(가능성 * 중대성)
 
     @Column
+    @Comment("개선 현장사진1")
     private String impWorkImage1Url;       // 개선 현장사진1
 
     @Column
+    @Comment("개선 현장사진2")
     private String impWorkImage2Url;          // 개선 현장사진2
 
     @Column
+    @Comment("개선조치 이행건수")
     private Short impCountCorrectAction;      // 개선조치 이행건수
 
     @Column
+    @Comment("미개선 조치건수")
     private Short impCountNoCorrectAction;    // 미개선 조치건수
 
     @Column
+    @Comment("미개선 조치내용")
     private String impNoCorrectContent;        // 미개선 조치내용
 
     @Column
+    @Comment("미개선사항 조치계획")
     private String impNoCorrectContentPlan;    // 미개선사항 조치계획
 
     @Column
+    @Comment("개선조치일")
     private LocalDate impCorrectDate;      // 개선조치일
 
     @Column
+    @Comment("개선조치 담당자")
     private String impCorrectPerson;    // 개선조치 담당자
 
     @Column
+    @Comment("개선조치 완료일")
     private LocalDate impCorrectCompletionDate;      // 개선조치 완료일
 
     @Column
+    @Comment("개선조치 확인자")
     private String impCorrectConfirmPerson;      // 개선조치 확인자
 
     @OneToOne
     @JoinColumn(name = "file_attachment1_id")
-    private FileAttachment fileAttachment1;
+    @Comment("첨부 파일")
+    private FileAttachment fileAttachment1; // 첨부 파일
 
     // ------------------------------------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "construction_id", nullable = false)
-    private Construction construction;
+    @Comment("소속 공사 정보")
+    private Construction construction; // 소속 공사 정보
     
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    @Comment("생성 일시")
+    private LocalDateTime createdAt; // 생성 일시
     
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Comment("수정 일시")
+    private LocalDateTime updatedAt; // 수정 일시
     
     // ------------------------------------------------------------------------
 

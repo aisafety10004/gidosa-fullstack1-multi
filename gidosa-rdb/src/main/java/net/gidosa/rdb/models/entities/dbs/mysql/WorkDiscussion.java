@@ -18,19 +18,19 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Notice {
+public class WorkDiscussion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Comment("공지사항 고유 식별자")
-    private Long id; // 공지사항 고유 식별자
+    @Comment("작업 토론 고유 식별자")
+    private Long id; // 작업 토론 고유 식별자
 
     @Column(nullable = false)
-    @Comment("공지사항 제목")
-    private String title; // 공지사항 제목
+    @Comment("토론 제목")
+    private String title; // 토론 제목
 
     @Column(columnDefinition = "MEDIUMTEXT", nullable = false)
-    @Comment("공지사항 내용")
-    private String content; // 공지사항 내용
+    @Comment("토론 내용")
+    private String content; // 토론 내용
 
     @CreatedDate
     @Comment("생성 일시")
@@ -65,9 +65,9 @@ public class Notice {
     // @Comment("첨부 파일 5")
     // private FileAttachment fileAttachment5; // 첨부 파일 5
 
-    @Column(name = "notice_date")
-    @Comment("공지사항 날짜")
-    private LocalDateTime noticeDate; // 공지사항 날짜
+    @Column(name = "discussion_date")
+    @Comment("토론 일시")
+    private LocalDateTime discussionDate; // 토론 일시
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "construction_id")
@@ -75,20 +75,12 @@ public class Notice {
     private Construction construction; // 소속 공사 정보
 
     @Column(columnDefinition = "TEXT")
-    @Comment("머메이드(Mermaid) 코드")
-    private String mermaidCode; // 머메이드(Mermaid) 코드
-
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
-    @Comment("공개 여부")
-    private Boolean published = false; // 공개 여부
-
-//    @Column(nullable = false)
-//    @Comment("공지사항 유형")
-//    private String noticeType; // 공지사항 유형
-//
-//    @Column(nullable = false)
-//    @Comment("중요 여부")
-//    private Boolean important; // 중요 여부
+    @Comment("머메이드 코드")
+    private String mermaidCode; // 머메이드 코드
+    
+    @Column(nullable = false)
+    @Comment("그룹 이름")
+    private String groupName; // 그룹 이름
 
     // 첨부파일 목록 조회를 위한 편의 메서드
     @Transient
@@ -101,4 +93,4 @@ public class Notice {
         // if (fileAttachment5 != null) attachments.add(fileAttachment5);
         return attachments;
     }
-}
+} 

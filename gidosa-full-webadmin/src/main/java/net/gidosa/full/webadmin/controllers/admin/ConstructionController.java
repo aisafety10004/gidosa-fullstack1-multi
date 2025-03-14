@@ -6,6 +6,7 @@ import net.gidosa.full.webadmin.services.ConstructionService;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,20 +24,33 @@ public class ConstructionController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String status,
+            @RequestParam(required = false, defaultValue = "id") String sort,
+            @RequestParam(required = false, defaultValue = "asc") String direction,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
             @PageableDefault(size = 10) Pageable pageable, 
             Model model) {
         
         // 검색 파라미터 로깅 및 트림 처리
-        log.debug("검색 요청 - 현장명: {}, 위치: {}, 상태: {}", name, location, status);
+        log.debug("검색 요청 - 현장명: {}, 위치: {}, 상태: {}, 정렬: {}, 방향: {}, 페이지 크기: {}", 
+                 name, location, status, sort, direction, size);
+        
+        // 정렬 방향 설정
+        Sort.Direction sortDirection = "desc".equalsIgnoreCase(direction) ? 
+                                      Sort.Direction.DESC : Sort.Direction.ASC;
         
         // 검색 실행
-        Page<Construction> constructions = constructionService.searchConstructions(name, location, status, pageable);
+        Page<Construction> constructions = constructionService.searchConstructions(
+                name, location, status, sort, sortDirection, size, pageable.getPageNumber());
+        
         log.debug("검색 결과 - 총 {}개 항목 찾음", constructions.getTotalElements());
         
         model.addAttribute("constructions", constructions);
         model.addAttribute("name", name);
         model.addAttribute("location", location);
         model.addAttribute("status", status);
+        model.addAttribute("sort", sort);
+        model.addAttribute("direction", direction);
+        model.addAttribute("size", size);
         
         return "main/construction/list";
     }

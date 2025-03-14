@@ -5,6 +5,19 @@
 >
 <head>
     <title>건설공사현장 목록</title>
+    <style>
+        .sort-icon {
+            display: inline-block;
+            margin-left: 5px;
+            color: inherit;
+        }
+        .table-dark .sort-icon {
+            color: inherit;
+        }
+        .sortable {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div layout:fragment="content">
@@ -16,7 +29,7 @@
                 <h5 class="mb-0">검색 항목</h5>
             </div>
             <div class="card-body">
-                <form th:action="@{/construction/list}" method="get" class="row g-3">
+                <form th:action="@{/construction/list}" method="get" class="row g-3" id="searchForm">
                     <div class="col-md-3">
                         <label for="name" class="form-label">현장명</label>
                         <input type="text" class="form-control" id="name" name="name" th:value="${name}" 
@@ -43,6 +56,10 @@
                     <div class="col-12">
                         <small class="text-muted">* 대소문자를 구분하지 않고 검색합니다. 부분 검색이 가능합니다.</small>
                     </div>
+                    
+                    <!-- 정렬 및 페이지 크기 선택을 위한 숨겨진 필드 -->
+                    <input type="hidden" name="sort" id="sort" th:value="${sort}">
+                    <input type="hidden" name="direction" id="direction" th:value="${direction}">
                 </form>
             </div>
         </div>
@@ -51,7 +68,15 @@
             <div>
                 <span class="text-muted">총 <strong th:text="${constructions.totalElements}">0</strong>개의 건설공사현장이 있습니다.</span>
             </div>
-            <div>
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <label for="size" class="me-2">페이지 크기:</label>
+                    <select id="size" name="size" class="form-select form-select-sm" style="width: auto; display: inline-block;">
+                        <option value="10" th:selected="${size == 10}">10</option>
+                        <option value="20" th:selected="${size == 20}">20</option>
+                        <option value="30" th:selected="${size == 30}">30</option>
+                    </select>
+                </div>
                 <a href="/construction/register" class="btn btn-primary">신규 등록</a>
             </div>
         </div>
@@ -59,12 +84,78 @@
         <table class="table table-striped table-hover">
             <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
-                    <th>현장명</th>
-                    <th>위치</th>
-                    <th>시작일</th>
-                    <th>종료일</th>
-                    <th>상태</th>
+                    <th class="sortable" data-field="id">
+                        ID
+                        <span class="sort-icon" th:if="${sort == 'id' && direction == 'asc'}">
+                            <i class="fas fa-sort-up"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort == 'id' && direction == 'desc'}">
+                            <i class="fas fa-sort-down"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort != 'id'}">
+                            <i class="fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th class="sortable" data-field="name">
+                        현장명
+                        <span class="sort-icon" th:if="${sort == 'name' && direction == 'asc'}">
+                            <i class="fas fa-sort-up"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort == 'name' && direction == 'desc'}">
+                            <i class="fas fa-sort-down"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort != 'name'}">
+                            <i class="fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th class="sortable" data-field="location">
+                        위치
+                        <span class="sort-icon" th:if="${sort == 'location' && direction == 'asc'}">
+                            <i class="fas fa-sort-up"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort == 'location' && direction == 'desc'}">
+                            <i class="fas fa-sort-down"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort != 'location'}">
+                            <i class="fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th class="sortable" data-field="startDate">
+                        시작일
+                        <span class="sort-icon" th:if="${sort == 'startDate' && direction == 'asc'}">
+                            <i class="fas fa-sort-up"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort == 'startDate' && direction == 'desc'}">
+                            <i class="fas fa-sort-down"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort != 'startDate'}">
+                            <i class="fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th class="sortable" data-field="endDate">
+                        종료일
+                        <span class="sort-icon" th:if="${sort == 'endDate' && direction == 'asc'}">
+                            <i class="fas fa-sort-up"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort == 'endDate' && direction == 'desc'}">
+                            <i class="fas fa-sort-down"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort != 'endDate'}">
+                            <i class="fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th class="sortable" data-field="status">
+                        상태
+                        <span class="sort-icon" th:if="${sort == 'status' && direction == 'asc'}">
+                            <i class="fas fa-sort-up"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort == 'status' && direction == 'desc'}">
+                            <i class="fas fa-sort-down"></i>
+                        </span>
+                        <span class="sort-icon" th:if="${sort != 'status'}">
+                            <i class="fas fa-sort"></i>
+                        </span>
+                    </th>
                     <th>관리</th>
                 </tr>
             </thead>
@@ -97,24 +188,56 @@
         <nav aria-label="Page navigation" th:if="${constructions.totalPages > 0}">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${!constructions.hasPrevious()} ? disabled">
-                    <a class="page-link" th:href="@{/construction/list(page=${constructions.number - 1}, name=${name}, location=${location}, status=${status})}"
+                    <a class="page-link" th:href="@{/construction/list(page=${constructions.number - 1}, name=${name}, location=${location}, status=${status}, sort=${sort}, direction=${direction}, size=${size})}"
                        th:unless="${!constructions.hasPrevious()}">이전</a>
                     <span class="page-link" th:if="${!constructions.hasPrevious()}">이전</span>
                 </li>
 
                 <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, constructions.totalPages - 1)}"
                     th:classappend="${pageNumber == constructions.number} ? active">
-                    <a class="page-link" th:href="@{/construction/list(page=${pageNumber}, name=${name}, location=${location}, status=${status})}"
+                    <a class="page-link" th:href="@{/construction/list(page=${pageNumber}, name=${name}, location=${location}, status=${status}, sort=${sort}, direction=${direction}, size=${size})}"
                        th:text="${pageNumber + 1}"></a>
                 </li>
 
                 <li class="page-item" th:classappend="${!constructions.hasNext()} ? disabled">
-                    <a class="page-link" th:href="@{/construction/list(page=${constructions.number + 1}, name=${name}, location=${location}, status=${status})}"
+                    <a class="page-link" th:href="@{/construction/list(page=${constructions.number + 1}, name=${name}, location=${location}, status=${status}, sort=${sort}, direction=${direction}, size=${size})}"
                        th:unless="${!constructions.hasNext()}">다음</a>
                     <span class="page-link" th:if="${!constructions.hasNext()}">다음</span>
                 </li>
             </ul>
         </nav>
+        
+        <!-- JavaScript for sorting and page size selection -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // 정렬 기능
+                const sortableHeaders = document.querySelectorAll('.sortable');
+                sortableHeaders.forEach(header => {
+                    header.addEventListener('click', function() {
+                        const field = this.getAttribute('data-field');
+                        const currentSort = document.getElementById('sort').value;
+                        const currentDirection = document.getElementById('direction').value;
+                        
+                        let newDirection = 'asc';
+                        if (field === currentSort && currentDirection === 'asc') {
+                            newDirection = 'desc';
+                        }
+                        
+                        document.getElementById('sort').value = field;
+                        document.getElementById('direction').value = newDirection;
+                        document.getElementById('searchForm').submit();
+                    });
+                });
+                
+                // 페이지 크기 선택
+                document.getElementById('size').addEventListener('change', function() {
+                    const size = this.value;
+                    const currentUrl = new URL(window.location.href);
+                    currentUrl.searchParams.set('size', size);
+                    window.location.href = currentUrl.toString();
+                });
+            });
+        </script>
     </div>
 </body>
 </html>

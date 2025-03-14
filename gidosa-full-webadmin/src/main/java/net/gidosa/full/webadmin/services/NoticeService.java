@@ -84,8 +84,8 @@ public class NoticeService {
                     case 0: notice.setFileAttachment1(attachment); break;
                     case 1: notice.setFileAttachment2(attachment); break;
                     case 2: notice.setFileAttachment3(attachment); break;
-                    case 3: notice.setFileAttachment4(attachment); break;
-                    case 4: notice.setFileAttachment5(attachment); break;
+//                    case 3: notice.setFileAttachment4(attachment); break;
+//                    case 4: notice.setFileAttachment5(attachment); break;
                 }
             }
             
@@ -135,10 +135,10 @@ public class NoticeService {
                         notice.setFileAttachment2(attachment);
                     } else if (notice.getFileAttachment3() == null) {
                         notice.setFileAttachment3(attachment);
-                    } else if (notice.getFileAttachment4() == null) {
-                        notice.setFileAttachment4(attachment);
-                    } else if (notice.getFileAttachment5() == null) {
-                        notice.setFileAttachment5(attachment);
+//                    } else if (notice.getFileAttachment4() == null) {
+//                        notice.setFileAttachment4(attachment);
+//                    } else if (notice.getFileAttachment5() == null) {
+//                        notice.setFileAttachment5(attachment);
                     }
                 }
             }
@@ -188,8 +188,8 @@ public class NoticeService {
         if (notice.getFileAttachment1() != null) count++;
         if (notice.getFileAttachment2() != null) count++;
         if (notice.getFileAttachment3() != null) count++;
-        if (notice.getFileAttachment4() != null) count++;
-        if (notice.getFileAttachment5() != null) count++;
+//        if (notice.getFileAttachment4() != null) count++;
+//        if (notice.getFileAttachment5() != null) count++;
         return count;
     }
 
@@ -209,14 +209,14 @@ public class NoticeService {
             fileAttachmentRepository.findById(notice.getFileAttachment3().getId())
                     .ifPresent(attachments::add);
         }
-        if (notice.getFileAttachment4() != null) {
-            fileAttachmentRepository.findById(notice.getFileAttachment4().getId())
-                    .ifPresent(attachments::add);
-        }
-        if (notice.getFileAttachment5() != null) {
-            fileAttachmentRepository.findById(notice.getFileAttachment5().getId())
-                    .ifPresent(attachments::add);
-        }
+//        if (notice.getFileAttachment4() != null) {
+//            fileAttachmentRepository.findById(notice.getFileAttachment4().getId())
+//                    .ifPresent(attachments::add);
+//        }
+//        if (notice.getFileAttachment5() != null) {
+//            fileAttachmentRepository.findById(notice.getFileAttachment5().getId())
+//                    .ifPresent(attachments::add);
+//        }
         
         return attachments;
     }
@@ -240,14 +240,14 @@ public class NoticeService {
                 attachment = notice.getFileAttachment3();
                 notice.setFileAttachment3(null);
                 break;
-            case 4:
-                attachment = notice.getFileAttachment4();
-                notice.setFileAttachment4(null);
-                break;
-            case 5:
-                attachment = notice.getFileAttachment5();
-                notice.setFileAttachment5(null);
-                break;
+//            case 4:
+//                attachment = notice.getFileAttachment4();
+//                notice.setFileAttachment4(null);
+//                break;
+//            case 5:
+//                attachment = notice.getFileAttachment5();
+//                notice.setFileAttachment5(null);
+//                break;
             default:
                 throw new IllegalArgumentException("잘못된 첨부파일 인덱스입니다.");
         }

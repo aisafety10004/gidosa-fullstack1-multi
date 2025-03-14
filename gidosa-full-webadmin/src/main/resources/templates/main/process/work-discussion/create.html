@@ -3,34 +3,47 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{${layout}}">
 <head>
-    <title>공지사항 등록</title>
+    <title>업무협의 등록</title>
 </head>
 <body>
     <div layout:fragment="content">
-        <h2 class="mb-4">공지사항 등록</h2>
+        <h2 class="mb-4">업무협의 등록(<span th:text="${selectedGroup}"></span>)</h2>
 
-        <form th:action="@{/notice/create}" method="post" 
+        <form th:action="@{/process/work-discussion/create}" method="post" 
               enctype="multipart/form-data" onsubmit="return submitForm()">
             <div class="mb-3">
                 <label for="title" class="form-label">제목</label>
-                <input type="text" class="form-control" id="title" name="title" required>
+                <input type="text" class="form-control" id="title" name="title">
             </div>
             <div class="mb-3">
-                <label for="noticeDate" class="form-label">공지일자</label>
-                <input type="datetime-local" class="form-control" id="noticeDate" name="noticeDate" required>
+                <label for="discussionDate" class="form-label">협의일자</label>
+                <input type="datetime-local" class="form-control" id="discussionDate" name="discussionDate" required>
             </div>
+            
+            <!-- <div class="mb-3">
+                <label for="groupName" class="form-label">그룹</label>
+                <select class="form-select" id="groupName" name="groupName" required>
+                    <option value="">그룹 선택</option>
+                    <option th:each="group : ${groups}" 
+                            th:value="${group}" 
+                            th:text="${group}"
+                            th:selected="${selectedGroup != null && selectedGroup == group}"></option>
+                </select>
+            </div> -->
+            <!-- 그룹 정보는 hidden 필드로 전달 -->
+            <input type="hidden" name="groupName" th:value="${selectedGroup}">
             
             <!-- 관리자인 경우 건설현장 선택 드롭다운 표시 -->
             <div class="mb-3" th:if="${isAdmin}">
                 <label for="constructionId" class="form-label">건설현장</label>
                 <select class="form-select" id="constructionId" name="constructionId">
-                    <option value="">전체 공지사항 (모든 사용자에게 표시)</option>
+                    <option value="">전체 업무협의 (모든 사용자에게 표시)</option>
                     <option th:each="construction : ${constructions}"
                             th:value="${construction.id}"
                             th:text="${construction.name + ' (' + construction.location + ')'}">
                     </option>
                 </select>
-                <small class="text-muted">건설현장을 선택하지 않으면 모든 사용자에게 공지사항이 표시됩니다.</small>
+                <small class="text-muted">건설현장을 선택하지 않으면 모든 사용자에게 업무협의가 표시됩니다.</small>
             </div>
             
             <!-- 매니저인 경우 자신의 건설현장 정보 표시 -->
@@ -38,7 +51,7 @@
                 <label class="form-label">건설현장</label>
                 <p class="form-control-static" th:text="${construction.name + ' (' + construction.location + ')'}"></p>
                 <input type="hidden" name="constructionId" th:value="${construction.id}">
-                <small class="text-muted">해당 건설현장에 속한 사용자들에게만 공지사항이 표시됩니다.</small>
+                <small class="text-muted">해당 건설현장에 속한 사용자들에게만 업무협의가 표시됩니다.</small>
             </div>
             
             <div class="mb-3">
@@ -57,7 +70,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="files" class="form-label">첨부파일 (최대 3개)</label>
+                <label for="files" class="form-label">첨부파일 (최대 5개)</label>
                 <input type="file" class="form-control" id="files" name="files"
                        multiple accept="*/*" onchange="validateFiles(this)">
                 <small class="text-muted">* 파일은 최대 3개까지 첨부 가능합니다.(Ctrl + 클릭 시 여러 파일 선택 가능)</small>
@@ -65,12 +78,11 @@
                 <small class="text-muted">* 파일크기는 15MB를 넘을 수 없습니다.</small>
             </div>
             <button type="submit" class="btn btn-primary">등록</button>
-            <a href="/notice" class="btn btn-secondary">취소</a>
+            <a th:href="@{/process/work-discussion/list(groupName=${selectedGroup})}" class="btn btn-secondary">취소</a>
         </form>
     </div>
 
     <th:block layout:fragment="script">
-    <!-- <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script> -->
     <script src="/js/mermaid/mermaid.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -98,6 +110,21 @@
 
             inputField.addEventListener("input", renderMermaid);
             renderMermaid(); // 초기값 렌더링
+            
+            // 현재 날짜와 시간으로 협의일자 기본값 설정
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            document.getElementById('discussionDate').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+            // const groupNameSelect = document.getElementById('groupName');
+            // if (groupNameSelect.options[groupNameSelect.selectedIndex].value) {
+            //     groupNameSelect.disabled = false; // 수정 가능하도록 유지
+            // }
         });
 
         const editor = new toastui.Editor({

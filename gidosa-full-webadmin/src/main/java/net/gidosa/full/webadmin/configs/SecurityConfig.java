@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/assets/**", "/vendor/**", "/error/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/member/admin/**", "/construction/**", "/request/construction/**").hasRole("ADMIN")
-                .requestMatchers("/member/general/**").hasRole("MANAGER")
+                .requestMatchers("/member/general/**", "/safety/risk-factor/**", "/process/work-discussion/**").hasRole("MANAGER")
                 .requestMatchers("/main/**").hasAnyRole("ADMIN", "MANAGER")
                 .anyRequest().authenticated()
 //                .anyRequest().permitAll()

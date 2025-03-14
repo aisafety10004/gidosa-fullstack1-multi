@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{${layout}}">
+<head>
+    <title>업무협의 관리</title>
+    <style>
+        .nav-tabs .nav-link {
+            font-weight: 500;
+            color: #495057;
+            border-radius: 0.25rem;
+            margin-right: 5px;
+            padding: 0.5rem 1rem;
+        }
+        .nav-tabs .nav-link.active {
+            color: #fff;
+            font-weight: 600;
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2 class="mb-4">업무협의 관리</h2>
+
+        <!-- 새 업무협의 등록 버튼 - All 탭에서는 숨김 -->
+        <div class="mb-3 d-flex justify-content-between" th:if="${showCreateButton}">
+            <a th:href="@{/process/work-discussion/create(groupName=${groupName})}" class="btn btn-primary">새 업무협의 등록</a>
+        </div>
+
+        <!-- 메시지 표시 -->
+        <div th:if="${message}" class="alert alert-success" role="alert">
+            <span th:text="${message}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- 그룹 탭 -->
+        <ul class="nav nav-tabs mb-4">
+            <!-- All 탭 추가 -->
+            <!-- <li class="nav-item">
+                <a class="nav-link" th:classappend="${groupName == allGroup} ? 'active'" 
+                   th:href="@{/process/work-discussion/list(groupName=${allGroup}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
+                   th:text="${allGroup}"></a>
+            </li> -->
+            <!-- 기존 그룹 탭 -->
+            <li class="nav-item" th:each="group : ${groups}">
+                <a class="nav-link" th:classappend="${groupName == group} ? 'active'" 
+                   th:href="@{/process/work-discussion/list(groupName=${group}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
+                   th:text="${group}"></a>
+            </li>
+        </ul>
+
+        <!-- 검색 폼 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/process/work-discussion/list}" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="searchTitle" class="form-label">제목</label>
+                        <input type="text" class="form-control" id="searchTitle" name="searchTitle" 
+                               th:value="${searchTitle}" placeholder="제목으로 검색">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="startDate" class="form-label">협의 시작일자</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate" 
+                               th:value="${startDate}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="endDate" class="form-label">협의 종료일자</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate" 
+                               th:value="${endDate}">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">검색</button>
+                    </div>
+                    
+                    <!-- 페이지 정보 유지를 위한 hidden 필드 -->
+                    <input type="hidden" name="page" th:value="${workDiscussions.number}">
+                    <input type="hidden" name="size" th:value="${workDiscussions.size}">
+                    <input type="hidden" name="groupName" th:value="${groupName}">
+                </form>
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <!-- All 탭에서는 그룹 정보 표시 -->
+                    <th th:if="${groupName == allGroup}">그룹</th>
+                    <!-- <th>첨부파일</th> -->
+                    <!-- <th>협의일자</th> -->
+                    <th>메뉴</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="workDiscussion : ${workDiscussions.content}">
+                    <td th:text="${workDiscussion.id}"></td>
+                    <td>
+                        <a th:href="@{/process/work-discussion/detail/{id}(id=${workDiscussion.id})}" 
+                           th:text="${workDiscussion.title}"></a>
+                    </td>
+                    <!-- All 탭에서는 그룹 정보 표시 -->
+                    <td th:if="${groupName == allGroup}">
+                        <span class="badge bg-info" th:text="${workDiscussion.groupName}"></span>
+                    </td>
+                    <!-- <td>
+                        <a th:if="${workDiscussion.fileAttachment1 != null}" 
+                           th:href="@{/common/file/download/{id}(id=${workDiscussion.fileAttachment1.id})}" 
+                           class="text-decoration-none">
+                            <i class="fas fa-file-download"></i>
+                            <span th:text="${#strings.abbreviate(workDiscussion.fileAttachment1.originalFilename, 15)}"></span>
+                        </a>
+                        <span th:unless="${workDiscussion.fileAttachment1 != null}">-</span>
+                    </td> -->
+                    <!-- <td th:text="${#temporals.format(workDiscussion.discussionDate, 'yyyy-MM-dd')}"></td> -->
+                    <td>
+                        <a th:href="@{/process/work-discussion/update/{id}(id=${workDiscussion.id})}" 
+                           th:if="${(workDiscussion.construction != null && #authentication.principal.memberAdmin.construction != null && #authentication.principal.memberAdmin.construction.id == workDiscussion.construction.id) 
+                                        || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
+                           class="btn btn-sm btn-warning">수정</a>
+                        <form th:action="@{/process/work-discussion/delete/{id}(id=${workDiscussion.id})}" 
+                              method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger"
+                            th:if="${(workDiscussion.construction != null && #authentication.principal.memberAdmin.construction != null && #authentication.principal.memberAdmin.construction.id == workDiscussion.construction.id)
+                                        || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
+                                    onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${workDiscussions.totalElements == 0}">
+                    <td colspan="6" class="text-center">검색된 업무협의가 없습니다.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 페이징 -->
+        <nav aria-label="Page navigation" th:if="${workDiscussions.totalPages > 0}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${!workDiscussions.hasPrevious()} ? disabled">
+                    <a class="page-link" 
+                       th:href="@{/process/work-discussion/list(page=${workDiscussions.number - 1}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, groupName=${groupName})}"
+                       th:unless="${!workDiscussions.hasPrevious()}">이전</a>
+                    <span class="page-link" th:if="${!workDiscussions.hasPrevious()}">이전</span>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, workDiscussions.totalPages - 1)}"
+                    th:classappend="${workDiscussions.number == i} ? active">
+                    <a class="page-link" 
+                       th:href="@{/process/work-discussion/list(page=${i}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, groupName=${groupName})}" 
+                       th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${!workDiscussions.hasNext()} ? disabled">
+                    <a class="page-link" 
+                       th:href="@{/process/work-discussion/list(page=${workDiscussions.number + 1}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, groupName=${groupName})}"
+                       th:unless="${!workDiscussions.hasNext()}">다음</a>
+                    <span class="page-link" th:if="${!workDiscussions.hasNext()}">다음</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <th:block layout:fragment="script">
+    <script th:inline="javascript">
+        // 달력 최소 날짜를 현재 날짜로 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            
+            // 시작 날짜가 변경되면 종료 날짜의 최소값 설정
+            startDateInput.addEventListener('change', function() {
+                if (startDateInput.value) {
+                    endDateInput.min = startDateInput.value;
+                }
+            });
+            
+            // 종료 날짜가 변경되면 시작 날짜의 최대값 설정
+            endDateInput.addEventListener('change', function() {
+                if (endDateInput.value) {
+                    startDateInput.max = endDateInput.value;
+                }
+            });
+        });
+    </script>
+    </th:block>
+</body>
+</html>

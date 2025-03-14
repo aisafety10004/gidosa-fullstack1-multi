@@ -1,60 +1,83 @@
 package net.gidosa.rdb.models.entities.dbs.mysql;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberAdmin {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Comment("관리자 회원 고유 식별자")
+    private Long id; // 관리자 회원 고유 식별자
 
     @Column(nullable = false, unique = true)
-    private String username;
+    @Comment("관리자 아이디")
+    private String username; // 관리자 아이디
 
     @Column(nullable = false)
-    private String password;
+    @Comment("관리자 비밀번호")
+    private String password; // 관리자 비밀번호
 
     @Column(nullable = false)
-//    @NotBlank(message = "이름은 필수 입력값입니다.")
-//    @Size(min = 2, max = 20, message = "이름은 2~20자 사이여야 합니다.")
-    private String name;
+    @Comment("관리자 이름")
+    private String name; // 관리자 이름
 
     @Column(nullable = false)
-    private String location;
+    @Comment("관리자 위치")
+    private String location; // 관리자 위치
 
     @Column
-    private String status;
+    @Comment("관리자 상태")
+    private String status; // 관리자 상태
 
     @Column(nullable = false)
-    private String role = "ROLE_MANAGER";
+    @Comment("관리자 권한")
+    private String role = "ROLE_MANAGER"; // 관리자 권한
 
     @Column
-    private String description;
-
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
-    private String phone;
+    @Comment("관리자 부서")
+    private String department; // 관리자 부서
 
     @Column
-    @ColumnDefault("false")
-    private boolean isActive;
+    @Comment("관리자 직책")
+    private String position; // 관리자 직책
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    @Comment("관리자 이메일")
+    private String email; // 관리자 이메일
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(nullable = false)
+    @Comment("관리자 전화번호")
+    private String phone; // 관리자 전화번호
+
+    @Column
+    @Comment("관리자 활성화 여부")
+    private boolean isActive; // 관리자 활성화 여부
+
+    @CreationTimestamp
+    @Comment("생성 일시")
+    private LocalDateTime createdAt; // 생성 일시
+
+    @UpdateTimestamp
+    @Comment("수정 일시")
+    private LocalDateTime updatedAt; // 수정 일시
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "constructionId", referencedColumnName = "id")
-    private Construction construction;
+    @Comment("소속 공사 정보")
+    private Construction construction; // 소속 공사 정보
 
     @PrePersist
     protected void onCreate() {

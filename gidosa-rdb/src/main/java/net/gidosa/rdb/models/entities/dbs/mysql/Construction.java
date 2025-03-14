@@ -2,6 +2,7 @@ package net.gidosa.rdb.models.entities.dbs.mysql;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,40 +17,52 @@ import java.util.List;
 public class Construction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Comment("공사 고유 식별자")
+    private Long id; // 공사 고유 식별자
 
     @Column(nullable = false)
-    private String name;
+    @Comment("공사명")
+    private String name; // 공사명
 
     @Column(nullable = false)
-    private String location;
+    @Comment("공사 위치")
+    private String location; // 공사 위치
 
     @Column
-    private LocalDateTime startDate;
+    @Comment("공사 시작일")
+    private LocalDateTime startDate; // 공사 시작일
 
     @Column
-    private LocalDateTime endDate;
+    @Comment("공사 종료일")
+    private LocalDateTime endDate; // 공사 종료일
 
     @Column
-    private String status;
+    @Comment("공사 상태")
+    private String status; // 공사 상태
 
     @Column
-    private String description;
+    @Comment("공사 설명")
+    private String description; // 공사 설명
 
     @Column
-    private LocalDateTime createdAt;
+    @Comment("생성 일시")
+    private LocalDateTime createdAt; // 생성 일시
 
     @Column
-    private LocalDateTime updatedAt;
+    @Comment("수정 일시")
+    private LocalDateTime updatedAt; // 수정 일시
 
     @OneToMany(mappedBy = "construction")
-    private List<MemberGeneral> memberGeneralList;
+    @Comment("일반 회원 목록")
+    private List<MemberGeneral> memberGeneralList; // 일반 회원 목록
 
     @OneToMany(mappedBy = "construction")
-    private List<MemberAdmin> memberAdminList;
+    @Comment("관리자 회원 목록")
+    private List<MemberAdmin> memberAdminList; // 관리자 회원 목록
 
     @ElementCollection
-    private List<String> managementMenus;
+    @Comment("관리 메뉴 목록")
+    private List<String> managementMenus; // 관리 메뉴 목록
 
     @PrePersist
     protected void onCreate() {

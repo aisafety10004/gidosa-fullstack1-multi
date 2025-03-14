@@ -34,8 +34,8 @@ public interface NoticeJpaRepository extends JpaRepository<Notice, Long> {
            "LEFT JOIN FETCH n.fileAttachment1 " +
            "LEFT JOIN FETCH n.fileAttachment2 " +
            "LEFT JOIN FETCH n.fileAttachment3 " +
-           "LEFT JOIN FETCH n.fileAttachment4 " +
-           "LEFT JOIN FETCH n.fileAttachment5 " +
+//           "LEFT JOIN FETCH n.fileAttachment4 " +
+//           "LEFT JOIN FETCH n.fileAttachment5 " +
            "WHERE n.id = :id")
     Optional<Notice> findByIdWithAttachments(@Param("id") Long id);
 
@@ -45,8 +45,8 @@ public interface NoticeJpaRepository extends JpaRepository<Notice, Long> {
            "LEFT JOIN FETCH n.fileAttachment1 " +
            "LEFT JOIN FETCH n.fileAttachment2 " +
            "LEFT JOIN FETCH n.fileAttachment3 " +
-           "LEFT JOIN FETCH n.fileAttachment4 " +
-           "LEFT JOIN FETCH n.fileAttachment5 " +
+//           "LEFT JOIN FETCH n.fileAttachment4 " +
+//           "LEFT JOIN FETCH n.fileAttachment5 " +
            "WHERE n.id = :id")
     Optional<Notice> findByIdWithAttachmentsAndConstruction(@Param("id") Long id);
 

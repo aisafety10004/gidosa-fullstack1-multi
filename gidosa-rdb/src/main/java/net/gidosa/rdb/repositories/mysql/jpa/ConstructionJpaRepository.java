@@ -60,4 +60,48 @@ public interface ConstructionJpaRepository extends JpaRepository<Construction, L
             @Param("location") String location, 
             @Param("status") String status, 
             Pageable pageable);
+            
+    // 동적 정렬을 위한 메소드 추가 (Pageable 객체로 정렬)
+    @Query("SELECT c FROM Construction c WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    Page<Construction> findByNameContaining(@Param("name") String name, Pageable pageable);
+    
+    @Query("SELECT c FROM Construction c WHERE LOWER(c.location) LIKE LOWER(CONCAT('%', :location, '%'))")
+    Page<Construction> findByLocationContaining(@Param("location") String location, Pageable pageable);
+    
+    @Query("SELECT c FROM Construction c WHERE LOWER(c.status) LIKE LOWER(CONCAT('%', :status, '%'))")
+    Page<Construction> findByStatusContaining(@Param("status") String status, Pageable pageable);
+    
+    @Query("SELECT c FROM Construction c WHERE " +
+           "LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')) AND " +
+           "LOWER(c.location) LIKE LOWER(CONCAT('%', :location, '%')) AND " +
+           "LOWER(c.status) LIKE LOWER(CONCAT('%', :status, '%'))")
+    Page<Construction> findByNameContainingAndLocationContainingAndStatusContaining(
+            @Param("name") String name, 
+            @Param("location") String location, 
+            @Param("status") String status, 
+            Pageable pageable);
+    
+    @Query("SELECT c FROM Construction c WHERE " +
+           "LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')) AND " +
+           "LOWER(c.location) LIKE LOWER(CONCAT('%', :location, '%'))")
+    Page<Construction> findByNameContainingAndLocationContaining(
+            @Param("name") String name, 
+            @Param("location") String location, 
+            Pageable pageable);
+    
+    @Query("SELECT c FROM Construction c WHERE " +
+           "LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')) AND " +
+           "LOWER(c.status) LIKE LOWER(CONCAT('%', :status, '%'))")
+    Page<Construction> findByNameContainingAndStatusContaining(
+            @Param("name") String name, 
+            @Param("status") String status, 
+            Pageable pageable);
+    
+    @Query("SELECT c FROM Construction c WHERE " +
+           "LOWER(c.location) LIKE LOWER(CONCAT('%', :location, '%')) AND " +
+           "LOWER(c.status) LIKE LOWER(CONCAT('%', :status, '%'))")
+    Page<Construction> findByLocationContainingAndStatusContaining(
+            @Param("location") String location, 
+            @Param("status") String status, 
+            Pageable pageable);
 }

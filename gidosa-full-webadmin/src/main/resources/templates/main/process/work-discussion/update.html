@@ -3,44 +3,59 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{${layout}}">
 <head>
-    <title>공지사항 수정</title>
+    <title>업무협의 수정</title>
 </head>
 <body>
     <div layout:fragment="content">
-        <h2 class="mb-4">공지사항 수정</h2>
+        <h2 class="mb-4">업무협의 수정(<span th:text="${workDiscussion.groupName}"></span>)</h2>
 
-        <form th:action="@{/notice/update/{id}(id=${notice.id})}" method="post" 
+        <form th:action="@{/process/work-discussion/update/{id}(id=${workDiscussion.id})}" method="post" 
               enctype="multipart/form-data" onsubmit="return submitForm()">
             <div class="mb-3">
                 <label for="title" class="form-label">제목</label>
                 <input type="text" class="form-control" id="title" name="title" 
-                       th:value="${notice.title}" required>
+                       th:value="${workDiscussion.title}">
             </div>
             <div class="mb-3">
-                <label for="noticeDate" class="form-label">공지일자</label>
-                <input type="datetime-local" class="form-control" id="noticeDate" name="noticeDate"
-                       th:value="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd''T''HH:mm')}" required>
+                <label for="discussionDate" class="form-label">협의일자</label>
+                <input type="datetime-local" class="form-control" id="discussionDate" name="discussionDate"
+                       th:value="${#temporals.format(workDiscussion.discussionDate, 'yyyy-MM-dd''T''HH:mm')}" required>
             </div>
+            
+            <!-- <div class="mb-3">
+                <label for="groupName" class="form-label">그룹</label>
+                <select class="form-select" id="groupName" name="groupName" required disabled>
+                    <option value="">그룹 선택</option>
+                    <option th:each="group : ${groups}" 
+                            th:value="${group}" 
+                            th:text="${group}"
+                            th:selected="${workDiscussion.groupName == group}"></option>
+                </select>
+                <input type="hidden" name="groupName" th:value="${workDiscussion.groupName}">
+                <small class="text-muted">그룹은 변경할 수 없습니다.</small>
+            </div> -->
+            <!-- 그룹 정보는 hidden 필드로 전달 -->
+            <input type="hidden" name="groupName" th:value="${workDiscussion.groupName}">
             
             <!-- 관리자인 경우 건설현장 선택 드롭다운 표시 -->
             <div class="mb-3" th:if="${isAdmin}">
                 <label for="constructionId" class="form-label">건설현장</label>
                 <select class="form-select" id="constructionId" name="constructionId">
-                    <option value="">전체 공지사항 (모든 사용자에게 표시)</option>
+                    <option value="">전체 업무협의 (모든 사용자에게 표시)</option>
                     <option th:each="construction : ${constructions}"
                             th:value="${construction.id}"
                             th:text="${construction.name + ' (' + construction.location + ')'}"
-                            th:selected="${notice.construction != null && notice.construction.id == construction.id}">
+                            th:selected="${workDiscussion.construction != null && workDiscussion.construction.id == construction.id}">
                     </option>
                 </select>
-                <small class="text-muted">건설현장을 선택하지 않으면 모든 사용자에게 공지사항이 표시됩니다.</small>
+                <small class="text-muted">건설현장을 선택하지 않으면 모든 사용자에게 업무협의가 표시됩니다.</small>
             </div>
             
             <!-- 매니저인 경우 자신의 건설현장 정보 표시 -->
-            <div class="mb-3" th:if="${!isAdmin && notice.construction != null}">
+            <div class="mb-3" th:if="${!isAdmin && workDiscussion.construction != null}">
                 <label class="form-label">건설현장</label>
-                <p class="form-control-static" th:text="${notice.construction.name + ' (' + notice.construction.location + ')'}"></p>
-                <small class="text-muted">해당 건설현장에 속한 사용자들에게만 공지사항이 표시됩니다.</small>
+                <p class="form-control-static" th:text="${workDiscussion.construction.name + ' (' + workDiscussion.construction.location + ')'}"></p>
+                <small class="text-muted">해당 건설현장에 속한 사용자들에게만 업무협의가 표시됩니다.</small>
             </div>
             
             <div class="mb-3">
@@ -51,24 +66,24 @@
 
             <div class="mb-3">
                 <!-- <h2>Mermaid 코드 입력</h2> -->
-                <textarea id="mermaid-input" name="mermaidCode" placeholder="Mermaid 코드를 입력하세요." cols="100" rows="10" style="resize: both;" th:text="${notice.mermaidCode}"></textarea>
+                <textarea id="mermaid-input" name="mermaidCode" placeholder="Mermaid 코드를 입력하세요." cols="100" rows="10" style="resize: both;" th:text="${workDiscussion.mermaidCode}"></textarea>
                 <h3>Mermaid 다이어그램 미리보기</h3>
                 <div id="mermaid-preview" class="preview-box"></div>
             </div>
 
             <!-- 기존 첨부파일 목록 -->
-            <div class="mb-3" th:if="${!notice.attachments.empty}">
+            <div class="mb-3" th:if="${!workDiscussion.attachments.empty}">
                 <label class="form-label">기존 첨부파일</label>
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between align-items-center" 
-                        th:each="attachment, status : ${notice.attachments}">
+                        th:each="attachment, status : ${workDiscussion.attachments}">
                         <span>
                             <a th:href="@{/common/file/download/{id}(id=${attachment.id})}"
                                th:text="${attachment.originalFilename}"></a>
                             (<span th:text="${#numbers.formatDecimal(attachment.fileSize/1024, 0, 'COMMA', 2, 'POINT')}">
                             </span> KB)
                         </span>
-                        <form th:action="@{/notice/attachment/{noticeId}/remove/{attachmentIndex}(noticeId=${notice.id}, attachmentIndex=${status.index + 1})}" 
+                        <form th:action="@{/process/work-discussion/attachment/{workDiscussionId}/remove/{attachmentIndex}(workDiscussionId=${workDiscussion.id}, attachmentIndex=${status.index + 1})}" 
                               method="post" style="display: inline;">
                             <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('첨부파일을 삭제하시겠습니까?');">삭제</button>
@@ -88,14 +103,14 @@
             </div>
 
             <button type="submit" class="btn btn-primary">수정</button>
-            <a th:href="@{/notice/detail/{id}(id=${notice.id})}" class="btn btn-secondary">취소</a>
+            <a th:href="@{/process/work-discussion/detail/{id}(id=${workDiscussion.id})}" class="btn btn-secondary">취소</a>
         </form>
     </div>
 
     <th:block layout:fragment="script">
     <script src="/js/mermaid/mermaid.min.js"></script>
     <script th:inline="javascript">
-        const initialContent = /*[[${notice.content}]]*/ '';
+        const initialContent = /*[[${workDiscussion.content}]]*/ '';
         const editor = new toastui.Editor({
             el: document.querySelector('#editor'),
             height: '500px',
@@ -145,7 +160,7 @@
         }
 
         function validateFiles(input) {
-            const currentAttachments = /*[[${notice.attachments.size()}]]*/ 0;
+            const currentAttachments = /*[[${workDiscussion.attachments.size()}]]*/ 0;
             const maxFiles = 3 - currentAttachments;
             
             if (input.files.length > maxFiles) {

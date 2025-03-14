@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,33 +19,43 @@ public class MemberGeneral {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Comment("일반 회원 고유 식별자")
+    private Long id; // 일반 회원 고유 식별자
 
     @Column(nullable = false, unique = true)
-    private String username;
+    @Comment("회원 아이디")
+    private String username; // 회원 아이디
 
     @Column(nullable = false)
-    private String password;
+    @Comment("회원 비밀번호")
+    private String password; // 회원 비밀번호
 
     @Column(nullable = false)
-    private String name;
+    @Comment("회원 이름")
+    private String name; // 회원 이름
 
     @Column(nullable = false, unique = true)
-    private String email;
+    @Comment("회원 이메일")
+    private String email; // 회원 이메일
 
     @Column(nullable = false)
-    private String phone;
+    @Comment("회원 전화번호")
+    private String phone; // 회원 전화번호
 
     @Column(nullable = false)
-    private String role = "ROLE_USER";
+    @Comment("회원 권한")
+    private String role = "ROLE_USER"; // 회원 권한
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "constructionId", referencedColumnName = "id", updatable = false)
-    private Construction construction;
+    @Comment("소속 공사 정보")
+    private Construction construction; // 소속 공사 정보
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Comment("생성 일시")
+    private LocalDateTime createdAt; // 생성 일시
 
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    @Comment("수정 일시")
+    private LocalDateTime updatedAt; // 수정 일시
 }

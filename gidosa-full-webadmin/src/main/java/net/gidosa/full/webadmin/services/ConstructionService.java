@@ -5,7 +5,9 @@ import lombok.extern.log4j.Log4j2;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -72,6 +74,76 @@ public class ConstructionService {
         
         // 기본 반환 (위의 조건들로 모두 처리되어야 하지만, 안전을 위해 추가)
         return constructionJpaRepository.findAllByOrderByIdDesc(pageable);
+    }
+    
+    // 정렬 및 페이지 크기 선택 기능이 추가된 검색 메소드
+    public Page<Construction> searchConstructions(
+            String name, String location, String status, 
+            String sortField, Sort.Direction direction, Integer pageSize, int pageNumber) {
+        
+        // 빈 문자열이나 null인 경우 빈 문자열로 처리 (LIKE 검색에서 '%'로 처리됨)
+        name = StringUtils.hasText(name) ? name : "";
+        location = StringUtils.hasText(location) ? location : "";
+        status = StringUtils.hasText(status) ? status : "";
+        
+        // 정렬 필드가 없는 경우 기본값 설정
+        if (!StringUtils.hasText(sortField)) {
+            sortField = "id";
+        }
+        
+        // 페이지 크기가 없는 경우 기본값 설정
+        if (pageSize == null || pageSize <= 0) {
+            pageSize = 10;
+        }
+        
+        // 정렬 객체 생성
+        Sort sort = Sort.by(direction, sortField);
+        
+        // 페이지 요청 객체 생성
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        
+        // 모든 필드가 빈 문자열인 경우 전체 목록 반환
+        if (name.isEmpty() && location.isEmpty() && status.isEmpty()) {
+            return constructionJpaRepository.findAll(pageable);
+        }
+        
+        // 모든 검색 조건이 있는 경우
+        if (!name.isEmpty() && !location.isEmpty() && !status.isEmpty()) {
+            return constructionJpaRepository.findByNameContainingAndLocationContainingAndStatusContaining(
+                    name, location, status, pageable);
+        }
+        
+        // 두 가지 검색 조건이 있는 경우
+        if (!name.isEmpty() && !location.isEmpty()) {
+            return constructionJpaRepository.findByNameContainingAndLocationContaining(
+                    name, location, pageable);
+        }
+        
+        if (!name.isEmpty() && !status.isEmpty()) {
+            return constructionJpaRepository.findByNameContainingAndStatusContaining(
+                    name, status, pageable);
+        }
+        
+        if (!location.isEmpty() && !status.isEmpty()) {
+            return constructionJpaRepository.findByLocationContainingAndStatusContaining(
+                    location, status, pageable);
+        }
+        
+        // 한 가지 검색 조건만 있는 경우
+        if (!name.isEmpty()) {
+            return constructionJpaRepository.findByNameContaining(name, pageable);
+        }
+        
+        if (!location.isEmpty()) {
+            return constructionJpaRepository.findByLocationContaining(location, pageable);
+        }
+        
+        if (!status.isEmpty()) {
+            return constructionJpaRepository.findByStatusContaining(status, pageable);
+        }
+        
+        // 기본 반환 (위의 조건들로 모두 처리되어야 하지만, 안전을 위해 추가)
+        return constructionJpaRepository.findAll(pageable);
     }
 
     public Construction getConstructionWithManagementMenus(Long id) {
