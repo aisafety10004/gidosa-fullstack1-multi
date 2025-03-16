@@ -26,8 +26,7 @@
                         그룹: <span class="badge bg-info" th:text="${workDiscussion.groupName}"></span>
                     </small>
                 </div>
-                <div id="viewer"></div>
-
+                
                 <!-- Mermaid 다이어그램 표시 영역 -->
                 <div th:if="${workDiscussion.mermaidCode != null && !workDiscussion.mermaidCode.isEmpty()}" class="mt-4">
                     <h6>Mermaid 다이어그램</h6>
@@ -35,6 +34,9 @@
                         <div class="mermaid" th:text="${workDiscussion.mermaidCode}"></div>
                     </div>
                 </div>
+
+                <!-- 내용 표시 영역 -->
+                <div id="viewer"></div>
 
                 <div class="mt-3" th:if="${!workDiscussion.attachments.empty}">
                     <h6>첨부파일</h6>
