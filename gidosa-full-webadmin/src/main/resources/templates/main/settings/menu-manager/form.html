@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{${layout}}">
+<head>
+    <title th:text="${isEdit ? '메뉴 수정' : '메뉴 등록'}"></title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2 class="mb-4" th:text="${isEdit ? '메뉴 수정' : '메뉴 등록'}"></h2>
+        
+        <!-- 오류 메시지 표시 -->
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/settings/menu-manager/save}" th:object="${menuDto}" method="post">
+                    <input type="hidden" th:field="*{id}" />
+                    
+                    <!-- 관리자인 경우 건설현장 선택 가능 -->
+                    <div class="mb-3" th:if="${isAdmin}">
+                        <label for="constructionId" class="form-label">건설현장 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="constructionId" th:field="*{constructionId}" required>
+                            <option value="">선택하세요</option>
+                            <option th:each="construction : ${constructions}" 
+                                    th:value="${construction.id}" 
+                                    th:text="${construction.name}"></option>
+                        </select>
+                        <div class="text-danger" th:if="${#fields.hasErrors('constructionId')}" th:errors="*{constructionId}"></div>
+                    </div>
+                    
+                    <!-- 관리자가 아닌 경우 hidden으로 처리 -->
+                    <input type="hidden" th:if="${!isAdmin}" th:field="*{constructionId}" />
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label">메뉴 이름 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="url" class="form-label">메뉴 URL <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="url" th:field="*{url}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></div>
+                        <small class="form-text text-muted">예: /custom/menu1</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">메뉴 설명</label>
+                        <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="menuType" class="form-label">메뉴 타입 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="menuType" th:field="*{menuType}" required>
+                            <option value="">선택하세요</option>
+                            <option value="1">타입1: 단건 내용 저장/보기</option>
+                            <option value="2">타입2: 날짜 저장/보기</option>
+                        </select>
+                        <div class="text-danger" th:if="${#fields.hasErrors('menuType')}" th:errors="*{menuType}"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="parentId" class="form-label">상위 메뉴</label>
+                        <select class="form-select" id="parentId" th:field="*{parentId}">
+                            <option value="">없음 (최상위 메뉴)</option>
+                            <option th:each="parentMenu : ${parentMenus}" 
+                                    th:value="${parentMenu.id}" 
+                                    th:text="${parentMenu.name}"></option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="displayOrder" class="form-label">표시 순서</label>
+                        <input type="number" class="form-control" id="displayOrder" th:field="*{displayOrder}" min="0">
+                        <small class="form-text text-muted">숫자가 작을수록 먼저 표시됩니다.</small>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isActive" th:field="*{isActive}">
+                        <label class="form-check-label" for="isActive">활성화</label>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/settings/menu-manager}" class="btn btn-secondary">취소</a>
+                        <button type="submit" class="btn btn-primary">저장</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 관리자인 경우 건설현장 선택 시 부모 메뉴 목록 업데이트 -->
+    <th:block layout:fragment="script" th:if="${isAdmin}">
+        <script>
+            $(document).ready(function() {
+                $('#constructionId').change(function() {
+                    const constructionId = $(this).val();
+                    if (constructionId) {
+                        window.location.href = '/settings/menu-manager/create?constructionId=' + constructionId;
+                    }
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html> 

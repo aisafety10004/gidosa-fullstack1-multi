@@ -124,6 +124,47 @@
 <!--                    </div>-->
 <!--                </div>-->
 <!--            </div>-->
+            <!-- 설정(Settings) 메뉴 -->
+            <div class="list-group-item list-group-item-light p-0">
+                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#settingsSubmenu" role="button">
+                    <span>설정(Settings)</span>
+                    <i class="bi bi-chevron-down"></i>
+                </a>
+                <div class="collapse" id="settingsSubmenu">
+                    <div class="list-group list-group-flush ps-4">
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">매니저 메뉴관리</a>
+                        <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/sub2">서브메뉴 2</a> -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 커스텀 메뉴 표시 -->
+            <!-- <th:block th:if="${@customMenuService.getAllRootMenusWithChildren() != null}">
+                <th:block th:each="rootMenu : ${@customMenuService.getAllRootMenusWithChildren()}">
+                    <div class="list-group-item list-group-item-light p-0" th:if="${rootMenu.isActive}">
+                        <th:block th:if="${!rootMenu.children.isEmpty()}">
+                            <a class="d-flex justify-content p-3" data-bs-toggle="collapse" th:href="'#customMenu' + ${rootMenu.id}" role="button">
+                                <span th:text="${rootMenu.name}"></span>
+                                <i class="bi bi-chevron-down"></i>
+                            </a>
+                            <div class="collapse" th:id="'customMenu' + ${rootMenu.id}">
+                                <div class="list-group list-group-flush ps-4">
+                                    <a class="list-group-item list-group-item-action list-group-item-light p-2"
+                                       th:each="childMenu : ${rootMenu.children}"
+                                       th:if="${childMenu.isActive}"
+                                       th:href="${childMenu.url}"
+                                       th:text="${childMenu.name}"></a>
+                                </div>
+                            </div>
+                        </th:block>
+                        <th:block th:if="${rootMenu.children.isEmpty()}">
+                            <a class="d-flex justify-content p-3" th:href="${rootMenu.url}">
+                                <span th:text="${rootMenu.name}"></span>
+                            </a>
+                        </th:block>
+                    </div>
+                </th:block>
+            </th:block> -->
         </div>
     </div>
     <!-- Page content wrapper-->

@@ -59,7 +59,7 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/member/admin/**", "/construction/**", "/request/construction/**").hasRole("ADMIN")
                 .requestMatchers("/member/general/**", "/safety/risk-factor/**", "/process/work-discussion/**").hasRole("MANAGER")
-                .requestMatchers("/main/**").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers("/main/**", "/settings/**", "/custom/**").hasAnyRole("ADMIN", "MANAGER")
                 .anyRequest().authenticated()
 //                .anyRequest().permitAll()
             )
@@ -106,6 +106,7 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID")
             )
              .rememberMe(remember -> remember
+                //  .key("uniqueAndSecretRememberMe")
                  .key("uniqueAndSecret")
                  .tokenValiditySeconds(60 * 60 * 24) // 24시간
 //                 .rememberMeParameter("remember-me")          // 안해도 될듯~

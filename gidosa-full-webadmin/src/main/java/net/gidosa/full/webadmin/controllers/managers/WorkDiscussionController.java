@@ -27,7 +27,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Log4j2
 @Controller
@@ -53,9 +52,21 @@ public class WorkDiscussionController {
                       @RequestParam(required = false) String startDate,
                       @RequestParam(required = false) String endDate,
                       @RequestParam(required = false, defaultValue = "발주자") String groupName,
+                      @RequestParam(required = false) String sort,
+                      @RequestParam(required = false) String direction,
                       Model model,
                       @AuthenticationPrincipal UserDetails userDetails) {
         Page<WorkDiscussion> workDiscussionPage;
+        
+        // 정렬 파라미터 처리
+        if (sort != null && !sort.isEmpty() && direction != null && !direction.isEmpty()) {
+            Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            pageable = org.springframework.data.domain.PageRequest.of(
+                pageable.getPageNumber(), 
+                pageable.getPageSize(), 
+                Sort.by(sortDirection, sort)
+            );
+        }
         
         // 날짜 변환 처리
         LocalDateTime startDateTime = null;
