@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Log4j2
@@ -152,9 +153,13 @@ public class CustomMenuService {
         menu.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : true);
         
         // 건설 현장 설정
-        Construction construction = constructionJpaRepository.findById(dto.getConstructionId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid construction Id: " + dto.getConstructionId()));
-        menu.setConstruction(construction);
+        if(dto.getConstructionId() != null) {
+            Construction construction = constructionJpaRepository.findById(dto.getConstructionId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid construction Id: " + dto.getConstructionId()));
+            menu.setConstruction(construction);
+        } else {
+            menu.setConstruction(null);
+        }
         
         // 상위 메뉴 설정
         if (dto.getParentId() != null) {
@@ -181,7 +186,7 @@ public class CustomMenuService {
                 .parentId(menu.getParent() != null ? menu.getParent().getId() : null)
                 .displayOrder(menu.getDisplayOrder())
                 .isActive(menu.getIsActive())
-                .constructionId(menu.getConstruction().getId())
+                .constructionId(Objects.isNull(menu.getConstruction()) ? null : menu.getConstruction().getId())
                 .build();
     }
     
@@ -200,6 +205,14 @@ public class CustomMenuService {
     public List<CustomMenu> getAllRootMenusWithChildren() {
         return customMenuRepository.findAllRootMenusWithChildren();
     }
+
+    /**
+     * Contruction이 없는 루트 메뉴와 하위 메뉴를 함께 조회합니다. (관리자용)
+     */
+    @Transactional(readOnly = true)
+    public List<CustomMenu> getAllRootMenusAdminWithChildren() {
+        return customMenuRepository.findAllRootMenusAdminWithChildren();
+    }
     
     /**
      * 모든 건설 현장을 조회합니다. (관리자용)
@@ -207,5 +220,13 @@ public class CustomMenuService {
     @Transactional(readOnly = true)
     public List<Construction> getAllConstructions() {
         return constructionJpaRepository.findAll();
+    }
+    
+    /**
+     * 템플릿 커스텀 메뉴를 조회합니다. (construction_id가 null인 메뉴)
+     */
+    @Transactional(readOnly = true)
+    public List<CustomMenu> getTemplateCustomMenus() {
+        return customMenuRepository.findTemplateMenus();
     }
 } 

@@ -44,7 +44,8 @@ public class CustomMenuManagerController {
         List<CustomMenu> rootMenus;
         if (isAdmin) {
             // 관리자는 모든 메뉴를 볼 수 있음
-            rootMenus = customMenuService.getAllRootMenusWithChildren();
+//            rootMenus = customMenuService.getAllRootMenusWithChildren();
+            rootMenus = customMenuService.getAllRootMenusAdminWithChildren();
         } else {
             // 일반 매니저는 자신의 건설현장 메뉴만 볼 수 있음
             rootMenus = customMenuService.getRootMenusWithChildrenByConstructionId(construction.getId());
@@ -105,7 +106,6 @@ public class CustomMenuManagerController {
         } else {
             model.addAttribute("parentMenus", customMenuService.getRootMenusByConstructionId(construction.getId()));
         }
-        
         model.addAttribute("isEdit", false);
         
         return "main/settings/menu-manager/form";
@@ -152,7 +152,6 @@ public class CustomMenuManagerController {
                     .filter(m -> !m.getId().equals(id)) // 자기 자신은 부모가 될 수 없음
                     .collect(Collectors.toList()));
         }
-        
         model.addAttribute("isEdit", true);
         
         return "main/settings/menu-manager/form";

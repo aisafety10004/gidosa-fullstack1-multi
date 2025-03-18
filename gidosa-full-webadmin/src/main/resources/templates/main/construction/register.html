@@ -17,7 +17,7 @@
             </div>
             
             <div class="mb-3">
-                <label for="location" class="form-label">위치</label>
+                <label for="location" class="form-label">위치 주소</label>
                 <input type="text" class="form-control" placeholder="위치를 입력하세요(필수값)" id="location" th:field="*{location}" required>
             </div>
             
@@ -47,7 +47,7 @@
             </div>
             
             <div class="mb-3">
-                <label class="form-label">관리 메뉴 선택</label>
+                <label class="form-label">일반 메뉴 선택</label>
                 <div class="d-flex gap-4">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="processManagement" name="managementMenus" value="공정관리" th:field="*{managementMenus}">
@@ -60,6 +60,21 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="safetyManagement" name="managementMenus" value="안전관리" th:field="*{managementMenus}">
                         <label class="form-check-label" for="safetyManagement">안전관리</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">커스텀 메뉴 선택</label>
+                <div class="d-flex flex-wrap gap-4">
+                    <div class="form-check" th:each="customMenu : ${templateCustomMenus}">
+                        <input class="form-check-input" type="checkbox" th:id="${'customMenu-' + customMenu.id}" 
+                               name="selectedCustomMenuIds" th:value="${customMenu.id}"
+                               th:checked="${construction.selectedCustomMenuIds != null && construction.selectedCustomMenuIds.contains(customMenu.id)}">
+                        <label class="form-check-label" th:for="${'customMenu-' + customMenu.id}" th:text="${customMenu.name}"></label>
+                    </div>
+                    <div th:if="${#lists.isEmpty(templateCustomMenus)}" class="text-muted">
+                        사용 가능한 템플릿 메뉴가 없습니다.
                     </div>
                 </div>
             </div>

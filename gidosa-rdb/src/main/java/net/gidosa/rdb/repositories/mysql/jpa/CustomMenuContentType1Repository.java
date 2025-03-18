@@ -9,4 +9,7 @@ public interface CustomMenuContentType1Repository extends JpaRepository<CustomMe
     
     // 특정 메뉴의 타입1 컨텐츠 조회
     Optional<CustomMenuContentType1> findByMenuId(Long menuId);
+    
+    // 특정 메뉴의 타입1 컨텐츠 삭제
+    void deleteByMenuId(Long menuId);
 } 

@@ -62,12 +62,18 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <!-- 관리자인 경우 건설현장 이름 표시 -->
-                                <span th:if="${isAdmin}" class="badge construction-badge" th:text="${menu.construction.name}"></span>
+                                <span th:if="${isAdmin}" class="badge construction-badge" th:text="${menu.construction != null ? menu.construction.name : ''}"></span>
                                 <h5 th:text="${menu.name}" class="mb-0 d-inline"></h5>
-                                <small th:text="${menu.url}" class="text-muted"></small>
-                                <span th:if="${menu.menuType == 1}" class="badge bg-info menu-type-badge ms-2">타입1: 단건 내용</span>
-                                <span th:if="${menu.menuType == 2}" class="badge bg-warning menu-type-badge ms-2">타입2: 날짜</span>
+                                <br>
+                                <small th:text="|주소: ${menu.url}|" class="text-muted"></small>
+                                <br>
+                                <span th:if="${menu.menuType == 1}" class="badge bg-info menu-type-badge">타입1: 단건 내용</span>
+                                <span th:if="${menu.menuType == 2}" class="badge bg-warning menu-type-badge">타입2: 단건 내용(With 날짜)</span>
+                                <span th:if="${menu.menuType == 3}" class="badge bg-success menu-type-badge">타입3: Mermaid</span>
+                                <br>
                                 <small th:text="|활성화: ${menu.isActive}|" class="text-muted"></small>
+                                <br>
+                                <small th:text="|순서: ${menu.displayOrder}|" class="text-muted"></small>
                             </div>
                             <div class="menu-actions">
                                 <a th:href="@{/settings/menu-manager/edit/{id}(id=${menu.id})}" class="btn btn-sm btn-warning">수정</a>
@@ -86,7 +92,8 @@
                                         <h6 th:text="${childMenu.name}" class="mb-0"></h6>
                                         <small th:text="${childMenu.url}" class="text-muted"></small>
                                         <span th:if="${childMenu.menuType == 1}" class="badge bg-info menu-type-badge ms-2">타입1: 단건 내용</span>
-                                        <span th:if="${childMenu.menuType == 2}" class="badge bg-warning menu-type-badge ms-2">타입2: 날짜</span>
+                                        <span th:if="${childMenu.menuType == 2}" class="badge bg-warning menu-type-badge ms-2">타입2: 단건 내용(With 날짜)</span>
+                                        <span th:if="${childMenu.menuType == 3}" class="badge bg-success menu-type-badge ms-2">타입3: Mermaid</span>
                                     </div>
                                     <div class="menu-actions">
                                         <a th:href="@{/settings/menu-manager/edit/{id}(id=${childMenu.id})}" class="btn btn-sm btn-warning">수정</a>

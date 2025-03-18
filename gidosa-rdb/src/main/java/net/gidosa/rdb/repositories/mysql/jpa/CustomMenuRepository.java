@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface CustomMenuRepository extends JpaRepository<CustomMenu, Long> {
     
-    // ID로 메뉴 조회 (Construction 포함)
-    @Query("SELECT m FROM CustomMenu m JOIN FETCH m.construction WHERE m.id = :id")
+    // ID로 메뉴 조회 (Construction 포함, 없는 경우도 처리)
+    @Query("SELECT m FROM CustomMenu m LEFT JOIN FETCH m.construction WHERE m.id = :id")
     Optional<CustomMenu> findByIdWithConstruction(@Param("id") Long id);
     
     // 특정 건설 현장의 모든 메뉴 조회 (상위 메뉴만)
@@ -28,8 +28,12 @@ public interface CustomMenuRepository extends JpaRepository<CustomMenu, Long> {
     
     // 모든 루트 메뉴와 하위 메뉴 조회 (관리자용)
 //    @Query("SELECT DISTINCT m FROM CustomMenu m JOIN FETCH m.construction LEFT JOIN FETCH m.children c LEFT JOIN FETCH c.construction WHERE m.parent IS NULL ORDER BY m.construction.id, m.displayOrder ASC")
-    @Query("SELECT m FROM CustomMenu m JOIN FETCH m.construction LEFT JOIN FETCH m.children c LEFT JOIN FETCH c.construction WHERE m.parent IS NULL ORDER BY m.construction.id, m.displayOrder ASC")
+    @Query("SELECT m FROM CustomMenu m LEFT JOIN FETCH m.construction LEFT JOIN FETCH m.children c LEFT JOIN FETCH c.construction WHERE m.parent IS NULL ORDER BY COALESCE(m.construction.id, 0), m.displayOrder ASC")
     List<CustomMenu> findAllRootMenusWithChildren();
+
+    // Contruction이 없는 모든 루트 메뉴와 하위 메뉴 조회 (관리자용)
+    @Query("SELECT m FROM CustomMenu m LEFT JOIN FETCH m.construction LEFT JOIN FETCH m.children c LEFT JOIN FETCH c.construction WHERE m.parent IS NULL AND m.construction IS NULL ORDER BY m.displayOrder ASC")
+    List<CustomMenu> findAllRootMenusAdminWithChildren();
     
     // 특정 상위 메뉴의 하위 메뉴 조회
     @Query("SELECT m FROM CustomMenu m JOIN FETCH m.construction WHERE m.parent.id = :parentId ORDER BY m.displayOrder ASC")
@@ -51,4 +55,8 @@ public interface CustomMenuRepository extends JpaRepository<CustomMenu, Long> {
     // URL로 메뉴 조회 (패턴 매칭)
     @Query("SELECT m FROM CustomMenu m JOIN FETCH m.construction WHERE m.construction.id = :constructionId AND :url LIKE CONCAT(m.url, '%') ORDER BY LENGTH(m.url) DESC")
     List<CustomMenu> findByConstructionIdAndUrlPattern(@Param("constructionId") Long constructionId, @Param("url") String url);
+    
+    // 템플릿 메뉴 조회 (construction이 null인 메뉴들)
+    @Query("SELECT m FROM CustomMenu m LEFT JOIN FETCH m.children c WHERE m.construction IS NULL ORDER BY m.displayOrder ASC")
+    List<CustomMenu> findTemplateMenus();
 } 

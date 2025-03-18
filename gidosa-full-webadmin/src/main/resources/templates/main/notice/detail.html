@@ -24,8 +24,7 @@
                         <span th:if="${notice.construction == null}" class="badge bg-primary">전체 공지사항</span>
                     </small>
                 </div>
-                <div id="viewer"></div>
-
+                
                 <!-- Mermaid 다이어그램 표시 영역 -->
                 <div th:if="${notice.mermaidCode != null && !notice.mermaidCode.isEmpty()}" class="mt-4">
                     <h6>Mermaid 다이어그램</h6>
@@ -33,6 +32,9 @@
                         <div class="mermaid" th:text="${notice.mermaidCode}"></div>
                     </div>
                 </div>
+
+                <!-- 공지사항 내용 표시 영역 -->
+                <div id="viewer"></div>
 
                 <div class="mt-3" th:if="${!notice.attachments.empty}">
                     <h6>첨부파일</h6>

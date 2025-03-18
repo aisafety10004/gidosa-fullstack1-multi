@@ -16,7 +16,7 @@
                     <div class="col-md-10" th:text="${construction.name}"></div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-2 font-weight-bold">위치</div>
+                    <div class="col-md-2 font-weight-bold">위치 주소</div>
                     <div class="col-md-10" th:text="${construction.location}"></div>
                 </div>
                 <div class="row mb-3">
@@ -36,11 +36,26 @@
                     <div class="col-md-10" th:text="${construction.description}"></div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-2 font-weight-bold">관리 메뉴</div>
+                    <div class="col-md-2 font-weight-bold">일반 메뉴</div>
                     <div class="col-md-10">
                         <ul class="list-unstyled">
                             <li th:each="menu : ${construction.managementMenus}" th:text="${menu}"></li>
                         </ul>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-2 font-weight-bold">커스텀 메뉴</div>
+                    <div class="col-md-10">
+                        <ul class="list-unstyled">
+                            <li th:each="menu : ${construction.customMenus}" th:text="${menu.name + ' (' + menu.url + ')'}">
+                                <span th:if="${menu.children != null && !menu.children.isEmpty()}" class="ms-3">
+                                    <ul class="list-unstyled">
+                                        <li th:each="child : ${menu.children}" th:text="${child.name + ' (' + child.url + ')'}"></li>
+                                    </ul>
+                                </span>
+                            </li>
+                        </ul>
+                        <p th:if="${construction.customMenus == null || construction.customMenus.isEmpty()}" class="text-muted">등록된 커스텀 메뉴가 없습니다.</p>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -51,7 +66,7 @@
         </div>
         <div class="mt-3">
             <a th:href="@{/construction/list}" class="btn btn-secondary">목록으로</a>
-            <a th:href="@{/construction/update/{id}(id=${construction.id})}" class="btn btn-warning">수정</a>
+            <a th:href="@{/construction/edit/{id}(id=${construction.id})}" class="btn btn-warning">수정</a>
             <a th:href="@{/construction/delete/{id}(id=${construction.id})}"
                class="btn btn-danger"
                onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>

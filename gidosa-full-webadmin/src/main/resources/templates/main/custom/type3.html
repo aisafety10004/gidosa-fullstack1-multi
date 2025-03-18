@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{${layout}}">
+<head>
+    <title th:text="${menu.name}"></title>
+    <style>
+        .content-container {
+            min-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2 class="mb-4" th:text="${menu.name}"></h2>
+        
+        <!-- 메시지 표시 -->
+        <div th:if="${message}" class="alert alert-success" role="alert">
+            <span th:text="${message}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/custom/save/type3/{menuId}(menuId=${menu.id})}" method="post" onsubmit="return submitForm();">
+                    <div class="mb-3">
+                        <!-- <h2>Mermaid 코드 입력</h2> -->
+                        <textarea id="mermaid-input" placeholder="Mermaid 코드를 입력하세요." cols="100" rows="10" style="resize: both;" name="mermaidCode" th:utext="${content != null ? content.content : ''}"/></textarea>
+                        <!-- <h3>Mermaid 다이어그램 미리보기</h3> -->
+                        <div id="mermaid-preview" class="preview-box"></div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">저장</button>
+                        <button type="button" class="btn btn-danger" onclick="confirmDelete()">삭제</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="script">
+        <script src="/js/mermaid/mermaid.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                mermaid.initialize({ startOnLoad: false });
+
+                const inputField = document.getElementById("mermaid-input");
+                const preview = document.getElementById("mermaid-preview");
+
+                const renderMermaid = () => {
+                    const code = inputField.value.trim();
+                    if (code === "") {
+                        //preview.innerHTML = "<p style='color:red;'>Mermaid 코드가 없습니다.</p>";
+                        return;
+                    }
+
+                    mermaid.render("mermaid-diagram", code)
+                        .then(({ svg }) => {
+                            preview.innerHTML = svg;
+                        })
+                        .catch(err => {
+                            console.error("Mermaid Rendering Error:", err);
+                            preview.innerHTML = "<p style='color:red;'>잘못된 Mermaid 코드입니다.</p>";
+                        });
+                };
+
+                inputField.addEventListener("input", renderMermaid);
+                renderMermaid(); // 초기값 렌더링
+            });
+
+            function submitForm() {
+                return true;
+            }
+            
+            function confirmDelete() {
+                if (confirm('정말로 삭제하시겠습니까?')) {
+                    window.location.href = '/custom/delete/type3/' + '[[${menu.id}]]';
+                }
+            }
+        </script>
+    </th:block>
+</body>
+</html> 

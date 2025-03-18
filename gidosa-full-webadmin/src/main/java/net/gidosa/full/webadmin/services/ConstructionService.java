@@ -3,7 +3,9 @@ package net.gidosa.full.webadmin.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenu;
 import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
+import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -20,6 +24,7 @@ import java.util.List;
 //@Transactional(readOnly = true)
 public class ConstructionService {
     private final ConstructionJpaRepository constructionJpaRepository;
+    private final CustomMenuRepository customMenuRepository;
 
     public Page<Construction> findAllConstructions(Pageable pageable) {
         return constructionJpaRepository.findAllByOrderByIdDesc(pageable);
@@ -183,5 +188,142 @@ public class ConstructionService {
 
     public void deleteConstruction(Long id) {
         constructionJpaRepository.deleteById(id);
+    }
+    
+    /**
+     * 건설 현장과 관련된 커스텀 메뉴를 함께 삭제합니다.
+     */
+    @Transactional
+    public void deleteConstructionWithCustomMenus(Long constructionId) {
+        // 관련 커스텀 메뉴 먼저 삭제
+        List<CustomMenu> customMenus = customMenuRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
+        for (CustomMenu menu : customMenus) {
+            customMenuRepository.deleteById(menu.getId());
+        }
+        
+        // 건설 현장 삭제
+        constructionJpaRepository.deleteById(constructionId);
+    }
+    
+    /**
+     * 템플릿 커스텀 메뉴를 건설 현장에 복사합니다.
+     * 같은 URL을 가진 메뉴가 이미 존재하는 경우 복사하지 않습니다.
+     */
+    @Transactional
+    public void copyCustomMenusToConstruction(Long constructionId, List<Long> templateMenuIds) {
+        if (templateMenuIds == null || templateMenuIds.isEmpty()) {
+            return;
+        }
+        
+        Construction construction = constructionJpaRepository.findById(constructionId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid construction Id: " + constructionId));
+        
+        // 현재 건설 현장의 커스텀 메뉴를 조회하여 URL 목록 추출
+        List<CustomMenu> existingMenus = customMenuRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
+        List<String> existingUrls = existingMenus.stream()
+                .map(CustomMenu::getUrl)
+                .collect(Collectors.toList());
+        
+        for (Long templateMenuId : templateMenuIds) {
+            CustomMenu templateMenu = customMenuRepository.findByIdWithConstruction(templateMenuId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid template menu Id: " + templateMenuId));
+            
+            // 템플릿 메뉴가 아니면 건너뜀
+            if (templateMenu.getConstruction() != null) {
+                continue;
+            }
+            
+            // 같은 URL을 가진 메뉴가 이미 존재하면 건너뜀
+            if (existingUrls.contains(templateMenu.getUrl())) {
+                continue;
+            }
+            
+            // 템플릿 메뉴를 복사하여 건설 현장에 연결
+            copyMenuAndChildren(templateMenu, construction, null);
+        }
+    }
+    
+    /**
+     * 메뉴와 하위 메뉴를 재귀적으로 복사합니다.
+     */
+    private CustomMenu copyMenuAndChildren(CustomMenu sourceMenu, Construction construction, CustomMenu newParent) {
+        // 메뉴 복사
+        CustomMenu newMenu = new CustomMenu();
+        newMenu.setName(sourceMenu.getName());
+        newMenu.setUrl(sourceMenu.getUrl());
+        newMenu.setDescription(sourceMenu.getDescription());
+        newMenu.setMenuType(sourceMenu.getMenuType());
+        newMenu.setDisplayOrder(sourceMenu.getDisplayOrder());
+        newMenu.setIsActive(sourceMenu.getIsActive());
+        newMenu.setConstruction(construction);
+        newMenu.setParent(newParent);
+        
+        // 새 메뉴 저장
+        CustomMenu savedMenu = customMenuRepository.save(newMenu);
+        
+        // 하위 메뉴가 있으면 재귀적으로 복사
+        if (sourceMenu.getChildren() != null && !sourceMenu.getChildren().isEmpty()) {
+            for (CustomMenu child : sourceMenu.getChildren()) {
+                copyMenuAndChildren(child, construction, savedMenu);
+            }
+        }
+        
+        return savedMenu;
+    }
+    
+    /**
+     * 건설 현장의 선택된 커스텀 메뉴 ID 목록을 조회합니다.
+     * (URL을 기준으로 템플릿 메뉴와 비교하여, 동일한 URL을 가진 메뉴가 있다면 선택된 것으로 간주)
+     */
+    @Transactional(readOnly = true)
+    public List<Long> getSelectedCustomMenuIds(Long constructionId) {
+        Construction construction = constructionJpaRepository.findById(constructionId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid construction Id: " + constructionId));
+        
+        // 현재 건설 현장의 커스텀 메뉴를 조회
+        List<CustomMenu> customMenus = customMenuRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
+        
+        // 템플릿 메뉴 목록 조회
+        List<CustomMenu> templateMenus = customMenuRepository.findTemplateMenus();
+        
+        List<Long> selectedIds = new ArrayList<>();
+        for (CustomMenu template : templateMenus) {
+            // URL이 일치하는 메뉴가 있으면 선택된 것으로 간주
+            boolean isSelected = customMenus.stream()
+                    .anyMatch(menu -> menu.getUrl().equals(template.getUrl()));
+            
+            if (isSelected) {
+                selectedIds.add(template.getId());
+            }
+        }
+        
+        return selectedIds;
+    }
+    
+    /**
+     * 건설 현장의 커스텀 메뉴를 업데이트합니다.
+     */
+    @Transactional
+    public void updateCustomMenusForConstruction(Long constructionId, List<Long> newSelectedMenuIds) {
+        // 템플릿 메뉴 목록 조회 (admin이 만든 커스텀 메뉴)
+        List<CustomMenu> templateMenus = customMenuRepository.findTemplateMenus();
+        List<String> templateUrls = templateMenus.stream()
+                .map(CustomMenu::getUrl)
+                .collect(Collectors.toList());
+        
+        // 현재 건설 현장의 커스텀 메뉴 조회
+        List<CustomMenu> existingMenus = customMenuRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
+        
+        // admin이 만든 커스텀 메뉴만 삭제 (URL을 기준으로 판단)
+        for (CustomMenu menu : existingMenus) {
+            if (templateUrls.contains(menu.getUrl())) {
+                customMenuRepository.deleteById(menu.getId());
+            }
+        }
+        
+        // 새로 선택된 메뉴 복사
+        if (newSelectedMenuIds != null && !newSelectedMenuIds.isEmpty()) {
+            copyCustomMenusToConstruction(constructionId, newSelectedMenuIds);
+        }
     }
 }

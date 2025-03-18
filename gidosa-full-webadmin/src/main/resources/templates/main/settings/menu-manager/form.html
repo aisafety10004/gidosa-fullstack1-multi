@@ -20,16 +20,16 @@
                     <input type="hidden" th:field="*{id}" />
                     
                     <!-- 관리자인 경우 건설현장 선택 가능 -->
-                    <div class="mb-3" th:if="${isAdmin}">
-                        <label for="constructionId" class="form-label">건설현장 <span class="text-danger">*</span></label>
-                        <select class="form-select" id="constructionId" th:field="*{constructionId}" required>
+                    <!-- <div class="mb-3" th:if="${isAdmin}">
+                        <label for="constructionId" class="form-label">건설현장</label>
+                        <select class="form-select" id="constructionId" th:field="*{constructionId}">
                             <option value="">선택하세요</option>
                             <option th:each="construction : ${constructions}" 
                                     th:value="${construction.id}" 
                                     th:text="${construction.name}"></option>
                         </select>
                         <div class="text-danger" th:if="${#fields.hasErrors('constructionId')}" th:errors="*{constructionId}"></div>
-                    </div>
+                    </div> -->
                     
                     <!-- 관리자가 아닌 경우 hidden으로 처리 -->
                     <input type="hidden" th:if="${!isAdmin}" th:field="*{constructionId}" />
@@ -44,7 +44,7 @@
                         <label for="url" class="form-label">메뉴 URL <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="url" th:field="*{url}" required>
                         <div class="text-danger" th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></div>
-                        <small class="form-text text-muted">예: /custom/menu1</small>
+                        <small class="form-text text-muted">예: /custom/menu1 *내부 페이지 링크시에는 반드시 /custom으로 시작하여야 정상적으로 작동합니다.</small>
                     </div>
                     
                     <div class="mb-3">
@@ -53,11 +53,12 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="menuType" class="form-label">메뉴 타입 <span class="text-danger">*</span></label>
-                        <select class="form-select" id="menuType" th:field="*{menuType}" required>
+                        <label for="menuType" class="form-label">메뉴 타입</label>
+                        <select class="form-select" id="menuType" th:field="*{menuType}">
                             <option value="">선택하세요</option>
                             <option value="1">타입1: 단건 내용 저장/보기</option>
-                            <option value="2">타입2: 날짜 저장/보기</option>
+                            <option value="2">타입2: 단건 내용(With 날짜) 저장/보기</option>
+                            <option value="3">타입3: Mermaid 저장/보기</option>
                         </select>
                         <div class="text-danger" th:if="${#fields.hasErrors('menuType')}" th:errors="*{menuType}"></div>
                     </div>

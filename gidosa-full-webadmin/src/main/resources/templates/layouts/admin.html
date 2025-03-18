@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>안전지도사 관리 어드민</title>
+    <title>바로세움 관리자 전용</title>
     <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
@@ -24,10 +24,10 @@
     <!-- Sidebar-->
     <div class="border-end bg-white" id="sidebar-wrapper" style="overflow: hidden;">
         <div class="sidebar-heading border-bottom bg-light" style="padding-bottom: 20px; text-align: center;">
-            <a href="/main" style="text-decoration: none; color: inherit;">안전지도사<br>관리 어드민</a>
+            <a href="/main" style="text-decoration: none; color: inherit;">바로세움<br>관리자 전용</a>
         </div>
         <div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">건설공사현장 문의요청</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">문의요청 관리</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/construction/list">건설공사현장 관리</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/admin/list">건설공사현장 매니저 관리</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/notice">공지사항 관리</a>
@@ -132,15 +132,15 @@
                 </a>
                 <div class="collapse" id="settingsSubmenu">
                     <div class="list-group list-group-flush ps-4">
-                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">매니저 메뉴관리</a>
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">커스텀 메뉴관리</a>
                         <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/sub2">서브메뉴 2</a> -->
                     </div>
                 </div>
             </div>
 
             <!-- 커스텀 메뉴 표시 -->
-            <!-- <th:block th:if="${@customMenuService.getAllRootMenusWithChildren() != null}">
-                <th:block th:each="rootMenu : ${@customMenuService.getAllRootMenusWithChildren()}">
+            <th:block th:if="${@customMenuService.getAllRootMenusAdminWithChildren() != null}">
+                <th:block th:each="rootMenu : ${@customMenuService.getAllRootMenusAdminWithChildren()}">
                     <div class="list-group-item list-group-item-light p-0" th:if="${rootMenu.isActive}">
                         <th:block th:if="${!rootMenu.children.isEmpty()}">
                             <a class="d-flex justify-content p-3" data-bs-toggle="collapse" th:href="'#customMenu' + ${rootMenu.id}" role="button">
@@ -164,7 +164,7 @@
                         </th:block>
                     </div>
                 </th:block>
-            </th:block> -->
+            </th:block>
         </div>
     </div>
     <!-- Page content wrapper-->

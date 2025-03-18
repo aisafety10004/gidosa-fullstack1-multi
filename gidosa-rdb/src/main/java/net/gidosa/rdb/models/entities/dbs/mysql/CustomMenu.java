@@ -15,6 +15,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(name = "UK_custom_menu_url_contruction", columnNames = {"url", "construction_id"})
+    }
+)
 public class CustomMenu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +38,7 @@ public class CustomMenu {
     @Comment("메뉴 설명")
     private String description;
 
-    @Column(nullable = false)
+    @Column
     @Comment("메뉴 타입 (1: 단건 내용 저장/보기, 2: 날짜 저장/보기)")
     private Integer menuType;
 

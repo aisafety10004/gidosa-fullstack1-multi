@@ -64,6 +64,14 @@ public class Construction {
     @Comment("관리 메뉴 목록")
     private List<String> managementMenus; // 관리 메뉴 목록
 
+    // @ElementCollection
+    // @Comment("선택된 커스텀 메뉴 ID 목록")
+    @Transient // DB에 저장되지 않는 필드
+    private List<Long> selectedCustomMenuIds; // 선택된 커스텀 메뉴 ID 목록
+    
+    @Transient // DB에 저장되지 않는 필드
+    private List<CustomMenu> customMenus; // 실제 커스텀 메뉴 객체 목록 (조회용)
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

@@ -32,8 +32,9 @@
 <!--                         <textarea id="content" name="content" th:utext="${content != null ? content.content : ''}"></textarea>-->
                     </div>
                     
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-between">
                         <button type="submit" class="btn btn-primary">저장</button>
+                        <button type="button" class="btn btn-danger" onclick="confirmDelete()">삭제</button>
                     </div>
                 </form>
             </div>
@@ -74,6 +75,12 @@
                 document.getElementById('content').value = content;
                 
                 return true;
+            }
+            
+            function confirmDelete() {
+                if (confirm('정말로 삭제하시겠습니까?')) {
+                    window.location.href = '/custom/delete/type1/' + '[[${menu.id}]]';
+                }
             }
         </script>
     </th:block>

@@ -10,4 +10,7 @@ public interface CustomMenuContentType2Repository extends JpaRepository<CustomMe
     
     // 특정 메뉴와 날짜의 타입2 컨텐츠 조회
     Optional<CustomMenuContentType2> findByMenuIdAndContentDate(Long menuId, LocalDate contentDate);
+    
+    // 특정 메뉴와 날짜의 타입2 컨텐츠 삭제
+    void deleteByMenuIdAndContentDate(Long menuId, LocalDate contentDate);
 } 
