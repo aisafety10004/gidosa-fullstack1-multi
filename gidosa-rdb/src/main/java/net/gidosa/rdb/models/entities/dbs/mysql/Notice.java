@@ -79,8 +79,16 @@ public class Notice {
     private String mermaidCode; // 머메이드(Mermaid) 코드
 
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
-    @Comment("공개 여부")
-    private Boolean published = false; // 공개 여부
+    @Comment("매니저 공개 여부")
+    private Boolean publishedManager = false; // 공개 여부
+    
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    @Comment("익명 사용자 공개 여부(로그인하지 않은 사용자)")
+    private Boolean publishedAnonymous = false; // 익명 사용자 공개 여부
+    
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    @Comment("로그인 사용자 공개 여부")
+    private Boolean publishedLoggedInUser = false; // 로그인 사용자 공개 여부
 
 //    @Column(nullable = false)
 //    @Comment("공지사항 유형")

@@ -267,7 +267,7 @@ public class CustomMenuContentController {
     @PostMapping("/save/type3/{menuId}")
     public String saveType3Content(@PathVariable Long menuId,
 //                                 @RequestParam String content,
-                                 @RequestParam(value = "mermaidCode", required = false) String content,
+                                 @RequestParam(value = "mermaidCode", required = false) String mermaidCode,
                                  RedirectAttributes redirectAttributes,
                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
         MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
@@ -287,7 +287,7 @@ public class CustomMenuContentController {
                 return "redirect:/main";
             }
 
-            customMenuContentService.saveType3Content(menuId, content);
+            customMenuContentService.saveType3Content(menuId, mermaidCode);
             redirectAttributes.addFlashAttribute("message", "내용이 저장되었습니다.");
 
             return "redirect:" + menu.getUrl();

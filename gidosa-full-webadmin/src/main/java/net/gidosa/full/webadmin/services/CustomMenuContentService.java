@@ -111,7 +111,7 @@ public class CustomMenuContentService {
      * 타입3 메뉴의 컨텐츠를 저장합니다.
      */
     @Transactional
-    public CustomMenuContentType3 saveType3Content(Long menuId, String content) {
+    public CustomMenuContentType3 saveType3Content(Long menuId, String mermaidCode) {
         CustomMenu menu = customMenuRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
         
@@ -124,11 +124,11 @@ public class CustomMenuContentService {
         CustomMenuContentType3 menuContent;
         if (existingContent.isPresent()) {
             menuContent = existingContent.get();
-            menuContent.setContent(content);
+            menuContent.setMermaidCode(mermaidCode);
         } else {
             menuContent = CustomMenuContentType3.builder()
                     .menu(menu)
-                    .content(content)
+                    .mermaidCode(mermaidCode)
                     .build();
         }
         

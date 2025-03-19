@@ -24,7 +24,6 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Log4j2
@@ -41,9 +40,23 @@ public class NoticeController {
                       @RequestParam(required = false) String startDate,
                       @RequestParam(required = false) String endDate,
                       @RequestParam(required = false, defaultValue = "all") String viewMode,
+                      @RequestParam(required = false) String sort,
+                      @RequestParam(required = false, defaultValue = "asc") String direction,
                       Model model,
                       @AuthenticationPrincipal UserDetails userDetails) {
         Page<Notice> noticePage;
+        
+        // 정렬 처리
+        if (sort != null && !sort.isEmpty()) {
+            Sort sortObj = direction.equalsIgnoreCase("desc") ? 
+                Sort.by(Sort.Direction.DESC, sort) : 
+                Sort.by(Sort.Direction.ASC, sort);
+            pageable = org.springframework.data.domain.PageRequest.of(
+                pageable.getPageNumber(), 
+                pageable.getPageSize(), 
+                sortObj
+            );
+        }
         
         // 날짜 변환 처리
         LocalDateTime startDateTime = null;
@@ -62,6 +75,10 @@ public class NoticeController {
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("viewMode", viewMode);
+        
+        // 정렬 파라미터를 모델에 추가 (필요시 타임리프에서 접근)
+        model.addAttribute("currentSort", sort);
+        model.addAttribute("currentDirection", direction);
         
         // 권한에 따라 공지사항 목록 조회
 //        if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
@@ -89,7 +106,7 @@ public class NoticeController {
             if (construction != null) {
                 Long constructionId = construction.getId();
 
-                if ("unpublished".equals(viewMode)) {
+                if ("unpublishedManager".equals(viewMode)) {
                     // 게시되지 않은 공지사항만 조회 (자신의 건설현장만)
                     if (searchTitle != null && !searchTitle.trim().isEmpty()) {
                         if (startDateTime != null || endDateTime != null) {
@@ -105,25 +122,61 @@ public class NoticeController {
                         noticePage = noticeService.searchNoticesByDateRangeAndConstructionId(startDateTime, endDateTime, constructionId, pageable);
                     } else {
                         // 검색 조건 없음 (미게시 공지사항)
-                        noticePage = noticeService.getUnpublishedNoticesByConstructionId(constructionId, pageable);
+                        noticePage = noticeService.getUnpublishedManagerNoticesByConstructionId(constructionId, pageable);
+                    }
+                } else if ("publishedAnonymous".equals(viewMode)) {
+                    // 익명 사용자에게 게시된 공지사항 조회
+                    if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+                        if (startDateTime != null || endDateTime != null) {
+                            // 제목과 날짜 범위로 검색 (익명 사용자 게시 공지사항)
+                            noticePage = noticeService.searchPublishedAnonymousNoticesByTitleAndDateRange(
+                                searchTitle, startDateTime, endDateTime, pageable);
+                        } else {
+                            // 제목으로만 검색 (익명 사용자 게시 공지사항)
+                            noticePage = noticeService.searchPublishedAnonymousNoticesByTitle(searchTitle, pageable);
+                        }
+                    } else if (startDateTime != null || endDateTime != null) {
+                        // 날짜 범위로만 검색 (익명 사용자 게시 공지사항)
+                        noticePage = noticeService.searchPublishedAnonymousNoticesByDateRange(startDateTime, endDateTime, pageable);
+                    } else {
+                        // 검색 조건 없음 (익명 사용자 게시 공지사항)
+                        noticePage = noticeService.getPublishedAnonymousNotices(pageable);
+                    }
+                } else if ("publishedLoggedInUser".equals(viewMode)) {
+                    // 로그인 사용자에게 게시된 공지사항 조회
+                    if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+                        if (startDateTime != null || endDateTime != null) {
+                            // 제목과 날짜 범위로 검색 (로그인 사용자 게시 공지사항)
+                            noticePage = noticeService.searchPublishedLoggedInUserNoticesByTitleAndDateRange(
+                                searchTitle, startDateTime, endDateTime, pageable);
+                        } else {
+                            // 제목으로만 검색 (로그인 사용자 게시 공지사항)
+                            noticePage = noticeService.searchPublishedLoggedInUserNoticesByTitle(searchTitle, pageable);
+                        }
+                    } else if (startDateTime != null || endDateTime != null) {
+                        // 날짜 범위로만 검색 (로그인 사용자 게시 공지사항)
+                        noticePage = noticeService.searchPublishedLoggedInUserNoticesByDateRange(startDateTime, endDateTime, pageable);
+                    } else {
+                        // 검색 조건 없음 (로그인 사용자 게시 공지사항)
+                        noticePage = noticeService.getPublishedLoggedInUserNotices(pageable);
                     }
                 } else {
                     // 게시된 공지사항만 조회 (자신의 건설현장 + 전체 공지사항)
                     if (searchTitle != null && !searchTitle.trim().isEmpty()) {
                         if (startDateTime != null || endDateTime != null) {
                             // 제목과 날짜 범위로 검색 (게시된 공지사항)
-                            noticePage = noticeService.searchPublishedNoticesByTitleAndDateRangeAndConstructionId(
+                            noticePage = noticeService.searchPublishedManagerNoticesByTitleAndDateRangeAndConstructionId(
                                 searchTitle, startDateTime, endDateTime, constructionId, pageable);
                         } else {
                             // 제목으로만 검색 (게시된 공지사항)
-                            noticePage = noticeService.searchPublishedNoticesByTitleAndConstructionId(searchTitle, constructionId, pageable);
+                            noticePage = noticeService.searchPublishedManagerNoticesByTitleAndConstructionId(searchTitle, constructionId, pageable);
                         }
                     } else if (startDateTime != null || endDateTime != null) {
                         // 날짜 범위로만 검색 (게시된 공지사항)
-                        noticePage = noticeService.searchPublishedNoticesByDateRangeAndConstructionId(startDateTime, endDateTime, constructionId, pageable);
+                        noticePage = noticeService.searchPublishedManagerNoticesByDateRangeAndConstructionId(startDateTime, endDateTime, constructionId, pageable);
                     } else {
                         // 검색 조건 없음 (게시된 공지사항)
-                        noticePage = noticeService.getPublishedNoticesByConstructionId(constructionId, pageable);
+                        noticePage = noticeService.getPublishedManagerNoticesByConstructionId(constructionId, pageable);
                     }
                 }
             } else {
@@ -186,7 +239,9 @@ public class NoticeController {
             notice.setMermaidCode(mermaidCode);
             
             // 기본적으로 미게시 상태로 설정
-            notice.setPublished(false);
+            notice.setPublishedManager(false);
+            notice.setPublishedAnonymous(false);
+            notice.setPublishedLoggedInUser(false);
             
             // 권한에 따라 건설현장 설정
             if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
@@ -244,21 +299,21 @@ public class NoticeController {
     public String updateForm(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Notice notice = noticeService.getNoticeById(id)
                 .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
-        
+
         // 권한 체크: 매니저는 자신의 건설현장 공지사항만 수정 가능
         if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
             Construction userConstruction = memberAdmin.getConstruction();
-            
+
             // 공지사항이 특정 건설현장에 속하고, 사용자의 건설현장과 다른 경우 접근 거부
-            if (notice.getConstruction() != null && 
+            if (notice.getConstruction() != null &&
                 (userConstruction == null || !notice.getConstruction().getId().equals(userConstruction.getId()))) {
                 return "redirect:/notice?error=unauthorized";
             }
         }
-        
+
         model.addAttribute("notice", notice);
-        
+
         // 관리자인 경우 건설현장 목록 제공
         if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             model.addAttribute("constructions", constructionService.findAllConstructionsWithManagementMenus());
@@ -266,12 +321,12 @@ public class NoticeController {
         } else {
             model.addAttribute("isAdmin", false);
         }
-        
+
         return "main/notice/update";
     }
 
     @PostMapping("/update/{id}")
-    public String update(@PathVariable Long id, 
+    public String update(@PathVariable Long id,
                         @ModelAttribute Notice notice,
                         @RequestParam(value = "files", required = false) List<MultipartFile> files,
                         @RequestParam(value = "constructionId", required = false) Long constructionId,
@@ -281,19 +336,19 @@ public class NoticeController {
         try {
             Notice existingNotice = noticeService.getNoticeById(id)
                     .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
-            
+
             // 권한 체크: 매니저는 자신의 건설현장 공지사항만 수정 가능
             if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
                 MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
                 Construction userConstruction = memberAdmin.getConstruction();
-                
+
                 // 공지사항이 특정 건설현장에 속하고, 사용자의 건설현장과 다른 경우 접근 거부
-                if (existingNotice.getConstruction() != null && 
+                if (existingNotice.getConstruction() != null &&
                     (userConstruction == null || !existingNotice.getConstruction().getId().equals(userConstruction.getId()))) {
                     redirectAttributes.addFlashAttribute("error", "해당 공지사항을 수정할 권한이 없습니다.");
                     return "redirect:/notice";
                 }
-                
+
                 // 매니저는 건설현장을 변경할 수 없음
                 notice.setConstruction(existingNotice.getConstruction());
             } else if (constructionId != null) {
@@ -303,10 +358,10 @@ public class NoticeController {
                 // constructionId가 null이면 전체 공지사항으로 설정
                 notice.setConstruction(null);
             }
-            
+
             // Mermaid 코드 설정
             notice.setMermaidCode(mermaidCode);
-            
+
             // 파일이 비어있는지 확인하고 필터링
             List<MultipartFile> validFiles = null;
             if (files != null && !files.isEmpty()) {
@@ -389,48 +444,129 @@ public class NoticeController {
         return "redirect:/notice/update/" + noticeId;
     }
 
-    @PostMapping("/publish/{id}")
-    public String publishNotice(@PathVariable Long id, 
-                              @RequestParam(defaultValue = "true") boolean publish,
+    @PostMapping("/publish-manager/{id}")
+    public String publishManagerNotice(@PathVariable Long id,
+                              @RequestParam(defaultValue = "true") boolean publishManager,
                               @AuthenticationPrincipal UserDetails userDetails,
                               RedirectAttributes redirectAttributes) {
+        // 권한 확인
+        boolean hasPermission = false;
+        MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+
         try {
-            // 권한 확인
-            boolean hasPermission = false;
-            MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+            // 권한 체크: 관리자나 해당 건설현장의 매니저만 게시 상태 변경 가능
+            Notice notice = noticeService.getNoticeById(id)
+                    .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
 
             //if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             if (memberAdmin.getRole().equals("ROLE_ADMIN")) {
-                // 관리자는 모든 공지사항에 대한 권한이 있음
                 hasPermission = true;
             } else {
-                // 매니저는 자신의 건설현장 공지사항에 대한 권한만 있음
-                Construction construction = memberAdmin.getConstruction();
+                Construction userConstruction = memberAdmin.getConstruction();
                 
-                if (construction != null) {
-                    Optional<Notice> noticeOpt = noticeService.getNoticeById(id);
-                    if (noticeOpt.isPresent()) {
-                        Notice notice = noticeOpt.get();
-                        if (notice.getConstruction() != null && 
-                            notice.getConstruction().getId().equals(construction.getId())) {
-                            hasPermission = true;
-                        }
-                    }
+                if (notice.getConstruction() != null && userConstruction != null &&
+                    notice.getConstruction().getId().equals(userConstruction.getId())) {
+                    hasPermission = true;
                 }
             }
             
             if (hasPermission) {
-                noticeService.publishNotice(id, publish);
+                noticeService.publishManagerNotice(id, publishManager);
                 redirectAttributes.addFlashAttribute("message", 
-                    publish ? "공지사항이 성공적으로 게시되었습니다." : "공지사항이 성공적으로 게시 취소되었습니다.");
+                    publishManager ? "공지사항이 매니저에게 게시되었습니다." : "공지사항이 매니저에게서 게시 취소되었습니다.");
             } else {
-                redirectAttributes.addFlashAttribute("error", "해당 공지사항에 대한 권한이 없습니다.");
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
             }
+            
+            return "redirect:/notice";
         } catch (Exception e) {
-            log.error("공지사항 게시 중 오류 발생", e);
-            redirectAttributes.addFlashAttribute("error", "공지사항 게시 중 오류가 발생했습니다: " + e.getMessage());
+            log.error("공지사항 게시 상태 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "공지사항 게시 상태 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/notice";
         }
-        
-        return "redirect:/notice";
+    }
+    
+    @PostMapping("/publish-anonymous/{id}")
+    public String publishAnonymousNotice(@PathVariable Long id,
+                              @RequestParam(defaultValue = "true") boolean publishAnonymous,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              RedirectAttributes redirectAttributes) {
+        // 권한 확인
+        boolean hasPermission = false;
+        MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+
+        try {
+            // 권한 체크: 관리자나 해당 건설현장의 매니저만 게시 상태 변경 가능
+            Notice notice = noticeService.getNoticeById(id)
+                    .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
+
+            //if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            if (memberAdmin.getRole().equals("ROLE_ADMIN")) {
+                hasPermission = true;
+            } else {
+                Construction userConstruction = memberAdmin.getConstruction();
+                
+                if (notice.getConstruction() != null && userConstruction != null &&
+                    notice.getConstruction().getId().equals(userConstruction.getId())) {
+                    hasPermission = true;
+                }
+            }
+            
+            if (hasPermission) {
+                noticeService.publishAnonymousNotice(id, publishAnonymous);
+                redirectAttributes.addFlashAttribute("message", 
+                    publishAnonymous ? "공지사항이 익명 사용자에게 게시되었습니다." : "공지사항이 익명 사용자에게서 게시 취소되었습니다.");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+            }
+            
+            return "redirect:/notice";
+        } catch (Exception e) {
+            log.error("공지사항 익명 사용자 게시 상태 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "공지사항 익명 사용자 게시 상태 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/notice";
+        }
+    }
+    
+    @PostMapping("/publish-logged-in/{id}")
+    public String publishLoggedInUserNotice(@PathVariable Long id,
+                              @RequestParam(defaultValue = "true") boolean publishLoggedInUser,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              RedirectAttributes redirectAttributes) {
+        // 권한 확인
+        boolean hasPermission = false;
+        MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+
+        try {
+            // 권한 체크: 관리자나 해당 건설현장의 매니저만 게시 상태 변경 가능
+            Notice notice = noticeService.getNoticeById(id)
+                    .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
+
+            //if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            if (memberAdmin.getRole().equals("ROLE_ADMIN")) {
+                hasPermission = true;
+            } else {
+                Construction userConstruction = memberAdmin.getConstruction();
+                
+                if (notice.getConstruction() != null && userConstruction != null &&
+                    notice.getConstruction().getId().equals(userConstruction.getId())) {
+                    hasPermission = true;
+                }
+            }
+            
+            if (hasPermission) {
+                noticeService.publishLoggedInUserNotice(id, publishLoggedInUser);
+                redirectAttributes.addFlashAttribute("message", 
+                    publishLoggedInUser ? "공지사항이 로그인 사용자에게 게시되었습니다." : "공지사항이 로그인 사용자에게서 게시 취소되었습니다.");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+            }
+            
+            return "redirect:/notice";
+        } catch (Exception e) {
+            log.error("공지사항 로그인 사용자 게시 상태 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "공지사항 로그인 사용자 게시 상태 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/notice";
+        }
     }
 }

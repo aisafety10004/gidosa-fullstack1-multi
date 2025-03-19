@@ -39,9 +39,9 @@ out/
 storages/
 *.pid
 
-.cursorignore
-.cursorrules
-.windsurfrules
+#.cursorignore
+#.cursorrules
+#.windsurfrules
 
 **/src/main/generated/
 

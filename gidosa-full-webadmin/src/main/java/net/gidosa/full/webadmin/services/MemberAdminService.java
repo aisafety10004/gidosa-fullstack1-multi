@@ -29,7 +29,7 @@ public class MemberAdminService {
 
     // 전체 관리자 조회 (페이징)
     public Page<MemberAdmin> getAllMembersWithPaging(Pageable pageable) {
-        return memberAdminJpaRepository.findAllWithConstructionByOrderByIdDesc(pageable);
+        return memberAdminJpaRepository.findAllWithConstruction(pageable);
     }
 
     // ID로 관리자 조회

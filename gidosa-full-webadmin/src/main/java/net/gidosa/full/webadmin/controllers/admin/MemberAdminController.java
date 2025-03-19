@@ -10,6 +10,7 @@ import net.gidosa.full.webadmin.models.dtos.MemberAdminRegisterDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +33,25 @@ public class MemberAdminController {
     public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                       @RequestParam(required = false) String searchType,
                       @RequestParam(required = false) String keyword,
+                      @RequestParam(required = false) String sort,
+                      @RequestParam(required = false, defaultValue = "desc") String direction,
+                      @RequestParam(required = false) Integer size,
                       Model model) {
+        // 페이지 크기 처리
+        if (size != null && (size == 10 || size == 20 || size == 30)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
+        }
+        
+        // 정렬 처리
+        if (sort != null && !sort.isEmpty()) {
+            Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            pageable = PageRequest.of(
+                pageable.getPageNumber(), 
+                pageable.getPageSize(), 
+                Sort.by(sortDirection, sort)
+            );
+        }
+        
         Page<MemberAdmin> memberAdminsPage;
         
         if (searchType != null && keyword != null && !keyword.trim().isEmpty()) {

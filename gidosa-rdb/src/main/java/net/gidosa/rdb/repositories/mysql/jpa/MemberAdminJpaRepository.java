@@ -23,8 +23,8 @@ public interface MemberAdminJpaRepository extends JpaRepository<MemberAdmin, Lon
     Page<MemberAdmin> findByLocation(String location, Pageable pageable);
     long countByLocation(String location);
 
-    @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction ORDER BY m.id DESC")
-    Page<MemberAdmin> findAllWithConstructionByOrderByIdDesc(Pageable pageable);
+    @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction")
+    Page<MemberAdmin> findAllWithConstruction(Pageable pageable);
 
     @Query("SELECT m FROM MemberAdmin m LEFT JOIN FETCH m.construction WHERE m.id = :id")
     Optional<MemberAdmin> findByIdWithConstruction(@Param("id") Long id);

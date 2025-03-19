@@ -17,6 +17,22 @@
         .sortable {
             cursor: pointer;
         }
+        .sortable:hover {
+            background-color: #f8f9fa;
+        }
+        .sortable::after {
+            content: "↕";
+            margin-left: 5px;
+            opacity: 0.5;
+        }
+        .sortable.asc::after {
+            content: "↑";
+            opacity: 1;
+        }
+        .sortable.desc::after {
+            content: "↓";
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -85,8 +101,8 @@
         </div>
         
         <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
+            <!-- <thead class="table-dark">
+                <tr style="text-align: center;">
                     <th class="sortable" data-field="id">
                         ID
                         <span class="sort-icon" th:if="${sort == 'id' && direction == 'asc'}">
@@ -161,6 +177,29 @@
                     </th>
                     <th>관리</th>
                 </tr>
+            </thead> -->
+            <thead>
+                <tr style="text-align: center;">
+                    <th class="sortable" 
+                        th:classappend="${param.sort != null && param.sort[0] == 'id' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                        th:data-sort="id">ID</th>
+                    <th class="sortable" 
+                        th:classappend="${param.sort != null && param.sort[0] == 'name' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                        th:data-sort="name">현장명</th>
+                    <th class="sortable" 
+                        th:classappend="${param.location != null && param.sort[0] == 'location' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                        th:data-sort="location">위치주소</th>
+                    <th class="sortable" 
+                        th:classappend="${param.startDate != null && param.sort[0] == 'startDate' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                        th:data-sort="startDate">시작일</th>
+                    <th class="sortable" 
+                        th:classappend="${param.endDate != null && param.sort[0] == 'endDate' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                        th:data-sort="endDate">종료일</th>
+                    <th class="sortable" 
+                        th:classappend="${param.status != null && param.sort[0] == 'status' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                        th:data-sort="status">상태</th>
+                    <th>관리</th>
+                </tr>
             </thead>
             <tbody>
                 <tr th:each="construction : ${constructions}">
@@ -217,7 +256,8 @@
                 const sortableHeaders = document.querySelectorAll('.sortable');
                 sortableHeaders.forEach(header => {
                     header.addEventListener('click', function() {
-                        const field = this.getAttribute('data-field');
+                        // const field = this.getAttribute('data-field');
+                        const field = this.getAttribute('data-sort');
                         const currentSort = document.getElementById('sort').value;
                         const currentDirection = document.getElementById('direction').value;
                         

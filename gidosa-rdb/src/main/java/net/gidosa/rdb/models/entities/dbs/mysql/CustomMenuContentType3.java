@@ -28,7 +28,7 @@ public class CustomMenuContentType3 {
     
     @Column(columnDefinition = "MEDIUMTEXT")
     @Comment("Mermaid 코드")
-    private String content;
+    private String mermaidCode;
 
     @CreationTimestamp
     @Comment("생성 일시")

@@ -1,0 +1,12 @@
+# Cursor Ignore
+
+.cursorignore
+.gitignore
+.vscode
+.idea
+.DS_Store
+
+.log 
+.log4j2.xml
+
+

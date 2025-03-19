@@ -2,7 +2,6 @@ package net.gidosa.full.webadmin.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.FileAttachment;
 import net.gidosa.rdb.models.entities.dbs.mysql.Notice;
 import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
@@ -36,9 +35,9 @@ public class NoticeService {
     @Value("${file.upload.path}")
     private String uploadPath;
 
-    // 모든 공지사항 조회 (ROLE_ADMIN용)
+    // 모든 공지사항 조회 (ROLE_ADMIN용) - 동적 정렬 지원
     public Page<Notice> getAllNotices(Pageable pageable) {
-        return noticeRepository.findAll(pageable);
+        return noticeRepository.findAll(pageable); // JpaRepository의 기본 메서드는 동적 정렬 지원함
     }
     
     // 특정 건설현장 ID에 해당하는 공지사항 또는 모든 공지사항(construction_id가 null인 경우) 조회 (ROLE_MANAGER용)
@@ -46,9 +45,9 @@ public class NoticeService {
         return noticeRepository.findByConstructionIdOrConstructionIsNullWithConstructionOrderByIdDesc(constructionId, pageable);
     }
     
-    // 모든 사용자에게 보이는 공지사항만 조회 (construction_id가 null인 경우)
+    // 모든 사용자에게 보이는 공지사항만 조회 (construction_id가 null인 경우) - 동적 정렬 지원
     public Page<Notice> getGlobalNotices(Pageable pageable) {
-        return noticeRepository.findByConstructionIsNullOrderByIdDesc(pageable);
+        return noticeRepository.findGlobalNotices(pageable);
     }
 
     public Optional<Notice> getNoticeById(Long id) {
@@ -301,7 +300,7 @@ public class NoticeService {
         if (searchTitle == null || searchTitle.trim().isEmpty()) {
             return getNoticesByConstructionId(constructionId, pageable);
         }
-        return noticeRepository.findUnpublishedByConstructionIdAndTitleContainingIgnoreCase(
+        return noticeRepository.findUnpublishedManagerByConstructionIdAndTitleContainingIgnoreCase(
             constructionId, searchTitle.trim(), pageable);
     }
     
@@ -367,22 +366,22 @@ public class NoticeService {
     }
     
     // 게시된 공지사항만 조회 (특정 건설현장 또는 전체 공지사항)
-    public Page<Notice> getPublishedNoticesByConstructionId(Long constructionId, Pageable pageable) {
-        return noticeRepository.findPublishedByConstructionIdOrConstructionIsNullOrderByIdDesc(constructionId, pageable);
+    public Page<Notice> getPublishedManagerNoticesByConstructionId(Long constructionId, Pageable pageable) {
+        return noticeRepository.findPublishedManagerByConstructionIdOrConstructionIsNull(constructionId, pageable);
     }
     
     // 게시되지 않은 공지사항만 조회 (특정 건설현장만)
-    public Page<Notice> getUnpublishedNoticesByConstructionId(Long constructionId, Pageable pageable) {
-        return noticeRepository.findUnpublishedByConstructionIdOrderByIdDesc(constructionId, pageable);
+    public Page<Notice> getUnpublishedManagerNoticesByConstructionId(Long constructionId, Pageable pageable) {
+        return noticeRepository.findUnpublishedManagerByConstructionId(constructionId, pageable);
     }
     
     // 제목으로 게시된 공지사항 검색 (특정 건설현장 또는 전체 공지사항)
-    public Page<Notice> searchPublishedNoticesByTitleAndConstructionId(String searchTitle, Long constructionId, Pageable pageable) {
-        return noticeRepository.findPublishedByConstructionIdOrConstructionIsNullAndTitleContainingIgnoreCase(constructionId, searchTitle, pageable);
+    public Page<Notice> searchPublishedManagerNoticesByTitleAndConstructionId(String searchTitle, Long constructionId, Pageable pageable) {
+        return noticeRepository.findPublishedManagerByConstructionIdOrConstructionIsNullAndTitleContainingIgnoreCase(constructionId, searchTitle, pageable);
     }
     
     // 공지일자 범위로 게시된 공지사항 검색 (특정 건설현장 또는 전체 공지사항)
-    public Page<Notice> searchPublishedNoticesByDateRangeAndConstructionId(LocalDateTime startDate, LocalDateTime endDate, Long constructionId, Pageable pageable) {
+    public Page<Notice> searchPublishedManagerNoticesByDateRangeAndConstructionId(LocalDateTime startDate, LocalDateTime endDate, Long constructionId, Pageable pageable) {
         if (startDate == null) {
             startDate = LocalDateTime.of(1970, 1, 1, 0, 0);
         }
@@ -390,11 +389,11 @@ public class NoticeService {
             endDate = LocalDateTime.now().plusYears(100);
         }
         
-        return noticeRepository.findPublishedByConstructionIdOrConstructionIsNullAndNoticeDateBetween(constructionId, startDate, endDate, pageable);
+        return noticeRepository.findPublishedManagerByConstructionIdOrConstructionIsNullAndNoticeDateBetween(constructionId, startDate, endDate, pageable);
     }
     
     // 제목과 공지일자 범위로 게시된 공지사항 검색 (특정 건설현장 또는 전체 공지사항)
-    public Page<Notice> searchPublishedNoticesByTitleAndDateRangeAndConstructionId(String searchTitle, LocalDateTime startDate, LocalDateTime endDate, Long constructionId, Pageable pageable) {
+    public Page<Notice> searchPublishedManagerNoticesByTitleAndDateRangeAndConstructionId(String searchTitle, LocalDateTime startDate, LocalDateTime endDate, Long constructionId, Pageable pageable) {
         if (startDate == null) {
             startDate = LocalDateTime.of(1970, 1, 1, 0, 0);
         }
@@ -402,58 +401,132 @@ public class NoticeService {
             endDate = LocalDateTime.now().plusYears(100);
         }
         
-        return noticeRepository.findPublishedByConstructionIdOrConstructionIsNullAndTitleContainingIgnoreCaseAndNoticeDateBetween(constructionId, searchTitle, startDate, endDate, pageable);
+        return noticeRepository.findPublishedManagerByConstructionIdOrConstructionIsNullAndTitleContainingIgnoreCaseAndNoticeDateBetween(constructionId, searchTitle, startDate, endDate, pageable);
     }
     
     // 공지사항 게시 상태 변경
     @Transactional
-    public Notice publishNotice(Long id, boolean publish) {
-        Optional<Notice> optionalNotice = noticeRepository.findById(id);
-        if (optionalNotice.isPresent()) {
-            Notice notice = optionalNotice.get();
-            notice.setPublished(publish);
-            return noticeRepository.save(notice);
-        } else {
-            throw new IllegalArgumentException("해당 ID의 공지사항이 존재하지 않습니다: " + id);
-        }
+    public Notice publishManagerNotice(Long id, boolean publish) {
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
+        
+        notice.setPublishedManager(publish);
+        return noticeRepository.save(notice);
     }
 
-    // 검색 기능 - 전역 공지사항 중 제목으로 검색 (construction이 null인 경우만)
+    // 검색 기능 - 전역 공지사항 중 제목으로 검색 (construction이 null인 경우만) - 동적 정렬 지원
     public Page<Notice> searchGlobalNoticesByTitle(String searchTitle, Pageable pageable) {
-        if (searchTitle == null || searchTitle.trim().isEmpty()) {
-            return getGlobalNotices(pageable);
-        }
-        
-        return noticeRepository.findByConstructionIsNullAndTitleContainingIgnoreCase(searchTitle.trim(), pageable);
+        return noticeRepository.findGlobalNoticesByTitle(searchTitle, pageable);
     }
     
-    // 검색 기능 - 전역 공지사항 중 공지일자 범위로 검색 (construction이 null인 경우만)
+    // 검색 기능 - 전역 공지사항 중 공지일자 범위로 검색 (construction이 null인 경우만) - 동적 정렬 지원
     public Page<Notice> searchGlobalNoticesByDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
         if (startDate == null) {
-            startDate = LocalDateTime.of(2000, 1, 1, 0, 0); // 과거 기본값
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0);
         }
         if (endDate == null) {
-            endDate = LocalDateTime.now().plusDays(1); // 미래 기본값 (오늘 포함)
+            endDate = LocalDateTime.now().plusYears(10);
         }
         
-        return noticeRepository.findByConstructionIsNullAndNoticeDateBetween(startDate, endDate, pageable);
+        return noticeRepository.findGlobalNoticesByDateRange(startDate, endDate, pageable);
     }
     
-    // 검색 기능 - 전역 공지사항 중 제목과 공지일자 범위로 검색 (construction이 null인 경우만)
+    // 검색 기능 - 전역 공지사항 중 제목과 공지일자 범위로 검색 (construction이 null인 경우만) - 동적 정렬 지원
     public Page<Notice> searchGlobalNoticesByTitleAndDateRange(String searchTitle, LocalDateTime startDate, 
                                                              LocalDateTime endDate, Pageable pageable) {
-        if (searchTitle == null || searchTitle.trim().isEmpty()) {
-            return searchGlobalNoticesByDateRange(startDate, endDate, pageable);
-        }
-        
         if (startDate == null) {
-            startDate = LocalDateTime.of(2000, 1, 1, 0, 0); // 과거 기본값
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0);
         }
         if (endDate == null) {
-            endDate = LocalDateTime.now().plusDays(1); // 미래 기본값 (오늘 포함)
+            endDate = LocalDateTime.now().plusYears(10);
         }
         
-        return noticeRepository.findByConstructionIsNullAndTitleContainingIgnoreCaseAndNoticeDateBetween(
-                searchTitle.trim(), startDate, endDate, pageable);
+        return noticeRepository.findGlobalNoticesByTitleAndDateRange(searchTitle, startDate, endDate, pageable);
+    }
+
+    @Transactional
+    public Notice publishAnonymousNotice(Long id, boolean publish) {
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
+        
+        notice.setPublishedAnonymous(publish);
+        return noticeRepository.save(notice);
+    }
+    
+    @Transactional
+    public Notice publishLoggedInUserNotice(Long id, boolean publish) {
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
+        
+        notice.setPublishedLoggedInUser(publish);
+        return noticeRepository.save(notice);
+    }
+
+    // 익명 사용자에게 보이는 공지사항 조회 - 동적 정렬 지원
+    public Page<Notice> getPublishedAnonymousNotices(Pageable pageable) {
+        return noticeRepository.findPublishedAnonymous(pageable);
+    }
+    
+    // 제목으로 익명 사용자에게 보이는 공지사항 검색
+    public Page<Notice> searchPublishedAnonymousNoticesByTitle(String searchTitle, Pageable pageable) {
+        return noticeRepository.findPublishedAnonymousByTitleContainingIgnoreCase(searchTitle, pageable);
+    }
+    
+    // 공지일자 범위로 익명 사용자에게 보이는 공지사항 검색
+    public Page<Notice> searchPublishedAnonymousNoticesByDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        if (startDate == null) {
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0);
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusYears(10);
+        }
+        
+        return noticeRepository.findPublishedAnonymousByNoticeDateBetween(startDate, endDate, pageable);
+    }
+    
+    // 제목과 공지일자 범위로 익명 사용자에게 보이는 공지사항 검색
+    public Page<Notice> searchPublishedAnonymousNoticesByTitleAndDateRange(String searchTitle, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        if (startDate == null) {
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0);
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusYears(10);
+        }
+        
+        return noticeRepository.findPublishedAnonymousByTitleContainingIgnoreCaseAndNoticeDateBetween(searchTitle, startDate, endDate, pageable);
+    }
+    
+    // 로그인 사용자에게 보이는 공지사항 조회 - 동적 정렬 지원
+    public Page<Notice> getPublishedLoggedInUserNotices(Pageable pageable) {
+        return noticeRepository.findPublishedLoggedInUser(pageable);
+    }
+    
+    // 제목으로 로그인 사용자에게 보이는 공지사항 검색
+    public Page<Notice> searchPublishedLoggedInUserNoticesByTitle(String searchTitle, Pageable pageable) {
+        return noticeRepository.findPublishedLoggedInUserByTitleContainingIgnoreCase(searchTitle, pageable);
+    }
+    
+    // 공지일자 범위로 로그인 사용자에게 보이는 공지사항 검색
+    public Page<Notice> searchPublishedLoggedInUserNoticesByDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        if (startDate == null) {
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0);
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusYears(10);
+        }
+        
+        return noticeRepository.findPublishedLoggedInUserByNoticeDateBetween(startDate, endDate, pageable);
+    }
+    
+    // 제목과 공지일자 범위로 로그인 사용자에게 보이는 공지사항 검색
+    public Page<Notice> searchPublishedLoggedInUserNoticesByTitleAndDateRange(String searchTitle, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        if (startDate == null) {
+            startDate = LocalDateTime.of(2000, 1, 1, 0, 0);
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now().plusYears(10);
+        }
+        
+        return noticeRepository.findPublishedLoggedInUserByTitleContainingIgnoreCaseAndNoticeDateBetween(searchTitle, startDate, endDate, pageable);
     }
 }

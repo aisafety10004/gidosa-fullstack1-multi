@@ -4,6 +4,27 @@
       layout:decorate="~{${layout}}">
 <head>
     <title>공지사항 관리</title>
+    <style>
+        .sortable {
+            cursor: pointer;
+        }
+        .sortable:hover {
+            background-color: #f8f9fa;
+        }
+        .sortable::after {
+            content: "↕";
+            margin-left: 5px;
+            opacity: 0.5;
+        }
+        .sortable.asc::after {
+            content: "↑";
+            opacity: 1;
+        }
+        .sortable.desc::after {
+            content: "↓";
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
     <div layout:fragment="content">
@@ -20,9 +41,17 @@
                        class="btn" th:classappend="${viewMode == 'all' || viewMode == null} ? 'btn-primary' : 'btn-outline-primary'">
                         모든 공지사항
                     </a>
-                    <a th:href="@{/notice(viewMode='unpublished', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}" 
-                       class="btn" th:classappend="${viewMode == 'unpublished'} ? 'btn-primary' : 'btn-outline-primary'">
-                        미게시 공지사항
+                    <a th:href="@{/notice(viewMode='publishedAnonymous', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
+                       class="btn" th:classappend="${viewMode == 'publishedAnonymous'} ? 'btn-primary' : 'btn-outline-primary'">
+                        익명 사용자 게시 공지사항
+                    </a>
+                    <a th:href="@{/notice(viewMode='publishedLoggedInUser', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
+                       class="btn" th:classappend="${viewMode == 'publishedLoggedInUser'} ? 'btn-primary' : 'btn-outline-primary'">
+                        로그인 사용자 게시 공지사항
+                    </a>
+                    <a th:href="@{/notice(viewMode='unpublishedManager', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
+                       class="btn" th:classappend="${viewMode == 'unpublishedManager'} ? 'btn-primary' : 'btn-outline-primary'">
+                        매니저 미게시 공지사항
                     </a>
                 </div>
             </div>
@@ -39,7 +68,7 @@
         <!-- 검색 폼 -->
         <div class="card mb-4">
             <div class="card-body">
-                <form th:action="@{/notice}" method="get" class="row g-3">
+                <form th:action="@{/notice}" method="get" class="row g-3" id="searchForm">
                     <div class="col-md-4">
                         <label for="searchTitle" class="form-label">제목</label>
                         <input type="text" class="form-control" id="searchTitle" name="searchTitle" 
@@ -61,23 +90,52 @@
                     
                     <!-- 페이지 정보 유지를 위한 hidden 필드 -->
                     <input type="hidden" name="page" th:value="${notices.number}">
-                    <input type="hidden" name="size" th:value="${notices.size}">
                     <input type="hidden" name="viewMode" th:value="${viewMode}">
+                    <input type="hidden" id="sort" name="sort" th:value="${param.sort != null ? param.sort : 'id'}">
+                    <input type="hidden" id="direction" name="direction" th:value="${param.direction != null ? param.direction : 'desc'}">
+                    <input type="hidden" id="hiddenSize" name="size" th:value="${notices.size}">
                 </form>
             </div>
+        </div>
+        
+        <!-- 페이지 크기 설정 -->
+        <div class="d-flex justify-content-between mb-3">
+            <div>
+                <span class="text-muted">총 <strong th:text="${notices.totalElements}">0</strong>개의 공지사항이 있습니다.</span>
+            </div>
+            <form th:action="@{/notice}" method="get" class="d-flex align-items-center">
+                <label for="size" class="form-label me-2">페이지 크기:</label>
+                <select class="form-select w-auto" id="size" name="size" onchange="this.form.submit()">
+                    <option value="10" th:selected="${notices.size == 10}">10개씩 보기</option>
+                    <option value="20" th:selected="${notices.size == 20}">20개씩 보기</option>
+                    <option value="30" th:selected="${notices.size == 30}">30개씩 보기</option>
+                </select>
+                <!-- 기존 검색 조건 유지를 위한 hidden 필드 -->
+                <input type="hidden" name="searchTitle" th:value="${searchTitle}">
+                <input type="hidden" name="startDate" th:value="${startDate}">
+                <input type="hidden" name="endDate" th:value="${endDate}">
+                <input type="hidden" name="page" th:value="${notices.number}">
+                <input type="hidden" name="viewMode" th:value="${viewMode}">
+                <input type="hidden" name="sort" th:value="${param.sort != null ? param.sort : 'id'}">
+                <input type="hidden" name="direction" th:value="${param.direction != null ? param.direction : 'desc'}">
+            </form>
         </div>
 
         <table class="table">
             <thead>
-                <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <!-- <th>건설현장</th> -->
-                    <th>첨부파일</th>
-                    <th>공지일자</th>
-                    <!-- <th>등록일</th> -->
-                    <!-- <th>상태</th> -->
+                <tr style="text-align: center;">
+                    <th class="sortable" 
+                        th:classappend="${param.sort != null && param.sort[0] == 'id' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                        th:data-sort="id">번호</th>
+                    <th class="sortable" 
+                        th:classappend="${param.sort != null && param.sort[0] == 'title' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                        th:data-sort="title">제목</th>
+                    <th class="sortable" 
+                        th:classappend="${param.sort != null && param.sort[0] == 'noticeDate' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                        th:data-sort="noticeDate">공지일자</th>
+                    <th>첨부파일</th>                        
                     <th>메뉴</th>
+                    <th>게시</th>
                 </tr>
             </thead>
             <tbody>
@@ -91,6 +149,7 @@
                         <span th:if="${notice.construction != null}" th:text="${notice.construction.name}"></span>
                         <span th:if="${notice.construction == null}" class="badge bg-primary">전체</span>
                     </td> -->
+                    <td th:text="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd')}"></td>
                     <td>
                         <a th:if="${notice.fileAttachment1 != null}" 
                            th:href="@{/common/file/download/{id}(id=${notice.fileAttachment1.id})}" 
@@ -100,11 +159,10 @@
                         </a>
                         <span th:unless="${notice.fileAttachment1 != null}">-</span>
                     </td>
-                    <td th:text="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd')}"></td>
                     <!-- <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td> -->
                     <!-- <td>
-                        <span th:if="${notice.published}" class="badge bg-success">게시됨</span>
-                        <span th:unless="${notice.published}" class="badge bg-warning">미게시</span>
+                        <span th:if="${notice.publishedManager}" class="badge bg-success">매니저 게시됨</span>
+                        <span th:unless="${notice.publishedManager}" class="badge bg-warning">매니저 미게시</span>
                     </td> -->
                     <td>
                         <a th:href="@{/notice/update/{id}(id=${notice.id})}" 
@@ -118,23 +176,50 @@
                                         || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
                                     onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
                         </form>
-                        
+                    </td>
+                    <td>
                         <!-- 게시/게시취소 버튼 -->
                         <form th:if="${(notice.construction != null && #authentication.principal.memberAdmin.construction != null && #authentication.principal.memberAdmin.construction.id == notice.construction.id)
-                                        || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
-                              th:action="@{/notice/publish/{id}(id=${notice.id})}" 
-                              method="post" style="display: inline;">
-                            <input type="hidden" name="publish" th:value="${!notice.published}">
+                            || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
+                            th:action="@{/notice/publish-manager/{id}(id=${notice.id})}"
+                            method="post" style="display: inline;">
+                            <input type="hidden" name="publishManager" th:value="${!notice.publishedManager}">
                             <button type="submit" class="btn btn-sm" 
-                                    th:classappend="${notice.published ? 'btn-secondary' : 'btn-success'}"
-                                    th:text="${notice.published ? '게시취소' : '게시'}"
-                                    th:attr="onclick=|return confirm('${notice.published ? '게시를 취소하시겠습니까? 다른 사용자들이 더 이상 이 공지사항을 볼 수 없게 됩니다.' : '이 공지사항을 게시하시겠습니까? 모든 사용자들이 이 공지사항을 볼 수 있게 됩니다.'}');|">
+                                    th:classappend="${notice.publishedManager ? 'btn-secondary' : 'btn-success'}"
+                                    th:text="${notice.publishedManager ? '매니저 게시취소' : '매니저 게시'}"
+                                    th:attr="onclick=|return confirm('${notice.publishedManager ? '매니저 게시를 취소하시겠습니까? 다른 매니저들이 더 이상 이 공지사항을 볼 수 없게 됩니다.' : '이 공지사항을 매니저에게 게시하시겠습니까? 모든 매니저들이 이 공지사항을 볼 수 있게 됩니다.'}');|">
+                            </button>
+                        </form>
+                        
+                        <!-- 익명 사용자 게시/게시취소 버튼 -->
+                        <form th:if="${(notice.construction != null && #authentication.principal.memberAdmin.construction != null && #authentication.principal.memberAdmin.construction.id == notice.construction.id)
+                                        || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
+                                th:action="@{/notice/publish-anonymous/{id}(id=${notice.id})}"
+                                method="post" style="display: inline;">
+                            <input type="hidden" name="publishAnonymous" th:value="${!notice.publishedAnonymous}">
+                            <button type="submit" class="btn btn-sm" 
+                                    th:classappend="${notice.publishedAnonymous ? 'btn-secondary' : 'btn-info'}"
+                                    th:text="${notice.publishedAnonymous ? '익명 게시취소' : '익명 게시'}"
+                                    th:attr="onclick=|return confirm('${notice.publishedAnonymous ? '익명 사용자 게시를 취소하시겠습니까? 로그인하지 않은 사용자들이 더 이상 이 공지사항을 볼 수 없게 됩니다.' : '이 공지사항을 익명 사용자에게 게시하시겠습니까? 로그인하지 않은 모든 사용자들이 이 공지사항을 볼 수 있게 됩니다.'}');|">
+                            </button>
+                        </form>
+                        
+                        <!-- 로그인 사용자 게시/게시취소 버튼 -->
+                        <form th:if="${(notice.construction != null && #authentication.principal.memberAdmin.construction != null && #authentication.principal.memberAdmin.construction.id == notice.construction.id)
+                                        || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
+                                th:action="@{/notice/publish-logged-in/{id}(id=${notice.id})}"
+                                method="post" style="display: inline;">
+                            <input type="hidden" name="publishLoggedInUser" th:value="${!notice.publishedLoggedInUser}">
+                            <button type="submit" class="btn btn-sm" 
+                                    th:classappend="${notice.publishedLoggedInUser ? 'btn-secondary' : 'btn-warning'}"
+                                    th:text="${notice.publishedLoggedInUser ? '로그인 게시취소' : '로그인 게시'}"
+                                    th:attr="onclick=|return confirm('${notice.publishedLoggedInUser ? '로그인 사용자 게시를 취소하시겠습니까? 로그인한 사용자들이 더 이상 이 공지사항을 볼 수 없게 됩니다.' : '이 공지사항을 로그인 사용자에게 게시하시겠습니까? 로그인한 모든 사용자들이 이 공지사항을 볼 수 있게 됩니다.'}');|">
                             </button>
                         </form>
                     </td>
                 </tr>
                 <tr th:if="${notices.totalElements == 0}">
-                    <td colspan="5" class="text-center">검색된 공지사항이 없습니다.</td>
+                    <td colspan="6" class="text-center">검색된 공지사항이 없습니다.</td>
                 </tr>
             </tbody>
         </table>
@@ -144,19 +229,19 @@
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${!notices.hasPrevious()} ? disabled">
                     <a class="page-link" 
-                       th:href="@{/notice(page=${notices.number - 1}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
+                       th:href="@{/notice(page=${notices.number - 1}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, size=${notices.size}, sort=${param.sort}, direction=${param.direction}, viewMode=${viewMode})}"
                        th:unless="${!notices.hasPrevious()}">이전</a>
                     <span class="page-link" th:if="${!notices.hasPrevious()}">이전</span>
                 </li>
                 <li class="page-item" th:each="i : ${#numbers.sequence(0, notices.totalPages - 1)}"
                     th:classappend="${notices.number == i} ? active">
                     <a class="page-link" 
-                       th:href="@{/notice(page=${i}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}" 
+                       th:href="@{/notice(page=${i}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, size=${notices.size}, sort=${param.sort}, direction=${param.direction}, viewMode=${viewMode})}" 
                        th:text="${i + 1}"></a>
                 </li>
                 <li class="page-item" th:classappend="${!notices.hasNext()} ? disabled">
                     <a class="page-link" 
-                       th:href="@{/notice(page=${notices.number + 1}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
+                       th:href="@{/notice(page=${notices.number + 1}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, size=${notices.size}, sort=${param.sort}, direction=${param.direction}, viewMode=${viewMode})}"
                        th:unless="${!notices.hasNext()}">다음</a>
                     <span class="page-link" th:if="${!notices.hasNext()}">다음</span>
                 </li>
@@ -165,33 +250,63 @@
     </div>
 
     <th:block layout:fragment="script">
-    <script th:inline="javascript">
-        // 달력 최소 날짜를 현재 날짜로 설정
-        document.addEventListener('DOMContentLoaded', function() {
-            const startDateInput = document.getElementById('startDate');
-            const endDateInput = document.getElementById('endDate');
-            
-            // 시작 날짜가 변경되면 종료 날짜의 최소값 설정
-            startDateInput.addEventListener('change', function() {
-                if (startDateInput.value) {
-                    endDateInput.min = startDateInput.value;
-                }
+        <script th:inline="javascript">
+            // 달력 최소 날짜를 현재 날짜로 설정
+            document.addEventListener('DOMContentLoaded', function() {
+                const startDateInput = document.getElementById('startDate');
+                const endDateInput = document.getElementById('endDate');
+                
+                // 시작 날짜가 변경되면 종료 날짜의 최소값 설정
+                startDateInput.addEventListener('change', function() {
+                    if (startDateInput.value) {
+                        endDateInput.min = startDateInput.value;
+                    }
+                });
+                
+                // 종료 날짜가 변경되면 시작 날짜의 최대값 설정
+                endDateInput.addEventListener('change', function() {
+                    if (endDateInput.value) {
+                        startDateInput.max = endDateInput.value;
+                    }
+                });
+                
+                // 정렬 기능 추가
+                const sortableHeaders = document.querySelectorAll('.sortable');
+                const sortInput = document.getElementById('sort');
+                const directionInput = document.getElementById('direction');
+                const searchForm = document.getElementById('searchForm');
+                
+                sortableHeaders.forEach(header => {
+                    header.addEventListener('click', function() {
+                        const sortField = this.getAttribute('data-sort');
+                        let direction = 'asc';
+                        
+                        // 이미 정렬 중인 필드인 경우 방향 전환
+                        if (sortInput.value === sortField) {
+                            direction = directionInput.value === 'asc' ? 'desc' : 'asc';
+                        }
+                        
+                        sortInput.value = sortField;
+                        directionInput.value = direction;
+                        
+                        // 페이지 크기 유지를 위해 첫 페이지로 이동
+                        const pageInput = document.createElement('input');
+                        pageInput.type = 'hidden';
+                        pageInput.name = 'page';
+                        pageInput.value = '0';
+                        searchForm.appendChild(pageInput);
+                        
+                        searchForm.submit();
+                    });
+                });
             });
-            
-            // 종료 날짜가 변경되면 시작 날짜의 최대값 설정
-            endDateInput.addEventListener('change', function() {
-                if (endDateInput.value) {
-                    startDateInput.max = endDateInput.value;
-                }
-            });
-        });
-    </script>
-    <script type="module">
-        //import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-        ////import mermaid from '/js/mermaid/mermaid.esm.min.mjs';
-        ////import mermaid from 'http://localhost:9095/js/mermaid/mermaid.esm.min.mjs';
-        //mermaid.initialize({ startOnLoad: true });
-    </script>
+        </script>
+        <script type="module">
+            //import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+            ////import mermaid from '/js/mermaid/mermaid.esm.min.mjs';
+            ////import mermaid from 'http://localhost:9095/js/mermaid/mermaid.esm.min.mjs';
+            //mermaid.initialize({ startOnLoad: true });
+        </script>
     </th:block>
 </body>
 </html> 
