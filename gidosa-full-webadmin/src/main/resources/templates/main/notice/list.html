@@ -47,7 +47,7 @@
                     </a>
                     <a th:href="@{/notice(viewMode='publishedLoggedInUser', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
                        class="btn" th:classappend="${viewMode == 'publishedLoggedInUser'} ? 'btn-primary' : 'btn-outline-primary'">
-                        로그인 사용자 게시 공지사항
+                        회원 사용자 게시 공지사항
                     </a>
                     <a th:href="@{/notice(viewMode='unpublishedManager', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
                        class="btn" th:classappend="${viewMode == 'unpublishedManager'} ? 'btn-primary' : 'btn-outline-primary'">
@@ -204,7 +204,7 @@
                             </button>
                         </form>
                         
-                        <!-- 로그인 사용자 게시/게시취소 버튼 -->
+                        <!-- 회원 사용자 게시/게시취소 버튼 -->
                         <form th:if="${(notice.construction != null && #authentication.principal.memberAdmin.construction != null && #authentication.principal.memberAdmin.construction.id == notice.construction.id)
                                         || #authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}"
                                 th:action="@{/notice/publish-logged-in/{id}(id=${notice.id})}"
@@ -212,8 +212,8 @@
                             <input type="hidden" name="publishLoggedInUser" th:value="${!notice.publishedLoggedInUser}">
                             <button type="submit" class="btn btn-sm" 
                                     th:classappend="${notice.publishedLoggedInUser ? 'btn-secondary' : 'btn-warning'}"
-                                    th:text="${notice.publishedLoggedInUser ? '로그인 게시취소' : '로그인 게시'}"
-                                    th:attr="onclick=|return confirm('${notice.publishedLoggedInUser ? '로그인 사용자 게시를 취소하시겠습니까? 로그인한 사용자들이 더 이상 이 공지사항을 볼 수 없게 됩니다.' : '이 공지사항을 로그인 사용자에게 게시하시겠습니까? 로그인한 모든 사용자들이 이 공지사항을 볼 수 있게 됩니다.'}');|">
+                                    th:text="${notice.publishedLoggedInUser ? '회원 게시취소' : '회원 게시'}"
+                                    th:attr="onclick=|return confirm('${notice.publishedLoggedInUser ? '회원 사용자 게시를 취소하시겠습니까? 로그인한 사용자들이 더 이상 이 공지사항을 볼 수 없게 됩니다.' : '이 공지사항을 로그인 사용자에게 게시하시겠습니까? 로그인한 모든 사용자들이 이 공지사항을 볼 수 있게 됩니다.'}');|">
                             </button>
                         </form>
                     </td>
