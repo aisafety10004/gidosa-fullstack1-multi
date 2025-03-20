@@ -42,18 +42,18 @@
                 <p class="form-control-static" th:text="${notice.construction.name + ' (' + notice.construction.location + ')'}"></p>
                 <small class="text-muted">해당 건설현장에 속한 사용자들에게만 공지사항이 표시됩니다.</small>
             </div>
-            
-            <div class="mb-3">
-                <label for="editor" class="form-label">내용</label>
-                <div id="editor"></div>
-                <input type="hidden" id="content" name="content">
-            </div>
 
             <div class="mb-3">
                 <!-- <h3>Mermaid 다이어그램 미리보기</h3> -->
                 <div id="mermaid-preview" class="preview-box"></div>
                 <!-- <h2>Mermaid 코드 입력</h2> -->
                 <textarea id="mermaid-input" name="mermaidCode" placeholder="Mermaid 코드를 입력하세요." cols="100" rows="10" style="resize: both;" th:text="${notice.mermaidCode}"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="editor" class="form-label">내용</label>
+                <div id="editor"></div>
+                <input type="hidden" id="content" name="content">
             </div>
 
             <!-- 기존 첨부파일 목록 -->
