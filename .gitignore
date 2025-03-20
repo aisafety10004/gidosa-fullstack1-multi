@@ -42,6 +42,8 @@ storages/
 #.cursorignore
 #.cursorrules
 #.windsurfrules
+#.cursor/
+#.windsurf/
 
 **/src/main/generated/
 
