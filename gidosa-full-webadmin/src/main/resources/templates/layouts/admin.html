@@ -24,13 +24,23 @@
     <!-- Sidebar-->
     <div class="border-end bg-white" id="sidebar-wrapper" style="overflow: hidden;">
         <div class="sidebar-heading border-bottom bg-light" style="padding-bottom: 20px; text-align: center;">
-            <a href="/main" style="text-decoration: none; color: inherit;">바로세움<br>관리자 전용</a>
+            <a href="/main" style="text-decoration: none; color: inherit;">
+                <!-- 바로세움<br>관리자 전용 -->
+                <!-- <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.memberAdmin.construction.location}" /> -->
+                <span sec:authorize="isAuthenticated()" th:utext="${#authentication.principal.memberAdmin.location}" />
+            </a>
         </div>
         <div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">문의요청 관리</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/construction/list">건설공사현장 관리</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/admin/list">건설공사현장 매니저 관리</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/notice">공지사항 관리</a>
+            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">문의요청 관리</a> -->
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">도입요청 관리</a>
+            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/inquiry/admin/list">문의사항 관리</a> -->
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="javascript:alert('해당 페이지는 준비중입니다.');">문의사항 관리</a>
+            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/construction/list">건설공사현장 관리</a> -->
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/construction/list">도입현장 관리</a>
+            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/admin/list">건설공사현장 매니저 관리</a> -->
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/admin/list">현장관리자 등록</a>
+            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/notice">공지사항 관리</a> -->
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/notice">전체공지 관리</a>
 
             <!-- 서브메뉴가 있는 항목 예시 -->
 <!--            <div class="list-group-item list-group-item-light p-0">-->
@@ -74,14 +84,13 @@
 <!--            </div>-->
 
             <!-- 또 다른 서브메뉴가 있는 항목 예시 -->
-            <div class="list-group-item list-group-item-light p-0">
+            <!-- <div class="list-group-item list-group-item-light p-0">
                 <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#eventsSubmenu" role="button">
                     <span>Events</span>
                     <i class="bi bi-chevron-down"></i>
                 </a>
                 <div class="collapse" id="eventsSubmenu">
                     <div class="list-group list-group-flush ps-4">
-                        <!-- 첫 번째 서브메뉴 아이템과 그의 하위메뉴 -->
                         <div class="list-group-item list-group-item-light p-0 border-0">
                             <a class="d-flex justify-content p-2" data-bs-toggle="collapse" href="#eventType1Submenu" role="button">
                                 <span>이벤트 유형 1</span>
@@ -94,7 +103,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- 두 번째 서브메뉴 아이템과 그의 하위메뉴 -->
                         <div class="list-group-item list-group-item-light p-0 border-0">
                             <a class="d-flex justify-content p-2" data-bs-toggle="collapse" href="#eventType2Submenu" role="button">
                                 <span>이벤트 유형 2</span>
@@ -109,7 +117,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- Settings 서브메뉴 -->
 <!--            <div class="list-group-item list-group-item-light p-0">-->
 <!--                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#settingsSubmenu" role="button">-->
@@ -127,12 +135,14 @@
             <!-- 설정(Settings) 메뉴 -->
             <div class="list-group-item list-group-item-light p-0">
                 <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#settingsSubmenu" role="button">
-                    <span>설정(Settings)</span>
+                    <!-- <span>설정(Settings)</span> -->
+                    <span>확장메뉴 추가</span>
                     <i class="bi bi-chevron-down"></i>
                 </a>
                 <div class="collapse" id="settingsSubmenu">
                     <div class="list-group list-group-flush ps-4">
-                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">커스텀 메뉴관리</a>
+                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">확장메뉴 설정</a>
+                        <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">커스텀 메뉴관리</a> -->
                         <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/sub2">서브메뉴 2</a> -->
                     </div>
                 </div>
@@ -176,7 +186,7 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>
+                        <!-- <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>
                         <li class="nav-item dropdown">
                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -185,7 +195,7 @@
                                <div class="dropdown-divider"></div>
                                <a class="dropdown-item" href="#!">Something else here</a>
                            </div>
-                       </li>
+                       </li> -->
                         <li class="nav-item active">
                             <form th:action="@{/auth/logout}" method="post" style="display: inline;">
                                 <button type="submit" class="nav-link" style="background: none; border: none;">Logout</button>

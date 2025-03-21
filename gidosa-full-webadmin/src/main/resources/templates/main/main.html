@@ -39,12 +39,12 @@
                                     <p><strong>건설공사현장 ID:</strong> 
                                         <span th:text="${construction.id}">-</span>
                                     </p>
-                                    <p><strong>건설공사현장 위치:</strong> 
+                                    <p><strong>현장주소:</strong> 
                                         <span th:text="${construction.location}">-</span>
                                     </p>
                                 </div>
                                 <div th:unless="${construction != null}">
-                                    <p class="text-muted">배정된 건설공사현장이 없습니다.</p>
+                                    <p class="text-muted" th:unless="${#authentication.principal.memberAdmin.role == 'ROLE_ADMIN'}">배정된 건설공사현장이 없습니다.</p>
                                 </div>
                             </div>
                         </div>

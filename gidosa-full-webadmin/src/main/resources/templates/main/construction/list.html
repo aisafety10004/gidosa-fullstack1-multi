@@ -37,7 +37,7 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <h2>건설공사현장 목록</h2>
+        <!-- <h2>건설공사현장 목록</h2> -->
         
         <!-- 검색 폼 추가 -->
         <div class="card mb-4 mt-4">
@@ -188,7 +188,7 @@
                         th:data-sort="name">현장명</th>
                     <th class="sortable" 
                         th:classappend="${param.location != null && param.sort[0] == 'location' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
-                        th:data-sort="location">위치주소</th>
+                        th:data-sort="location">현장주소</th>
                     <th class="sortable" 
                         th:classappend="${param.startDate != null && param.sort[0] == 'startDate' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
                         th:data-sort="startDate">시작일</th>

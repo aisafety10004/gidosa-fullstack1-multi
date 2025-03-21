@@ -68,11 +68,11 @@
                             (<span th:text="${#numbers.formatDecimal(attachment.fileSize/1024, 0, 'COMMA', 2, 'POINT')}">
                             </span> KB)
                         </span>
-                        <form th:action="@{/notice/attachment/{noticeId}/remove/{attachmentIndex}(noticeId=${notice.id}, attachmentIndex=${status.index + 1})}" 
-                              method="post" style="display: inline;">
-                            <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('첨부파일을 삭제하시겠습니까?');">삭제</button>
-                        </form>
+                        <button type="button" class="btn btn-danger btn-sm"
+                                th:onclick="'removeAttachment(' + ${notice.id} + ', ' + ${status.index + 1} + ')'">삭제</button>
+                        <!-- <a th:href="@{/notice/attachment/{noticeId}/remove/{attachmentIndex}(noticeId=${notice.id}, attachmentIndex=${status.index + 1})}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('첨부파일을 삭제하시겠습니까?');">삭제</a> -->
                     </li>
                 </ul>
             </div>
@@ -96,6 +96,12 @@
     <script src="/js/mermaid/mermaid.min.js"></script>
     <script th:inline="javascript">
         const initialContent = /*[[${notice.content}]]*/ '';
+        // 기본 URL 경로를 JavaScript 변수로 저장
+        const contextPath = /*[[@{/}]]*/ '';
+        // CSRF 토큰 값 저장
+        const csrfToken = /*[[${_csrf != null ? _csrf.token : ''}]]*/ '';
+        const csrfHeader = /*[[${_csrf != null ? _csrf.headerName : 'X-CSRF-TOKEN'}]]*/ 'X-CSRF-TOKEN';
+
         const editor = new toastui.Editor({
             el: document.querySelector('#editor'),
             height: '500px',
@@ -163,6 +169,28 @@
                 }
             }
             return true;
+        }
+        
+        function removeAttachment(noticeId, attachmentIndex) {
+            if (confirm('첨부파일을 삭제하시겠습니까?')) {
+                // 폼 동적 생성
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/notice/attachment/' + noticeId + '/remove/' + attachmentIndex;
+                //form.action = contextPath + 'notice/attachment/' + noticeId + '/remove/' + attachmentIndex;
+                
+                // CSRF 토큰 추가
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = csrfHeader === 'X-CSRF-TOKEN' ? '_csrf' : csrfHeader;
+                    csrfInput.value = csrfToken;
+                    form.appendChild(csrfInput);
+                }
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
         }
     </script>
     </th:block>

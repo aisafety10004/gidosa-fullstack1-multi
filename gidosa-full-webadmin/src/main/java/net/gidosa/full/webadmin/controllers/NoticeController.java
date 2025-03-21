@@ -414,6 +414,7 @@ public class NoticeController {
     }
     
     @PostMapping("/attachment/{noticeId}/remove/{attachmentIndex}")
+    //@GetMapping("/attachment/{noticeId}/remove/{attachmentIndex}")
     public String removeAttachment(@PathVariable Long noticeId, 
                                  @PathVariable int attachmentIndex,
                                  @AuthenticationPrincipal UserDetails userDetails,

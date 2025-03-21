@@ -48,7 +48,7 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <h2 class="mb-4">업무협의 관리</h2>
+        <!-- <h2 class="mb-4">업무협의 관리</h2> -->
 
         <!-- 새 업무협의 등록 버튼 - All 탭에서는 숨김 -->
         <div class="mb-3 d-flex justify-content-between" th:if="${showCreateButton}">
@@ -64,7 +64,7 @@
         </div>
 
         <!-- 그룹 탭 -->
-        <ul class="nav nav-tabs mb-4">
+        <ul class="nav nav-tabs mb-4 mt-3">
             <!-- All 탭 추가 -->
             <!-- <li class="nav-item">
                 <a class="nav-link" th:classappend="${groupName == allGroup} ? 'active'" 
@@ -89,12 +89,14 @@
                                th:value="${searchTitle}" placeholder="제목으로 검색">
                     </div>
                     <div class="col-md-3">
-                        <label for="startDate" class="form-label">협의 시작일자</label>
+                        <!-- <label for="startDate" class="form-label">협의 시작일자</label> -->
+                        <label for="startDate" class="form-label">시작일</label>
                         <input type="date" class="form-control" id="startDate" name="startDate" 
                                th:value="${startDate}">
                     </div>
                     <div class="col-md-3">
-                        <label for="endDate" class="form-label">협의 종료일자</label>
+                        <!-- <label for="endDate" class="form-label">협의 종료일자</label> -->
+                        <label for="endDate" class="form-label">종료일</label>
                         <input type="date" class="form-control" id="endDate" name="endDate" 
                                th:value="${endDate}">
                     </div>
@@ -114,7 +116,8 @@
         <!-- 총 리스트 개수 표시 -->
         <div class="mb-3 d-flex justify-content-between align-items-center">
             <p class="text-muted mb-0">
-                총 <strong th:text="${workDiscussions.totalElements}"></strong>건의 업무협의가 있습니다.
+                <!-- 총 <strong th:text="${workDiscussions.totalElements}"></strong>건의 업무협의가 있습니다. -->
+                총 <strong th:text="${workDiscussions.totalElements}"></strong>건의 업무등록이 있습니다.
             </p>
             
             <!-- 페이지 크기 선택 -->

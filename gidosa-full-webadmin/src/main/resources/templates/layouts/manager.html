@@ -23,13 +23,19 @@
     <div class="border-end bg-white" id="sidebar-wrapper" style="overflow: hidden;">
         <div class="sidebar-heading border-bottom bg-light" style="padding-bottom: 20px; text-align: center;">
             <a href="/main" style="text-decoration: none; color: inherit;">
-                안전지도사<br>
-                관리 매니저(<span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.memberAdmin.construction.location}" />)
+                <!-- 안전지도사<br>
+                관리 매니저(<span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.memberAdmin.construction.location}" />) -->
+                <!-- <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.memberAdmin.construction.location}" /> -->
+                <span sec:authorize="isAuthenticated()" th:utext="${#authentication.principal.memberAdmin.location}" />
             </a>
         </div>
         <div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/general/list">건설공사현장 회원관리</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/notice">건설공사현장 공지사항</a>
+            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/general/list">건설공사현장 회원관리</a> -->
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/general/list">회원관리</a>
+            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/inquiry/manager/list">의견제출</a> -->
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="javascript:alert('해당 페이지는 준비중입니다.');">의견제출</a>
+            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/notice">건설공사현장 공지사항</a> -->
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/notice">공지사항</a>
 
             <!-- 동적으로 관리 메뉴 표시 -->
             <th:block th:if="${#authentication.principal.memberAdmin.construction.managementMenus != null}">
@@ -42,7 +48,8 @@
                     <div class="collapse" id="processManagementSubmenu">
                         <div class="list-group list-group-flush ps-4">
                             <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/process/sub1">서브메뉴 1</a> -->
-                            <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/process/work-discussion">업무협의</a>
+                            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/process/work-discussion">업무협의</a> -->
+                            <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/process/work-discussion">업무등록</a>
                             <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/process/sub3">서브메뉴 3</a> -->
                         </div>
                     </div>
@@ -108,9 +115,11 @@
                                 </a>
                                 <div class="collapse" id="safetyManagementType3Submenu">
                                     <div class="list-group list-group-flush ps-3">
-                                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/safety/risk-factor/list">Mobile용</a>
+                                        <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/safety/risk-factor/list">Mobile용</a> -->
+                                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/safety/risk-factor/list">모바일용</a>
 <!--                                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="javascript:alert('pc용 페이지는 준비중입니다.');">PC용</a>-->
-                                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/safety/risk-factor/list-pc">PC용</a>
+                                        <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/safety/risk-factor/list-pc">PC용</a> -->
+                                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/safety/risk-factor/list-pc">데스크탑용</a>
                                     </div>
                                 </div>
                             </div>
@@ -121,12 +130,14 @@
                 <!-- 설정(Settings) 메뉴 -->
                 <div class="list-group-item list-group-item-light p-0">
                     <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#settingsSubmenu" role="button">
-                        <span>설정(Settings)</span>
+                        <!-- <span>설정(Settings)</span> -->
+                        <span>확장메뉴</span>
                         <i class="bi bi-chevron-down"></i>
                     </a>
                     <div class="collapse" id="settingsSubmenu">
                         <div class="list-group list-group-flush ps-4">
-                            <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">커스텀 메뉴관리</a>
+                            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">커스텀 메뉴관리</a> -->
+                            <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">메뉴설정</a>
                             <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/sub2">서브메뉴 2</a> -->
                             <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/sub3">서브메뉴 3</a> -->
                         </div>

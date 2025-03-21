@@ -3,22 +3,22 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{${layout}}">
 <head>
-    <title>공지사항 상세</title>
+    <title>안전지도사 관리</title>
 </head>
 <body>
     <div layout:fragment="content">
-        <h2 class="mb-4">공지사항 상세</h2>
+        <!-- <h2 class="mb-4">공지사항 상세</h2> -->
 
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title" th:text="${notice.title}"></h5>
                 <div class="mb-3">
                     <small class="text-muted">
-                        공지일자: <span th:text="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd HH:mm')}"></span>
+                        <!-- 공지일자: <span th:text="${#temporals.format(notice.noticeDate, 'yyyy-MM-dd HH:mm')}"></span>
                         <br>
                         등록일: <span th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                         | 수정일: <span th:text="${#temporals.format(notice.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
-                        <br>
+                        <br> -->
                         건설현장: 
                         <span th:if="${notice.construction != null}" th:text="${notice.construction.name + ' (' + notice.construction.location + ')'}"></span>
                         <span th:if="${notice.construction == null}" class="badge bg-primary">전체 공지사항</span>
@@ -27,7 +27,7 @@
                 
                 <!-- Mermaid 다이어그램 표시 영역 -->
                 <div th:if="${notice.mermaidCode != null && !notice.mermaidCode.isEmpty()}" class="mt-4">
-                    <h6>Mermaid 다이어그램</h6>
+                    <!-- <h6>Mermaid 다이어그램</h6> -->
                     <div class="mermaid-diagram-container">
                         <div class="mermaid" th:text="${notice.mermaidCode}"></div>
                     </div>

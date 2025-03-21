@@ -35,7 +35,7 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <h2 class="mb-4">메뉴 관리</h2>
+        <!-- <h2 class="mb-4">커스텀 메뉴 관리</h2> -->
         
         <!-- 메시지 표시 -->
         <div th:if="${message}" class="alert alert-success" role="alert">
@@ -46,15 +46,15 @@
         </div>
         
         <!-- 새 메뉴 등록 버튼 -->
-        <div class="mb-3">
-            <a th:href="@{/settings/menu-manager/create}" class="btn btn-primary">새 메뉴 등록</a>
+        <div class="mb-3 mt-3">
+            <a th:href="@{/settings/menu-manager/create}" class="btn btn-primary">새 커스텀 메뉴 등록</a>
         </div>
         
         <!-- 메뉴 목록 -->
         <div class="card">
             <div class="card-body">
                 <div th:if="${rootMenus.isEmpty()}" class="text-center py-4">
-                    <p>등록된 메뉴가 없습니다. 새 메뉴를 등록해주세요.</p>
+                    <p>등록된 커스텀 메뉴가 없습니다. 새 메뉴를 등록해주세요.</p>
                 </div>
                 
                 <div th:unless="${rootMenus.isEmpty()}">
