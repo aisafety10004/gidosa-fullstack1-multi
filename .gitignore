@@ -43,6 +43,7 @@ storages/
 #.cursorrules
 #.windsurfrules
 #.cursor/
+.cursor/mcp.json
 #.windsurf/
 
 **/src/main/generated/
