@@ -208,16 +208,22 @@ public class NoticeController {
     public String createForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("notice", new Notice());
         
+        MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+        boolean isAdmin = "ROLE_ADMIN".equals(memberAdmin.getRole());
+
         // 관리자인 경우 건설현장 목록 제공
-        if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            //model.addAttribute("constructions", constructionService.findAllConstructionsWithManagementMenus());
-            model.addAttribute("isAdmin", true);
-        } else {
-            // 매니저인 경우 자신의 건설현장만 제공
-            MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+        if(!isAdmin) {
             model.addAttribute("construction", memberAdmin.getConstruction());
-            model.addAttribute("isAdmin", false);
         }
+        // if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+        //     //model.addAttribute("constructions", constructionService.findAllConstructionsWithManagementMenus());
+        //     model.addAttribute("isAdmin", true);
+        // } else {
+        //     // 매니저인 경우 자신의 건설현장만 제공
+        //     model.addAttribute("construction", memberAdmin.getConstruction());
+        //     model.addAttribute("isAdmin", false);
+        // }
+        model.addAttribute("isAdmin", isAdmin);
         
         return "main/notice/create";
     }

@@ -7,11 +7,11 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <h2 class="mb-4">공지사항 등록</h2>
+        <!-- <h2 class="mb-4">공지사항 등록</h2> -->
 
         <form th:action="@{/notice/create}" method="post" 
               enctype="multipart/form-data" onsubmit="return submitForm()">
-            <div class="mb-3">
+            <div class="mb-3 mt-3">
                 <label for="title" class="form-label">제목</label>
                 <input type="text" class="form-control" id="title" name="title" required>
             </div>
@@ -21,7 +21,7 @@
             </div>
             
             <!-- 관리자인 경우 건설현장 선택 드롭다운 표시 -->
-            <div class="mb-3" th:if="${isAdmin}">
+            <!-- <div class="mb-3" th:if="${isAdmin}">
                 <label for="constructionId" class="form-label">건설현장</label>
                 <select class="form-select" id="constructionId" name="constructionId">
                     <option value="">전체 공지사항 (모든 사용자에게 표시)</option>
@@ -31,15 +31,15 @@
                     </option>
                 </select>
                 <small class="text-muted">건설현장을 선택하지 않으면 모든 사용자에게 공지사항이 표시됩니다.</small>
-            </div>
+            </div> -->
             
             <!-- 매니저인 경우 자신의 건설현장 정보 표시 -->
-            <div class="mb-3" th:if="${!isAdmin && construction != null}">
+            <!-- <div class="mb-3" th:if="${!isAdmin && construction != null}">
                 <label class="form-label">건설현장</label>
                 <p class="form-control-static" th:text="${construction.name + ' (' + construction.location + ')'}"></p>
                 <input type="hidden" name="constructionId" th:value="${construction.id}">
                 <small class="text-muted">해당 건설현장에 속한 사용자들에게만 공지사항이 표시됩니다.</small>
-            </div>
+            </div> -->
 
             <div class="mb-3">
                 <!-- <h3>Mermaid 다이어그램 미리보기</h3> -->

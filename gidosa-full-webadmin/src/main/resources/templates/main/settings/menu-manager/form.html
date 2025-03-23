@@ -3,11 +3,11 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{${layout}}">
 <head>
-    <title th:text="${isEdit ? '커스텀 메뉴 수정' : '커스텀 메뉴 등록'}"></title>
+    <title th:text="${isEdit ? '메뉴 수정' : '메뉴 등록'}"></title>
 </head>
 <body>
     <div layout:fragment="content">
-        <h2 class="mb-4" th:text="${isEdit ? '커스텀 메뉴 수정' : '커스텀 메뉴 등록'}"></h2>
+        <h2 class="mb-4" th:text="${isEdit ? '메뉴 수정' : '메뉴 등록'}"></h2>
         
         <!-- 오류 메시지 표시 -->
         <div th:if="${error}" class="alert alert-danger" role="alert">
@@ -35,25 +35,25 @@
                     <input type="hidden" th:if="${!isAdmin}" th:field="*{constructionId}" />
                     
                     <div class="mb-3">
-                        <label for="name" class="form-label">커스텀 메뉴 이름 <span class="text-danger">*</span></label>
+                        <label for="name" class="form-label">메뉴 이름 <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="name" th:field="*{name}" required>
                         <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="url" class="form-label">커스텀 메뉴 URL <span class="text-danger">*</span></label>
+                        <label for="url" class="form-label">메뉴 URL <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="url" th:field="*{url}" required>
                         <div class="text-danger" th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></div>
                         <small class="form-text text-muted">예: /custom/menu1 *내부 페이지 링크시에는 반드시 /custom으로 시작하여야 정상적으로 작동합니다.</small>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="description" class="form-label">커스텀 메뉴 설명</label>
+                        <label for="description" class="form-label">메뉴 설명</label>
                         <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="menuType" class="form-label">커스텀 메뉴 타입</label>
+                        <label for="menuType" class="form-label">메뉴 타입</label>
                         <select class="form-select" id="menuType" th:field="*{menuType}">
                             <option value="">선택하세요</option>
                             <option value="1">타입1: 단건 내용 저장/보기</option>
@@ -64,7 +64,7 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="parentId" class="form-label">커스텀 상위 메뉴</label>
+                        <label for="parentId" class="form-label">상위 메뉴</label>
                         <select class="form-select" id="parentId" th:field="*{parentId}">
                             <option value="">없음 (최상위 메뉴)</option>
                             <option th:each="parentMenu : ${parentMenus}" 

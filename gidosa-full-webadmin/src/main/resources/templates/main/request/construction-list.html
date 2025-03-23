@@ -29,7 +29,7 @@
 <body>
     <div layout:fragment="content">
         <!-- <h2>문의요청 관리(현장건설공사 문의 목록)</h2> -->
-        <h2>문의사항</h2>
+        <!-- <h2>문의사항</h2> -->
         
         <!-- 검색 폼 추가 -->
         <form th:action="@{/request/construction/list}" method="get" class="mb-4 mt-3" id="searchForm" onsubmit="return validateForm();">
@@ -40,7 +40,8 @@
                         <option value="">선택하세요</option>
                         <option value="name" th:selected="${param.searchType != null and param.searchType[0] == 'name'}">이름</option>
                         <option value="phone" th:selected="${param.searchType != null and param.searchType[0] == 'phone'}">전화번호</option>
-                        <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'location'}">현장건설공사 현장</option>
+                        <!-- <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'location'}">현장건설공사 현장</option> -->
+                        <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'location'}">문의내용</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -60,7 +61,9 @@
         </form>
         
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>검색 결과 총 <span th:text="${requests.totalElements}"></span>건</h3>
+            <div>
+                <span class="text-muted">검색 결과 총 <strong th:text="${requests.totalElements}"></strong>건이 있습니다</span>
+            </div>
             
             <!-- 페이지 크기 선택 -->
             <div class="d-flex align-items-center">
@@ -85,9 +88,12 @@
                     <th class="sortable" 
                         th:classappend="${param.sort != null && param.sort[0] == 'phone' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
                         th:data-sort="phone">전화번호</th>
+                    <!-- <th class="sortable" 
+                        th:classappend="${param.sort != null && param.sort[0] == 'constructionLocation' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                        th:data-sort="constructionLocation">현장건설공사 현장</th> -->
                     <th class="sortable" 
                         th:classappend="${param.sort != null && param.sort[0] == 'constructionLocation' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
-                        th:data-sort="constructionLocation">현장건설공사 현장</th>
+                        th:data-sort="constructionLocation">문의내용</th>
                     <th class="sortable" 
                         th:classappend="${param.sort != null && param.sort[0] == 'position' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
                         th:data-sort="position">직책</th>
