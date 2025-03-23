@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{${layout}}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>문의사항 관리</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css">
+    <style>
+        select.form-control {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 3px center;
+            background-size: 18px 14px;
+            padding-right: 1rem;
+        }
+        
+        select.form-control-sm {
+            background-position: right 3px center;
+            background-size: 14px 11px;
+            padding-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <div class="card shadow mb-4 mt-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">의견제출 목록</h6>
+                </div>
+                <div class="card-body">
+                    <!-- 검색 폼 -->
+                    <form th:action="@{/inquiry/list}" method="get" class="mb-4">
+                        <input type="hidden" name="constructionId" th:value="${constructionId}">
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <input type="text" name="searchTitle" class="form-control" placeholder="제목 검색" 
+                                       th:value="${searchTitle}">
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <input type="text" name="searchDateRange" class="form-control datepicker-range" 
+                                       placeholder="기간 검색" th:value="${searchDateRange}" readonly>
+                            </div>
+                            <!-- <div class="col-md-2 mb-2">
+                                <select name="inquiryType" class="form-control">
+                                    <option value="">문의 유형 선택</option>
+                                    <option value="일반" th:selected="${inquiryType == '일반'}">일반</option>
+                                    <option value="기술" th:selected="${inquiryType == '기술'}">기술</option>
+                                    <option value="계약" th:selected="${inquiryType == '계약'}">계약</option>
+                                    <option value="요청" th:selected="${inquiryType == '요청'}">요청</option>
+                                    <option value="기타" th:selected="${inquiryType == '기타'}">기타</option>
+                                </select>
+                            </div> -->
+                            <div class="col-md-3 mb-2">
+                                <select name="answered" class="form-control">
+                                    <option value="">답변 상태 선택</option>
+                                    <option value="true" th:selected="${answered != null && answered}">답변 완료</option>
+                                    <option value="false" th:selected="${answered != null && !answered}">답변 대기</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search"></i> 검색
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- 알림 메시지 표시 -->
+                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <span th:text="${successMessage}"></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <span th:text="${errorMessage}"></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    
+                    <!-- 목록 표시 -->
+                    <div class="table-responsive" style="overflow-x: hidden;">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <span th:text="|총 ${totalItems}건의 의견제출이 있습니다.|"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-end align-items-center">
+                                    <span class="mr-2">페이지 크기 </span>
+                                    <select id="pageSizeSelect" class="form-control form-control-sm" style="width: 70px;">
+                                        <option th:each="size : ${pageSizes}" th:value="${size}" 
+                                                th:text="${size}" th:selected="${size == pageSize}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 mt-3">
+                            <div class="col-md-12">
+                                <a th:href="@{/inquiry/create(constructionId=${constructionId})}" class="btn btn-primary">
+                                    <!-- <i class="fas fa-plus"></i> 문의 등록 -->
+                                    <i class="fas fa-plus"></i> 의견제출
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                            <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th style="width: 80px;">번호</th>
+                                    <th>제목</th>
+                                    <!-- <th style="width: 100px;">문의 유형</th> -->
+                                    <th style="width: 150px;">의견제출자</th>
+                                    <th style="width: 150px;">의견제출일</th>
+                                    <th style="width: 100px;">답변 상태</th>
+                                    <!-- <th style="width: 100px;">첨부파일</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${inquiries.empty}">
+                                    <td colspan="5" class="text-center">등록된 문의사항이 없습니다.</td>
+                                </tr>
+                                <tr th:each="inquiry : ${inquiries}" th:onclick="|location.href='@{/inquiry/detail/{id}(id=${inquiry.id}, constructionId=${constructionId})}'|" style="cursor: pointer;">
+                                    <td class="text-center" th:text="${inquiry.id}"></td>
+                                    <td th:text="${inquiry.title}"></td>
+                                    <!-- <td th:text="${inquiry.inquiryType}"></td> -->
+                                    <td th:text="${inquiry.inquirerName}"></td>
+                                    <td th:text="${#temporals.format(inquiry.inquiryDate, 'yyyy-MM-dd HH:mm')}"></td>
+                                    <td class="text-center">
+                                        <span th:if="${inquiry.answered}" class="badge" style="background-color: #4e73df; color: white;">답변 완료</span>
+                                        <span th:unless="${inquiry.answered}" class="badge" style="background-color: #f6c23e; color: white;">답변 대기</span>
+                                    </td>
+                                    <!-- <td class="text-center">
+                                        <span th:if="${not #lists.isEmpty(inquiry.attachments)}">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span th:text="${#lists.size(inquiry.attachments)}"></span>
+                                        </span>
+                                    </td> -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 페이징 처리 -->
+                    <div th:if="${!inquiries.empty}" class="d-flex justify-content-center">
+                        <ul class="pagination">
+                            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                <a class="page-link" th:href="@{/inquiry/list(constructionId=${constructionId}, page=0, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                <a class="page-link" th:href="@{/inquiry/list(constructionId=${constructionId}, page=${currentPage - 1}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                                th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
+                                th:classappend="${currentPage == i} ? 'active'">
+                                <a class="page-link" th:href="@{/inquiry/list(constructionId=${constructionId}, page=${i}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                                <a class="page-link" th:href="@{/inquiry/list(constructionId=${constructionId}, page=${currentPage + 1}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                                <a class="page-link" th:href="@{/inquiry/list(constructionId=${constructionId}, page=${totalPages - 1}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="script">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.ko.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                // 날짜 범위 선택기 초기화
+                $('.datepicker-range').datepicker({
+                    format: 'yyyy-mm-dd',
+                    autoclose: true,
+                    language: 'ko',
+                    todayHighlight: true,
+                    clearBtn: true,
+                    todayBtn: 'linked'
+                });
+                
+                // 페이지 크기 변경 시 페이지 리로드
+                $('#pageSizeSelect').change(function() {
+                    window.location.href = '/inquiry/list?constructionId=[[${constructionId}]]&page=0&size=' + 
+                        $(this).val() + '&searchTitle=[[${searchTitle}]]&searchDateRange=[[${searchDateRange}]]&inquiryType=[[${inquiryType}]]&answered=[[${answered}]]&sort=[[${sort}]]';
+                });
+                
+                // 알림 닫기 버튼 이벤트 처리
+                $('.alert .close').on('click', function() {
+                    $(this).closest('.alert').alert('close');
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html>

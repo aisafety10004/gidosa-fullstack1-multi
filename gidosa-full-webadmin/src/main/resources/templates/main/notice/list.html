@@ -31,7 +31,10 @@
         <!-- <h2 class="mb-4">공지사항 관리</h2> -->
 
         <div class="mb-3 mt-3 d-flex justify-content-between">
-            <a href="/notice/create" class="btn btn-primary">새 공지사항 등록</a>
+            <a href="/notice/create" class="btn btn-primary">
+                <!-- 새 공지사항 등록 -->
+                등록
+            </a>
             
             <!-- 뷰 모드 선택 (매니저만 볼 수 있음) -->
             <div th:if="${#authentication.principal.authorities.![authority].contains('ROLE_MANAGER') || 
@@ -40,22 +43,26 @@
                     <a th:href="@{/notice(viewMode='all', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}" 
                        class="btn" th:classappend="${viewMode == 'all' || viewMode == null} ? 'btn-primary' : 'btn-outline-primary'">
                         <!-- 모든 공지사항 -->
-                        공지사항
+                        <!-- 공지사항 -->
+                         관리자 보기
                     </a>
                     <a th:href="@{/notice(viewMode='publishedAnonymous', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
                        class="btn" th:classappend="${viewMode == 'publishedAnonymous'} ? 'btn-primary' : 'btn-outline-primary'">
                         <!-- 익명 사용자 게시 공지사항 -->
-                        익명 사용자
+                        <!-- 익명 사용자 -->
+                        누구나 보기
                     </a>
                     <a th:href="@{/notice(viewMode='publishedLoggedInUser', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
                        class="btn" th:classappend="${viewMode == 'publishedLoggedInUser'} ? 'btn-primary' : 'btn-outline-primary'">
                         <!-- 회원 사용자 게시 공지사항 -->
-                        회원 사용자
+                        <!-- 회원 사용자 -->
+                        회원만 보기
                     </a>
                     <a th:href="@{/notice(viewMode='unpublishedManager', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate})}"
                        class="btn" th:classappend="${viewMode == 'unpublishedManager'} ? 'btn-primary' : 'btn-outline-primary'">
                         <!-- 매니저 미게시 공지사항 -->
-                        미게시 사항
+                        <!-- 미게시 사항 -->
+                        게시 준비중
                     </a>
                 </div>
             </div>

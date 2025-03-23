@@ -4,11 +4,11 @@
       layout:decorate="~{${layout}}"
 >
 <head>
-    <title>건설공사현장 수정</title>
+    <title>도입현장 수정</title>
 </head>
 <body>
     <div layout:fragment="content">
-        <h2>건설공사현장 수정</h2>
+        <!-- <h2>도입현장 수정</h2> -->
         
         <form th:action="@{/construction/update/{id}(id=${construction.id})}" th:object="${construction}" method="post">
             <div class="mb-3">
@@ -17,7 +17,7 @@
             </div>
             
             <div class="mb-3">
-                <label for="location" class="form-label">위치 주소</label>
+                <label for="location" class="form-label">현장주소</label>
                 <input type="text" class="form-control" id="location" th:field="*{location}" required>
             </div>
             
@@ -65,13 +65,17 @@
             </div>
             
             <div class="mb-3">
-                <label class="form-label">커스텀 메뉴 선택</label>
+                <label class="form-label">메뉴 선택</label>
                 <div class="d-flex flex-wrap gap-4">
                     <div class="form-check" th:each="customMenu : ${templateCustomMenus}">
                         <input class="form-check-input" type="checkbox" th:id="${'customMenu-' + customMenu.id}" 
                                name="selectedCustomMenuIds" th:value="${customMenu.id}"
                                th:checked="${construction.selectedCustomMenuIds != null && construction.selectedCustomMenuIds.contains(customMenu.id)}">
                         <label class="form-check-label" th:for="${'customMenu-' + customMenu.id}" th:text="${customMenu.name}"></label>
+                    </div>
+                    <div class="text-muted">
+                        * 이전에 선택한 메뉴에 대한 선택 해제를 하시면 이전에 선택한 메뉴가 사라지니 유의하시길 바랍니다.
+                        <br>반드시 추가된 메뉴에 대해서만 체크를 하시길 바랍니다.
                     </div>
                     <div th:if="${#lists.isEmpty(templateCustomMenus)}" class="text-muted">
                         사용 가능한 템플릿 메뉴가 없습니다.

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{${layout}}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>문의사항 수정</title>
+    <style>
+        /* select.form-control {
+            appearance: auto;
+            -webkit-appearance: auto;
+            -moz-appearance: auto;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 2rem;
+        } */
+        select.form-control {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 3px center;
+            background-size: 18px 14px;
+            padding-right: 1rem;
+        }
+        
+        select.form-control-sm {
+            background-position: right 3px center;
+            background-size: 14px 11px;
+            padding-right: 1rem;
+        }
+        
+        .form-group.row {
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <div class="card shadow mb-4 mt-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">의견제출 수정</h6>
+                    <div>
+                        <a th:href="@{/inquiry/detail/{id}(id=${inquiry.id}, constructionId=${constructionId})}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> 상세보기로 돌아가기
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- 알림 메시지 표시 -->
+                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <span th:text="${errorMessage}"></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <!-- 문의사항 수정 폼 -->
+                    <form th:action="@{/inquiry/edit/{id}(id=${inquiry.id})}" method="post" enctype="multipart/form-data" th:object="${inquiry}">
+                        <input type="hidden" name="constructionId" th:value="${constructionId}">
+                        
+                        <div class="form-group row">
+                            <label for="title" class="col-sm-2 col-form-label">제목</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="title" th:field="*{title}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <!-- <label for="inquiryType" class="col-sm-2 col-form-label">문의 유형</label>
+                            <div class="col-sm-4">
+                                <select class="form-control" id="inquiryType" th:field="*{inquiryType}" required>
+                                    <option value="">문의 유형 선택</option>
+                                    <option value="일반">일반</option>
+                                    <option value="기술">기술</option>
+                                    <option value="계약">계약</option>
+                                    <option value="요청">요청</option>
+                                    <option value="기타">기타</option>
+                                </select>
+                            </div> -->
+                            
+                            <label for="isPrivate" class="col-sm-2 col-form-label">비공개 여부</label>
+                            <div class="col-sm-4">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="isPrivate" th:field="*{isPrivate}">
+                                    <label class="custom-control-label" for="isPrivate">비공개</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="inquirerName" class="col-sm-2 col-form-label">의견제출자 이름</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="inquirerName" th:field="*{inquirerName}" required>
+                            </div>
+                            
+                            <label for="inquirerEmail" class="col-sm-2 col-form-label">이메일</label>
+                            <div class="col-sm-4">
+                                <input type="email" class="form-control" id="inquirerEmail" th:field="*{inquirerEmail}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="inquirerPhone" class="col-sm-2 col-form-label">연락처</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inquirerPhone" th:field="*{inquirerPhone}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="content" class="col-sm-2 col-form-label">의견제출 내용</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" id="content" th:field="*{content}" rows="10" required></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- 기존 첨부 파일 목록 -->
+                        <div class="form-group row" th:if="${not #lists.isEmpty(inquiry.attachments)}">
+                            <label class="col-sm-2 col-form-label">기존 첨부 파일</label>
+                            <div class="col-sm-10">
+                                <ul class="list-group">
+                                    <li class="list-group-item" th:if="${inquiry.fileAttachment1 != null}">
+                                        <a th:href="@{/inquiry/download/{id}/1(id=${inquiry.id})}" 
+                                           th:text="${inquiry.fileAttachment1.originalFilename}"></a>
+                                    </li>
+                                    <li class="list-group-item" th:if="${inquiry.fileAttachment2 != null}">
+                                        <a th:href="@{/inquiry/download/{id}/2(id=${inquiry.id})}" 
+                                           th:text="${inquiry.fileAttachment2.originalFilename}"></a>
+                                    </li>
+                                    <li class="list-group-item" th:if="${inquiry.fileAttachment3 != null}">
+                                        <a th:href="@{/inquiry/download/{id}/3(id=${inquiry.id})}" 
+                                           th:text="${inquiry.fileAttachment3.originalFilename}"></a>
+                                    </li>
+                                </ul>
+                                <div class="small text-danger mt-2">
+                                    ※ 새 파일을 업로드하면 기존 파일은 삭제됩니다.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 새 첨부 파일 업로드 -->
+                        <!-- <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">새 첨부 파일</label>
+                            <div class="col-sm-10">
+                                <div class="custom-file mb-3">
+                                    <input type="file" class="custom-file-input" id="file1" name="files">
+                                    <label class="custom-file-label" for="file1">파일 선택 (선택사항)</label>
+                                </div>
+                                <div class="custom-file mb-3">
+                                    <input type="file" class="custom-file-input" id="file2" name="files">
+                                    <label class="custom-file-label" for="file2">파일 선택 (선택사항)</label>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="file3" name="files">
+                                    <label class="custom-file-label" for="file3">파일 선택 (선택사항)</label>
+                                </div>
+                            </div>
+                        </div> -->
+                        
+                        <div class="form-group row">
+                            <div class="col-sm-12 text-right">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> 수정
+                                </button>
+                                <a th:href="@{/inquiry/detail/{id}(id=${inquiry.id}, constructionId=${constructionId})}" class="btn btn-secondary mr-2">
+                                    <i class="fas fa-times"></i> 취소
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="script">
+        <script>
+            $(document).ready(function() {
+                // 파일 선택 시 파일명 표시
+                $('.custom-file-input').on('change', function() {
+                    var fileName = $(this).val().split('\\').pop();
+                    $(this).next('.custom-file-label').html(fileName || '파일 선택 (선택사항)');
+                });
+
+                // 알림 닫기 버튼 이벤트 처리
+                $('.alert .close').on('click', function() {
+                    $(this).closest('.alert').alert('close');
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html> 

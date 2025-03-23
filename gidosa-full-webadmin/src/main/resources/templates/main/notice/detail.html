@@ -19,9 +19,9 @@
                         등록일: <span th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                         | 수정일: <span th:text="${#temporals.format(notice.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
                         <br> -->
-                        건설현장: 
+                        <!-- 건설현장: 
                         <span th:if="${notice.construction != null}" th:text="${notice.construction.name + ' (' + notice.construction.location + ')'}"></span>
-                        <span th:if="${notice.construction == null}" class="badge bg-primary">전체 공지사항</span>
+                        <span th:if="${notice.construction == null}" class="badge bg-primary">전체 공지사항</span> -->
                     </small>
                 </div>
                 
