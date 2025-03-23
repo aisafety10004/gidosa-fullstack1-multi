@@ -3,11 +3,11 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{${layout}}">
 <head>
-    <title>매니저 정보 수정</title>
+    <title>현장관리자 정보 수정</title>
 </head>
 <body>
     <div layout:fragment="content">
-        <h2 class="mb-4">매니저 정보 수정</h2>
+        <h2 class="mb-4">현장관리자 정보 수정</h2>
 
         <form th:action="@{/member/admin/update/{id}(id=${memberAdmin.id})}"
               th:object="${memberAdmin}" method="post" class="needs-validation" novalidate>
