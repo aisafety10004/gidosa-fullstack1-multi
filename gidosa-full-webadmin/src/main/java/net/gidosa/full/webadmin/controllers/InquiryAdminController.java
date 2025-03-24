@@ -41,6 +41,9 @@ public class InquiryAdminController {
 
     // 어드민 문의사항 목록 페이지
     @GetMapping("/admin/list")
+    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+//    @PreAuthorize("#username == authentication.name")  // parameter가 String username
     public String listAdmin(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,

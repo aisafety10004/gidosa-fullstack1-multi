@@ -25,7 +25,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
-//@EnableMethodSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final DataSource mysqlJpaMaster1DataSource;                                // MariaDB와 JAVA의 연결소스(고리)
@@ -57,8 +57,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/assets/**", "/vendor/**", "/error/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/member/admin/**", "/construction/**", "/request/construction/**", "/inquiry/admin/**").hasRole("ADMIN")
-                .requestMatchers("/member/general/**", "/safety/risk-factor/**", "/process/work-discussion/**", "/inquiry/**").hasRole("MANAGER")
+                .requestMatchers("/member/admin/**", "/construction/**", "/request/construction/**").hasRole("ADMIN")
+                .requestMatchers("/member/general/**", "/safety/risk-factor/**", "/process/work-discussion/**").hasRole("MANAGER")
                 .requestMatchers("/main/**", "/settings/**", "/custom/**").hasAnyRole("ADMIN", "MANAGER")
                 .anyRequest().authenticated()
 //                .anyRequest().permitAll()
