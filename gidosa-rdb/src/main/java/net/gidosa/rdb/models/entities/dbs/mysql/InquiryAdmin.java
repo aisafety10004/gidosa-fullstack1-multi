@@ -18,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Inquiry {
+public class InquiryAdmin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("문의사항 고유 식별자")

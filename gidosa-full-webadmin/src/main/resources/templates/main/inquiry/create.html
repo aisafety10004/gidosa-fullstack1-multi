@@ -61,7 +61,7 @@
                     </div>
 
                     <!-- 문의사항 등록 폼 -->
-                    <form th:action="@{/inquiry/create}" method="post" enctype="multipart/form-data" th:object="${inquiry}">
+                    <form th:action="@{/inquiry/create}" method="post" enctype="multipart/form-data" th:object="${inquiryAdmin}">
                         <input type="hidden" name="constructionId" th:value="${constructionId}">
                         
                         <div class="form-group row">

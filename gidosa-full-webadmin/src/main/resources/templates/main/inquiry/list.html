@@ -127,20 +127,20 @@
                                 <tr th:if="${inquiries.empty}">
                                     <td colspan="5" class="text-center">등록된 문의사항이 없습니다.</td>
                                 </tr>
-                                <tr th:each="inquiry : ${inquiries}" th:onclick="|location.href='@{/inquiry/detail/{id}(id=${inquiry.id}, constructionId=${constructionId})}'|" style="cursor: pointer;">
-                                    <td class="text-center" th:text="${inquiry.id}"></td>
-                                    <td th:text="${inquiry.title}"></td>
-                                    <!-- <td th:text="${inquiry.inquiryType}"></td> -->
-                                    <td th:text="${inquiry.inquirerName}"></td>
-                                    <td th:text="${#temporals.format(inquiry.inquiryDate, 'yyyy-MM-dd HH:mm')}"></td>
+                                <tr th:each="inquiryAdmin : ${inquiries}" th:onclick="|location.href='@{/inquiry/detail/{id}(id=${inquiryAdmin.id}, constructionId=${constructionId})}'|" style="cursor: pointer;">
+                                    <td class="text-center" th:text="${inquiryAdmin.id}"></td>
+                                    <td th:text="${inquiryAdmin.title}"></td>
+                                    <!-- <td th:text="${inquiryAdmin.inquiryType}"></td> -->
+                                    <td th:text="${inquiryAdmin.inquirerName}"></td>
+                                    <td th:text="${#temporals.format(inquiryAdmin.inquiryDate, 'yyyy-MM-dd HH:mm')}"></td>
                                     <td class="text-center">
-                                        <span th:if="${inquiry.answered}" class="badge" style="background-color: #4e73df; color: white;">답변 완료</span>
-                                        <span th:unless="${inquiry.answered}" class="badge" style="background-color: #f6c23e; color: white;">답변 대기</span>
+                                        <span th:if="${inquiryAdmin.answered}" class="badge" style="background-color: #4e73df; color: white;">답변 완료</span>
+                                        <span th:unless="${inquiryAdmin.answered}" class="badge" style="background-color: #f6c23e; color: white;">답변 대기</span>
                                     </td>
                                     <!-- <td class="text-center">
-                                        <span th:if="${not #lists.isEmpty(inquiry.attachments)}">
+                                        <span th:if="${not #lists.isEmpty(inquiryAdmin.attachments)}">
                                             <i class="fas fa-paperclip"></i>
-                                            <span th:text="${#lists.size(inquiry.attachments)}"></span>
+                                            <span th:text="${#lists.size(inquiryAdmin.attachments)}"></span>
                                         </span>
                                     </td> -->
                                 </tr>
@@ -200,7 +200,7 @@
                 
                 // 페이지 크기 변경 시 페이지 리로드
                 $('#pageSizeSelect').change(function() {
-                    window.location.href = '/inquiry/list?constructionId=[[${constructionId}]]&page=0&size=' + 
+                    window.location.href = '/inquiry/list?constructionId=[[${constructionId}]]&page=0&size=' +
                         $(this).val() + '&searchTitle=[[${searchTitle}]]&searchDateRange=[[${searchDateRange}]]&inquiryType=[[${inquiryType}]]&answered=[[${answered}]]&sort=[[${sort}]]';
                 });
                 

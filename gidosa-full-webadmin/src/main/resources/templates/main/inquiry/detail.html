@@ -42,37 +42,37 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">의견제출 정보</h6>
                             <div>
-                                <span th:if="${inquiry.isPrivate}" class="badge badge-secondary mr-2">비공개</span>
-                                <span th:if="${inquiry.answered}" class="badge badge-success">답변 완료</span>
-                                <span th:unless="${inquiry.answered}" class="badge badge-warning">답변 대기</span>
+                                <span th:if="${inquiryAdmin.isPrivate}" class="badge badge-secondary mr-2">비공개</span>
+                                <span th:if="${inquiryAdmin.answered}" class="badge badge-success">답변 완료</span>
+                                <span th:unless="${inquiryAdmin.answered}" class="badge badge-warning">답변 대기</span>
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <h5 th:text="${inquiry.title}" class="font-weight-bold"></h5>
+                                    <h5 th:text="${inquiryAdmin.title}" class="font-weight-bold"></h5>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <strong>의견제출자:</strong> <span th:text="${inquiry.inquirerName}"></span>
+                                    <strong>의견제출자:</strong> <span th:text="${inquiryAdmin.inquirerName}"></span>
                                 </div>
                                 <div class="col-md-4">
-                                    <strong>이메일:</strong> <span th:text="${inquiry.inquirerEmail}"></span>
+                                    <strong>이메일:</strong> <span th:text="${inquiryAdmin.inquirerEmail}"></span>
                                 </div>
                                 <div class="col-md-4">
-                                    <strong>연락처:</strong> <span th:text="${inquiry.inquirerPhone}"></span>
+                                    <strong>연락처:</strong> <span th:text="${inquiryAdmin.inquirerPhone}"></span>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <!-- <div class="col-md-4">
-                                    <strong>문의 유형:</strong> <span th:text="${inquiry.inquiryType}"></span>
+                                    <strong>문의 유형:</strong> <span th:text="${inquiryAdmin.inquiryType}"></span>
                                 </div> -->
                                 <div class="col-md-4">
-                                    <strong>의견제출일:</strong> <span th:text="${#temporals.format(inquiry.inquiryDate, 'yyyy-MM-dd HH:mm')}"></span>
+                                    <strong>의견제출일:</strong> <span th:text="${#temporals.format(inquiryAdmin.inquiryDate, 'yyyy-MM-dd HH:mm')}"></span>
                                 </div>
                                 <!-- <div class="col-md-4">
-                                    <strong>건설현장:</strong> <span th:text="${inquiry.construction.name}"></span>
+                                    <strong>건설현장:</strong> <span th:text="${inquiryAdmin.construction.name}"></span>
                                 </div> -->
                             </div>
                             <hr>
@@ -83,14 +83,14 @@
                                             <h6 class="m-0 font-weight-bold">의견제출 내용</h6>
                                         </div>
                                         <div class="card-body">
-                                            <div th:utext="${inquiry.content}"></div>
+                                            <div th:utext="${inquiryAdmin.content}"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
                             <!-- 첨부 파일 목록 -->
-                            <div class="row mb-3" th:if="${not #lists.isEmpty(inquiry.attachments)}">
+                            <div class="row mb-3" th:if="${not #lists.isEmpty(inquiryAdmin.attachments)}">
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
@@ -98,17 +98,17 @@
                                         </div>
                                         <div class="card-body">
                                             <ul class="list-group">
-                                                <li class="list-group-item" th:if="${inquiry.fileAttachment1 != null}">
-                                                    <a th:href="@{/inquiry/download/{id}/1(id=${inquiry.id})}" 
-                                                       th:text="${inquiry.fileAttachment1.originalFilename}"></a>
+                                                <li class="list-group-item" th:if="${inquiryAdmin.fileAttachment1 != null}">
+                                                    <a th:href="@{/inquiry/download/{id}/1(id=${inquiryAdmin.id})}"
+                                                       th:text="${inquiryAdmin.fileAttachment1.originalFilename}"></a>
                                                 </li>
-                                                <li class="list-group-item" th:if="${inquiry.fileAttachment2 != null}">
-                                                    <a th:href="@{/inquiry/download/{id}/2(id=${inquiry.id})}" 
-                                                       th:text="${inquiry.fileAttachment2.originalFilename}"></a>
+                                                <li class="list-group-item" th:if="${inquiryAdmin.fileAttachment2 != null}">
+                                                    <a th:href="@{/inquiry/download/{id}/2(id=${inquiryAdmin.id})}"
+                                                       th:text="${inquiryAdmin.fileAttachment2.originalFilename}"></a>
                                                 </li>
-                                                <li class="list-group-item" th:if="${inquiry.fileAttachment3 != null}">
-                                                    <a th:href="@{/inquiry/download/{id}/3(id=${inquiry.id})}" 
-                                                       th:text="${inquiry.fileAttachment3.originalFilename}"></a>
+                                                <li class="list-group-item" th:if="${inquiryAdmin.fileAttachment3 != null}">
+                                                    <a th:href="@{/inquiry/download/{id}/3(id=${inquiryAdmin.id})}"
+                                                       th:text="${inquiryAdmin.fileAttachment3.originalFilename}"></a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -119,14 +119,14 @@
                     </div>
                     
                     <!-- 답변 정보 -->
-                    <div class="card mb-4" th:if="${inquiry.answered}">
+                    <div class="card mb-4" th:if="${inquiryAdmin.answered}">
                         <div class="card-header">
                             <h6 class="m-0 font-weight-bold text-primary">답변 정보</h6>
                         </div>
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <strong>답변일:</strong> <span th:text="${#temporals.format(inquiry.answerDate, 'yyyy-MM-dd HH:mm')}"></span>
+                                    <strong>답변일:</strong> <span th:text="${#temporals.format(inquiryAdmin.answerDate, 'yyyy-MM-dd HH:mm')}"></span>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -136,7 +136,7 @@
                                             <h6 class="m-0 font-weight-bold">답변 내용</h6>
                                         </div>
                                         <div class="card-body">
-                                            <div th:utext="${inquiry.answerContent}"></div>
+                                            <div th:utext="${inquiryAdmin.answerContent}"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -147,22 +147,22 @@
                     <!-- 답변 작성/수정 폼 -->
                     <div class="card mb-4" th:if="${isAdmin}">
                         <div class="card-header">
-                            <h6 class="m-0 font-weight-bold text-primary" th:text="${inquiry.answered ? '답변 수정' : '답변 작성'}" th:if="${isAdmin}"></h6>
+                            <h6 class="m-0 font-weight-bold text-primary" th:text="${inquiryAdmin.answered ? '답변 수정' : '답변 작성'}" th:if="${isAdmin}"></h6>
                             <!-- <h6 class="m-0 font-weight-bold text-primary" th:text="관리자가 답변한 내용" th:unless="${isAdmin}"></h6> -->
                         </div>
                         <div class="card-body">
-                            <form th:action="@{/inquiry/answer/{id}(id=${inquiry.id})}" method="post">
+                            <form th:action="@{/inquiry/answer/{id}(id=${inquiryAdmin.id})}" method="post">
                                 <input type="hidden" name="constructionId" th:value="${constructionId}">
                                 <div class="form-group">
                                     <textarea name="answerContent" id="answerContent" rows="5" class="form-control" required
-                                        th:text="${inquiry.answerContent}" th:if="${isAdmin}"></textarea>
+                                        th:text="${inquiryAdmin.answerContent}" th:if="${isAdmin}"></textarea>
                                     <textarea name="answerContent" id="answerContent" rows="5" class="form-control"
-                                        th:text="${inquiry.answerContent}" th:unless="${isAdmin}" readonly></textarea>
+                                        th:text="${inquiryAdmin.answerContent}" th:unless="${isAdmin}" readonly></textarea>
                                 </div>
                                 <div class="text-right mt-3" th:if="${isAdmin}">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save"></i> 
-                                        <span th:text="${inquiry.answered ? '답변 수정' : '답변 등록'}"></span>
+                                        <span th:text="${inquiryAdmin.answered ? '답변 수정' : '답변 등록'}"></span>
                                     </button>
                                 </div>
                             </form>
@@ -180,7 +180,7 @@
                             </a>
                         </div>
                         <div>
-                            <a th:unless="${isAdmin}" th:href="@{/inquiry/edit/{id}(id=${inquiry.id}, constructionId=${constructionId})}" class="btn btn-primary mr-2">
+                            <a th:unless="${isAdmin}" th:href="@{/inquiry/edit/{id}(id=${inquiryAdmin.id}, constructionId=${constructionId})}" class="btn btn-primary mr-2">
                                 <i class="fas fa-edit"></i> 수정 화면으로 이동
                             </a>
                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
@@ -207,7 +207,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelModalBtn" onclick="$('#deleteModal').modal('hide');">취소</button>
-                        <form th:action="@{/inquiry/delete/{id}(id=${inquiry.id})}" method="post">
+                        <form th:action="@{/inquiry/delete/{id}(id=${inquiryAdmin.id})}" method="post">
                             <input type="hidden" name="constructionId" th:value="${constructionId}">
                             <button type="submit" class="btn btn-danger">삭제</button>
                         </form>

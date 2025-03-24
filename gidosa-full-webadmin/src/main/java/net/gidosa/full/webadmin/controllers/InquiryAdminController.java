@@ -2,9 +2,9 @@ package net.gidosa.full.webadmin.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import net.gidosa.full.webadmin.services.InquiryService;
+import net.gidosa.full.webadmin.services.InquiryAdminService;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
-import net.gidosa.rdb.models.entities.dbs.mysql.Inquiry;
+import net.gidosa.rdb.models.entities.dbs.mysql.InquiryAdmin;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberAdmin;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -27,17 +28,57 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Controller
 @RequestMapping("/inquiry")
 @RequiredArgsConstructor
-public class InquiryController {
+public class InquiryAdminController {
 
-    private final InquiryService inquiryService;
-    private final String FILE_UPLOAD_PATH = "uploads/inquiry/";
+    private final InquiryAdminService inquiryAdminService;
+    private final String FILE_UPLOAD_PATH = "uploads/inquiry-admin/";
+
+    // 어드민 문의사항 목록 페이지
+    @GetMapping("/admin/list")
+    public String listAdmin(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String searchTitle,
+            @RequestParam(required = false) String searchDateRange,
+            @RequestParam(required = false) String inquiryType,
+            @RequestParam(required = false) Boolean answered,
+            @RequestParam(defaultValue = "id,desc") String sort,
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model
+    ) {
+        // 정렬 조건 설정
+        String[] sortParams = sort.split(",");
+        String sortField = sortParams[0];
+        String sortDirection = sortParams.length > 1 ? sortParams[1] : "desc";
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+
+        // 검색 조건에 따라 문의사항 조회
+        Page<InquiryAdmin> inquiries = inquiryAdminService.searchInquiries(null, searchTitle, searchDateRange, inquiryType, answered, pageable);
+
+        model.addAttribute("inquiries", inquiries);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", inquiries.getTotalPages());
+        model.addAttribute("totalItems", inquiries.getTotalElements());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("searchTitle", searchTitle);
+        model.addAttribute("searchDateRange", searchDateRange);
+        model.addAttribute("inquiryType", inquiryType);
+        model.addAttribute("answered", answered);
+        model.addAttribute("sort", sort);
+
+        // 페이지 사이즈 선택 옵션 (10, 20, 30)
+        List<Integer> pageSizes = List.of(10, 20, 30);
+        model.addAttribute("pageSizes", pageSizes);
+
+        return "main/inquiry/admin/list";
+    }
 
     // 매니저 문의사항 목록 페이지
     @GetMapping("/list")
@@ -69,7 +110,7 @@ public class InquiryController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
 
         // 검색 조건에 따라 문의사항 조회
-        Page<Inquiry> inquiries = inquiryService.searchInquiries(constructionId, searchTitle, searchDateRange, inquiryType, answered, pageable);
+        Page<InquiryAdmin> inquiries = inquiryAdminService.searchInquiries(constructionId, searchTitle, searchDateRange, inquiryType, answered, pageable);
 
         model.addAttribute("inquiries", inquiries);
         model.addAttribute("constructionId", constructionId);
@@ -101,8 +142,8 @@ public class InquiryController {
         MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
         boolean isAdmin = memberAdmin.getRole().equals("ROLE_ADMIN");
 
-        Inquiry inquiry = inquiryService.getInquiryById(id);
-        model.addAttribute("inquiry", inquiry);
+        InquiryAdmin inquiryAdmin = inquiryAdminService.getInquiryById(id);
+        model.addAttribute("inquiryAdmin", inquiryAdmin);
         model.addAttribute("constructionId", constructionId);
         model.addAttribute("isAdmin", isAdmin);
         
@@ -115,7 +156,7 @@ public class InquiryController {
             @RequestParam Long constructionId,
             Model model
     ) {
-        model.addAttribute("inquiry", new Inquiry());
+        model.addAttribute("inquiryAdmin", new InquiryAdmin());
         model.addAttribute("constructionId", constructionId);
         return "main/inquiry/create";
     }
@@ -124,12 +165,12 @@ public class InquiryController {
     @PostMapping("/create")
     public String create(
             @RequestParam Long constructionId,
-            @ModelAttribute Inquiry inquiry,
+            @ModelAttribute InquiryAdmin inquiryAdmin,
             @RequestParam(value = "files", required = false) List<MultipartFile> files,
             RedirectAttributes redirectAttributes
     ) {
         try {
-            inquiryService.createInquiry(constructionId, inquiry, files);
+            inquiryAdminService.createInquiry(constructionId, inquiryAdmin, files);
             redirectAttributes.addFlashAttribute("successMessage", "문의사항이 성공적으로 등록되었습니다.");
             return "redirect:/inquiry/list?constructionId=" + constructionId;
         } catch (IOException e) {
@@ -148,8 +189,8 @@ public class InquiryController {
             @RequestParam Long constructionId,
             Model model
     ) {
-        Inquiry inquiry = inquiryService.getInquiryById(id);
-        model.addAttribute("inquiry", inquiry);
+        InquiryAdmin inquiryAdmin = inquiryAdminService.getInquiryById(id);
+        model.addAttribute("inquiryAdmin", inquiryAdmin);
         model.addAttribute("constructionId", constructionId);
         return "main/inquiry/edit";
     }
@@ -159,12 +200,12 @@ public class InquiryController {
     public String edit(
             @PathVariable Long id,
             @RequestParam Long constructionId,
-            @ModelAttribute Inquiry inquiry,
+            @ModelAttribute InquiryAdmin inquiryAdmin,
             @RequestParam(value = "files", required = false) List<MultipartFile> files,
             RedirectAttributes redirectAttributes
     ) {
         try {
-            inquiryService.updateInquiry(id, inquiry, files);
+            inquiryAdminService.updateInquiry(id, inquiryAdmin, files);
             redirectAttributes.addFlashAttribute("successMessage", "문의사항이 성공적으로 수정되었습니다.");
             return "redirect:/inquiry/detail/" + id + "?constructionId=" + constructionId;
         } catch (IOException e) {
@@ -184,7 +225,7 @@ public class InquiryController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            inquiryService.deleteInquiry(id);
+            inquiryAdminService.deleteInquiry(id);
             redirectAttributes.addFlashAttribute("successMessage", "문의사항이 성공적으로 삭제되었습니다.");
             return "redirect:/inquiry/list?constructionId=" + constructionId;
         } catch (Exception e) {
@@ -202,7 +243,7 @@ public class InquiryController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            inquiryService.answerInquiry(id, answerContent);
+            inquiryAdminService.answerInquiry(id, answerContent);
             redirectAttributes.addFlashAttribute("successMessage", "답변이 성공적으로 등록되었습니다.");
             return "redirect:/inquiry/detail/" + id + "?constructionId=" + constructionId;
         } catch (Exception e) {
@@ -219,7 +260,7 @@ public class InquiryController {
             HttpServletRequest request
     ) {
         try {
-            Inquiry inquiry = inquiryService.getInquiryById(id);
+            InquiryAdmin inquiryAdmin = inquiryAdminService.getInquiryById(id);
             
             // 파일 인덱스에 따라 첨부 파일 선택
             String originalFilename = "";
@@ -227,21 +268,21 @@ public class InquiryController {
             String contentType = "";
             Path filePath = null;
             
-            if (fileIndex == 1 && inquiry.getFileAttachment1() != null) {
-                originalFilename = inquiry.getFileAttachment1().getOriginalFilename();
-                storedFilename = inquiry.getFileAttachment1().getStoredFilename();
-                contentType = inquiry.getFileAttachment1().getContentType();
-                filePath = Paths.get(inquiry.getFileAttachment1().getFilePath());
-            } else if (fileIndex == 2 && inquiry.getFileAttachment2() != null) {
-                originalFilename = inquiry.getFileAttachment2().getOriginalFilename();
-                storedFilename = inquiry.getFileAttachment2().getStoredFilename();
-                contentType = inquiry.getFileAttachment2().getContentType();
-                filePath = Paths.get(inquiry.getFileAttachment2().getFilePath());
-            } else if (fileIndex == 3 && inquiry.getFileAttachment3() != null) {
-                originalFilename = inquiry.getFileAttachment3().getOriginalFilename();
-                storedFilename = inquiry.getFileAttachment3().getStoredFilename();
-                contentType = inquiry.getFileAttachment3().getContentType();
-                filePath = Paths.get(inquiry.getFileAttachment3().getFilePath());
+            if (fileIndex == 1 && inquiryAdmin.getFileAttachment1() != null) {
+                originalFilename = inquiryAdmin.getFileAttachment1().getOriginalFilename();
+                storedFilename = inquiryAdmin.getFileAttachment1().getStoredFilename();
+                contentType = inquiryAdmin.getFileAttachment1().getContentType();
+                filePath = Paths.get(inquiryAdmin.getFileAttachment1().getFilePath());
+            } else if (fileIndex == 2 && inquiryAdmin.getFileAttachment2() != null) {
+                originalFilename = inquiryAdmin.getFileAttachment2().getOriginalFilename();
+                storedFilename = inquiryAdmin.getFileAttachment2().getStoredFilename();
+                contentType = inquiryAdmin.getFileAttachment2().getContentType();
+                filePath = Paths.get(inquiryAdmin.getFileAttachment2().getFilePath());
+            } else if (fileIndex == 3 && inquiryAdmin.getFileAttachment3() != null) {
+                originalFilename = inquiryAdmin.getFileAttachment3().getOriginalFilename();
+                storedFilename = inquiryAdmin.getFileAttachment3().getStoredFilename();
+                contentType = inquiryAdmin.getFileAttachment3().getContentType();
+                filePath = Paths.get(inquiryAdmin.getFileAttachment3().getFilePath());
             } else {
                 return ResponseEntity.notFound().build();
             }
@@ -263,46 +304,5 @@ public class InquiryController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
-    }
-
-    // 어드민 문의사항 목록 페이지
-    @GetMapping("/admin/list")
-    public String listAdmin(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String searchTitle,
-            @RequestParam(required = false) String searchDateRange,
-            @RequestParam(required = false) String inquiryType,
-            @RequestParam(required = false) Boolean answered,
-            @RequestParam(defaultValue = "id,desc") String sort,
-            @AuthenticationPrincipal UserDetails userDetails,
-            Model model
-    ) {
-        // 정렬 조건 설정
-        String[] sortParams = sort.split(",");
-        String sortField = sortParams[0];
-        String sortDirection = sortParams.length > 1 ? sortParams[1] : "desc";
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
-
-        // 검색 조건에 따라 문의사항 조회
-        Page<Inquiry> inquiries = inquiryService.searchInquiries(null, searchTitle, searchDateRange, inquiryType, answered, pageable);
-
-        model.addAttribute("inquiries", inquiries);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", inquiries.getTotalPages());
-        model.addAttribute("totalItems", inquiries.getTotalElements());
-        model.addAttribute("pageSize", size);
-        model.addAttribute("searchTitle", searchTitle);
-        model.addAttribute("searchDateRange", searchDateRange);
-        model.addAttribute("inquiryType", inquiryType);
-        model.addAttribute("answered", answered);
-        model.addAttribute("sort", sort);
-
-        // 페이지 사이즈 선택 옵션 (10, 20, 30)
-        List<Integer> pageSizes = List.of(10, 20, 30);
-        model.addAttribute("pageSizes", pageSizes);
-
-        return "main/inquiry/admin/list";
     }
 }
