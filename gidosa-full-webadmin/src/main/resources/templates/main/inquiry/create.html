@@ -44,7 +44,7 @@
         <div class="container-fluid">
             <div class="card shadow mb-4 mt-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">의견제출 등록</h6>
+                    <h6 class="m-0 font-weight-bold">의견제출 등록</h6>
                     <div>
                         <a th:href="@{/inquiry/list(constructionId=${constructionId})}" class="btn btn-secondary btn-sm">
                             <i class="fas fa-list"></i> 목록으로
@@ -71,7 +71,7 @@
                             </div>
                         </div>
                         
-                        <div class="form-group row">
+                        <!-- <div class="form-group row"> -->
                             <!-- <label for="inquiryType" class="col-sm-2 col-form-label">문의 유형</label>
                             <div class="col-sm-4">
                                 <select class="form-control" id="inquiryType" th:field="*{inquiryType}" required>
@@ -84,17 +84,17 @@
                                 </select>
                             </div> -->
                             
-                            <label for="isPrivate" class="col-sm-2 col-form-label">비공개 여부</label>
+                            <!-- <label for="isPrivate" class="col-sm-2 col-form-label">비공개 여부</label>
                             <div class="col-sm-4">
                                 <div class="custom-control custom-switch">
                                     <input type="checkbox" class="custom-control-input" id="isPrivate" th:field="*{isPrivate}">
                                     <label class="custom-control-label" for="isPrivate">비공개</label>
                                 </div>
-                            </div>
-                        </div>
+                            </div> -->
+                        <!-- </div> -->
                         
                         <div class="form-group row">
-                            <label for="inquirerName" class="col-sm-2 col-form-label">의견제출자 이름</label>
+                            <label for="inquirerName" class="col-sm-2 col-form-label">이름</label>
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" id="inquirerName" th:field="*{inquirerName}" required>
                             </div>
@@ -113,13 +113,13 @@
                         </div>
                         
                         <div class="form-group row">
-                            <label for="content" class="col-sm-2 col-form-label">의견제출 내용</label>
+                            <label for="content" class="col-sm-2 col-form-label">내용</label>
                             <div class="col-sm-10">
                                 <textarea class="form-control" id="content" th:field="*{content}" rows="10" required></textarea>
                             </div>
                         </div>
                         
-                        <!-- <div class="form-group row">
+                        <div class="form-group row">
                             <label class="col-sm-2 col-form-label">첨부 파일</label>
                             <div class="col-sm-10">
                                 <div class="custom-file mb-3">
@@ -135,7 +135,7 @@
                                     <label class="custom-file-label" for="file3">파일 선택 (선택사항)</label>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         
                         <div class="form-group row">
                             <div class="col-sm-12 text-right">

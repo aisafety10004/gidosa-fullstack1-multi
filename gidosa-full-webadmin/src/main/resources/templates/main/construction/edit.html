@@ -11,7 +11,7 @@
         <!-- <h2>도입현장 수정</h2> -->
         
         <form th:action="@{/construction/update/{id}(id=${construction.id})}" th:object="${construction}" method="post">
-            <div class="mb-3">
+            <div class="mb-3 mt-3">
                 <label for="name" class="form-label">현장명</label>
                 <input type="text" class="form-control" id="name" th:field="*{name}" required>
             </div>
@@ -34,10 +34,12 @@
             <div class="mb-3">
                 <label for="status" class="form-label">상태</label>
                 <select class="form-control" id="status" th:field="*{status}">
-                    <option value="준비중">준비중</option>
+                    <option value="게시">게시</option>
+                    <option value="미게시">미게시</option>
+                    <!-- <option value="준비중">준비중</option>
                     <option value="진행중">진행중</option>
                     <option value="완료">완료</option>
-                    <option value="중단">중단</option>
+                    <option value="중단">중단</option> -->
                 </select>
             </div>
             

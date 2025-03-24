@@ -30,14 +30,8 @@
     <div layout:fragment="content">
         <!-- <h2 class="mb-4">매니저 목록</h2> -->
 
-        <!-- 등록 버튼 추가 -->
-        <div class="mb-3 mt-3">
-            <!-- <a th:href="@{/member/admin/register}" class="btn btn-primary">새 매니저 등록</a> -->
-            <a th:href="@{/member/admin/register}" class="btn btn-primary">현장관리자 등록</a>
-        </div>
-        
         <!-- 검색 폼 추가 -->
-        <div class="card mb-4">
+        <div class="card mb-4 mt-4">
             <div class="card-body">
                 <form th:action="@{/member/admin/list}" method="get" class="row g-3 align-items-end" id="searchForm" onsubmit="return validateSearchForm()">
                     <div class="col-md-3">
@@ -91,6 +85,12 @@
         </div>
         <div th:if="${error}" class="alert alert-danger" role="alert">
             <span th:text="${error}"></span>
+        </div>
+
+        <!-- 등록 버튼 추가 -->
+        <div class="mb-3 mt-3">
+            <!-- <a th:href="@{/member/admin/register}" class="btn btn-primary">새 매니저 등록</a> -->
+            <a th:href="@{/member/admin/register}" class="btn btn-primary">현장관리자 등록</a>
         </div>
 
         <table class="table">

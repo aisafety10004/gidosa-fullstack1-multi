@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="card shadow mb-4 mt-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">의견제출 상세보기</h6>
+                    <h6 class="m-0 font-weight-bold">의견제출 상세보기</h6>
                     <div>
                         <a th:if="${isAdmin}" th:href="@{/inquiry/admin/list}" class="btn btn-secondary btn-sm">
                             <i class="fas fa-list"></i> 목록으로
@@ -55,7 +55,7 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <strong>의견제출자:</strong> <span th:text="${inquiryAdmin.inquirerName}"></span>
+                                    <strong>이름:</strong> <span th:text="${inquiryAdmin.inquirerName}"></span>
                                 </div>
                                 <div class="col-md-4">
                                     <strong>이메일:</strong> <span th:text="${inquiryAdmin.inquirerEmail}"></span>
@@ -80,7 +80,7 @@
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h6 class="m-0 font-weight-bold">의견제출 내용</h6>
+                                            <h6 class="m-0 font-weight-bold">내용</h6>
                                         </div>
                                         <div class="card-body">
                                             <div th:utext="${inquiryAdmin.content}"></div>

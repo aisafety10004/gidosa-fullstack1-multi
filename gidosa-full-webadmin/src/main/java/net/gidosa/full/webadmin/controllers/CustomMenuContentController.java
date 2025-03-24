@@ -7,17 +7,37 @@ import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenu;
 import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenuContentType1;
 import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenuContentType2;
 import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenuContentType3;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenuContentType4;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenuContentType5;
+import net.gidosa.rdb.models.entities.dbs.mysql.FileAttachment;
 import net.gidosa.full.webadmin.services.CustomMenuContentService;
 import net.gidosa.full.webadmin.services.CustomMenuService;
+import net.gidosa.full.webadmin.services.FileAttachmentService;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberAdmin;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Log4j2
@@ -28,6 +48,39 @@ public class CustomMenuContentController {
     
     private final CustomMenuService customMenuService;
     private final CustomMenuContentService customMenuContentService;
+    private final FileAttachmentService fileAttachmentService;
+    
+    /**
+     * 메뉴에 대한 접근 권한을 확인합니다.
+     */
+    private boolean hasAccess(Long menuId) {
+        try {
+            // 현재 로그인한 사용자 정보 가져오기
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
+            Construction construction = memberAdmin.getConstruction();
+            boolean isAdmin = "ROLE_ADMIN".equals(memberAdmin.getRole());
+            Long constructionId = Objects.isNull(construction) ? null : construction.getId();
+            
+            // 메뉴 정보 조회
+            CustomMenu menu = customMenuService.getMenuById(menuId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
+            
+            // 관리자이거나 건설현장이 일치하는 경우에만 접근 허용
+            if (isAdmin) {
+                return true;
+            } else if (!Objects.isNull(constructionId) && menu.getConstruction() != null && 
+                        menu.getConstruction().getId().equals(constructionId)) {
+                return true;
+            }
+            
+            return false;
+        } catch (Exception e) {
+            log.error("접근 권한 확인 중 오류 발생", e);
+            return false;
+        }
+    }
     
     /**
      * 커스텀 메뉴 컨텐츠 페이지를 표시합니다.
@@ -74,6 +127,14 @@ public class CustomMenuContentController {
             CustomMenuContentType3 content = customMenuContentService.getType3ContentByMenuId(menu.getId());
             model.addAttribute("content", content != null ? content : new CustomMenuContentType3());
             return "main/custom/type3";
+        } else if (menu.getMenuType() == 4) { // 단건 내용(With 첨부파일) 저장/보기
+            CustomMenuContentType4 content = customMenuContentService.getType4ContentByMenuId(menu.getId());
+            model.addAttribute("content", content != null ? content : new CustomMenuContentType4());
+            return "main/custom/type4";
+        } else if (menu.getMenuType() == 5) { // Mermaid(With 첨부파일) 저장/보기
+            CustomMenuContentType5 content = customMenuContentService.getType5ContentByMenuId(menu.getId());
+            model.addAttribute("content", content != null ? content : new CustomMenuContentType5());
+            return "main/custom/type5";
         } else {
             return "redirect:/main?error=invalid-menu-type";
         }
@@ -335,6 +396,196 @@ public class CustomMenuContentController {
             log.error("타입3 컨텐츠 삭제 중 오류 발생", e);
             redirectAttributes.addFlashAttribute("error", "내용 삭제 중 오류가 발생했습니다: " + e.getMessage());
             return "redirect:/main";
+        }
+    }
+
+    /**
+     * 타입4 메뉴 컨텐츠를 저장합니다.
+     */
+    @PostMapping("/save/type4/{menuId}")
+    public String saveType4Content(@PathVariable Long menuId,
+                                 @RequestParam("content") String content,
+                                 @RequestParam(value = "files", required = false) List<MultipartFile> files,
+                                 RedirectAttributes redirectAttributes) {
+        if (!hasAccess(menuId)) {
+            return "redirect:/error/unauthorized";
+        }
+
+        CustomMenu menu = customMenuService.getMenuById(menuId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
+
+        try {
+            // 컨텐츠 저장 (첨부파일 함께 처리)
+            customMenuContentService.saveType4Content(menuId, content, files);
+            redirectAttributes.addFlashAttribute("success", "컨텐츠가 성공적으로 저장되었습니다.");
+        } catch (Exception e) {
+            log.error("Error saving Type4 content", e);
+            redirectAttributes.addFlashAttribute("error", "컨텐츠 저장 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        
+        return "redirect:" + menu.getUrl();
+    }
+
+    /**
+     * 타입5 메뉴 컨텐츠를 저장합니다.
+     */
+    @PostMapping("/save/type5/{menuId}")
+    public String saveType5Content(@PathVariable Long menuId,
+                                 @RequestParam("mermaidCode") String mermaidCode,
+                                 @RequestParam(value = "files", required = false) List<MultipartFile> files,
+                                 RedirectAttributes redirectAttributes) {
+        if (!hasAccess(menuId)) {
+            return "redirect:/error/unauthorized";
+        }
+        
+        CustomMenu menu = customMenuService.getMenuById(menuId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
+                    
+        try {
+            // 컨텐츠 저장 (첨부파일 함께 처리)
+            customMenuContentService.saveType5Content(menuId, mermaidCode, files);
+            redirectAttributes.addFlashAttribute("success", "머메이드 다이어그램이 성공적으로 저장되었습니다.");
+        } catch (Exception e) {
+            log.error("Error saving Type5 content", e);
+            redirectAttributes.addFlashAttribute("error", "머메이드 다이어그램 저장 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        
+        return "redirect:" + menu.getUrl();
+    }
+
+    /**
+     * 타입4 메뉴 컨텐츠를 삭제합니다.
+     */
+    @GetMapping("/delete/type4/{menuId}")
+    public String deleteType4Content(@PathVariable Long menuId,
+                                   RedirectAttributes redirectAttributes,
+                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
+        Construction construction = memberAdmin.getConstruction();
+//        if (construction == null) {
+//            return "redirect:/main?error=no-construction";
+//        }
+        Long constructionId = Objects.isNull(construction) ? null : construction.getId();
+        
+        try {
+            CustomMenu menu = customMenuService.getMenuById(menuId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
+            
+            // 다른 건설 현장의 메뉴는 접근할 수 없음
+            if (!Objects.isNull(constructionId) && !menu.getConstruction().getId().equals(constructionId)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/main";
+            }
+            
+            customMenuContentService.deleteType4Content(menuId);
+            redirectAttributes.addFlashAttribute("message", "내용이 삭제되었습니다.");
+            
+            return "redirect:" + menu.getUrl();
+        } catch (Exception e) {
+            log.error("타입4 컨텐츠 삭제 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "내용 삭제 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/main";
+        }
+    }
+
+    /**
+     * 타입5 메뉴 컨텐츠를 삭제합니다.
+     */
+    @GetMapping("/delete/type5/{menuId}")
+    public String deleteType5Content(@PathVariable Long menuId,
+                                   RedirectAttributes redirectAttributes,
+                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
+        Construction construction = memberAdmin.getConstruction();
+//        if (construction == null) {
+//            return "redirect:/main?error=no-construction";
+//        }
+        Long constructionId = Objects.isNull(construction) ? null : construction.getId();
+        
+        try {
+            CustomMenu menu = customMenuService.getMenuById(menuId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
+            
+            // 다른 건설 현장의 메뉴는 접근할 수 없음
+            if (!Objects.isNull(constructionId) && !menu.getConstruction().getId().equals(constructionId)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/main";
+            }
+            
+            customMenuContentService.deleteType5Content(menuId);
+            redirectAttributes.addFlashAttribute("message", "내용이 삭제되었습니다.");
+            
+            return "redirect:" + menu.getUrl();
+        } catch (Exception e) {
+            log.error("타입5 컨텐츠 삭제 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "내용 삭제 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/main";
+        }
+    }
+
+    /**
+     * 첨부파일 다운로드
+     */
+    @GetMapping("/download/file/{contentId}/{fileNum}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long contentId,
+                                              @PathVariable Integer fileNum,
+                                              HttpServletResponse response) {
+        try {
+            // fileNum에 따라 파일 선택 (1, 2, 3 중 하나)
+            FileAttachment attachment = null;
+            
+            // 서비스 메서드를 통해 첨부파일이 포함된 콘텐츠 조회
+            CustomMenuContentType4 type4Content = customMenuContentService.getType4ContentWithAttachmentsById(contentId);
+
+            if (type4Content != null) {
+                if (fileNum == 1 && type4Content.getFileAttachment1() != null) {
+                    attachment = type4Content.getFileAttachment1();
+                } else if (fileNum == 2 && type4Content.getFileAttachment2() != null) {
+                    attachment = type4Content.getFileAttachment2();
+                } else if (fileNum == 3 && type4Content.getFileAttachment3() != null) {
+                    attachment = type4Content.getFileAttachment3();
+                }
+            } else {
+                // Type5도 확인
+                CustomMenuContentType5 type5Content = customMenuContentService.getType5ContentWithAttachmentsById(contentId);
+                if (type5Content != null) {
+                    if (fileNum == 1 && type5Content.getFileAttachment1() != null) {
+                        attachment = type5Content.getFileAttachment1();
+                    } else if (fileNum == 2 && type5Content.getFileAttachment2() != null) {
+                        attachment = type5Content.getFileAttachment2();
+                    } else if (fileNum == 3 && type5Content.getFileAttachment3() != null) {
+                        attachment = type5Content.getFileAttachment3();
+                    }
+                }
+            }
+            
+            if (attachment == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            // 파일 다운로드 경로 설정
+            String filePath = attachment.getFilePath();
+            File file = new File(filePath);
+            
+            if (!file.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            // 한글 파일명을 위한 인코딩 처리
+            String encodedFileName = URLEncoder.encode(attachment.getOriginalFilename(), StandardCharsets.UTF_8.toString())
+                                            .replaceAll("\\+", "%20");
+            
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+            
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
+                    .contentType(MediaType.parseMediaType(attachment.getContentType()))
+                    .contentLength(file.length())
+                    .body(resource);
+            
+        } catch (Exception e) {
+            log.error("첨부파일 다운로드 중 오류 발생", e);
+            return ResponseEntity.internalServerError().build();
         }
     }
 } 

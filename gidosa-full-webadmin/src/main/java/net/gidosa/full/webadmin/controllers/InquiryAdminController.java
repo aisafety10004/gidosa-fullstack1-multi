@@ -37,7 +37,6 @@ import java.util.Objects;
 public class InquiryAdminController {
 
     private final InquiryAdminService inquiryAdminService;
-    private final String FILE_UPLOAD_PATH = "uploads/inquiry-admin/";
 
     // 어드민 문의사항 목록 페이지
     @GetMapping("/admin/list")

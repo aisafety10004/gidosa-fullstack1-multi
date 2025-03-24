@@ -248,9 +248,12 @@ public class NoticeController {
             notice.setPublishedManager(false);
             notice.setPublishedAnonymous(false);
             notice.setPublishedLoggedInUser(false);
-            
+
+            MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+            boolean isAdmin = "ROLE_ADMIN".equals(memberAdmin.getRole());
+
             // 권한에 따라 건설현장 설정
-            if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            if (isAdmin) {
                 // 관리자는 모든 건설현장에 대한 공지사항 작성 가능
                 if (constructionId != null) {
                     // 특정 건설현장 선택
@@ -261,9 +264,7 @@ public class NoticeController {
                 }
             } else {
                 // 매니저는 자신의 건설현장에 대한 공지사항만 작성 가능
-                MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
                 Construction construction = memberAdmin.getConstruction();
-                
                 if (construction != null) {
                     noticeService.createNotice(notice, files, construction.getId());
                 } else {
@@ -284,14 +285,16 @@ public class NoticeController {
     public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Notice notice = noticeService.getNoticeById(id)
                 .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
-        
+
+        MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+        boolean isAdmin = "ROLE_ADMIN".equals(memberAdmin.getRole());
+
         // 권한 체크: 매니저는 자신의 건설현장 공지사항과 전체 공지사항만 볼 수 있음
-        if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+        if (!isAdmin) {
             Construction userConstruction = memberAdmin.getConstruction();
-            
+
             // 공지사항이 특정 건설현장에 속하고, 사용자의 건설현장과 다른 경우 접근 거부
-            if (notice.getConstruction() != null && 
+            if (notice.getConstruction() != null &&
                 (userConstruction == null || !notice.getConstruction().getId().equals(userConstruction.getId()))) {
                 return "redirect:/notice?error=unauthorized";
             }
@@ -306,9 +309,11 @@ public class NoticeController {
         Notice notice = noticeService.getNoticeById(id)
                 .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
 
+        MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+        boolean isAdmin = "ROLE_ADMIN".equals(memberAdmin.getRole());
+
         // 권한 체크: 매니저는 자신의 건설현장 공지사항만 수정 가능
-        if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+        if (!isAdmin) {
             Construction userConstruction = memberAdmin.getConstruction();
 
             // 공지사항이 특정 건설현장에 속하고, 사용자의 건설현장과 다른 경우 접근 거부
@@ -317,11 +322,10 @@ public class NoticeController {
                 return "redirect:/notice?error=unauthorized";
             }
         }
-
         model.addAttribute("notice", notice);
 
         // 관리자인 경우 건설현장 목록 제공
-        if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+        if (isAdmin) {
             model.addAttribute("constructions", constructionService.findAllConstructionsWithManagementMenus());
             model.addAttribute("isAdmin", true);
         } else {
@@ -343,9 +347,11 @@ public class NoticeController {
             Notice existingNotice = noticeService.getNoticeById(id)
                     .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
 
+            MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+            boolean isAdmin = "ROLE_ADMIN".equals(memberAdmin.getRole());
+
             // 권한 체크: 매니저는 자신의 건설현장 공지사항만 수정 가능
-            if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-                MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+            if (!isAdmin) {
                 Construction userConstruction = memberAdmin.getConstruction();
 
                 // 공지사항이 특정 건설현장에 속하고, 사용자의 건설현장과 다른 경우 접근 거부
@@ -396,10 +402,12 @@ public class NoticeController {
         try {
             Notice notice = noticeService.getNoticeById(id)
                     .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
-            
+
+            MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+            boolean isAdmin = "ROLE_ADMIN".equals(memberAdmin.getRole());
+
             // 권한 체크: 매니저는 자신의 건설현장 공지사항만 삭제 가능
-            if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-                MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+            if (!isAdmin) {
                 Construction userConstruction = memberAdmin.getConstruction();
                 
                 // 공지사항이 특정 건설현장에 속하고, 사용자의 건설현장과 다른 경우 접근 거부
@@ -428,10 +436,12 @@ public class NoticeController {
         try {
             Notice notice = noticeService.getNoticeById(noticeId)
                     .orElseThrow(() -> new RuntimeException("공지사항을 찾을 수 없습니다."));
-            
+
+            MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+            boolean isAdmin = "ROLE_ADMIN".equals(memberAdmin.getRole());
+
             // 권한 체크: 매니저는 자신의 건설현장 공지사항의 첨부파일만 삭제 가능
-            if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-                MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+            if (!isAdmin) {
                 Construction userConstruction = memberAdmin.getConstruction();
                 
                 // 공지사항이 특정 건설현장에 속하고, 사용자의 건설현장과 다른 경우 접근 거부

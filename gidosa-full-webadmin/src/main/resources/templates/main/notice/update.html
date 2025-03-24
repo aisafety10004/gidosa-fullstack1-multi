@@ -7,11 +7,11 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <h2 class="mb-4">공지사항 수정</h2>
+<!--        <h2 class="mb-4">공지사항 수정</h2>-->
 
         <form th:action="@{/notice/update/{id}(id=${notice.id})}" method="post" 
               enctype="multipart/form-data" onsubmit="return submitForm()">
-            <div class="mb-3">
+            <div class="mb-3 mt-3">
                 <label for="title" class="form-label">제목</label>
                 <input type="text" class="form-control" id="title" name="title" 
                        th:value="${notice.title}" required>
