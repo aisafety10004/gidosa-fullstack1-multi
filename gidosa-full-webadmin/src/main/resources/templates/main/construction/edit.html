@@ -64,7 +64,7 @@
                 </div>
             </div>
             
-            <div class="mb-3">
+            <div class="mb-1">
                 <label class="form-label">메뉴 선택</label>
                 <div class="d-flex flex-wrap gap-4">
                     <div class="form-check" th:each="customMenu : ${templateCustomMenus}">
@@ -73,14 +73,18 @@
                                th:checked="${construction.selectedCustomMenuIds != null && construction.selectedCustomMenuIds.contains(customMenu.id)}">
                         <label class="form-check-label" th:for="${'customMenu-' + customMenu.id}" th:text="${customMenu.name}"></label>
                     </div>
-                    <div class="text-muted">
-                        * 이전에 선택한 메뉴에 대한 선택 해제를 하시면 이전에 선택한 메뉴가 사라지니 유의하시길 바랍니다.
-                        <br>반드시 추가된 메뉴에 대해서만 체크를 하시길 바랍니다.
-                    </div>
                     <div th:if="${#lists.isEmpty(templateCustomMenus)}" class="text-muted">
+                        <br>
                         사용 가능한 템플릿 메뉴가 없습니다.
                     </div>
                 </div>
+            </div>
+            <div class="mb-4">
+                <span class="text-muted">
+                    * 이전에 선택한 메뉴에 대한 선택 해제를 하시면 이전에 선택한 메뉴가 사라지니 유의하시길 바랍니다.
+                    <br>
+                    반드시 추가된 메뉴에 대해서만 체크를 하시길 바랍니다.
+                </span>
             </div>
             
             <button type="submit" class="btn btn-primary">수정</button>

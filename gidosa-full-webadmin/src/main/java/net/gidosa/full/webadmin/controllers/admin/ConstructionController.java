@@ -30,7 +30,7 @@ public class ConstructionController {
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String status,
             @RequestParam(required = false, defaultValue = "id") String sort,
-            @RequestParam(required = false, defaultValue = "asc") String direction,
+            @RequestParam(required = false, defaultValue = "desc") String direction,
             @RequestParam(required = false, defaultValue = "10") Integer size,
             @PageableDefault(size = 10) Pageable pageable, 
             Model model) {

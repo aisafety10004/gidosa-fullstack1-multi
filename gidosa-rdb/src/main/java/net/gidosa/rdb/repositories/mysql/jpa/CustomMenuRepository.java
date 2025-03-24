@@ -59,4 +59,8 @@ public interface CustomMenuRepository extends JpaRepository<CustomMenu, Long> {
     // 템플릿 메뉴 조회 (construction이 null인 메뉴들)
     @Query("SELECT m FROM CustomMenu m LEFT JOIN FETCH m.children c WHERE m.construction IS NULL ORDER BY m.displayOrder ASC")
     List<CustomMenu> findTemplateMenus();
+
+    // URL로 메뉴 조회 (construction이 null인 메뉴들)
+    @Query("SELECT m FROM CustomMenu m LEFT JOIN FETCH m.construction WHERE m.construction IS NULL AND m.url = :url")
+    CustomMenu findByConstructionIsNullAndUrl(@Param("url") String url);
 } 

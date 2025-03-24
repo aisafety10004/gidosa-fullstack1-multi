@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Log4j2
 @Controller
@@ -35,18 +36,22 @@ public class CustomMenuContentController {
     public String handleCustomMenuRequest(HttpServletRequest request, Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
         Construction construction = memberAdmin.getConstruction();
-        
-        if (construction == null) {
-            return "redirect:/main?error=no-construction";
-        }
-        
+//        if (construction == null) {
+//            return "redirect:/main?error=no-construction";
+//        }
+        Long constructionId = Objects.isNull(construction) ? null : construction.getId();
         // 현재 요청 URL 가져오기 - HttpServletRequest를 사용하여 직접 경로 추출
         String requestURI = request.getRequestURI();
         log.info("Requested URI: {}", requestURI);
-        
+
         // 메뉴 정보 조회 - 전체 경로로 조회
-        CustomMenu menu = customMenuService.getMenuByUrl(construction.getId(), requestURI);
-        
+        CustomMenu menu;
+        if(Objects.isNull(constructionId)) {
+            menu = customMenuService.getMenuByConstructionIsNullAndUrl(requestURI);
+        } else {
+            menu = customMenuService.getMenuByUrl(constructionId, requestURI);
+        }
+
         if (menu == null) {
             log.error("Menu not found for URL: {}", requestURI);
             return "redirect:/main?error=menu-not-found";
@@ -84,21 +89,21 @@ public class CustomMenuContentController {
                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
         MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
         Construction construction = memberAdmin.getConstruction();
-        
-        if (construction == null) {
-            return "redirect:/main?error=no-construction";
-        }
+//        if (construction == null) {
+//            return "redirect:/main?error=no-construction";
+//        }
+        Long constructionId = Objects.isNull(construction) ? null : construction.getId();
         
         try {
             CustomMenu menu = customMenuService.getMenuById(menuId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
-            
+
             // 다른 건설 현장의 메뉴는 접근할 수 없음
-            if (!menu.getConstruction().getId().equals(construction.getId())) {
+            if (!Objects.isNull(constructionId) && !menu.getConstruction().getId().equals(constructionId)) {
                 redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
                 return "redirect:/main";
             }
-            
+
             customMenuContentService.saveType1Content(menuId, content);
             redirectAttributes.addFlashAttribute("message", "내용이 저장되었습니다.");
             
@@ -121,17 +126,17 @@ public class CustomMenuContentController {
                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
         MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
         Construction construction = memberAdmin.getConstruction();
-        
-        if (construction == null) {
-            return "redirect:/main?error=no-construction";
-        }
+//        if (construction == null) {
+//            return "redirect:/main?error=no-construction";
+//        }
+        Long constructionId = Objects.isNull(construction) ? null : construction.getId();
         
         try {
             CustomMenu menu = customMenuService.getMenuById(menuId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
             
             // 다른 건설 현장의 메뉴는 접근할 수 없음
-            if (!menu.getConstruction().getId().equals(construction.getId())) {
+            if (!Objects.isNull(constructionId) && !menu.getConstruction().getId().equals(constructionId)) {
                 redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
                 return "redirect:/main";
             }
@@ -159,17 +164,17 @@ public class CustomMenuContentController {
                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
         MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
         Construction construction = memberAdmin.getConstruction();
-        
-        if (construction == null) {
-            return "redirect:/main?error=no-construction";
-        }
+//        if (construction == null) {
+//            return "redirect:/main?error=no-construction";
+//        }
+        Long constructionId = Objects.isNull(construction) ? null : construction.getId();
         
         try {
             CustomMenu menu = customMenuService.getMenuById(menuId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
             
             // 다른 건설 현장의 메뉴는 접근할 수 없음
-            if (!menu.getConstruction().getId().equals(construction.getId())) {
+            if (!Objects.isNull(constructionId) && !menu.getConstruction().getId().equals(constructionId)) {
                 redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
                 return "redirect:/main";
             }
@@ -198,17 +203,17 @@ public class CustomMenuContentController {
                                    @AuthenticationPrincipal PrincipalDetails principalDetails) {
         MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
         Construction construction = memberAdmin.getConstruction();
-        
-        if (construction == null) {
-            return "redirect:/main?error=no-construction";
-        }
+//        if (construction == null) {
+//            return "redirect:/main?error=no-construction";
+//        }
+        Long constructionId = Objects.isNull(construction) ? null : construction.getId();
         
         try {
             CustomMenu menu = customMenuService.getMenuById(menuId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
             
             // 다른 건설 현장의 메뉴는 접근할 수 없음
-            if (!menu.getConstruction().getId().equals(construction.getId())) {
+            if (!Objects.isNull(constructionId) && !menu.getConstruction().getId().equals(constructionId)) {
                 redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
                 return "redirect:/main";
             }
@@ -234,17 +239,17 @@ public class CustomMenuContentController {
                                    @AuthenticationPrincipal PrincipalDetails principalDetails) {
         MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
         Construction construction = memberAdmin.getConstruction();
-        
-        if (construction == null) {
-            return "redirect:/main?error=no-construction";
-        }
+//        if (construction == null) {
+//            return "redirect:/main?error=no-construction";
+//        }
+        Long constructionId = Objects.isNull(construction) ? null : construction.getId();
         
         try {
             CustomMenu menu = customMenuService.getMenuById(menuId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
             
             // 다른 건설 현장의 메뉴는 접근할 수 없음
-            if (!menu.getConstruction().getId().equals(construction.getId())) {
+            if (!Objects.isNull(constructionId) && !menu.getConstruction().getId().equals(constructionId)) {
                 redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
                 return "redirect:/main";
             }
@@ -272,17 +277,17 @@ public class CustomMenuContentController {
                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
         MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
         Construction construction = memberAdmin.getConstruction();
-
-        if (construction == null) {
-            return "redirect:/main?error=no-construction";
-        }
+//        if (construction == null) {
+//            return "redirect:/main?error=no-construction";
+//        }
+        Long constructionId = Objects.isNull(construction) ? null : construction.getId();
 
         try {
             CustomMenu menu = customMenuService.getMenuById(menuId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
 
             // 다른 건설 현장의 메뉴는 접근할 수 없음
-            if (!menu.getConstruction().getId().equals(construction.getId())) {
+            if (!Objects.isNull(constructionId) && !menu.getConstruction().getId().equals(constructionId)) {
                 redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
                 return "redirect:/main";
             }
@@ -307,17 +312,17 @@ public class CustomMenuContentController {
                                    @AuthenticationPrincipal PrincipalDetails principalDetails) {
         MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
         Construction construction = memberAdmin.getConstruction();
-
-        if (construction == null) {
-            return "redirect:/main?error=no-construction";
-        }
+//        if (construction == null) {
+//            return "redirect:/main?error=no-construction";
+//        }
+        Long constructionId = Objects.isNull(construction) ? null : construction.getId();
 
         try {
             CustomMenu menu = customMenuService.getMenuById(menuId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
 
             // 다른 건설 현장의 메뉴는 접근할 수 없음
-            if (!menu.getConstruction().getId().equals(construction.getId())) {
+            if (!Objects.isNull(constructionId) && !menu.getConstruction().getId().equals(constructionId)) {
                 redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
                 return "redirect:/main";
             }

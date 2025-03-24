@@ -133,6 +133,14 @@ public class CustomMenuService {
     public CustomMenu getMenuByUrl(Long constructionId, String url) {
         return customMenuRepository.findByConstructionIdAndUrl(constructionId, url);
     }
+
+    /**
+     * URL로 메뉴를 조회합니다.(With Contruction이 없는 메뉴)
+     */
+    @Transactional(readOnly = true)
+    public CustomMenu getMenuByConstructionIsNullAndUrl(String url) {
+        return customMenuRepository.findByConstructionIsNullAndUrl(url);
+    }
     
     /**
      * DTO를 엔티티로 변환합니다.
