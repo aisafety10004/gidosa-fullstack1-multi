@@ -4,7 +4,7 @@
       layout:decorate="~{${layout}}"
 >
 <head>
-    <title>도입현장 수정</title>
+    <!-- <title>도입현장 수정</title> -->
 </head>
 <body>
     <div layout:fragment="content">
@@ -67,7 +67,7 @@
             </div>
             
             <div class="mb-1">
-                <label class="form-label">메뉴 선택</label>
+                <label class="form-label">확장 메뉴 선택</label>
                 <div class="d-flex flex-wrap gap-4">
                     <div class="form-check" th:each="customMenu : ${templateCustomMenus}">
                         <input class="form-check-input" type="checkbox" th:id="${'customMenu-' + customMenu.id}" 

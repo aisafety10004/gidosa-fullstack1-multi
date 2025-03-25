@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{${layout}}">
 <head>
-    <title>메뉴 관리</title>
+    <!-- <title>메뉴 관리</title> -->
     <style>
         .menu-item {
             margin-bottom: 10px;
@@ -67,11 +67,11 @@
                                 <br>
                                 <small th:text="|주소: ${menu.url}|" class="text-muted"></small>
                                 <br>
-                                <span th:if="${menu.menuType == 1}" class="badge bg-info menu-type-badge">타입1: 단건 내용</span>
-                                <span th:if="${menu.menuType == 2}" class="badge bg-warning menu-type-badge">타입2: 단건 내용(With 날짜)</span>
-                                <span th:if="${menu.menuType == 3}" class="badge bg-success menu-type-badge">타입3: Mermaid</span>
-                                <span th:if="${menu.menuType == 4}" class="badge bg-warning menu-type-badge">타입4: 단건 내용(With 첨부파일)</span>
-                                <span th:if="${menu.menuType == 5}" class="badge bg-success menu-type-badge">타입5: Mermaid(With 첨부파일)</span>
+                                <span th:if="${menu.menuType == 1}" class="badge bg-info menu-type-badge">단건 내용</span>
+                                <!-- <span th:if="${menu.menuType == 2}" class="badge bg-warning menu-type-badge">단건 내용(With 날짜)</span>
+                                <span th:if="${menu.menuType == 3}" class="badge bg-success menu-type-badge">Mermaid</span> -->
+                                <span th:if="${menu.menuType == 4}" class="badge bg-warning menu-type-badge">단건 내용(With 첨부파일)</span>
+                                <span th:if="${menu.menuType == 5}" class="badge bg-success menu-type-badge">Mermaid(With 첨부파일)</span>
                                 <br>
                                 <small th:text="|활성화: ${menu.isActive}|" class="text-muted"></small>
                                 <br>
@@ -93,11 +93,11 @@
                                     <div>
                                         <h6 th:text="${childMenu.name}" class="mb-0"></h6>
                                         <small th:text="${childMenu.url}" class="text-muted"></small>
-                                        <span th:if="${childMenu.menuType == 1}" class="badge bg-info menu-type-badge ms-2">타입1: 단건 내용</span>
-                                        <span th:if="${childMenu.menuType == 2}" class="badge bg-warning menu-type-badge ms-2">타입2: 단건 내용(With 날짜)</span>
-                                        <span th:if="${childMenu.menuType == 3}" class="badge bg-success menu-type-badge ms-2">타입3: Mermaid</span>
-                                        <span th:if="${childMenu.menuType == 4}" class="badge bg-warning menu-type-badge ms-2">타입4: 단건 내용(With 첨부파일)</span>
-                                        <span th:if="${childMenu.menuType == 5}" class="badge bg-success menu-type-badge ms-2">타입5: Mermaid(With 첨부파일)</span>
+                                        <span th:if="${childMenu.menuType == 1}" class="badge bg-info menu-type-badge ms-2">단건 내용</span>
+                                        <!-- <span th:if="${childMenu.menuType == 2}" class="badge bg-warning menu-type-badge ms-2">단건 내용(With 날짜)</span>
+                                        <span th:if="${childMenu.menuType == 3}" class="badge bg-success menu-type-badge ms-2">Mermaid</span> -->
+                                        <span th:if="${childMenu.menuType == 4}" class="badge bg-warning menu-type-badge ms-2">단건 내용(With 첨부파일)</span>
+                                        <span th:if="${childMenu.menuType == 5}" class="badge bg-success menu-type-badge ms-2">Mermaid(With 첨부파일)</span>
                                     </div>
                                     <div class="menu-actions">
                                         <a th:href="@{/settings/menu-manager/edit/{id}(id=${childMenu.id})}" class="btn btn-sm btn-warning">수정</a>

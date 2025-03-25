@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{${layout}}">
 <head>
-    <title>안전지도사 관리</title>
+    <!-- <title>안전지도사 관리</title> -->
 </head>
 <body>
     <div layout:fragment="content">
@@ -29,7 +29,7 @@
                 <div th:if="${notice.mermaidCode != null && !notice.mermaidCode.isEmpty()}" class="mt-4">
                     <!-- <h6>Mermaid 다이어그램</h6> -->
                     <div class="mermaid-diagram-container">
-                        <div class="mermaid" th:text="${notice.mermaidCode}"></div>
+                        <div class="mermaid text-center" th:text="${notice.mermaidCode}"></div>
                     </div>
                 </div>
 

@@ -5,7 +5,7 @@
 >
 <head>
     <!-- <title>건설공사현장 상세정보</title> -->
-    <title>도입현장 상세정보</title>
+    <!-- <title>도입현장 상세정보</title> -->
 </head>
 <body>
     <div layout:fragment="content">
@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-2 font-weight-bold">커스텀 메뉴</div>
+                    <div class="col-md-2 font-weight-bold">확장 메뉴</div>
                     <div class="col-md-10">
                         <ul class="list-unstyled">
                             <li th:each="menu : ${construction.customMenus}" th:text="${menu.name + ' (' + menu.url + ')'}">
