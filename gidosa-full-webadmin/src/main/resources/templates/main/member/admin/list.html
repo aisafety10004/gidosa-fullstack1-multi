@@ -122,7 +122,7 @@
                     <td th:text="${memberAdmin.name}"></td>
                     <td th:text="${memberAdmin.email}"></td>
                     <td th:text="${memberAdmin.phone}"></td>
-                    <td th:text="${memberAdmin.location}"></td>
+                    <td th:utext="${memberAdmin.location}"></td>
                     <td th:text="${#temporals.format(memberAdmin.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                     <td th:text="${memberAdmin.construction != null ? memberAdmin.construction.location : '-'}"></td>
 <!--                    <td>-->
