@@ -26,7 +26,7 @@ public class CustomMenuContentType5 {
     @Comment("메뉴")
     private CustomMenu menu;
     
-    @Column(columnDefinition = "MEDIUMTEXT")
+    @Column(columnDefinition = "TEXT")
     @Comment("Mermaid 코드")
     private String mermaidCode;
     

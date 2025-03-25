@@ -4,19 +4,15 @@
       layout:decorate="~{${layout}}">
 <head>
     <title th:text="${menu.name}"></title>
-    <link rel="stylesheet" href="/vendor/codemirror/lib/codemirror.css">
     <style>
-        .CodeMirror {
-            height: 300px;
-            border: 1px solid #ddd;
-        }
-        .mermaid-preview {
-            padding: 20px;
-            border: 1px solid #ddd;
-            margin-top: 15px;
-            min-height: 100px;
-        }
-    </style>
+      .content-container {
+          min-height: 300px;
+      }
+
+      .form-group.row {
+          margin-bottom: 16px;
+      }
+  </style>
 </head>
 <body>
     <div layout:fragment="content">
@@ -26,233 +22,108 @@
                 <p th:if="${menu.description}" th:text="${menu.description}" class="text-muted"></p>
             </div>
             <div class="card-body">
-                <!-- 내용 표시 -->
-                <div th:if="${content.id != null}" class="mb-4">
-                    <!-- 머메이드 다이어그램 표시 -->
-                    <div class="mermaid mt-3" th:text="${content.mermaidCode}"></div>
-                    
-                    <!-- 첨부파일 표시 -->
-                    <div th:if="${content.fileAttachment1 != null || content.fileAttachment2 != null || content.fileAttachment3 != null}" class="file-area mt-4 border-top pt-3">
-                        <h5>첨부파일</h5>
-                        <!-- 첨부파일 1 표시 -->
-                        <div th:if="${content.fileAttachment1 != null}" class="d-flex align-items-center mb-2">
-                            <i class="fas fa-file-download me-2"></i>
-                            <a th:href="@{'/common/file/download/' + ${content.fileAttachment1.id}}" 
-                               th:text="${content.fileAttachment1.originalFilename}"></a>
-                            <span class="ms-2 text-muted" 
-                                  th:text="'(' + ${#numbers.formatDecimal(content.fileAttachment1.fileSize / 1024, 0, 0)} + ' KB)'"></span>
-                            <a th:href="@{'/custom/delete/attachment/' + ${content.fileAttachment1.id} + '?returnUrl=' + ${menu.url}}"
-                               class="btn btn-sm btn-danger ms-2"
-                               onclick="return confirm('첨부파일을 삭제하시겠습니까?');">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        </div>
-                        
-                        <!-- 첨부파일 2 표시 -->
-                        <div th:if="${content.fileAttachment2 != null}" class="d-flex align-items-center mb-2">
-                            <i class="fas fa-file-download me-2"></i>
-                            <a th:href="@{'/common/file/download/' + ${content.fileAttachment2.id}}" 
-                               th:text="${content.fileAttachment2.originalFilename}"></a>
-                            <span class="ms-2 text-muted" 
-                                  th:text="'(' + ${#numbers.formatDecimal(content.fileAttachment2.fileSize / 1024, 0, 0)} + ' KB)'"></span>
-                            <a th:href="@{'/custom/delete/attachment/' + ${content.fileAttachment2.id} + '?returnUrl=' + ${menu.url}}"
-                               class="btn btn-sm btn-danger ms-2"
-                               onclick="return confirm('첨부파일을 삭제하시겠습니까?');">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        </div>
-                        
-                        <!-- 첨부파일 3 표시 -->
-                        <div th:if="${content.fileAttachment3 != null}" class="d-flex align-items-center mb-2">
-                            <i class="fas fa-file-download me-2"></i>
-                            <a th:href="@{'/common/file/download/' + ${content.fileAttachment3.id}}" 
-                               th:text="${content.fileAttachment3.originalFilename}"></a>
-                            <span class="ms-2 text-muted" 
-                                  th:text="'(' + ${#numbers.formatDecimal(content.fileAttachment3.fileSize / 1024, 0, 0)} + ' KB)'"></span>
-                            <a th:href="@{'/custom/delete/attachment/' + ${content.fileAttachment3.id} + '?returnUrl=' + ${menu.url}}"
-                               class="btn btn-sm btn-danger ms-2"
-                               onclick="return confirm('첨부파일을 삭제하시겠습니까?');">
-                                <i class="fas fa-times"></i>
-                            </a>
+                <form th:action="@{'/custom/save/type5/' + ${menu.id}}" method="post" enctype="multipart/form-data" onsubmit="return submitForm()">
+                    <div class="mb-3">
+                        <!-- <h3>Mermaid 다이어그램 미리보기</h3> -->
+                        <div id="mermaid-preview" class="preview-box"></div>
+                        <!-- <h2>Mermaid 코드 입력</h2> -->
+                        <textarea id="mermaid-input" placeholder="Mermaid 코드를 입력하세요." cols="100" rows="10" style="resize: both;" name="mermaidCode" th:utext="${content != null ? content.mermaidCode : ''}"/></textarea>
+                    </div>
+
+                    <!-- 기존 첨부 파일 목록 -->
+                    <div class="form-group" th:if="${content != null && content.id != null && (content.fileAttachment1 != null || content.fileAttachment2 != null || content.fileAttachment3 != null)}">
+                        <label class="form-label">기존 첨부 파일</label>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center" th:if="${content.fileAttachment1 != null && content.fileAttachment1.originalFilename != null}">
+                                <a th:href="@{/custom/download/file/{contentId}/1(contentId=${content.id})}"
+                                   th:text="${content.fileAttachment1.originalFilename}"></a>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center" th:if="${content.fileAttachment2 != null && content.fileAttachment2.originalFilename != null}">
+                                <a th:href="@{/custom/download/file/{contentId}/2(contentId=${content.id})}"
+                                   th:text="${content.fileAttachment2.originalFilename}"></a>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center" th:if="${content.fileAttachment3 != null && content.fileAttachment3.originalFilename != null}">
+                                <a th:href="@{/custom/download/file/{contentId}/3(contentId=${content.id})}"
+                                   th:text="${content.fileAttachment3.originalFilename}"></a>
+                            </li>
+                        </ul>
+                        <div class="small text-danger">
+                            ※ 새 파일을 업로드하면 기존 파일은 삭제됩니다.
                         </div>
                     </div>
-                    
-                    <!-- 편집 버튼 -->
-                    <div class="mt-4">
-                        <button type="button" class="btn btn-primary" id="showEditForm">수정</button>
-                        <a th:href="@{'/custom/delete/type5/' + ${menu.id}}" 
-                           class="btn btn-danger" 
-                           onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+
+                    <!-- 새 첨부 파일 업로드 -->
+                    <div class="form-group mb-4">
+                        <label class="form-label">첨부 파일</label>
+                        <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input" id="file1" name="files">
+                            <label class="custom-file-label" for="file1">파일 선택 (선택사항)</label>
+                        </div>
+                        <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input" id="file2" name="files">
+                            <label class="custom-file-label" for="file2">파일 선택 (선택사항)</label>
+                        </div>
+                        <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input" id="file3" name="files">
+                            <label class="custom-file-label" for="file3">파일 선택 (선택사항)</label>
+                        </div>
                     </div>
-                </div>
-                
-                <!-- 아직 내용이 없는 경우 -->
-                <div th:if="${content.id == null}" class="text-center mb-4">
-                    <p class="text-muted">아직 작성된 내용이 없습니다.</p>
-                    <button type="button" class="btn btn-primary" id="showEditForm">내용 작성</button>
-                </div>
-                
-                <!-- 작성/수정 폼 (초기에는 숨김) -->
-                <div id="editForm" th:style="${content.id == null ? '' : 'display:none;'}">
-                    <form th:action="@{'/custom/save/type5/' + ${menu.id}}" method="post" enctype="multipart/form-data">
-                        <div class="form-group mb-3">
-                            <label for="mermaidCode">Mermaid 다이어그램 코드</label>
-                            <textarea id="mermaidCode" name="mermaidCode" class="form-control"
-                                      th:text="${content.mermaidCode}"></textarea>
-                        </div>
-                        
-                        <div class="form-group mb-3">
-                            <button type="button" id="previewBtn" class="btn btn-secondary">미리보기</button>
-                            <div id="mermaidPreview" class="mermaid-preview"></div>
-                        </div>
-                        
-                        <!-- 첨부파일 업로드 -->
-                        <div class="form-group mb-3">
-                            <label>첨부파일 (최대 3개)</label>
-                            <div class="file-upload-container" id="fileUploadContainer">
-                                <div class="input-group mb-2">
-                                    <input type="file" class="form-control" name="files">
-                                    <button type="button" class="btn btn-success add-file-btn">+</button>
-                                </div>
-                            </div>
-                            
-                            <!-- 기존 첨부파일 표시 -->
-                            <div th:if="${content.fileAttachment1 != null || content.fileAttachment2 != null || content.fileAttachment3 != null}" class="mt-3">
-                                <p class="mb-2">현재 첨부된 파일:</p>
-                                <!-- 첨부파일 1 표시 -->
-                                <div th:if="${content.fileAttachment1 != null}" class="mb-1">
-                                    <span th:text="${content.fileAttachment1.originalFilename}"></span>
-                                    <span class="text-muted" 
-                                          th:text="'(' + ${#numbers.formatDecimal(content.fileAttachment1.fileSize / 1024, 0, 0)} + ' KB)'"></span>
-                                </div>
-                                
-                                <!-- 첨부파일 2 표시 -->
-                                <div th:if="${content.fileAttachment2 != null}" class="mb-1">
-                                    <span th:text="${content.fileAttachment2.originalFilename}"></span>
-                                    <span class="text-muted" 
-                                          th:text="'(' + ${#numbers.formatDecimal(content.fileAttachment2.fileSize / 1024, 0, 0)} + ' KB)'"></span>
-                                </div>
-                                
-                                <!-- 첨부파일 3 표시 -->
-                                <div th:if="${content.fileAttachment3 != null}" class="mb-1">
-                                    <span th:text="${content.fileAttachment3.originalFilename}"></span>
-                                    <span class="text-muted" 
-                                          th:text="'(' + ${#numbers.formatDecimal(content.fileAttachment3.fileSize / 1024, 0, 0)} + ' KB)'"></span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">저장</button>
-                            <button type="button" class="btn btn-secondary" id="cancelEdit">취소</button>
-                        </div>
-                    </form>
-                </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">저장</button>
+                        <button type="button" class="btn btn-danger" onclick="confirmDelete()">삭제</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
     
     <!-- 추가 스크립트 -->
-    <th:block layout:fragment="script">
-        <script src="/vendor/mermaid/mermaid.min.js"></script>
-        <script src="/vendor/codemirror/lib/codemirror.js"></script>
-        <script src="/vendor/codemirror/mode/javascript/javascript.js"></script>
-        
+    <th:block layout:fragment="script">        
+        <script src="/js/mermaid/mermaid.min.js"></script>
         <script>
-            // Mermaid 초기화
-            mermaid.initialize({
-                startOnLoad: true,
-                theme: 'default'
-            });
+            function submitForm() {
+                return true;
+            }
             
-            let editor;
-            
-            $(document).ready(function() {
-                // CodeMirror 초기화
-                editor = CodeMirror.fromTextArea(document.getElementById('mermaidCode'), {
-                    lineNumbers: true,
-                    mode: 'javascript',
-                    theme: 'default'
-                });
-                
-                // 미리보기 버튼 클릭 시 다이어그램 렌더링
-                $('#previewBtn').click(function() {
-                    const code = editor.getValue();
-                    if (code.trim() === '') {
-                        $('#mermaidPreview').html('<p class="text-muted">다이어그램 코드가 없습니다.</p>');
+            function confirmDelete() {
+                if (confirm('정말로 삭제하시겠습니까?')) {
+                    window.location.href = '/custom/delete/type5/' + '[[${menu.id}]]';
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                mermaid.initialize({ startOnLoad: false });
+
+                const inputField = document.getElementById("mermaid-input");
+                const preview = document.getElementById("mermaid-preview");
+
+                const renderMermaid = () => {
+                    const code = inputField.value.trim();
+                    if (code === "") {
+                        //preview.innerHTML = "<p style='color:red;'>Mermaid 코드가 없습니다.</p>";
                         return;
                     }
-                    
-                    $('#mermaidPreview').html(`<div class="mermaid">${code}</div>`);
-                    mermaid.init(undefined, $('.mermaid'));
-                });
-                
-                // 수정 버튼 클릭 시 수정 폼 표시
-                $('#showEditForm').click(function() {
-                    $('.mermaid').hide();
-                    $('.file-area').hide();
-                    $('#showEditForm').hide();
-                    $('#editForm').show();
-                    // CodeMirror 갱신
-                    editor.refresh();
-                });
-                
-                // 취소 버튼 클릭 시 수정 폼 숨김
-                $('#cancelEdit').click(function() {
-                    if ($('.mermaid').length > 1) {
-                        $('.mermaid').show();
-                        $('.file-area').show();
-                        $('#showEditForm').show();
-                        $('#editForm').hide();
-                    } else {
-                        location.href = window.location.pathname;
-                    }
-                });
-                
-                // 파일 추가 버튼 처리
-                const fileUploadContainer = document.getElementById('fileUploadContainer');
-                $(document).on('click', '.add-file-btn', function() {
-                    const fileInputs = document.querySelectorAll('#fileUploadContainer .input-group');
-                    
-                    // 최대 3개까지만 추가 가능
-                    if (fileInputs.length < 3) {
-                        const newFileInput = document.createElement('div');
-                        newFileInput.className = 'input-group mb-2';
-                        newFileInput.innerHTML = `
-                            <input type="file" class="form-control" name="files">
-                            <button type="button" class="btn btn-danger remove-file-btn">-</button>
-                        `;
-                        fileUploadContainer.appendChild(newFileInput);
-                    } else {
-                        alert('첨부파일은 최대 3개까지만 업로드할 수 있습니다.');
-                    }
-                });
-                
-                // 파일 제거 버튼 처리
-                $(document).on('click', '.remove-file-btn', function() {
-                    $(this).closest('.input-group').remove();
-                });
-                
-                // 폼 제출 전 검증
-                $('form').on('submit', function(e) {
-                    const existingFiles = [
-                        $('#fileAttachment1').length > 0 ? 1 : 0,
-                        $('#fileAttachment2').length > 0 ? 1 : 0,
-                        $('#fileAttachment3').length > 0 ? 1 : 0
-                    ].reduce((sum, val) => sum + val, 0);
-                    
-                    const newFiles = $('input[type="file"]').filter(function() {
-                        return $(this).val() !== '';
-                    }).length;
-                    
-                    if (existingFiles + newFiles > 3) {
-                        e.preventDefault();
-                        alert('첨부파일은 최대 3개까지만 업로드할 수 있습니다.');
-                    }
-                    
-                    // CodeMirror 값을 텍스트 영역에 반영
-                    const mermaidCode = editor.getValue();
-                    $('#mermaidCode').val(mermaidCode);
+
+                    mermaid.render("mermaid-diagram", code)
+                        .then(({ svg }) => {
+                            preview.innerHTML = svg;
+                        })
+                        .catch(err => {
+                            console.error("Mermaid Rendering Error:", err);
+                            preview.innerHTML = "<p style='color:red;'>잘못된 Mermaid 코드입니다.</p>";
+                        });
+                };
+
+                inputField.addEventListener("input", renderMermaid);
+                renderMermaid(); // 초기값 렌더링                
+            });
+            
+            $(document).ready(function() {
+                // 파일 선택 시 파일명 표시
+                $('.custom-file-input').on('change', function() {
+                    var fileName = $(this).val().split('\\').pop();
+                    $(this).next('.custom-file-label').html(fileName || '파일 선택 (선택사항)');
                 });
             });
         </script>
