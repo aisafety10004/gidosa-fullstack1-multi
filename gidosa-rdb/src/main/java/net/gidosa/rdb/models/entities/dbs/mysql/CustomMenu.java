@@ -30,7 +30,7 @@ public class CustomMenu {
     @Comment("메뉴 이름")
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(500)")
     @Comment("메뉴 URL")
     private String url;
 
