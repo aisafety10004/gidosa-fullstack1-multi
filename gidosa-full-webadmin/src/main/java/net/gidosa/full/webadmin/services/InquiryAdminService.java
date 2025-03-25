@@ -8,17 +8,23 @@ import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
 import net.gidosa.rdb.repositories.mysql.jpa.FileAttachmentJpaRepository;
 import net.gidosa.rdb.repositories.mysql.jpa.InquiryAdminJpaRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -30,18 +36,151 @@ public class InquiryAdminService {
     private final FileAttachmentJpaRepository fileAttachmentJpaRepository;
     private final String FILE_UPLOAD_PATH = "uploads/inquiry/";
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     // 문의사항 목록 조회
     @Transactional(readOnly = true)
     public Page<InquiryAdmin> getInquiriesByConstructionId(Long constructionId, Pageable pageable) {
         return inquiryAdminJpaRepository.findByConstructionIdOrderByIdDesc(constructionId, pageable);
     }
 
-    // 문의사항 검색
+    @Transactional(readOnly = true)
+    public Page<InquiryAdmin> searchInquiries(String searchConstructionName, String searchTitle, String searchDateRange, String inquiryType, Boolean answered, Pageable pageable) {
+        // 검색 조건에 따라 적절한 Repository 메소드 호출
+        
+        // 날짜 범위 처리
+        LocalDateTime startDate = null;
+        LocalDateTime endDate = null;
+        
+        if (searchDateRange != null && !searchDateRange.trim().isEmpty()) {
+            try {
+                String[] dateRange = searchDateRange.split(" ~ ");
+                if (dateRange.length == 2) {
+                    startDate = LocalDateTime.parse(dateRange[0] + "T00:00:00");
+                    endDate = LocalDateTime.parse(dateRange[1] + "T23:59:59");
+                }
+            } catch (Exception e) {
+                // 날짜 파싱 오류 발생시 무시하고 null로 유지
+                // 로그 기록 추가 (운영환경에서는 로그 추가 권장)
+                System.err.println("날짜 파싱 오류: " + e.getMessage());
+            }
+        }
+        
+        // 일반화된 조건 검색 쿼리 적용 (동적 쿼리 직접 구현)
+        // 여러 조건을 직접 조합하는 방식으로 구현
+        String jpql = "SELECT i FROM InquiryAdmin i LEFT JOIN FETCH i.construction c LEFT JOIN FETCH i.fileAttachment1 WHERE 1=1";
+        String countJpql = "SELECT COUNT(i) FROM InquiryAdmin i JOIN i.construction c WHERE 1=1"; // 카운트 쿼리는 FETCH 없이
+        
+        // 파라미터 값을 담을 Map
+        Map<String, Object> parameters = new HashMap<>();
+        
+        // 현장명 조건 추가
+        if (searchConstructionName != null && !searchConstructionName.trim().isEmpty()) {
+            jpql += " AND LOWER(c.name) LIKE LOWER(:constructionName)";
+            countJpql += " AND LOWER(c.name) LIKE LOWER(:constructionName)";
+            parameters.put("constructionName", "%" + searchConstructionName.trim() + "%");
+        }
+        
+        // 제목 조건 추가
+        if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+            jpql += " AND LOWER(i.title) LIKE LOWER(:title)";
+            countJpql += " AND LOWER(i.title) LIKE LOWER(:title)";
+            parameters.put("title", "%" + searchTitle.trim() + "%");
+        }
+        
+        // 날짜 범위 조건 추가
+        if (startDate != null && endDate != null) {
+            jpql += " AND i.inquiryDate BETWEEN :startDate AND :endDate";
+            countJpql += " AND i.inquiryDate BETWEEN :startDate AND :endDate";
+            parameters.put("startDate", startDate);
+            parameters.put("endDate", endDate);
+        }
+        
+        // 문의 유형 조건 추가
+        if (inquiryType != null && !inquiryType.trim().isEmpty()) {
+            jpql += " AND i.inquiryType = :inquiryType";
+            countJpql += " AND i.inquiryType = :inquiryType";
+            parameters.put("inquiryType", inquiryType);
+        }
+        
+        // 답변 여부 조건 추가
+        if (answered != null) {
+            jpql += " AND i.answered = :answered";
+            countJpql += " AND i.answered = :answered";
+            parameters.put("answered", answered);
+        }
+        
+        // 정렬 조건 추가 - 기본적으로 ID 내림차순
+        jpql += " ORDER BY i.id DESC";
+        
+        // 동적 쿼리 실행
+        TypedQuery<InquiryAdmin> query = entityManager.createQuery(jpql, InquiryAdmin.class);
+        TypedQuery<Long> countQuery = entityManager.createQuery(countJpql, Long.class);
+        
+        // 파라미터 설정
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+            countQuery.setParameter(entry.getKey(), entry.getValue());
+        }
+        
+        // 페이징 처리
+        query.setFirstResult((int) pageable.getOffset());
+        query.setMaxResults(pageable.getPageSize());
+        
+        // 결과 조회
+        List<InquiryAdmin> content = query.getResultList();
+        Long total = countQuery.getSingleResult();
+        
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    // 문의사항 검색(Manager)
     @Transactional(readOnly = true)
     public Page<InquiryAdmin> searchInquiries(Long constructionId, String searchTitle, String searchDateRange, String inquiryType, Boolean answered, Pageable pageable) {
-        if(constructionId == null) {
-            return inquiryAdminJpaRepository.findAllWithConstructionOrderByIdDesc(pageable);
-        }
+//         if(constructionId == null) {
+//            // 전체 현장에 대한 검색 - 검색 조건 적용
+//            if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+//                // 제목 검색 조건이 있는 경우
+//                if (searchDateRange != null && !searchDateRange.trim().isEmpty()) {
+//                    // 날짜 범위도 있는 경우
+//                    String[] dateRange = searchDateRange.split(" ~ ");
+//                    LocalDateTime startDate = LocalDateTime.parse(dateRange[0] + "T00:00:00");
+//                    LocalDateTime endDate = LocalDateTime.parse(dateRange[1] + "T23:59:59");
+//                    return inquiryAdminJpaRepository.findAllWithTitleContainingIgnoreCaseAndInquiryDateBetween(searchTitle, startDate, endDate, pageable);
+//                } else {
+//                    // 제목만 검색
+//                    return inquiryAdminJpaRepository.findAllWithTitleContainingIgnoreCase(searchTitle, pageable);
+//                }
+//            } else if (searchDateRange != null && !searchDateRange.trim().isEmpty()) {
+//                // 날짜 범위만 있는 경우
+//                String[] dateRange = searchDateRange.split(" ~ ");
+//                LocalDateTime startDate = LocalDateTime.parse(dateRange[0] + "T00:00:00");
+//                LocalDateTime endDate = LocalDateTime.parse(dateRange[1] + "T23:59:59");
+//                return inquiryAdminJpaRepository.findAllWithInquiryDateBetween(startDate, endDate, pageable);
+//            } else if (inquiryType != null && !inquiryType.trim().isEmpty()) {
+//                // 문의 유형 검색
+//                if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+//                    // 제목도 있는 경우
+//                    return inquiryAdminJpaRepository.findAllWithInquiryTypeAndTitleContainingIgnoreCase(inquiryType, searchTitle, pageable);
+//                } else {
+//                    // 문의 유형만 검색
+//                    return inquiryAdminJpaRepository.findAllWithInquiryType(inquiryType, pageable);
+//                }
+//            } else if (answered != null) {
+//                // 답변 여부로 검색
+//                if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+//                    // 제목도 있는 경우
+//                    return inquiryAdminJpaRepository.findAllWithAnsweredAndTitleContainingIgnoreCase(answered, searchTitle, pageable);
+//                } else {
+//                    // 답변 여부만 검색
+//                    return inquiryAdminJpaRepository.findAllWithAnswered(answered, pageable);
+//                }
+//            } else {
+//                // 검색 조건이 없는 경우 전체 목록 조회
+//                return inquiryAdminJpaRepository.findAllWithConstructionOrderByIdDesc(pageable);
+//            }
+//        }
 
         if (searchTitle != null && !searchTitle.trim().isEmpty()) {
             // 제목 검색 조건이 있는 경우

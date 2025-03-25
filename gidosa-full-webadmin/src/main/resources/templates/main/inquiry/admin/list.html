@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <!-- <title>문의사항 관리</title> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <style>
         select.form-control {
             appearance: none;
@@ -50,6 +51,72 @@
                     
                     <!-- 목록 표시 -->
                     <div class="table-responsive" style="overflow-x: hidden;">
+                        <!-- 검색 폼 추가 -->
+                        <form th:action="@{/inquiry/admin/list}" method="get" class="mb-4">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold">검색 조건</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-2">
+                                            <label for="searchConstructionName">현장명</label>
+                                            <input type="text" id="searchConstructionName" name="searchConstructionName" class="form-control" th:value="${searchConstructionName}">
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            <label for="searchTitle">제목</label>
+                                            <input type="text" id="searchTitle" name="searchTitle" class="form-control" th:value="${searchTitle}" placeholder="제목 검색">
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            <label for="searchDateRange">조회 기간</label>
+                                            <input type="text" id="searchDateRange" name="searchDateRange" class="form-control datepicker-range" th:value="${searchDateRange}" placeholder="날짜 범위 선택" autocomplete="off">
+                                        </div>
+                                        <!-- <div class="col-md-4 mb-2">
+                                            <label for="inquiryType">문의 유형</label>
+                                            <select id="inquiryType" name="inquiryType" class="form-control">
+                                                <option value="">전체</option>
+                                                <option value="GENERAL" th:selected="${inquiryType == 'GENERAL'}">일반 문의</option>
+                                                <option value="TECHNICAL" th:selected="${inquiryType == 'TECHNICAL'}">기술 문의</option>
+                                                <option value="COMPLAINT" th:selected="${inquiryType == 'COMPLAINT'}">불만 사항</option>
+                                                <option value="SUGGESTION" th:selected="${inquiryType == 'SUGGESTION'}">제안 사항</option>
+                                                <option value="OTHER" th:selected="${inquiryType == 'OTHER'}">기타</option>
+                                            </select>
+                                        </div> -->
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-2">
+                                            <label for="answered">답변 상태</label>
+                                            <select id="answered" name="answered" class="form-control">
+                                                <option value="">전체</option>
+                                                <option value="true" th:selected="${answered != null && answered == true}">답변 완료</option>
+                                                <option value="false" th:selected="${answered != null && answered == false}">답변 대기</option>
+                                            </select>
+                                        </div>
+                                        <!-- <div class="col-md-4 mb-2">
+                                            <label for="sort">정렬 기준</label>
+                                            <select id="sort" name="sort" class="form-control">
+                                                <option value="id,desc" th:selected="${sort == 'id,desc'}">등록일 최신순</option>
+                                                <option value="id,asc" th:selected="${sort == 'id,asc'}">등록일 오래된순</option>
+                                                <option value="inquiryDate,desc" th:selected="${sort == 'inquiryDate,desc'}">문의일 최신순</option>
+                                                <option value="inquiryDate,asc" th:selected="${sort == 'inquiryDate,asc'}">문의일 오래된순</option>
+                                            </select>
+                                        </div> -->
+                                        <div class="col-md-4 mb-2 d-flex align-items-end gap-2">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-search"></i> 검색
+                                            </button>
+                                            <a th:href="@{/inquiry/admin/list}" class="btn btn-secondary">
+                                                <i class="fas fa-redo"></i> 초기화
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- 페이지 크기 및 정렬 hidden 필드 -->
+                                    <input type="hidden" name="page" value="0">
+                                    <input type="hidden" name="size" th:value="${pageSize}">
+                                </div>
+                            </div>
+                        </form>
+                        
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <span th:text="|총 ${totalItems}건의 제출의견이 있습니다.|"></span>
@@ -114,27 +181,27 @@
                     <div th:if="${!inquiries.empty}" class="d-flex justify-content-center">
                         <ul class="pagination">
                             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                                <a class="page-link" th:href="@{/inquiry/admin/list(constructionId=${constructionId}, page=0, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="First">
+                                <a class="page-link" th:href="@{/inquiry/admin/list(page=0, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="First">
                                     <span aria-hidden="true">&laquo;&laquo;</span>
                                 </a>
                             </li>
                             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                                <a class="page-link" th:href="@{/inquiry/admin/list(constructionId=${constructionId}, page=${currentPage - 1}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="Previous">
+                                <a class="page-link" th:href="@{/inquiry/admin/list(page=${currentPage - 1}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
                             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
                                 th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
                                 th:classappend="${currentPage == i} ? 'active'">
-                                <a class="page-link" th:href="@{/inquiry/admin/list(constructionId=${constructionId}, page=${i}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" th:text="${i + 1}"></a>
+                                <a class="page-link" th:href="@{/inquiry/admin/list(page=${i}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" th:text="${i + 1}"></a>
                             </li>
                             <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                                <a class="page-link" th:href="@{/inquiry/admin/list(constructionId=${constructionId}, page=${currentPage + 1}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="Next">
+                                <a class="page-link" th:href="@{/inquiry/admin/list(page=${currentPage + 1}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
                             <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                                <a class="page-link" th:href="@{/inquiry/admin/list(constructionId=${constructionId}, page=${totalPages - 1}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="Last">
+                                <a class="page-link" th:href="@{/inquiry/admin/list(page=${totalPages - 1}, size=${pageSize}, searchTitle=${searchTitle}, searchDateRange=${searchDateRange}, inquiryType=${inquiryType}, answered=${answered}, sort=${sort})}" aria-label="Last">
                                     <span aria-hidden="true">&raquo;&raquo;</span>
                                 </a>
                             </li>
@@ -148,22 +215,55 @@
     <th:block layout:fragment="script">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.ko.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script>
             $(document).ready(function() {
                 // 날짜 범위 선택기 초기화
-                $('.datepicker-range').datepicker({
-                    format: 'yyyy-mm-dd',
-                    autoclose: true,
-                    language: 'ko',
-                    todayHighlight: true,
-                    clearBtn: true,
-                    todayBtn: 'linked'
+                $('#searchDateRange').daterangepicker({
+                    locale: {
+                        format: 'YYYY-MM-DD',
+                        separator: ' ~ ',
+                        applyLabel: '적용',
+                        cancelLabel: '취소',
+                        daysOfWeek: ['일', '월', '화', '수', '목', '금', '토'],
+                        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                    },
+                    autoUpdateInput: false,
+                    opens: 'right',
+                    drops: 'down',
+                    showDropdowns: true,
+                    autoApply: false
                 });
+                
+                // 날짜 범위 초기값 설정
+                $('#searchDateRange').on('apply.daterangepicker', function(ev, picker) {
+                    $(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
+                });
+                
+                $('#searchDateRange').on('cancel.daterangepicker', function(ev, picker) {
+                    $(this).val('');
+                });
+                
+                // 초기값이 있는 경우 설정
+                if ($('#searchDateRange').val()) {
+                    var dates = $('#searchDateRange').val().split(' ~ ');
+                    if (dates.length === 2) {
+                        var startDate = moment(dates[0], 'YYYY-MM-DD');
+                        var endDate = moment(dates[1], 'YYYY-MM-DD');
+                        $('#searchDateRange').data('daterangepicker').setStartDate(startDate);
+                        $('#searchDateRange').data('daterangepicker').setEndDate(endDate);
+                    }
+                }
                 
                 // 페이지 크기 변경 시 페이지 리로드
                 $('#pageSizeSelect').change(function() {
-                    window.location.href = '/inquiry/admin/list?constructionId=[[${constructionId}]]&page=0&size=' +
-                        $(this).val() + '&searchTitle=[[${searchTitle}]]&searchDateRange=[[${searchDateRange}]]&inquiryType=[[${inquiryType}]]&answered=[[${answered}]]&sort=[[${sort}]]';
+                    window.location.href = '/inquiry/admin/list?page=0&size=' +
+                        $(this).val() + '&searchTitle=' + encodeURIComponent($('#searchTitle').val()) + 
+                        '&searchDateRange=' + encodeURIComponent($('#searchDateRange').val()) + 
+                        '&inquiryType=' + encodeURIComponent($('#inquiryType').val()) + 
+                        '&answered=' + encodeURIComponent($('#answered').val()) + 
+                        '&sort=' + encodeURIComponent($('#sort').val());
                 });
                 
                 // 알림 닫기 버튼 이벤트 처리

@@ -45,6 +45,18 @@ public class CustomMenuContentType5 {
     @Comment("첨부 파일 3")
     private FileAttachment fileAttachment3;
 
+    // @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    // @Comment("매니저 공개 여부")
+    // private Boolean publishedManager = false; // 공개 여부
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    @Comment("익명 사용자 공개 여부(로그인하지 않은 사용자)")
+    private Boolean publishedAnonymous = false; // 익명 사용자 공개 여부
+    
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    @Comment("로그인 사용자 공개 여부")
+    private Boolean publishedLoggedInUser = false; // 로그인 사용자 공개 여부
+
     @CreationTimestamp
     @Comment("생성 일시")
     private LocalDateTime createdAt;

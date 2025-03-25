@@ -89,4 +89,46 @@ public interface InquiryAdminJpaRepository extends JpaRepository<InquiryAdmin, L
     @Query(value = "SELECT i FROM InquiryAdmin i LEFT JOIN FETCH i.construction LEFT JOIN FETCH i.fileAttachment1 WHERE i.construction.id = :constructionId AND i.inquiryType = :inquiryType AND LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) ORDER BY i.inquiryDate DESC",
            countQuery = "SELECT COUNT(i) FROM InquiryAdmin i WHERE i.construction.id = :constructionId AND i.inquiryType = :inquiryType AND LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%'))")
     Page<InquiryAdmin> findByConstructionIdAndInquiryTypeAndTitleContainingIgnoreCase(@Param("constructionId") Long constructionId, @Param("inquiryType") String inquiryType, @Param("searchTitle") String searchTitle, Pageable pageable);
+    
+    // 아래는 전체 현장에 대한 검색 메소드들
+    
+    // 제목으로 문의사항 검색 (전체 현장)
+    @Query(value = "SELECT i FROM InquiryAdmin i LEFT JOIN FETCH i.construction LEFT JOIN FETCH i.fileAttachment1 WHERE LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) ORDER BY i.inquiryDate DESC",
+           countQuery = "SELECT COUNT(i) FROM InquiryAdmin i WHERE LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%'))")
+    Page<InquiryAdmin> findAllWithTitleContainingIgnoreCase(@Param("searchTitle") String searchTitle, Pageable pageable);
+    
+    // 현장명으로 문의사항 검색 (전체 현장)
+    @Query(value = "SELECT i FROM InquiryAdmin i LEFT JOIN FETCH i.construction LEFT JOIN FETCH i.fileAttachment1 WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%')) ORDER BY i.inquiryDate DESC",
+           countQuery = "SELECT COUNT(i) FROM InquiryAdmin i WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%'))")
+    Page<InquiryAdmin> findAllWithConstructionNameContainingIgnoreCase(@Param("searchConstructionName") String searchConstructionName, Pageable pageable);
+    
+    // 현장명과 제목으로 문의사항 검색 (전체 현장)
+    @Query(value = "SELECT i FROM InquiryAdmin i LEFT JOIN FETCH i.construction LEFT JOIN FETCH i.fileAttachment1 WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%')) AND LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) ORDER BY i.inquiryDate DESC",
+           countQuery = "SELECT COUNT(i) FROM InquiryAdmin i WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%')) AND LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%'))")
+    Page<InquiryAdmin> findAllWithConstructionNameAndTitleContainingIgnoreCase(@Param("searchConstructionName") String searchConstructionName, @Param("searchTitle") String searchTitle, Pageable pageable);
+    
+    // 현장명과 날짜 범위로 문의사항 검색 (전체 현장)
+    @Query(value = "SELECT i FROM InquiryAdmin i LEFT JOIN FETCH i.construction LEFT JOIN FETCH i.fileAttachment1 WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%')) AND i.inquiryDate BETWEEN :startDate AND :endDate ORDER BY i.inquiryDate DESC",
+           countQuery = "SELECT COUNT(i) FROM InquiryAdmin i WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%')) AND i.inquiryDate BETWEEN :startDate AND :endDate")
+    Page<InquiryAdmin> findAllWithConstructionNameAndInquiryDateBetween(@Param("searchConstructionName") String searchConstructionName, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+    
+    // 현장명, 제목, 날짜 범위로 문의사항 검색 (전체 현장)
+    @Query(value = "SELECT i FROM InquiryAdmin i LEFT JOIN FETCH i.construction LEFT JOIN FETCH i.fileAttachment1 WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%')) AND LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND i.inquiryDate BETWEEN :startDate AND :endDate ORDER BY i.inquiryDate DESC",
+           countQuery = "SELECT COUNT(i) FROM InquiryAdmin i WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%')) AND LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND i.inquiryDate BETWEEN :startDate AND :endDate")
+    Page<InquiryAdmin> findAllWithConstructionNameAndTitleAndInquiryDateBetween(@Param("searchConstructionName") String searchConstructionName, @Param("searchTitle") String searchTitle, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+    
+    // 현장명과 답변 여부로 문의사항 검색 (전체 현장)
+    @Query(value = "SELECT i FROM InquiryAdmin i LEFT JOIN FETCH i.construction LEFT JOIN FETCH i.fileAttachment1 WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%')) AND i.answered = :answered ORDER BY i.inquiryDate DESC",
+           countQuery = "SELECT COUNT(i) FROM InquiryAdmin i WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%')) AND i.answered = :answered")
+    Page<InquiryAdmin> findAllWithConstructionNameAndAnswered(@Param("searchConstructionName") String searchConstructionName, @Param("answered") Boolean answered, Pageable pageable);
+    
+    // 현장명, 제목, 답변 여부로 문의사항 검색 (전체 현장)
+    @Query(value = "SELECT i FROM InquiryAdmin i LEFT JOIN FETCH i.construction LEFT JOIN FETCH i.fileAttachment1 WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%')) AND LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND i.answered = :answered ORDER BY i.inquiryDate DESC",
+           countQuery = "SELECT COUNT(i) FROM InquiryAdmin i WHERE LOWER(i.construction.name) LIKE LOWER(CONCAT('%', :searchConstructionName, '%')) AND LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) AND i.answered = :answered")
+    Page<InquiryAdmin> findAllWithConstructionNameAndTitleAndAnswered(@Param("searchConstructionName") String searchConstructionName, @Param("searchTitle") String searchTitle, @Param("answered") Boolean answered, Pageable pageable);
+    
+    // 답변 여부와 제목으로 문의사항 검색 (전체 현장)
+    @Query(value = "SELECT i FROM InquiryAdmin i LEFT JOIN FETCH i.construction LEFT JOIN FETCH i.fileAttachment1 WHERE i.answered = :answered AND LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) ORDER BY i.inquiryDate DESC",
+           countQuery = "SELECT COUNT(i) FROM InquiryAdmin i WHERE i.answered = :answered AND LOWER(i.title) LIKE LOWER(CONCAT('%', :searchTitle, '%'))")
+    Page<InquiryAdmin> findAllWithAnsweredAndTitleContainingIgnoreCase(@Param("answered") Boolean answered, @Param("searchTitle") String searchTitle, Pageable pageable);
 } 

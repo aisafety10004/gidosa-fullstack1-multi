@@ -46,6 +46,7 @@ public class InquiryAdminController {
     public String listAdmin(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String searchConstructionName,
             @RequestParam(required = false) String searchTitle,
             @RequestParam(required = false) String searchDateRange,
             @RequestParam(required = false) String inquiryType,
@@ -62,13 +63,14 @@ public class InquiryAdminController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
 
         // 검색 조건에 따라 문의사항 조회
-        Page<InquiryAdmin> inquiries = inquiryAdminService.searchInquiries(null, searchTitle, searchDateRange, inquiryType, answered, pageable);
+        Page<InquiryAdmin> inquiries = inquiryAdminService.searchInquiries(searchConstructionName, searchTitle, searchDateRange, inquiryType, answered, pageable);
 
         model.addAttribute("inquiries", inquiries);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", inquiries.getTotalPages());
         model.addAttribute("totalItems", inquiries.getTotalElements());
         model.addAttribute("pageSize", size);
+        model.addAttribute("searchConstructionName", searchConstructionName);
         model.addAttribute("searchTitle", searchTitle);
         model.addAttribute("searchDateRange", searchDateRange);
         model.addAttribute("inquiryType", inquiryType);
