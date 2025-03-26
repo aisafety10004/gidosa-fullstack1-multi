@@ -7,6 +7,7 @@ import net.gidosa.rdb.models.entities.dbs.mysql.InquiryAdmin;
 import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
 import net.gidosa.rdb.repositories.mysql.jpa.FileAttachmentJpaRepository;
 import net.gidosa.rdb.repositories.mysql.jpa.InquiryAdminJpaRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,9 @@ public class InquiryAdminService {
     private final InquiryAdminJpaRepository inquiryAdminJpaRepository;
     private final ConstructionJpaRepository constructionJpaRepository;
     private final FileAttachmentJpaRepository fileAttachmentJpaRepository;
-    private final String FILE_UPLOAD_PATH = "uploads/inquiry/";
+
+    @Value("${file.upload.path}")
+    private String FILE_UPLOAD_PATH;
 
     @PersistenceContext
     private EntityManager entityManager;

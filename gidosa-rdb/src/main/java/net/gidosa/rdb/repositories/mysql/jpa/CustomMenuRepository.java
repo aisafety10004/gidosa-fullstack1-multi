@@ -23,7 +23,7 @@ public interface CustomMenuRepository extends JpaRepository<CustomMenu, Long> {
     List<CustomMenu> findRootMenusWithChildrenByConstructionId(@Param("constructionId") Long constructionId);
     
     // 모든 루트 메뉴 조회 (관리자용)
-    @Query("SELECT m FROM CustomMenu m JOIN FETCH m.construction WHERE m.parent IS NULL ORDER BY m.construction.id, m.displayOrder ASC")
+    @Query("SELECT m FROM CustomMenu m LEFT JOIN FETCH m.construction WHERE m.parent IS NULL AND m.construction IS NULL ORDER BY m.construction.id, m.displayOrder ASC")
     List<CustomMenu> findAllRootMenus();
     
     // 모든 루트 메뉴와 하위 메뉴 조회 (관리자용)

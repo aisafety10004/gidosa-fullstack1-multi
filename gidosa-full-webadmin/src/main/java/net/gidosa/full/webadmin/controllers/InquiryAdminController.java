@@ -226,12 +226,20 @@ public class InquiryAdminController {
     public String delete(
             @PathVariable Long id,
             @RequestParam Long constructionId,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
+        MemberAdmin memberAdmin = ((net.gidosa.full.webadmin.configs.auth.PrincipalDetails) userDetails).getMemberAdmin();
+        boolean isAdmin = memberAdmin.getRole().equals("ROLE_ADMIN");
+
         try {
             inquiryAdminService.deleteInquiry(id);
             redirectAttributes.addFlashAttribute("successMessage", "문의사항이 성공적으로 삭제되었습니다.");
-            return "redirect:/inquiry/list?constructionId=" + constructionId;
+            if (isAdmin) {
+                return "redirect:/inquiry/admin/list";
+            } else {
+                return "redirect:/inquiry/list?constructionId=" + constructionId;
+            }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "문의사항 삭제 중 오류가 발생했습니다: " + e.getMessage());
             return "redirect:/inquiry/detail/" + id + "?constructionId=" + constructionId;

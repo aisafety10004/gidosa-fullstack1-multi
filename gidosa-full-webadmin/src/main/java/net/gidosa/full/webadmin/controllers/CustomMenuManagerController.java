@@ -127,9 +127,10 @@ public class CustomMenuManagerController {
         
         CustomMenu menu = customMenuService.getMenuById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + id));
-        
+        Construction menuConstruction = menu.getConstruction();
+
         // 관리자가 아니고, 다른 건설 현장의 메뉴는 수정할 수 없음
-        if (!isAdmin && !menu.getConstruction().getId().equals(construction.getId())) {
+        if (!isAdmin && menuConstruction != null && !menuConstruction.getId().equals(construction.getId())) {
             return "redirect:/settings/menu-manager?error=unauthorized";
         }
         
@@ -173,9 +174,9 @@ public class CustomMenuManagerController {
         if (!isAdmin && construction == null) {
             return "redirect:/main?error=no-construction";
         }
-        
+
         // 관리자가 아니고, 다른 건설 현장의 메뉴는 저장할 수 없음
-        if (!isAdmin && !menuDto.getConstructionId().equals(construction.getId())) {
+        if (!isAdmin && !construction.getId().equals(menuDto.getConstructionId())) {
             redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
             return "redirect:/settings/menu-manager";
         }
@@ -233,9 +234,10 @@ public class CustomMenuManagerController {
         try {
             CustomMenu menu = customMenuService.getMenuById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + id));
-            
+
+            Construction menuConstruction = menu.getConstruction();
             // 관리자가 아니고, 다른 건설 현장의 메뉴는 삭제할 수 없음
-            if (!isAdmin && !menu.getConstruction().getId().equals(construction.getId())) {
+            if (!isAdmin && menuConstruction != null && !menuConstruction.getId().equals(construction.getId())) {
                 redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
                 return "redirect:/settings/menu-manager";
             }
