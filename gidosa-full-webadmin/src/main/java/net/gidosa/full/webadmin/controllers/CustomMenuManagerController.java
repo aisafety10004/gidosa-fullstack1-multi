@@ -7,8 +7,14 @@ import net.gidosa.full.webadmin.configs.auth.PrincipalDetails;
 import net.gidosa.full.webadmin.models.dtos.CustomMenuDto;
 import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenu;
 import net.gidosa.full.webadmin.services.CustomMenuService;
+import net.gidosa.full.webadmin.services.CustomMenuContentService;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberAdmin;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenuContentType1;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenuContentType2;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenuContentType3;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenuContentType4;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenuContentType5;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +32,7 @@ import java.util.stream.Collectors;
 public class CustomMenuManagerController {
     
     private final CustomMenuService customMenuService;
+    private final CustomMenuContentService customMenuContentService;
     
     /**
      * 메뉴 관리 페이지를 표시합니다.
@@ -250,5 +257,356 @@ public class CustomMenuManagerController {
         }
         
         return "redirect:/settings/menu-manager";
+    }
+
+    /**
+     * 타입1 메뉴 컨텐츠의 익명 사용자 공개 여부를 토글합니다.
+     */
+    @PostMapping("/toggle-anonymous/type1/{contentId}")
+    public String toggleType1PublishedAnonymous(
+            @PathVariable Long contentId,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        
+        try {
+            CustomMenuContentType1 content = customMenuContentService.getType1ContentById(contentId);
+            if (content == null) {
+                throw new IllegalArgumentException("컨텐츠를 찾을 수 없습니다.");
+            }
+            
+            // 권한 검사
+            if (!hasAccessToContent(content.getMenu().getId(), principalDetails)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/settings/menu-manager";
+            }
+            
+            customMenuContentService.toggleType1PublishedAnonymous(contentId);
+            redirectAttributes.addFlashAttribute("message", "익명 사용자 공개 설정이 변경되었습니다.");
+            
+            return "redirect:/settings/menu-manager";
+        } catch (Exception e) {
+            log.error("익명 사용자 공개 설정 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "익명 사용자 공개 설정 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/settings/menu-manager";
+        }
+    }
+    
+    /**
+     * 타입1 메뉴 컨텐츠의 로그인 사용자 공개 여부를 토글합니다.
+     */
+    @PostMapping("/toggle-logged-in/type1/{contentId}")
+    public String toggleType1PublishedLoggedInUser(
+            @PathVariable Long contentId,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        
+        try {
+            CustomMenuContentType1 content = customMenuContentService.getType1ContentById(contentId);
+            if (content == null) {
+                throw new IllegalArgumentException("컨텐츠를 찾을 수 없습니다.");
+            }
+            
+            // 권한 검사
+            if (!hasAccessToContent(content.getMenu().getId(), principalDetails)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/settings/menu-manager";
+            }
+            
+            customMenuContentService.toggleType1PublishedLoggedInUser(contentId);
+            redirectAttributes.addFlashAttribute("message", "로그인 사용자 공개 설정이 변경되었습니다.");
+            
+            return "redirect:/settings/menu-manager";
+        } catch (Exception e) {
+            log.error("로그인 사용자 공개 설정 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "로그인 사용자 공개 설정 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/settings/menu-manager";
+        }
+    }
+    
+    /**
+     * 타입2 메뉴 컨텐츠의 익명 사용자 공개 여부를 토글합니다.
+     */
+    @PostMapping("/toggle-anonymous/type2/{contentId}")
+    public String toggleType2PublishedAnonymous(
+            @PathVariable Long contentId,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        
+        try {
+            CustomMenuContentType2 content = customMenuContentService.getType2ContentById(contentId);
+            if (content == null) {
+                throw new IllegalArgumentException("컨텐츠를 찾을 수 없습니다.");
+            }
+            
+            // 권한 검사
+            if (!hasAccessToContent(content.getMenu().getId(), principalDetails)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/settings/menu-manager";
+            }
+            
+            customMenuContentService.toggleType2PublishedAnonymous(contentId);
+            redirectAttributes.addFlashAttribute("message", "익명 사용자 공개 설정이 변경되었습니다.");
+            
+            return "redirect:/settings/menu-manager";
+        } catch (Exception e) {
+            log.error("익명 사용자 공개 설정 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "익명 사용자 공개 설정 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/settings/menu-manager";
+        }
+    }
+    
+    /**
+     * 타입2 메뉴 컨텐츠의 로그인 사용자 공개 여부를 토글합니다.
+     */
+    @PostMapping("/toggle-logged-in/type2/{contentId}")
+    public String toggleType2PublishedLoggedInUser(
+            @PathVariable Long contentId,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        
+        try {
+            CustomMenuContentType2 content = customMenuContentService.getType2ContentById(contentId);
+            if (content == null) {
+                throw new IllegalArgumentException("컨텐츠를 찾을 수 없습니다.");
+            }
+            
+            // 권한 검사
+            if (!hasAccessToContent(content.getMenu().getId(), principalDetails)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/settings/menu-manager";
+            }
+            
+            customMenuContentService.toggleType2PublishedLoggedInUser(contentId);
+            redirectAttributes.addFlashAttribute("message", "로그인 사용자 공개 설정이 변경되었습니다.");
+            
+            return "redirect:/settings/menu-manager";
+        } catch (Exception e) {
+            log.error("로그인 사용자 공개 설정 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "로그인 사용자 공개 설정 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/settings/menu-manager";
+        }
+    }
+    
+    /**
+     * 타입3 메뉴 컨텐츠의 익명 사용자 공개 여부를 토글합니다.
+     */
+    @PostMapping("/toggle-anonymous/type3/{contentId}")
+    public String toggleType3PublishedAnonymous(
+            @PathVariable Long contentId,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        
+        try {
+            CustomMenuContentType3 content = customMenuContentService.getType3ContentById(contentId);
+            if (content == null) {
+                throw new IllegalArgumentException("컨텐츠를 찾을 수 없습니다.");
+            }
+            
+            // 권한 검사
+            if (!hasAccessToContent(content.getMenu().getId(), principalDetails)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/settings/menu-manager";
+            }
+            
+            customMenuContentService.toggleType3PublishedAnonymous(contentId);
+            redirectAttributes.addFlashAttribute("message", "익명 사용자 공개 설정이 변경되었습니다.");
+            
+            return "redirect:/settings/menu-manager";
+        } catch (Exception e) {
+            log.error("익명 사용자 공개 설정 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "익명 사용자 공개 설정 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/settings/menu-manager";
+        }
+    }
+    
+    /**
+     * 타입3 메뉴 컨텐츠의 로그인 사용자 공개 여부를 토글합니다.
+     */
+    @PostMapping("/toggle-logged-in/type3/{contentId}")
+    public String toggleType3PublishedLoggedInUser(
+            @PathVariable Long contentId,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        
+        try {
+            CustomMenuContentType3 content = customMenuContentService.getType3ContentById(contentId);
+            if (content == null) {
+                throw new IllegalArgumentException("컨텐츠를 찾을 수 없습니다.");
+            }
+            
+            // 권한 검사
+            if (!hasAccessToContent(content.getMenu().getId(), principalDetails)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/settings/menu-manager";
+            }
+            
+            customMenuContentService.toggleType3PublishedLoggedInUser(contentId);
+            redirectAttributes.addFlashAttribute("message", "로그인 사용자 공개 설정이 변경되었습니다.");
+            
+            return "redirect:/settings/menu-manager";
+        } catch (Exception e) {
+            log.error("로그인 사용자 공개 설정 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "로그인 사용자 공개 설정 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/settings/menu-manager";
+        }
+    }
+    
+    /**
+     * 타입4 메뉴 컨텐츠의 익명 사용자 공개 여부를 토글합니다.
+     */
+    @PostMapping("/toggle-anonymous/type4/{contentId}")
+    public String toggleType4PublishedAnonymous(
+            @PathVariable Long contentId,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        
+        try {
+            CustomMenuContentType4 content = customMenuContentService.getType4ContentById(contentId);
+            if (content == null) {
+                throw new IllegalArgumentException("컨텐츠를 찾을 수 없습니다.");
+            }
+            
+            // 권한 검사
+            if (!hasAccessToContent(content.getMenu().getId(), principalDetails)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/settings/menu-manager";
+            }
+            
+            customMenuContentService.toggleType4PublishedAnonymous(contentId);
+            redirectAttributes.addFlashAttribute("message", "익명 사용자 공개 설정이 변경되었습니다.");
+            
+            return "redirect:/settings/menu-manager";
+        } catch (Exception e) {
+            log.error("익명 사용자 공개 설정 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "익명 사용자 공개 설정 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/settings/menu-manager";
+        }
+    }
+    
+    /**
+     * 타입4 메뉴 컨텐츠의 로그인 사용자 공개 여부를 토글합니다.
+     */
+    @PostMapping("/toggle-logged-in/type4/{contentId}")
+    public String toggleType4PublishedLoggedInUser(
+            @PathVariable Long contentId,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        
+        try {
+            CustomMenuContentType4 content = customMenuContentService.getType4ContentById(contentId);
+            if (content == null) {
+                throw new IllegalArgumentException("컨텐츠를 찾을 수 없습니다.");
+            }
+            
+            // 권한 검사
+            if (!hasAccessToContent(content.getMenu().getId(), principalDetails)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/settings/menu-manager";
+            }
+            
+            customMenuContentService.toggleType4PublishedLoggedInUser(contentId);
+            redirectAttributes.addFlashAttribute("message", "로그인 사용자 공개 설정이 변경되었습니다.");
+            
+            return "redirect:/settings/menu-manager";
+        } catch (Exception e) {
+            log.error("로그인 사용자 공개 설정 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "로그인 사용자 공개 설정 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/settings/menu-manager";
+        }
+    }
+    
+    /**
+     * 타입5 메뉴 컨텐츠의 익명 사용자 공개 여부를 토글합니다.
+     */
+    @PostMapping("/toggle-anonymous/type5/{contentId}")
+    public String toggleType5PublishedAnonymous(
+            @PathVariable Long contentId,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        
+        try {
+            CustomMenuContentType5 content = customMenuContentService.getType5ContentById(contentId);
+            if (content == null) {
+                throw new IllegalArgumentException("컨텐츠를 찾을 수 없습니다.");
+            }
+            
+            // 권한 검사
+            if (!hasAccessToContent(content.getMenu().getId(), principalDetails)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/settings/menu-manager";
+            }
+            
+            customMenuContentService.toggleType5PublishedAnonymous(contentId);
+            redirectAttributes.addFlashAttribute("message", "익명 사용자 공개 설정이 변경되었습니다.");
+            
+            return "redirect:/settings/menu-manager";
+        } catch (Exception e) {
+            log.error("익명 사용자 공개 설정 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "익명 사용자 공개 설정 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/settings/menu-manager";
+        }
+    }
+    
+    /**
+     * 타입5 메뉴 컨텐츠의 로그인 사용자 공개 여부를 토글합니다.
+     */
+    @PostMapping("/toggle-logged-in/type5/{contentId}")
+    public String toggleType5PublishedLoggedInUser(
+            @PathVariable Long contentId,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        
+        try {
+            CustomMenuContentType5 content = customMenuContentService.getType5ContentById(contentId);
+            if (content == null) {
+                throw new IllegalArgumentException("컨텐츠를 찾을 수 없습니다.");
+            }
+            
+            // 권한 검사
+            if (!hasAccessToContent(content.getMenu().getId(), principalDetails)) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+                return "redirect:/settings/menu-manager";
+            }
+            
+            customMenuContentService.toggleType5PublishedLoggedInUser(contentId);
+            redirectAttributes.addFlashAttribute("message", "로그인 사용자 공개 설정이 변경되었습니다.");
+            
+            return "redirect:/settings/menu-manager";
+        } catch (Exception e) {
+            log.error("로그인 사용자 공개 설정 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("error", "로그인 사용자 공개 설정 변경 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/settings/menu-manager";
+        }
+    }
+    
+    /**
+     * 메뉴 컨텐츠에 대한 접근 권한을 확인합니다.
+     */
+    private boolean hasAccessToContent(Long menuId, PrincipalDetails principalDetails) {
+        MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
+        boolean isAdmin = "ROLE_ADMIN".equals(memberAdmin.getRole());
+        Construction construction = memberAdmin.getConstruction();
+        
+        if (isAdmin) {
+            return true;
+        }
+        
+        if (construction == null) {
+            return false;
+        }
+        
+        try {
+            CustomMenu menu = customMenuService.getMenuById(menuId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
+                    
+            if (menu.getConstruction() != null && 
+                menu.getConstruction().getId().equals(construction.getId())) {
+                return true;
+            }
+        } catch (Exception e) {
+            log.error("메뉴 접근 권한 확인 중 오류 발생", e);
+        }
+        
+        return false;
     }
 } 

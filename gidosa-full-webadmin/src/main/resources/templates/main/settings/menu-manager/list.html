@@ -83,6 +83,112 @@
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('정말 삭제하시겠습니까? 하위 메뉴도 모두 삭제됩니다.');">삭제</button>
                                 </form>
                                 <a th:href="@{/settings/menu-manager/create(parentId=${menu.id})}" class="btn btn-sm btn-secondary">하위메뉴 추가</a>
+                                
+                                <!-- 메뉴 타입에 따른 공개 설정 버튼 추가 -->
+                                <div th:if="${menu.menuType == 1}" class="mt-2" th:with="content=${@customMenuContentService.getType1ContentByMenuId(menu.id)}">
+                                    <form th:if="${menu.menuType == 1 and content != null}"
+                                          th:action="@{/settings/menu-manager/toggle-anonymous/type1/{contentId}(contentId=${content != null ? content.id : ''})}"
+                                          method="post" style="display: inline-block; margin-right: 5px;">
+                                        <button type="submit" class="btn btn-sm" 
+                                                th:classappend="${content != null && content.publishedAnonymous ? 'btn-secondary' : 'btn-info'}"
+                                                th:text="${content != null && content.publishedAnonymous ? '익명 게시취소' : '익명 게시'}"
+                                                th:disabled="${content == null}">
+                                        </button>
+                                    </form>
+                                    <form th:if="${menu.menuType == 1 and content != null}"
+                                          th:action="@{/settings/menu-manager/toggle-logged-in/type1/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                          method="post" style="display: inline-block;">
+                                        <button type="submit" class="btn btn-sm" 
+                                                th:classappend="${content != null && content.publishedLoggedInUser ? 'btn-secondary' : 'btn-success'}"
+                                                th:text="${content != null && content.publishedLoggedInUser ? '회원 게시취소' : '회원 게시'}"
+                                                th:disabled="${content == null}">
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <div th:if="${menu.menuType == 2}" class="mt-2" th:with="content=${@customMenuContentService.getType2ContentByMenuId(menu.id)}">
+                                    <form th:if="${menu.menuType == 2 and content != null}"
+                                          th:action="@{/settings/menu-manager/toggle-anonymous/type2/{contentId}(contentId=${content != null ? content.id : ''})}"
+                                          method="post" style="display: inline-block; margin-right: 5px;">
+                                        <button type="submit" class="btn btn-sm" 
+                                                th:classappend="${content != null && content.publishedAnonymous ? 'btn-secondary' : 'btn-info'}"
+                                                th:text="${content != null && content.publishedAnonymous ? '익명 게시취소' : '익명 게시'}"
+                                                th:disabled="${content == null}">
+                                        </button>
+                                    </form>
+                                    <form th:if="${menu.menuType == 2 and content != null}"
+                                          th:action="@{/settings/menu-manager/toggle-logged-in/type2/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                          method="post" style="display: inline-block;">
+                                        <button type="submit" class="btn btn-sm" 
+                                                th:classappend="${content != null && content.publishedLoggedInUser ? 'btn-secondary' : 'btn-success'}"
+                                                th:text="${content != null && content.publishedLoggedInUser ? '회원 게시취소' : '회원 게시'}"
+                                                th:disabled="${content == null}">
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <div th:if="${menu.menuType == 3}" class="mt-2" th:with="content=${@customMenuContentService.getType3ContentByMenuId(menu.id)}">
+                                    <form th:if="${menu.menuType == 3 and content != null}"
+                                          th:action="@{/settings/menu-manager/toggle-anonymous/type3/{contentId}(contentId=${content != null ? content.id : ''})}"
+                                          method="post" style="display: inline-block; margin-right: 5px;">
+                                        <button type="submit" class="btn btn-sm" 
+                                                th:classappend="${content != null && content.publishedAnonymous ? 'btn-secondary' : 'btn-info'}"
+                                                th:text="${content != null && content.publishedAnonymous ? '익명 게시취소' : '익명 게시'}"
+                                                th:disabled="${content == null}">
+                                        </button>
+                                    </form>
+                                    <form th:if="${menu.menuType == 3 and content != null}"
+                                          th:action="@{/settings/menu-manager/toggle-logged-in/type3/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                          method="post" style="display: inline-block;">
+                                        <button type="submit" class="btn btn-sm" 
+                                                th:classappend="${content != null && content.publishedLoggedInUser ? 'btn-secondary' : 'btn-success'}"
+                                                th:text="${content != null && content.publishedLoggedInUser ? '회원 게시취소' : '회원 게시'}"
+                                                th:disabled="${content == null}">
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <div th:if="${menu.menuType == 4}" class="mt-2" th:with="content=${@customMenuContentService.getType4ContentByMenuId(menu.id)}">
+                                    <form th:if="${menu.menuType == 4 and content != null}"
+                                          th:action="@{/settings/menu-manager/toggle-anonymous/type4/{contentId}(contentId=${content != null ? content.id : ''})}"
+                                          method="post" style="display: inline-block; margin-right: 5px;">
+                                        <button type="submit" class="btn btn-sm" 
+                                                th:classappend="${content != null && content.publishedAnonymous ? 'btn-secondary' : 'btn-info'}"
+                                                th:text="${content != null && content.publishedAnonymous ? '익명 게시취소' : '익명 게시'}"
+                                                th:disabled="${content == null}">
+                                        </button>
+                                    </form>
+                                    <form th:if="${menu.menuType == 4 and content != null}"
+                                          th:action="@{/settings/menu-manager/toggle-logged-in/type4/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                          method="post" style="display: inline-block;">
+                                        <button type="submit" class="btn btn-sm" 
+                                                th:classappend="${content != null && content.publishedLoggedInUser ? 'btn-secondary' : 'btn-success'}"
+                                                th:text="${content != null && content.publishedLoggedInUser ? '회원 게시취소' : '회원 게시'}"
+                                                th:disabled="${content == null}">
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <div th:if="${menu.menuType == 5}" class="mt-2" th:with="content=${@customMenuContentService.getType5ContentByMenuId(menu.id)}">
+                                    <form th:if="${menu.menuType == 5 and content != null}"
+                                          th:action="@{/settings/menu-manager/toggle-anonymous/type5/{contentId}(contentId=${content != null ? content.id : ''})}"
+                                          method="post" style="display: inline-block; margin-right: 5px;">
+                                        <button type="submit" class="btn btn-sm" 
+                                                th:classappend="${content != null && content.publishedAnonymous ? 'btn-secondary' : 'btn-info'}"
+                                                th:text="${content != null && content.publishedAnonymous ? '익명 게시취소' : '익명 게시'}"
+                                                th:disabled="${content == null}">
+                                        </button>
+                                    </form>
+                                    <form th:if="${menu.menuType == 5 and content != null}"
+                                          th:action="@{/settings/menu-manager/toggle-logged-in/type5/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                          method="post" style="display: inline-block;">
+                                        <button type="submit" class="btn btn-sm" 
+                                                th:classappend="${content != null && content.publishedLoggedInUser ? 'btn-secondary' : 'btn-success'}"
+                                                th:text="${content != null && content.publishedLoggedInUser ? '회원 게시취소' : '회원 게시'}"
+                                                th:disabled="${content == null}">
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                         
@@ -103,6 +209,112 @@
                                         <a th:href="@{/settings/menu-manager/edit/{id}(id=${childMenu.id})}" class="btn btn-sm btn-warning">수정</a>
                                         <form th:action="@{/settings/menu-manager/delete/{id}(id=${childMenu.id})}" method="post" style="display: inline;">
                                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- 하위 메뉴 타입에 따른 공개 설정 버튼 추가 -->
+                                    <div th:if="${childMenu.menuType == 1}" class="mt-2" th:with="content=${@customMenuContentService.getType1ContentByMenuId(childMenu.id)}">
+                                        <form th:if="${childMenu.menuType == 1 and content != null}" 
+                                              th:action="@{/settings/menu-manager/toggle-anonymous/type1/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                              method="post" style="display: inline-block; margin-right: 5px;">
+                                            <button type="submit" class="btn btn-sm" 
+                                                    th:classappend="${content != null && content.publishedAnonymous ? 'btn-secondary' : 'btn-info'}"
+                                                    th:text="${content != null && content.publishedAnonymous ? '익명 게시취소' : '익명 게시'}"
+                                                    th:disabled="${content == null}">
+                                            </button>
+                                        </form>
+                                        <form th:if="${childMenu.menuType == 1 and content != null}" 
+                                              th:action="@{/settings/menu-manager/toggle-logged-in/type1/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                              method="post" style="display: inline-block;">
+                                            <button type="submit" class="btn btn-sm" 
+                                                    th:classappend="${content != null && content.publishedLoggedInUser ? 'btn-secondary' : 'btn-success'}"
+                                                    th:text="${content != null && content.publishedLoggedInUser ? '회원 게시취소' : '회원 게시'}"
+                                                    th:disabled="${content == null}">
+                                            </button>
+                                        </form>
+                                    </div>
+                                    
+                                    <div th:if="${childMenu.menuType == 2}" class="mt-2" th:with="content=${@customMenuContentService.getType2ContentByMenuId(childMenu.id)}">
+                                        <form th:if="${childMenu.menuType == 2 and content != null}" 
+                                              th:action="@{/settings/menu-manager/toggle-anonymous/type2/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                              method="post" style="display: inline-block; margin-right: 5px;">
+                                            <button type="submit" class="btn btn-sm" 
+                                                    th:classappend="${content != null && content.publishedAnonymous ? 'btn-secondary' : 'btn-info'}"
+                                                    th:text="${content != null && content.publishedAnonymous ? '익명 게시취소' : '익명 게시'}"
+                                                    th:disabled="${content == null}">
+                                            </button>
+                                        </form>
+                                        <form th:if="${childMenu.menuType == 2 and content != null}" 
+                                              th:action="@{/settings/menu-manager/toggle-logged-in/type2/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                              method="post" style="display: inline-block;">
+                                            <button type="submit" class="btn btn-sm" 
+                                                    th:classappend="${content != null && content.publishedLoggedInUser ? 'btn-secondary' : 'btn-success'}"
+                                                    th:text="${content != null && content.publishedLoggedInUser ? '회원 게시취소' : '회원 게시'}"
+                                                    th:disabled="${content == null}">
+                                            </button>
+                                        </form>
+                                    </div>
+                                    
+                                    <div th:if="${childMenu.menuType == 3}" class="mt-2" th:with="content=${@customMenuContentService.getType3ContentByMenuId(childMenu.id)}">
+                                        <form th:if="${childMenu.menuType == 3 and content != null}" 
+                                              th:action="@{/settings/menu-manager/toggle-anonymous/type3/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                              method="post" style="display: inline-block; margin-right: 5px;">
+                                            <button type="submit" class="btn btn-sm" 
+                                                    th:classappend="${content != null && content.publishedAnonymous ? 'btn-secondary' : 'btn-info'}"
+                                                    th:text="${content != null && content.publishedAnonymous ? '익명 게시취소' : '익명 게시'}"
+                                                    th:disabled="${content == null}">
+                                            </button>
+                                        </form>
+                                        <form th:if="${childMenu.menuType == 3 and content != null}" 
+                                              th:action="@{/settings/menu-manager/toggle-logged-in/type3/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                              method="post" style="display: inline-block;">
+                                            <button type="submit" class="btn btn-sm" 
+                                                    th:classappend="${content != null && content.publishedLoggedInUser ? 'btn-secondary' : 'btn-success'}"
+                                                    th:text="${content != null && content.publishedLoggedInUser ? '회원 게시취소' : '회원 게시'}"
+                                                    th:disabled="${content == null}">
+                                            </button>
+                                        </form>
+                                    </div>
+                                    
+                                    <div th:if="${childMenu.menuType == 4}" class="mt-2" th:with="content=${@customMenuContentService.getType4ContentByMenuId(childMenu.id)}">
+                                        <form th:if="${childMenu.menuType == 4 and content != null}" 
+                                              th:action="@{/settings/menu-manager/toggle-anonymous/type4/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                              method="post" style="display: inline-block; margin-right: 5px;">
+                                            <button type="submit" class="btn btn-sm" 
+                                                    th:classappend="${content != null && content.publishedAnonymous ? 'btn-secondary' : 'btn-info'}"
+                                                    th:text="${content != null && content.publishedAnonymous ? '익명 게시취소' : '익명 게시'}"
+                                                    th:disabled="${content == null}">
+                                            </button>
+                                        </form>
+                                        <form th:if="${childMenu.menuType == 4 and content != null}" 
+                                              th:action="@{/settings/menu-manager/toggle-logged-in/type4/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                              method="post" style="display: inline-block;">
+                                            <button type="submit" class="btn btn-sm" 
+                                                    th:classappend="${content != null && content.publishedLoggedInUser ? 'btn-secondary' : 'btn-success'}"
+                                                    th:text="${content != null && content.publishedLoggedInUser ? '회원 게시취소' : '회원 게시'}"
+                                                    th:disabled="${content == null}">
+                                            </button>
+                                        </form>
+                                    </div>
+                                    
+                                    <div th:if="${childMenu.menuType == 5}" class="mt-2" th:with="content=${@customMenuContentService.getType5ContentByMenuId(childMenu.id)}">
+                                        <form th:if="${childMenu.menuType == 5 and content != null}" 
+                                              th:action="@{/settings/menu-manager/toggle-anonymous/type5/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                              method="post" style="display: inline-block; margin-right: 5px;">
+                                            <button type="submit" class="btn btn-sm" 
+                                                    th:classappend="${content != null && content.publishedAnonymous ? 'btn-secondary' : 'btn-info'}"
+                                                    th:text="${content != null && content.publishedAnonymous ? '익명 게시취소' : '익명 게시'}"
+                                                    th:disabled="${content == null}">
+                                            </button>
+                                        </form>
+                                        <form th:if="${childMenu.menuType == 5 and content != null}" 
+                                              th:action="@{/settings/menu-manager/toggle-logged-in/type5/{contentId}(contentId=${content != null ? content.id : ''})}" 
+                                              method="post" style="display: inline-block;">
+                                            <button type="submit" class="btn btn-sm" 
+                                                    th:classappend="${content != null && content.publishedLoggedInUser ? 'btn-secondary' : 'btn-success'}"
+                                                    th:text="${content != null && content.publishedLoggedInUser ? '회원 게시취소' : '회원 게시'}"
+                                                    th:disabled="${content == null}">
+                                            </button>
                                         </form>
                                     </div>
                                 </div>

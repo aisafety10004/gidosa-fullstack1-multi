@@ -9,10 +9,12 @@ import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuContentType3Repository;
 import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuContentType4Repository;
 import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuContentType5Repository;
 import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,7 +39,9 @@ public class CustomMenuContentService {
     private final FileAttachmentService fileAttachmentService;
     
     // 파일 업로드 경로 설정
-    private final String UPLOAD_DIR = "uploads/custom-menu";
+//    private final String UPLOAD_DIR = "uploads/custom-menu";
+    @Value("${file.upload.path}")
+    private String UPLOAD_DIR;
     
     /**
      * 특정 메뉴의 타입1 컨텐츠를 조회합니다.
@@ -310,7 +314,7 @@ public class CustomMenuContentService {
         }
         
         // 저장 파일명 생성 (UUID + 원본 파일명)
-        String storedFilename = UUID.randomUUID().toString() + "_" + originalFilename;
+        String storedFilename = UUID.randomUUID() + "_" + originalFilename;
         
         // 파일 저장 경로 설정
         Path uploadDir = Paths.get(UPLOAD_DIR);
@@ -329,7 +333,7 @@ public class CustomMenuContentService {
         attachment.setStoredFilename(storedFilename);
         attachment.setContentType(file.getContentType());
         attachment.setFileSize(file.getSize());
-        attachment.setFilePath(filePath.toString());
+        attachment.setFilePath(File.separator + filePath);
         attachment.setFileExtension(fileExtension);
         attachment.setConstruction(construction);
         
@@ -453,5 +457,155 @@ public class CustomMenuContentService {
     @Transactional(readOnly = true)
     public CustomMenuContentType5 getType5ContentWithAttachmentsById(Long contentId) {
         return type5Repository.findByIdWithAttachments(contentId).orElse(null);
+    }
+
+    /**
+     * 타입1 메뉴 컨텐츠의 익명 사용자 공개 여부를 토글합니다.
+     */
+    @Transactional
+    public CustomMenuContentType1 toggleType1PublishedAnonymous(Long contentId) {
+        CustomMenuContentType1 content = type1Repository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid content Id: " + contentId));
+        content.setPublishedAnonymous(!content.getPublishedAnonymous());
+        return type1Repository.save(content);
+    }
+    
+    /**
+     * 타입1 메뉴 컨텐츠의 로그인 사용자 공개 여부를 토글합니다.
+     */
+    @Transactional
+    public CustomMenuContentType1 toggleType1PublishedLoggedInUser(Long contentId) {
+        CustomMenuContentType1 content = type1Repository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid content Id: " + contentId));
+        content.setPublishedLoggedInUser(!content.getPublishedLoggedInUser());
+        return type1Repository.save(content);
+    }
+    
+    /**
+     * 타입2 메뉴 컨텐츠의 익명 사용자 공개 여부를 토글합니다.
+     */
+    @Transactional
+    public CustomMenuContentType2 toggleType2PublishedAnonymous(Long contentId) {
+        CustomMenuContentType2 content = type2Repository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid content Id: " + contentId));
+        content.setPublishedAnonymous(!content.getPublishedAnonymous());
+        return type2Repository.save(content);
+    }
+    
+    /**
+     * 타입2 메뉴 컨텐츠의 로그인 사용자 공개 여부를 토글합니다.
+     */
+    @Transactional
+    public CustomMenuContentType2 toggleType2PublishedLoggedInUser(Long contentId) {
+        CustomMenuContentType2 content = type2Repository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid content Id: " + contentId));
+        content.setPublishedLoggedInUser(!content.getPublishedLoggedInUser());
+        return type2Repository.save(content);
+    }
+    
+    /**
+     * 타입3 메뉴 컨텐츠의 익명 사용자 공개 여부를 토글합니다.
+     */
+    @Transactional
+    public CustomMenuContentType3 toggleType3PublishedAnonymous(Long contentId) {
+        CustomMenuContentType3 content = type3Repository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid content Id: " + contentId));
+        content.setPublishedAnonymous(!content.getPublishedAnonymous());
+        return type3Repository.save(content);
+    }
+    
+    /**
+     * 타입3 메뉴 컨텐츠의 로그인 사용자 공개 여부를 토글합니다.
+     */
+    @Transactional
+    public CustomMenuContentType3 toggleType3PublishedLoggedInUser(Long contentId) {
+        CustomMenuContentType3 content = type3Repository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid content Id: " + contentId));
+        content.setPublishedLoggedInUser(!content.getPublishedLoggedInUser());
+        return type3Repository.save(content);
+    }
+    
+    /**
+     * 타입4 메뉴 컨텐츠의 익명 사용자 공개 여부를 토글합니다.
+     */
+    @Transactional
+    public CustomMenuContentType4 toggleType4PublishedAnonymous(Long contentId) {
+        CustomMenuContentType4 content = type4Repository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid content Id: " + contentId));
+        content.setPublishedAnonymous(!content.getPublishedAnonymous());
+        return type4Repository.save(content);
+    }
+    
+    /**
+     * 타입4 메뉴 컨텐츠의 로그인 사용자 공개 여부를 토글합니다.
+     */
+    @Transactional
+    public CustomMenuContentType4 toggleType4PublishedLoggedInUser(Long contentId) {
+        CustomMenuContentType4 content = type4Repository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid content Id: " + contentId));
+        content.setPublishedLoggedInUser(!content.getPublishedLoggedInUser());
+        return type4Repository.save(content);
+    }
+    
+    /**
+     * 타입5 메뉴 컨텐츠의 익명 사용자 공개 여부를 토글합니다.
+     */
+    @Transactional
+    public CustomMenuContentType5 toggleType5PublishedAnonymous(Long contentId) {
+        CustomMenuContentType5 content = type5Repository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid content Id: " + contentId));
+        content.setPublishedAnonymous(!content.getPublishedAnonymous());
+        return type5Repository.save(content);
+    }
+    
+    /**
+     * 타입5 메뉴 컨텐츠의 로그인 사용자 공개 여부를 토글합니다.
+     */
+    @Transactional
+    public CustomMenuContentType5 toggleType5PublishedLoggedInUser(Long contentId) {
+        CustomMenuContentType5 content = type5Repository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid content Id: " + contentId));
+        content.setPublishedLoggedInUser(!content.getPublishedLoggedInUser());
+        return type5Repository.save(content);
+    }
+
+    /**
+     * 타입1 메뉴 컨텐츠를 ID로 조회합니다.
+     */
+    @Transactional(readOnly = true)
+    public CustomMenuContentType1 getType1ContentById(Long contentId) {
+        return type1Repository.findById(contentId).orElse(null);
+    }
+    
+    /**
+     * 타입2 메뉴 컨텐츠를 ID로 조회합니다.
+     */
+    @Transactional(readOnly = true)
+    public CustomMenuContentType2 getType2ContentById(Long contentId) {
+        return type2Repository.findById(contentId).orElse(null);
+    }
+    
+    /**
+     * 타입3 메뉴 컨텐츠를 ID로 조회합니다.
+     */
+    @Transactional(readOnly = true)
+    public CustomMenuContentType3 getType3ContentById(Long contentId) {
+        return type3Repository.findById(contentId).orElse(null);
+    }
+    
+    /**
+     * 타입4 메뉴 컨텐츠를 ID로 조회합니다.
+     */
+    @Transactional(readOnly = true)
+    public CustomMenuContentType4 getType4ContentById(Long contentId) {
+        return type4Repository.findById(contentId).orElse(null);
+    }
+    
+    /**
+     * 타입5 메뉴 컨텐츠를 ID로 조회합니다.
+     */
+    @Transactional(readOnly = true)
+    public CustomMenuContentType5 getType5ContentById(Long contentId) {
+        return type5Repository.findById(contentId).orElse(null);
     }
 } 
