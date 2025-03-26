@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -363,7 +365,7 @@ public class InquiryAdminService {
             fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
         
-        String savedFilename = UUID.randomUUID().toString() + fileExtension;
+        String savedFilename = UUID.randomUUID() + fileExtension;
         Path filePath = uploadPath.resolve(savedFilename);
         Files.copy(file.getInputStream(), filePath);
         
@@ -371,7 +373,7 @@ public class InquiryAdminService {
         FileAttachment attachment = new FileAttachment();
         attachment.setOriginalFilename(originalFilename);
         attachment.setStoredFilename(savedFilename);
-        attachment.setFilePath(FILE_UPLOAD_PATH + savedFilename);
+        attachment.setFilePath(FILE_UPLOAD_PATH + File.separator + savedFilename);
         attachment.setFileSize(file.getSize());
         attachment.setContentType(file.getContentType());
         
