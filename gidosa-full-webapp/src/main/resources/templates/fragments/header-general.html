@@ -14,7 +14,7 @@
             <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main' : '/general/construction/' + construction.id}}"
                class="text-lg md:text-2xl font-bold text-primary focus:outline-none"
                onclick="if (headerInvisible) return false;">
-                건설공사현장
+                공사현장
             </a>
             <th:block th:if="${authConstruction != null || construction != null}">
                 <span class="mx-2 md:mx-4 text-gray-300">|</span>

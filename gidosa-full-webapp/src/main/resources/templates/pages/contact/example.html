@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default}">
 <head>
-    <title>건설공사현장을 검색해 보세요</title>
+    <title>도입사례 - gidosa</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -13,7 +13,7 @@
 <body>
     <div layout:fragment="content">
         <div class="search-container text-center my-5">
-            <h1 class="mb-4">건설공사현장을 검색해 보세요</h1>
+            <h1 class="mb-4">현장주소을 검색해 보세요</h1>
             
             <div class="search-box position-relative">
                 <input type="text" class="form-control search-input" 
@@ -29,7 +29,7 @@
                 <div class="row">
                     <div class="col-12">
                         <h2 class="mb-4">
-                            건설공사현장에서<br>
+                            현장에서<br>
                             <span class="text-primary">안전지도를 이용 중이에요</span>
                         </h2>
                     </div>
@@ -67,9 +67,9 @@
                         </div>
                         <div class="search-info mt-4">
                             <p class="text-muted">
-                                * 건설공사현장 이름으로 검색할 수 있어요.<br>
-                                &nbsp;&nbsp;<b>(예: A 건설공사현장)</b><br>
-                                * 건설공사를 시작하지 않은 현장이거나 일부 건설공사현장의 경우 검색이 안 될 수 있어요.
+                                * 현장주소로 검색할 수 있어요.<br>
+                                &nbsp;&nbsp;<b>(예: A현장)</b><br>
+                                * 공사를 시작하지 않은 현장이거나 일부 현장의 경우 검색이 안 될 수 있어요.
                             </p>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                   if (keyword.length > 0) {
                       searchConstructions(keyword);
                   } else {
-                      alert('건설공사현장 이름을 입력해주세요.');
+                      alert('현장주소를 입력해주세요.');
                   }
               });
 
@@ -116,7 +116,7 @@
                       if (keyword.length > 0) {
                           searchConstructions(keyword);
                       } else {
-                          alert('건설공사현장 이름을 입력해주세요.');
+                          alert('현장주소를 입력해주세요.');
                       }
                   }
               });

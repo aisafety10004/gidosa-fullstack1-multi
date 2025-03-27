@@ -5,7 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <!-- <title>안전지도사 관리 매니저</title> -->
-    <title>바로세움 매니저</title>
+    <!-- <title>바로세움 매니저</title> -->
+    <title th:utext="${#authentication.principal.memberAdmin.location}"></title> 
     <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <script src="/vendor/jquery/jquery.min.js"></script>
