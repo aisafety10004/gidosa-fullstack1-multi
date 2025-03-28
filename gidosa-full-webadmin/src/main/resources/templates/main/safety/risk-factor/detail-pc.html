@@ -126,6 +126,7 @@
             padding: 5px 10px;
         }
     </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxcldBwlazh_uS9TgV8iZa9iWk2hgEVvU&libraries=maps,marker&v=beta"></script>
 </head>
 <body>
 <div layout:fragment="content">
@@ -247,6 +248,40 @@
                                     <div class="detail-item">
                                         <div class="detail-label">현장 경도값</div>
                                         <div class="detail-value" th:text="${riskFactor.longitude != null ? riskFactor.longitude : '-'}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="detail-item">
+                                        <div class="detail-label">구글 지도</div>
+                                        <div class="detail-value">
+                                            <!-- <a th:href="@{https://www.google.com/maps/search/?api=1&query=37.4980952,126.8546121}" target="_blank">
+                                                <i class="fas fa-map-marker-alt"></i> 구글 지도 보기
+                                            </a> -->
+                                            <gmp-map th:if="${riskFactor.latitude != null and riskFactor.longitude != null}" th:attr="center=${riskFactor.latitude + ',' + riskFactor.longitude}" zoom="16" map-id="DEMO_MAP_ID" style="height: 500px">
+                                                <gmp-advanced-marker
+                                                    th:attr="position=${riskFactor.latitude + ',' + riskFactor.longitude}"
+                                                    title="현장사진 위치"
+                                                    clickable="false"
+                                                ><div style="background: yellow; color: dark; padding: 4px 8px; border-radius: 4px; border: 1px solid gray; width: 100px; font-weight: 900;"><span>📍</span> <span>현장사진 장소</span></div></gmp-advanced-marker>
+                                            </gmp-map>
+                                            <div th:if="${riskFactor.latitude == null or riskFactor.longitude == null}">
+                                                현장 위도값 또는 경도값이 없습니다. 현장 위도값 또는 경도값을 입력해주세요.
+                                            </div>
+                                            <!-- <gmp-map th:if="${riskFactor.latitude != null and riskFactor.longitude != null}" th:attr="center=${riskFactor.latitude + ',' + riskFactor.longitude}" zoom="16" map-id="DEMO_MAP_ID" style="height: 500px"></gmp-map>
+                                            <div style="
+                                                position: absolute;
+                                                top: 34.5%;
+                                                left: 22.2%;
+                                                z-index: 10;
+                                                pointer-events: none;
+                                            ">
+                                                <div style="background: white; border: 1px solid #aaa; padding: 4px 8px; border-radius: 6px;">
+                                                🎯 여기에 위치!
+                                                </div>
+                                            </div> -->
+                                        </div>
                                     </div>
                                 </div>
                             </div>
