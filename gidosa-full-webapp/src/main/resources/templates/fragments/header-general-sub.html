@@ -2,16 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.springframework.org/security/tags"
 >
-<head>
-    <meta charset="UTF-8">
-</head>
-<body>
-<header th:fragment="header-sub" class="w-full" style="margin-top: 72px;" th:if="${headerSubInvisible == null || !headerSubInvisible}">
+<header th:fragment="header-sub" class="w-full header-sub z-49" style="margin-top: 72px;" th:if="${headerSubInvisible == null || !headerSubInvisible}">
     <nav class="flex items-center justify-between shadow-md px-8 py-4 bg-white w-full"
          th:classappend="${headerSubInvisible ?: 'bg-gray-500/50'}">
-        <!-- 데스크탑 네비게이션 링크 -->
+        <!-- 네비게이션 링크 (데스크탑 및 모바일 모두 표시) -->
         <th:block th:unless="${showCloseButton}">
-            <div class="hidden md:flex md:items-center md:gap-1">
+            <div class="flex flex-wrap items-center gap-1">
                 <a th:href="@{''}"
                    class="px-6 py-2 text-black rounded-md hover:bg-primaryDark transition-colors duration-300 focus:outline-none"
                    th:classappend="${headerSubInvisible != null and headerSubInvisible == true ? 'bg-gray-500/50 pointer-events-none' : ''}"
@@ -26,6 +22,20 @@
                 </a>
             </div>
         </th:block>
+
+        <!-- 모바일용 햄버거 버튼 추가 -->
+        <!-- <button class="md:hidden relative w-10 h-10 bg-white rounded-lg transition-colors duration-200 focus:outline-none"
+                th:classappend="${headerSubInvisible ?: 'bg-gray-500/50'}"
+                onclick="toggleSubMenu()">
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-[6px]">
+                <span class="w-6 h-[2px] bg-gray-700 transition-transform duration-300"
+                      id="sub-hamburger-top"></span>
+                <span class="w-6 h-[2px] bg-gray-700 transition-opacity duration-300"
+                      id="sub-hamburger-middle"></span>
+                <span class="w-6 h-[2px] bg-gray-700 transition-transform duration-300"
+                      id="sub-hamburger-bottom"></span>
+            </div>
+        </button> -->
     </nav>
 
     <!-- 모바일 드롭다운 메뉴 -->
@@ -43,6 +53,54 @@
 <!--            </a>-->
 <!--        </div>-->
 <!--    </div>-->
+    <!-- <div id="mobile-sub-menu" class="md:hidden absolute w-full bg-white shadow-lg z-50 hidden">
+        <div class="flex flex-col py-2">
+            <a th:href="@{''}"
+               class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
+               onclick="closeSubMenu()">
+                메뉴1
+            </a>
+            <a th:href="@{''}"
+               class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
+               onclick="closeSubMenu()">
+                메뉴2
+            </a>
+        </div>
+    </div> -->
+
+     <!-- 자바스크립트 함수 추가 -->
+     <script>
+        // function toggleSubMenu() {
+        //     const menu = document.getElementById('mobile-sub-menu');
+        //     const topBar = document.getElementById('sub-hamburger-top');
+        //     const middleBar = document.getElementById('sub-hamburger-middle');
+        //     const bottomBar = document.getElementById('sub-hamburger-bottom');
+            
+        //     menu.classList.toggle('hidden');
+            
+        //     if (!menu.classList.contains('hidden')) {
+        //         // X 모양으로 변경
+        //         topBar.style.transform = 'translateY(8px) rotate(45deg)';
+        //         middleBar.style.opacity = '0';
+        //         bottomBar.style.transform = 'translateY(-8px) rotate(-45deg)';
+        //     } else {
+        //         // 햄버거 모양으로 복원
+        //         topBar.style.transform = 'none';
+        //         middleBar.style.opacity = '1';
+        //         bottomBar.style.transform = 'none';
+        //     }
+        // }
+        
+        // function closeSubMenu() {
+        //     const menu = document.getElementById('mobile-sub-menu');
+        //     const topBar = document.getElementById('sub-hamburger-top');
+        //     const middleBar = document.getElementById('sub-hamburger-middle');
+        //     const bottomBar = document.getElementById('sub-hamburger-bottom');
+            
+        //     menu.classList.add('hidden');
+        //     topBar.style.transform = 'none';
+        //     middleBar.style.opacity = '1';
+        //     bottomBar.style.transform = 'none';
+        // }
+    </script>
 </header>
-</body>
-</html>

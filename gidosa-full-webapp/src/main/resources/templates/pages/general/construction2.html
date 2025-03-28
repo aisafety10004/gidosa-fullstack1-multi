@@ -6,10 +6,7 @@
     <title th:text="${construction.location + ' - 현장공사'}"></title>
 </head>
 <body>
-<!-- <div layout:fragment="content" class="bg-white">
-    <h1 th:text="${construction.location} + ' - 현장공사 general 메인 페이지'"></h1>
-</div> -->
-<div layout:fragment="content">
+<div layout:fragment="content" style="background-color: rgb(218, 228, 250);">
     <!-- 메인 컨테이너 -->
     <div class="flex flex-col items-center w-full max-w-md mx-auto px-4 py-4">
         <!-- 헤더 섹션 -->
@@ -95,23 +92,21 @@
             </div>
         </div>
     </div>
-</div>
-
-<!-- 하단 버튼 -->
-<div layout:fragment="bottom-button" class="w-full bg-gray-800 text-white p-3 mt-auto">
-    <div class="container mx-auto flex items-center justify-center">
-        <!-- <button class="flex items-center text-sm border border-white rounded-md p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            PC버전으로 보기
-        </button> -->
-        <button class="flex items-center text-sm border border-white rounded-md p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            홈 화면에 추가
-        </button>
+    
+    <!-- 하단 버튼 -->
+    <div class="w-full flex items-center justify-between bg-gray-800 text-white p-3">
+      <button class="flex items-center text-sm border border-white rounded-md p-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          PC버전으로 보기
+      </button>
+      <button class="flex items-center text-sm border border-white rounded-md p-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          홈 화면에 추가
+      </button>
     </div>
 </div>
 </body>

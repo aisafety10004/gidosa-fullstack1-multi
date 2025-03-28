@@ -2,23 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.springframework.org/security/tags"
 >
-<head>
-    <meta charset="UTF-8">
-</head>
-<body>
 <header th:fragment="header" class="w-full fixed top-0 z-50" th:if="${headerInvisible == null || !headerInvisible}">
     <nav class="flex items-center justify-between px-8 py-4 bg-white w-full"
          th:classappend="${headerInvisible ?: 'bg-gray-500/50'}"
          th:with="authConstruction=${construction == null ? #authentication.principal.memberGeneral.construction : construction}">
         <div class="flex items-center">
-            <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main' : '/general/construction/' + construction.id}}"
-               class="text-lg md:text-2xl font-bold text-primary focus:outline-none" style="width: 75px;"
+            <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main/main' : '/general/construction/' + construction.id}}"
+               class="text-lg md:text-2xl font-bold text-primary focus:outline-none" style="width: 96px;"
                onclick="if (headerInvisible) return false;">
                 공사현장
             </a>
             <th:block th:if="${authConstruction != null || construction != null}">
                 <span class="mx-2 md:mx-4 text-gray-300">|</span>
-                <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main' : '/general/construction/' + construction.id}}"
+                <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main/main' : '/general/construction/' + construction.id}}"
                    class="text-base md:text-xl text-gray-700 cursor-pointer"
                    onclick="if (headerInvisible) return false;"
                    th:text="${authConstruction != null ? authConstruction.location : construction.location}"
@@ -139,5 +135,3 @@
         </div>
     </div>
 </header>
-</body>
-</html>

@@ -10,22 +10,36 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 <!--    <link rel="stylesheet" th:href="@{/css/tailwind.css}">-->
     <!-- Page specific CSS -->
-    <th:block layout:fragment="css"></th:block>
+    <th:block layout:fragment="css">
+        <style>
+            /* 모바일 화면에서 헤더 숨기기 (518px 미만에서 적용) */
+            @media (max-width: 517px) {
+                header.header-sub {
+                    display: none !important;
+                }
+            }
+        </style>
+    </th:block>
 
     <script src="/js/tailwindcss.js"></script>
 </head>
-<body>
+<body class="bg-[#DAE4FA] flex flex-col min-h-screen">
     <!-- Header/Navigation -->
     <div th:replace="~{fragments/header-general :: header}"></div>
     <!-- Header Sub/Navigation -->
     <div th:replace="~{fragments/header-general-sub :: header-sub}"></div>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8 pt-24">
-        <div layout:fragment="content">
+    <main class="w-full pt-24 flex-grow">
+        <div layout:fragment="content" class="container mx-auto">
             <!-- Page content will be inserted here -->
         </div>
     </main>
+
+    <!-- Bottom Button Section -->
+    <div layout:fragment="bottom-button">
+        <!-- Bottom button content will be inserted here -->
+    </div>
 
     <!-- Footer -->
 <!--    <div th:replace="~{fragments/footer-general :: footer}"></div>-->

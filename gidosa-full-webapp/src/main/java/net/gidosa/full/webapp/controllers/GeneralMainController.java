@@ -20,8 +20,13 @@ public class GeneralMainController {
     private final GeneralMainService generalMainService;
     private final GeneralConstructionService generalConstructionService;
 
-    @GetMapping()
+    @GetMapping("/main")
     public String index(Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         return "pages/general/main/main";
+    }
+
+    @GetMapping("/main2")
+    public String index2(Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return "pages/general/main/main2";
     }
 }

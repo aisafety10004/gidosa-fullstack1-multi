@@ -24,4 +24,12 @@ public class GeneralConstructionController {
 
         return "pages/general/construction";
     }
+
+    @GetMapping("/construction2/{constructionId}")
+    public String index2(@PathVariable Long constructionId, Model model) {
+        Construction construction = generalConstructionService.getConstruction(constructionId);
+        model.addAttribute("construction", construction);
+
+        return "pages/general/construction2";
+    }
 }

@@ -74,6 +74,7 @@ public class SecurityConfig {
             "/*", "/general/document/**", "/css/**", "/js/**", "/assets/**", "/error/**",
                         "/contact/**", "/construction/**",
                         "/general/construction/*",
+                        "/general/construction2/*",
 //                        "/general/member/async-find-pw",
                         "/general/member/check-username"
                 ).permitAll()
@@ -92,7 +93,7 @@ public class SecurityConfig {
 //                    Long constructionId = principalDetails.getMemberGeneral().getConstruction().getId();
 //                    response.sendRedirect("/general/main?constructionId=" + constructionId);
 //                })
-                .defaultSuccessUrl("/general/main")
+                .defaultSuccessUrl("/general/main/main")
                 .permitAll()
             )
             .logout(logout -> logout
@@ -122,7 +123,7 @@ public class SecurityConfig {
                            request.getRequestURI().startsWith("/general/member/find-") ||
                            request.getRequestURI().startsWith("/general/member/register"))
                     ) {
-                        response.sendRedirect("/general/main");
+                        response.sendRedirect("/general/main/main");
                     } else {
                         response.sendRedirect("/error/403");
                     }
