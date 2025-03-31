@@ -208,4 +208,66 @@ public interface NoticeJpaRepository extends JpaRepository<Notice, Long> {
     @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction IS NULL AND n.noticeDate BETWEEN :startDate AND :endDate",
            countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction IS NULL AND n.noticeDate BETWEEN :startDate AND :endDate")
     Page<Notice> findGlobalNoticesByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+
+    // 내용으로 익명 사용자에게 보이는 공지사항 검색
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.publishedAnonymous = true AND LOWER(n.content) LIKE LOWER(CONCAT('%', :searchContent, '%')) ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.publishedAnonymous = true AND LOWER(n.content) LIKE LOWER(CONCAT('%', :searchContent, '%'))")
+    Page<Notice> findPublishedAnonymousByContentContainingIgnoreCase(@Param("searchContent") String searchContent, Pageable pageable);
+    
+    // 내용으로 로그인 사용자에게 보이는 공지사항 검색
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.publishedLoggedInUser = true AND LOWER(n.content) LIKE LOWER(CONCAT('%', :searchContent, '%')) ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.publishedLoggedInUser = true AND LOWER(n.content) LIKE LOWER(CONCAT('%', :searchContent, '%'))")
+    Page<Notice> findPublishedLoggedInUserByContentContainingIgnoreCase(@Param("searchContent") String searchContent, Pageable pageable);
+    
+    // 특정 건설현장에 대한 익명 사용자에게 보이는 공지사항 조회
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction.id = :constructionId AND n.publishedAnonymous = :published ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction.id = :constructionId AND n.publishedAnonymous = :published")
+    Page<Notice> findByConstructionIdAndPublishedAnonymous(
+            @Param("constructionId") Long constructionId, 
+            @Param("published") boolean published, 
+            Pageable pageable);
+    
+    // 특정 건설현장에 대한 로그인 사용자에게 보이는 공지사항 조회
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction.id = :constructionId AND n.publishedLoggedInUser = :published ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction.id = :constructionId AND n.publishedLoggedInUser = :published")
+    Page<Notice> findByConstructionIdAndPublishedLoggedInUser(
+            @Param("constructionId") Long constructionId, 
+            @Param("published") boolean published, 
+            Pageable pageable);
+    
+    // 제목으로 특정 건설현장에 대한 익명 사용자에게 보이는 공지사항 검색
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction.id = :constructionId AND n.publishedAnonymous = :published AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction.id = :constructionId AND n.publishedAnonymous = :published AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%'))")
+    Page<Notice> findByConstructionIdAndPublishedAnonymousAndTitleContainingIgnoreCase(
+            @Param("constructionId") Long constructionId, 
+            @Param("published") boolean published, 
+            @Param("searchTitle") String searchTitle, 
+            Pageable pageable);
+    
+    // 내용으로 특정 건설현장에 대한 익명 사용자에게 보이는 공지사항 검색
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction.id = :constructionId AND n.publishedAnonymous = :published AND LOWER(n.content) LIKE LOWER(CONCAT('%', :searchContent, '%')) ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction.id = :constructionId AND n.publishedAnonymous = :published AND LOWER(n.content) LIKE LOWER(CONCAT('%', :searchContent, '%'))")
+    Page<Notice> findByConstructionIdAndPublishedAnonymousAndContentContainingIgnoreCase(
+            @Param("constructionId") Long constructionId, 
+            @Param("published") boolean published, 
+            @Param("searchContent") String searchContent, 
+            Pageable pageable);
+    
+    // 제목으로 특정 건설현장에 대한 로그인 사용자에게 보이는 공지사항 검색
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction.id = :constructionId AND n.publishedLoggedInUser = :published AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%')) ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction.id = :constructionId AND n.publishedLoggedInUser = :published AND LOWER(n.title) LIKE LOWER(CONCAT('%', :searchTitle, '%'))")
+    Page<Notice> findByConstructionIdAndPublishedLoggedInUserAndTitleContainingIgnoreCase(
+            @Param("constructionId") Long constructionId, 
+            @Param("published") boolean published, 
+            @Param("searchTitle") String searchTitle, 
+            Pageable pageable);
+    
+    // 내용으로 특정 건설현장에 대한 로그인 사용자에게 보이는 공지사항 검색
+    @Query(value = "SELECT n FROM Notice n LEFT JOIN FETCH n.fileAttachment1 WHERE n.construction.id = :constructionId AND n.publishedLoggedInUser = :published AND LOWER(n.content) LIKE LOWER(CONCAT('%', :searchContent, '%')) ORDER BY n.noticeDate DESC",
+           countQuery = "SELECT COUNT(n) FROM Notice n WHERE n.construction.id = :constructionId AND n.publishedLoggedInUser = :published AND LOWER(n.content) LIKE LOWER(CONCAT('%', :searchContent, '%'))")
+    Page<Notice> findByConstructionIdAndPublishedLoggedInUserAndContentContainingIgnoreCase(
+            @Param("constructionId") Long constructionId, 
+            @Param("published") boolean published, 
+            @Param("searchContent") String searchContent, 
+            Pageable pageable);
 } 

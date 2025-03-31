@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/general}">
+<th:block layout:fragment="content">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none">홈</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/general/notice}" class="text-decoration-none">공지사항</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" th:text="${notice.title}">공지사항 제목</li>
+                    </ol>
+                </nav>
+                
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h4 class="mb-0" th:text="${notice.title}">공지사항 제목</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3 text-muted small">
+                            <div>
+                                <span>작성일: <span th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">2023-04-01 09:00</span></span>
+                                <span class="ms-3">수정일: <span th:text="${#temporals.format(notice.updatedAt, 'yyyy-MM-dd HH:mm')}">2023-04-01 09:00</span></span>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- 본문 내용 -->
+                        <div class="notice-content mt-4" th:utext="${notice.content}">
+                            공지사항 내용이 여기에 표시됩니다.
+                        </div>
+                        
+                        <!-- 첨부파일 영역 -->
+                        <div class="attachments-section mt-5" th:if="${not #lists.isEmpty(notice.getAttachments())}">
+                            <h5 class="border-top pt-3">첨부파일</h5>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center" 
+                                    th:each="attachment : ${notice.getAttachments()}">
+                                    <a th:href="@{/file-download/{id}(id=${attachment.id})}" class="text-decoration-none">
+                                        <i class="fas fa-file me-2"></i>
+                                        <span th:text="${attachment.originalFilename}">첨부파일명.pdf</span>
+                                    </a>
+                                    <span class="badge bg-secondary rounded-pill" 
+                                          th:text="${#numbers.formatDecimal(attachment.fileSize / 1024, 0, 1) + ' KB'}">2.5 MB</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Mermaid 다이어그램 코드가 있을 경우 표시 -->
+                        <div class="mermaid-diagram mt-4" th:if="${notice.mermaidCode != null and !notice.mermaidCode.isEmpty()}">
+                            <h5 class="border-top pt-3">다이어그램</h5>
+                            <div class="mermaid" th:text="${notice.mermaidCode}">
+                                graph TD
+                                A[시작] --> B[처리]
+                                B --> C[종료]
+                            </div>
+                        </div>
+                        
+                        <!-- 버튼 영역 -->
+                        <div class="mt-5 pt-3 border-top">
+                            <a th:href="@{/general/notice}" class="btn btn-secondary">
+                                <i class="fas fa-list me-1"></i> 목록으로
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 이전 글, 다음 글 (나중에 추가 기능으로 구현) -->
+                <!-- <div class="card shadow-sm">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <span><i class="fas fa-arrow-up me-2"></i>이전 글</span>
+                                <small>2023-03-30</small>
+                            </div>
+                            <p class="mb-1">이전 공지사항 제목</p>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <span><i class="fas fa-arrow-down me-2"></i>다음 글</span>
+                                <small>2023-04-02</small>
+                            </div>
+                            <p class="mb-1">다음 공지사항 제목</p>
+                        </a>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mermaid 스크립트 -->
+    <script th:if="${notice.mermaidCode != null and !notice.mermaidCode.isEmpty()}" src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script th:if="${notice.mermaidCode != null and !notice.mermaidCode.isEmpty()}">
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                securityLevel: 'loose'
+            });
+        });
+    </script>
+    
+    <style>
+        .notice-content {
+            min-height: 200px;
+            line-height: 1.6;
+        }
+        
+        .notice-content img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .mermaid {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</th:block>
+</html> 

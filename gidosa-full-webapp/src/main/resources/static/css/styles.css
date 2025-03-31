@@ -65,3 +65,27 @@ body {
 ::placeholder {
     color: lightgray !important;
 }
+
+/* 모바일 메뉴 애니메이션 관련 스타일 */
+#menu-overlay {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: opacity 0.3s ease;
+}
+
+#mobile-menu {
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    body.menu-open {
+        overflow: hidden;
+    }
+    
+    .menu-divider {
+        height: 1px;
+        background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+        margin: 0.75rem 0;
+    }
+}

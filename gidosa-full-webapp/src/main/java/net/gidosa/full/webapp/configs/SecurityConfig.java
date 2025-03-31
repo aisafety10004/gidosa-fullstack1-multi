@@ -75,6 +75,7 @@ public class SecurityConfig {
                         "/contact/**", "/construction/**",
                         "/general/construction/*",
                         "/general/construction2/*",
+                        "/general/notice/**",
 //                        "/general/member/async-find-pw",
                         "/general/member/check-username"
                 ).permitAll()

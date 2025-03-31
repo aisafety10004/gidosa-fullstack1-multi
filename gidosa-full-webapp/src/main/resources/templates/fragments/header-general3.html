@@ -36,7 +36,7 @@
         <th:block th:unless="${showCloseButton}">
             <button class="relative w-10 h-10 md:hidden bg-white rounded-lg transition-colors duration-200 focus:outline-none"
                     th:classappend="${headerInvisible ?: 'bg-gray-500/50'}"
-                    onclick="toggleMenu()">
+                    onclick="toggleMenu3()">
                 <div class="absolute inset-0 flex flex-col items-center justify-center gap-[6px]">
                         <span class="w-6 h-[2px] bg-gray-700 transition-transform duration-300"
                               id="hamburger-top"></span>
@@ -103,51 +103,106 @@
     </nav>
 
     <!-- 모바일 드롭다운 메뉴 -->
-    <div id="mobile-menu" class="md:hidden absolute w-full bg-white shadow-lg z-50 hidden">
-        <div class="flex flex-col py-2">
-            <!-- 로그인 상태에 따라 다른 메뉴 표시 -->
-            <th:block sec:authorize="!isAuthenticated()">
-                <a th:href="@{${'/general/auth/login?constructionId=' + construction.id}}"
-                   class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
-                   onclick="closeMenu()">
-                    회원가입/로그인
+    <div id="mobile-menu" class="md:hidden absolute right-0 bg-white shadow-lg z-50 hidden h-screen w-4/5 max-w-sm">
+        <div class="flex flex-col py-6 h-full">
+            <!-- 메뉴 헤더 부분 -->
+            <div class="px-8 pb-4 mb-4 border-b border-gray-200">
+                <h3 class="text-xl font-bold text-primary">메뉴</h3>
+            </div>
+            
+            <!-- 메뉴 항목들 -->
+            <div class="flex-1 overflow-y-auto">
+                <!-- 로그인 상태에 따라 다른 메뉴 표시 -->
+                <th:block sec:authorize="!isAuthenticated()">
+                    <a th:href="@{${'/general/auth/login?constructionId=' + construction.id}}"
+                       class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                       onclick="closeMenu3()">
+                        <span class="flex items-center">
+<!--                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>-->
+<!--                            </svg>-->
+                            회원가입/로그인
+                        </span>
+                    </a>
+                </th:block>
+                <th:block sec:authorize="isAuthenticated()">
+                    <!-- 로그아웃 -->
+                    <form th:action="@{/general/auth/logout}" method="post">
+                        <button type="submit"
+                                class="mx-8 my-3 px-6 py-3 w-[calc(100%-4rem)] text-left text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                                onclick="closeMenu3()">
+                            <span class="flex items-center">
+<!--                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>-->
+<!--                                </svg>-->
+                                로그아웃
+                            </span>
+                        </button>
+                    </form>
+
+                    <!-- 구분선 -->
+                    <div class="ml-4 my-4 border-t border-gray-200"></div>
+                    <!-- 개인정보 수정 -->
+                    <a th:href="@{/general/mypage/profile}"
+                       class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                       onclick="closeMenu3()">
+                        <span class="flex items-center">
+<!--                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+                            <!--                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>-->
+                            <!--                            </svg>-->
+                            개인정보 수정
+                        </span>
+                    </a>
+                </th:block>
+
+                <!-- 구분선 -->
+                <div class="ml-8 my-4 border-t border-gray-200"></div>
+                <!-- 검색 -->
+                <a href="#"
+                   class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                   onclick="javascript:alert('개발중입니다.'); return false;">
+                    <span class="flex items-center">
+<!--                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+                        <!--                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>-->
+                        <!--                            </svg>-->
+                        검색
+                    </span>
                 </a>
-            </th:block>
-            <th:block sec:authorize="isAuthenticated()">
-                <form th:action="@{/general/auth/logout}" method="post" style="display: inline;">
-                    <button type="submit"
-                            class="w-full my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
-                            onclick="closeMenu()">
-                        로그아웃
-                    </button>
-                </form>
-                <a th:href="@{/general/mypage/profile}"
-                   class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
-                   onclick="closeMenu()">
-                    개인정보 수정
+                <!-- 구분선 -->
+                <div class="ml-8 my-4 border-t border-gray-200"></div>
+                <!-- 공지사항 -->
+                <a th:href="@{${'/general/notice/list?constructionId=' + construction.id}}"
+                   class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                >
+                    <span class="flex items-center">
+                        공지사항
+                    </span>
                 </a>
-            </th:block>
-            <a href="#"
-               class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
-               onclick="javascript:alert('개발중입니다.'); return false;">
-                검색
-            </a>
-            <a href="#"
-               class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
-               onclick="javascript:alert('개발중입니다.'); return false;"
-            >
-                공지사항
-            </a>
-            <a href="#"
-               class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
-               onclick="javascript:alert('개발중입니다.'); return false;">
-                자료실
-            </a>
-            <a href="#"
-               class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
-               onclick="javascript:alert('개발중입니다.'); return false;">
-                자주하는 질문
-            </a>
+                <!-- 구분선 -->
+                <div class="ml-8 my-4 border-t border-gray-200"></div>
+                <!-- 자료실 -->
+                <a href="#"
+                   class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                   onclick="javascript:alert('개발중입니다.'); return false;">
+                    <span class="flex items-center">
+                        자료실
+                    </span>
+                </a>
+                <!-- 구분선 -->
+                <div class="ml-8 my-4 border-t border-gray-200"></div>
+                <!-- 자주하는 질문 -->
+                <a href="#"
+                   class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                   onclick="javascript:alert('개발중입니다.'); return false;">
+                    <span class="flex items-center">
+                        자주하는 질문
+                    </span>
+                </a>
+            </div>
+            <!-- 푸터 영역 -->
+<!--            <div class="px-8 pt-4 mt-4 border-t border-gray-200">-->
+<!--                <p class="text-sm text-gray-500">© <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}"></span> 위험성평가</p>-->
+<!--            </div>-->
         </div>
     </div>
 </header>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/general}">
+<th:block layout:fragment="content">
+    <div class="max-w-6xl mx-auto px-4 py-6">
+        <!-- 섹션 제목 -->
+        <div class="border-l-4 border-blue-600 pl-3 mb-6">
+            <h2 class="text-xl font-bold text-gray-800">공지사항</h2>
+        </div>
+        
+        <!-- 검색 폼 -->
+        <div class="bg-gray-50 rounded-md p-5 mb-6">
+            <form th:action="@{/general/notice/list}" method="get" class="flex flex-col md:flex-row gap-3">
+                <input type="hidden" name="constructionId" th:value="${constructionId}" />
+                
+                <div class="w-full md:w-1/4">
+                    <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none" name="searchType" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;%23666&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><polyline points=&quot;6 9 12 15 18 9&quot;></polyline></svg>'); background-position: right 10px center; background-repeat: no-repeat; background-size: 16px;">
+<!--                        <option value="전체" th:selected="${searchType == '전체'}">전체</option>-->
+<!--                        <option value="전체" th:selected="${searchType == 'all'}">all</option>-->
+                        <option value="title" th:selected="${searchType == 'title'}">제목</option>
+                        <option value="content" th:selected="${searchType == 'content'}">내용</option>
+                    </select>
+                </div>
+                
+                <div class="w-full md:flex-1">
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                           name="searchKeyword" th:value="${searchKeyword}" placeholder="검색어를 입력하세요" />
+                </div>
+                
+                <div class="flex gap-2 justify-center">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        조회
+                    </button>
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 flex items-center justify-center" onclick="clearForm()">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        초기화
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- 공지사항 목록 -->
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="border-b border-t border-gray-200 bg-gray-50">
+                        <th class="py-3 px-4 text-center w-16">번호</th>
+                        <th class="py-3 px-4 text-left">제목</th>
+                        <th class="py-3 px-4 text-center w-32">작성일</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="notice, status : ${noticePage.content}" class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="py-3 px-4 text-center text-gray-500" th:text="${noticePage.totalElements - (noticePage.number * noticePage.size) - status.index}">33</td>
+                        <td class="py-3 px-4">
+                            <a href="#" class="block text-gray-800 hover:text-blue-600 notice-link"
+                               th:data-id="${notice.id}"
+                               th:text="${notice.title}">공지사항 제목</a>
+                        </td>
+                        <td class="py-3 px-4 text-center text-gray-500" th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd')}">2023-04-01</td>
+                    </tr>
+                    <tr th:if="${noticePage.empty}" class="border-b border-gray-200">
+                        <td colspan="3" class="py-8 text-center text-gray-500">
+                            등록된 공지사항이 없습니다.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 페이징 -->
+        <div th:if="${!noticePage.empty}" class="flex justify-center mt-8">
+            <nav class="inline-flex rounded-md shadow-sm -space-x-px">
+                <!-- 처음 페이지 -->
+                <a th:href="${noticePage.first} ? '#' : @{/general/notice/list(page=0, searchType=${searchType}, searchKeyword=${searchKeyword}, constructionId=${constructionId})}"
+                   class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                   th:classappend="${noticePage.first} ? 'cursor-not-allowed opacity-50'" aria-label="First">
+                    <span class="sr-only">First</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M15.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 010 1.414zm-6 0a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L5.414 10l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                
+                <!-- 이전 페이지 -->
+                <a th:href="${noticePage.first} ? '#' : @{/general/notice/list(page=${noticePage.number - 1}, searchType=${searchType}, searchKeyword=${searchKeyword}, constructionId=${constructionId})}"
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                   th:classappend="${noticePage.first} ? 'cursor-not-allowed opacity-50'" aria-label="Previous">
+                    <span class="sr-only">Previous</span>
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                
+                <!-- 페이지 번호 -->
+                <a th:each="i : ${#numbers.sequence(0, noticePage.totalPages - 1)}"
+                   th:if="${i >= noticePage.number - 2 and i <= noticePage.number + 2}"
+                   th:href="@{/general/notice/list(page=${i}, searchType=${searchType}, searchKeyword=${searchKeyword}, constructionId=${constructionId})}"
+                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium hover:bg-gray-50"
+                   th:classappend="${i == noticePage.number} ? 'z-10 bg-blue-50 border-blue-500 text-blue-600' : 'text-gray-500'"
+                   th:text="${i + 1}">1</a>
+                
+                <!-- 다음 페이지 -->
+                <a th:href="${noticePage.last} ? '#' : @{/general/notice/list(page=${noticePage.number + 1}, searchType=${searchType}, searchKeyword=${searchKeyword}, constructionId=${constructionId})}"
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                   th:classappend="${noticePage.last} ? 'cursor-not-allowed opacity-50'" aria-label="Next">
+                    <span class="sr-only">Next</span>
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                
+                <!-- 마지막 페이지 -->
+                <a th:href="${noticePage.last} ? '#' : @{/general/notice/list(page=${noticePage.totalPages - 1}, searchType=${searchType}, searchKeyword=${searchKeyword}, constructionId=${constructionId})}"
+                   class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                   th:classappend="${noticePage.last} ? 'cursor-not-allowed opacity-50'" aria-label="Last">
+                    <span class="sr-only">Last</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 15.707a1 1 0 001.414 0l5-5a1 1 0 000-1.414l-5-5a1 1 0 00-1.414 1.414L8.586 10l-4.293 4.293a1 1 0 000 1.414zm6 0a1 1 0 001.414 0l5-5a1 1 0 000-1.414l-5-5a1 1 0 00-1.414 1.414L14.586 10l-4.293 4.293a1 1 0 000 1.414z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </nav>
+        </div>
+    </div>
+    
+    <!-- 공지사항 상세 모달 -->
+    <div id="noticeDetailModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="noticeDetailModalLabel" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- 배경 오버레이 -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            
+            <!-- 모달 중앙 정렬 -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            
+            <!-- 모달 내용 -->
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full" style="width:80%; height:80%;">
+                <!-- 모달 헤더 -->
+                <div class="bg-white px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-medium text-gray-900" id="noticeDetailModalLabel">공지사항 상세</h3>
+                        <button type="button" class="text-gray-400 hover:text-gray-500 focus:outline-none modal-close">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 모달 내용 -->
+                <div class="bg-white px-6 py-4 max-h-[70vh] overflow-y-auto">
+                    <div class="notice-detail">
+                        <h4 id="noticeTitle" class="text-xl font-semibold mb-2">공지사항 제목</h4>
+                        <div class="flex justify-between mb-4 text-sm text-gray-500">
+                            <div>작성일: <span id="noticeDate">2023-04-01</span></div>
+                        </div>
+                        <hr class="border-gray-200 mb-4">
+                        <div id="noticeContent" class="prose max-w-none my-4">
+                            공지사항 내용이 여기에 표시됩니다.
+                        </div>
+                        
+                        <!-- 첨부 파일 목록 -->
+                        <div id="attachmentsContainer" class="mt-6 pt-4 border-t border-gray-200">
+                            <h6 class="text-sm font-medium text-gray-700 mb-3">첨부파일</h6>
+                            <ul id="attachmentsList" class="space-y-2">
+                                <!-- 첨부 파일 항목들이 여기에 추가됩니다 -->
+                            </ul>
+                            <div id="noAttachments" class="text-sm text-gray-500">첨부파일이 없습니다.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 모달 푸터 -->
+                <div class="bg-gray-50 px-6 py-3 flex justify-end">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 modal-close">
+                        닫기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script th:inline="javascript">
+        // 검색 폼 초기화
+        function clearForm() {
+            const form = document.querySelector('form');
+            const constructionIdInput = form.querySelector('input[name="constructionId"]');
+            const constructionId = constructionIdInput ? constructionIdInput.value : null;
+            
+            form.querySelector('select[name="searchType"]').value = 'title';
+            form.querySelector('input[name="searchKeyword"]').value = '';
+            
+            // constructionId가 있으면 유지
+            if (constructionId) {
+                window.location.href = '/general/notice/list?constructionId=' + constructionId;
+            } else {
+                window.location.href = '/general/notice/list';
+            }
+        }
+        
+        // 공지사항 상세 모달
+        document.addEventListener('DOMContentLoaded', function() {
+            const noticeLinks = document.querySelectorAll('.notice-link');
+            const modal = document.getElementById('noticeDetailModal');
+            const closeButtons = document.querySelectorAll('.modal-close');
+            
+            // 모달 열기
+            function openModal() {
+                modal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+            
+            // 모달 닫기
+            function closeModal() {
+                modal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+            
+            // 닫기 버튼 이벤트
+            closeButtons.forEach(button => {
+                button.addEventListener('click', closeModal);
+            });
+            
+            // ESC 키로 모달 닫기
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+            
+            // 모달 외부 클릭 시 닫기
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+            
+            // 공지사항 링크 클릭 이벤트
+            noticeLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const noticeId = this.getAttribute('data-id');
+                    
+                    // 공지사항 상세 데이터 가져오기
+                    fetch(`/general/notice/${noticeId}/details?constructionId=[[${constructionId}]]`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // 모달에 데이터 채우기
+                            document.getElementById('noticeTitle').textContent = data.title;
+                            document.getElementById('noticeDate').textContent = new Date(data.createdAt).toLocaleDateString();
+                            document.getElementById('noticeContent').innerHTML = data.content;
+                            
+                            // 첨부 파일 처리
+                            const attachmentsList = document.getElementById('attachmentsList');
+                            const noAttachments = document.getElementById('noAttachments');
+                            
+                            attachmentsList.innerHTML = '';
+                            
+                            if (data.attachments && data.attachments.length > 0) {
+                                noAttachments.style.display = 'none';
+                                attachmentsList.style.display = 'block';
+                                
+                                data.attachments.forEach(attachment => {
+                                    const li = document.createElement('li');
+                                    li.className = 'flex items-center py-2 px-3 bg-gray-50 rounded-md hover:bg-gray-100';
+                                    
+                                    const link = document.createElement('a');
+                                    link.href = `/file-download/${attachment.id}`;
+                                    link.className = 'flex items-center text-blue-600 hover:text-blue-800';
+                                    
+                                    // 아이콘 추가
+                                    const icon = document.createElement('span');
+                                    icon.className = 'mr-2';
+                                    icon.innerHTML = '<svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" /></svg>';
+                                    
+                                    link.appendChild(icon);
+                                    link.appendChild(document.createTextNode(attachment.originalFilename));
+                                    
+                                    li.appendChild(link);
+                                    attachmentsList.appendChild(li);
+                                });
+                            } else {
+                                noAttachments.style.display = 'block';
+                                attachmentsList.style.display = 'none';
+                            }
+                            
+                            // 모달 표시
+                            openModal();
+                        })
+                        .catch(error => {
+                            console.error('공지사항 데이터를 가져오는 중 오류가 발생했습니다:', error);
+                        });
+                });
+            });
+        });
+    </script>
+</th:block>
+</html>
