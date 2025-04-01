@@ -26,12 +26,11 @@
     <script>
         const installBtn = document.getElementById('installBtn');
         installBtn.style.display = 'flex';
-        
+        /*
         // // 홈 화면에 추가 버튼 클릭 시 홈 화면에 추가
         // document.getElementById('installBtn').addEventListener('click', function() {
         //     navigator.serviceWorker.register('/service-worker.js');
         // });
-        /*
         // 서비스워커 등록
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('/service-worker.js')
@@ -79,11 +78,16 @@
             // 반드시 사용자 클릭 시 실행!
             deferredPrompt.prompt();
 
+            // deferredPrompt.userChoice.then((result) => {
+			// 	if (result.outcome == "accepted") {
+			// 		//KQ("#addHome").css("display", "none");
+            //         installBtn.style.display = 'none';
+			// 	}
+			// });
             const { outcome } = await deferredPrompt.userChoice;
-            //console.log(`사용자 선택: ${outcome}`);
+            console.log(`사용자 선택: ${outcome}`);
 
             deferredPrompt = null;
-            installBtn.style.display = 'none';
         });
     
         window.addEventListener('appinstalled', () => {

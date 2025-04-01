@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title layout:title-pattern="$CONTENT_TITLE - 공사현장"> </title>
     <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
     <!-- Common CSS -->
@@ -12,6 +13,8 @@
 <!--    <link rel="stylesheet" th:href="@{/css/tailwind.css}">-->
     <!-- PWA 관련 -->
     <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="192x192" href="/assets/images/baroceum_app_192x192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/assets/images/baroceum_app_512x512.png" />
     <!-- Page specific CSS -->
     <th:block layout:fragment="css">
         <style>
