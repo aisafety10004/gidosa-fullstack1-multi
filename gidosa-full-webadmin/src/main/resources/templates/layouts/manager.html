@@ -9,7 +9,7 @@
     <!-- <title>안전지도사 관리 매니저</title> -->
     <!-- <title>바로세움 매니저</title> -->
     <title th:utext="${#authentication.principal.memberAdmin.location}"></title> 
-    
+
     <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/bootstrap-icons/bootstrap-icons.min.css}">
@@ -20,7 +20,19 @@
     <script src="/vendor/jquery/jquery.min.js"></script>
     <!-- Toast UI Editor JS -->
     <script th:src="@{/js/toastui/toastui-editor-all.min.js}"></script>
-    <script th:src="@{/js/tailwindcss.js}"></script>
+    <!-- 타일윈드 CSS 스크립트 추가 (프리픽스 설정) -->
+    <script th:src="@{/js/tailwind/tailwindcss.js}"></script>
+    <script>
+      tailwind.config = {
+        // prefix: 'tw-', // 모든 타일윈드 클래스에 'tw-' 프리픽스 추가(ex) class="bg-blue-500" → class="tw-bg-blue-500", class="text-white" → class="tw-text-white")
+        // important: true, // 타일윈드 스타일에 !important 추가 (필요한 경우)
+        important: '.tailwind-section', // tailwind-section 안에서만 타일윈드 스타일 우선 적용
+        corePlugins: {
+          preflight: false, // 기본 스타일 초기화 비활성화
+        //   container: false, // 컨테이너 유틸리티 비활성화(타일윈드 설정에서 부트스트랩과 충돌하는 일부 컴포넌트나 유틸리티를 비활성화)
+        }
+      }
+    </script>
 </head>
 <body class="">
 <div class="d-flex" id="wrapper">
@@ -192,6 +204,7 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+<!--                        <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>-->
 <!--                        <li class="nav-item dropdown">-->
 <!--                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
 <!--                                <span sec:authentication="name"></span>-->

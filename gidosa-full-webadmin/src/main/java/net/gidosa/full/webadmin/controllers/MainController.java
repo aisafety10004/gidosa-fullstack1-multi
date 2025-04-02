@@ -54,8 +54,8 @@ public class MainController {
 //        return PREFIX_THYMELEAF_BASE + "main/main";
 //        return "thymeleaf/main/main";
         // return "main/intro/admin";
-        // return "main/intro/manager";
-        return "main/main";
+        //  return "main/intro/manager";
+       return "main/main";
     }
 
     @GetMapping("/error/403")
