@@ -20,9 +20,46 @@
         <style>
             /* 모바일 화면에서 서브(sub)헤더 숨기기 (508px 미만에서 적용) */
             @media (max-width: 507px) {
+                #mobile1-content {
+                    display: block !important;
+                }
                 header.header-sub {
                     display: none !important;
                 }
+
+                #pc1-content {
+                    display: none !important;
+                }
+                /* main {
+                    background-color: #DAE4FA;
+                } */    
+
+                #mobile1-footer {
+                    display: block;
+                }
+            }
+            /* 데스크탑 화면(508px 이상) */
+            @media (min-width: 508px) {
+                #pc1-content {
+                    display: none !important;
+                }
+                /* #mobile1-content {
+                    display: none !important;
+                }
+                header.header-sub {
+                    display: block !important;
+                }
+
+                #pc1-content {
+                    display: block !important;
+                }
+                main {
+                    background-color: white;
+                }
+
+                #mobile1-footer {
+                    display: none !important;
+                } */
             }
         </style>
     </th:block>
