@@ -53,7 +53,6 @@ public class MainController {
 
         MemberAdmin memberAdmin = principalDetails.getMemberAdmin();
         boolean isAdmin = "ROLE_ADMIN".equals(memberAdmin.getRole());
-        String pageUrl = null;
 
 ////        return PREFIX_THYMELEAF_BASE + "main/main";
 ////        return "thymeleaf/main/main";
