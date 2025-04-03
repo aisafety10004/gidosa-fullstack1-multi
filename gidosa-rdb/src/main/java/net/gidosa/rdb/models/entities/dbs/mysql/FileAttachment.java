@@ -53,6 +53,10 @@ public class FileAttachment {
     @JoinColumn(name = "construction_id")
     @Comment("소속 공사 정보")
     private Construction construction; // 소속 공사 정보
+    
+    @Column
+    @Comment("파일 유형")
+    private String fileType; // 파일 유형 (명함, 사업자등록증, 고용산재보험가입증명원 등)
 
     @PrePersist
     protected void onCreate() {

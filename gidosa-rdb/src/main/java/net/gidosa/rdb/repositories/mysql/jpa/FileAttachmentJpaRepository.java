@@ -9,5 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FileAttachmentJpaRepository extends JpaRepository<FileAttachment, Long> {
+    // 특정 파일 유형의 모든 파일 조회
+    List<FileAttachment> findByFileType(String fileType);
     
+    // 파일명으로 검색
+    List<FileAttachment> findByOriginalFilenameContaining(String filename);
 } 

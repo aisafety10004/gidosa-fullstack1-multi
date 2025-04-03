@@ -88,12 +88,12 @@
                     <th class="sortable" 
                         th:classappend="${param.sort != null && param.sort[0] == 'phone' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
                         th:data-sort="phone">전화번호</th>
-                    <!-- <th class="sortable" 
+                    <th class="sortable"
                         th:classappend="${param.sort != null && param.sort[0] == 'constructionLocation' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
-                        th:data-sort="constructionLocation">현장건설공사 현장</th> -->
-                    <th class="sortable" 
-                        th:classappend="${param.sort != null && param.sort[0] == 'constructionLocation' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
-                        th:data-sort="constructionLocation">문의내용</th>
+                        th:data-sort="constructionLocation">현장명</th>
+<!--                    <th class="sortable" -->
+<!--                        th:classappend="${param.sort != null && param.sort[0] == 'message' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"-->
+<!--                        th:data-sort="message">문의내용</th>-->
                     <th class="sortable" 
                         th:classappend="${param.sort != null && param.sort[0] == 'position' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
                         th:data-sort="position">직책</th>
@@ -108,6 +108,7 @@
                     <td th:text="${request.name}"></td>
                     <td th:text="${request.phone}"></td>
                     <td th:text="${request.constructionLocation}"></td>
+<!--                    <td th:text="${request.message}"></td>-->
                     <td th:text="${request.position}"></td>
                     <td th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                 </tr>

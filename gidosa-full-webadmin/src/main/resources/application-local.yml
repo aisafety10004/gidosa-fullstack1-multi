@@ -136,4 +136,5 @@ jwt:
 
 file:
   upload:
-    path: C:\\uploads
+    # path: C:\\uploads
+    path: /Users/pktjesus/uploads/gidosa/webadmin

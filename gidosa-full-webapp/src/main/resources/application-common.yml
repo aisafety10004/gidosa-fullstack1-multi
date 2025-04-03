@@ -1,2 +1,15 @@
 server:
   shutdown: graceful
+
+# # 파일 업로드 관련 설정
+# spring:
+#   servlet:
+#     multipart:
+#       enabled: true
+#       file-size-threshold: 2KB
+#       max-file-size: 10MB
+#       max-request-size: 30MB
+      
+# # 파일 업로드 경로 설정
+# file:
+#   upload-dir: uploads

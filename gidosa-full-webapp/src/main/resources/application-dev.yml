@@ -98,3 +98,10 @@ jwt:
 ##    map-underscore-to-camel-case: true
 
 # log
+
+# 파일 업로드 경로 설정
+file:
+  upload-dir: /home/gapture/apps-gidosa/attachment-files/webapp
+  # upload-dir: uploads
+  # upload:
+  #   path: C:\\uploads

@@ -11,7 +11,7 @@
                 <a th:href="@{/}"
                    class="text-lg md:text-2xl font-bold text-primary focus:outline-none"
                    onclick="if (headerInvisible) return false;">
-                    위험안전 관리
+                    바로세움
                 </a>
                 <th:block th:if="${menuText}">
                     <span class="mx-2 md:mx-4 text-gray-300">|</span>
@@ -51,13 +51,13 @@
                        class="px-6 py-2 text-black rounded-md hover:bg-primaryDark transition-colors duration-300 focus:outline-none"
                        th:classappend="${headerInvisible != null and headerInvisible == true ? 'bg-gray-500/50 pointer-events-none' : ''}"
                        onclick="if (headerInvisible) return false;">
-                        도입사례
+                        운영사례
                     </a>
                     <a th:href="@{/contact/request-construction}"
                        class="px-6 py-2 text-white rounded-md hover:bg-secondaryDark transition-colors duration-300 focus:outline-none"
                        th:classappend="${headerInvisible != null and headerInvisible == true ? 'bg-gray-500/50 pointer-events-none' : 'bg-primary'}"
                        onclick="if (headerInvisible) return false;">
-                        도입문의
+                        상담신청
                     </a>
 <!--                    <a th:href="@{/auth/login}"-->
 <!--                       class="px-6 py-2 text-black rounded-md hover:bg-primaryDark transition-colors duration-300 focus:outline-none"-->
@@ -75,12 +75,12 @@
                 <a th:href="@{/contact/example}"
                    class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
                    onclick="closeMenu()">
-                    도입사례
+                    운영사례
                 </a>
                 <a th:href="@{/contact/request-construction}"
                    class="mx-8 my-3 px-6 py-2 text-white rounded-md hover:bg-secondaryDark text-center focus:outline-none bg-primary"
                    onclick="closeMenu()">
-                    도입문의
+                    상담신청
                 </a>
 <!--                <a th:href="@{/auth/login}"-->
 <!--                   class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"-->

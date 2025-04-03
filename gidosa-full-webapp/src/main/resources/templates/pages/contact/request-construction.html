@@ -18,16 +18,16 @@
             </div>
 
             <div class="contact-header">
-                <h1>도입 상담 정보를<br>남겨주세요</h1>
+                <h1>상담 정보를<br>남겨주세요</h1>
                 <p class="subtitle">영업일 기준 평균 2일 내<br>전문 매니저가 연락드려요.</p>
             </div>
 
             <div class="contact-form">
-                <form th:action="@{/contact/submit}" method="post">
+                <form th:action="@{/contact/submit}" method="post" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="name">이름<span class="required">*</span></label>
+                        <label for="name">이름(직책)<span class="required">*</span></label>
                         <input type="text" id="name" name="name" required
-                               placeholder="고객님의 성함을 입력해 주세요.">
+                               placeholder="고객님의 이름(직책)을 입력해 주세요.">
                     </div>
 
                     <div class="form-group">
@@ -36,27 +36,50 @@
                                placeholder="전화번호를 입력해 주세요.">
                     </div>
 
-                    <div class="form-group">
-                        <label for="constructionLocation">현장 또는 주소<span class="required">*</span></label>
-                        <input type="text" id="constructionLocation" name="constructionLocation" required
-                               placeholder="건설공사현장 또는 주소를 입력해 주세요.">
-                    </div>
+<!--                    <div class="form-group">-->
+<!--                        <label for="constructionLocation">현장 또는 주소<span class="required">*</span></label>-->
+<!--                        <input type="text" id="constructionLocation" name="constructionLocation" required-->
+<!--                               placeholder="공사현장 또는 주소를 입력해 주세요.">-->
+<!--                    </div>-->
+
+<!--                    <div class="form-group">-->
+<!--                        <label for="position">소속<span class="required">*</span></label>-->
+<!--                        <select id="position" name="position" required>-->
+<!--                            <option value="">고객님의 소속을 선택해 주세요.</option>-->
+<!--                            <option value="PASTOR">일반 관리자</option>-->
+<!--                            <option value="ELDER">특수 관리자</option>-->
+<!--                            <option value="DEACON">안전사</option>-->
+<!--                            <option value="OTHER">기타</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
 
                     <div class="form-group">
-                        <label for="position">소속<span class="required">*</span></label>
-                        <select id="position" name="position" required>
-                            <option value="">고객님의 소속을 선택해 주세요.</option>
-                            <option value="PASTOR">일반 관리자</option>
-                            <option value="ELDER">특수 관리자</option>
-                            <option value="DEACON">안전사</option>
-                            <option value="OTHER">기타</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="message">도입 내용</label>
+                        <label for="message">문의사항<span class="required">*</span></label>
                         <textarea id="message" name="message" rows="4"
-                                placeholder="도입을 원하는 서비스를 입력해 주세요."></textarea>
+                                placeholder="문의사항을 입력해 주세요."></textarea>
+                    </div>
+
+                    <!-- 첨부 파일 영역 추가 -->
+                    <div class="file-attachments-section">
+                        <h3 class="file-attachments-title">서류 첨부(필수사항 아님)</h3>
+                        
+                        <div class="form-group file-upload">
+                            <label for="businessCard">명함(사진첨부)</label>
+                            <input type="file" id="businessCard" name="businessCard" accept="image/*,.pdf">
+                            <small class="file-info">JPG, PNG, PDF 파일 형식만 가능합니다 (최대 5MB)</small>
+                        </div>
+                        
+                        <div class="form-group file-upload">
+                            <label for="businessLicense">사업자등록증(사진첨부)</label>
+                            <input type="file" id="businessLicense" name="businessLicense" accept="image/*,.pdf">
+                            <small class="file-info">JPG, PNG, PDF 파일 형식만 가능합니다 (최대 5MB)</small>
+                        </div>
+                        
+                        <div class="form-group file-upload">
+                            <label for="insuranceCertificate">고용산재보험가입증명원(사진첨부)</label>
+                            <input type="file" id="insuranceCertificate" name="insuranceCertificate" accept="image/*,.pdf">
+                            <small class="file-info">JPG, PNG, PDF 파일 형식만 가능합니다 (최대 5MB)</small>
+                        </div>
                     </div>
 
                     <div class="form-group checkbox">
@@ -66,17 +89,17 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="submit-button">도입 신청하기</button>
+                    <button type="submit" class="submit-button">신청하기</button>
                 </form>
             </div>
 
             <div class="process-section">
-                <h2>도입은 어떻게 이루어지나요?</h2>
+                <h2>상담은 어떻게 이루어지나요?</h2>
                 <div class="process-steps">
                     <div class="step">
                         <span class="step-number">1</span>
-                        <h3>도입 문의</h3>
-                        <p>이름, 전화번호, 현장 등 도입하고자 하는 분의 상담 정보를 남겨주세요.</p>
+                        <h3>문의</h3>
+                        <p>이름(직책), 전화번호 등 문의하고자 하는 분의 상담 정보를 남겨주세요.</p>
                     </div>
                     <div class="step">
                         <span class="step-number">2</span>
@@ -97,5 +120,41 @@
             </div>
         </section>
     </div>
+    
+    <!-- 파일 업로드 미리보기 스크립트 -->
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // 파일 업로드 필드에 change 이벤트 리스너 추가
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            
+            fileInputs.forEach(function(input) {
+                // 각 파일 업로드 필드 아래에 미리보기 이미지 요소 추가
+                const previewImg = document.createElement('img');
+                previewImg.className = 'file-preview';
+                input.parentNode.appendChild(previewImg);
+                
+                // 파일 선택 시 미리보기 표시
+                input.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file) {
+                        previewImg.style.display = 'none';
+                        return;
+                    }
+                    
+                    // 이미지 파일인 경우에만 미리보기 표시
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            previewImg.src = event.target.result;
+                            previewImg.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        previewImg.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
