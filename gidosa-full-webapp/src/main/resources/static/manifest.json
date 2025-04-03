@@ -1,10 +1,13 @@
 {
   "name": "바로세움(baroceum)",
   "short_name": "바로세움",
-  "start_url": "/",
+  "version": "[[${version}]]",
+  "start_url": "[[${'/general/construction/' + constructionId}]]",
+  "scope": "/general/construction/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
+  "description": "[[${'바로세움 회원 사이트(' + version + ')'}]]",
   "icons": [
     {
       "src": "/assets/images/baroceum_app_192x192.png",

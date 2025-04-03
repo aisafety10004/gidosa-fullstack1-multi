@@ -70,14 +70,14 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // 모든 메소드에 허용(GET, POST 등)
                 //.requestMatchers("/*", "/general/auth/**", "/general/member/**", "/general/document/**", "/css/**", "/js/**", "/assets/**", "/error/**", "/contact/**", "/construction/**", "/general/construction/*").permitAll()
-                .requestMatchers(
-            "/*", "/general/document/**", "/css/**", "/js/**", "/assets/**", "/error/**",
-                        "/contact/**", "/construction/**",
-                        "/general/construction/*",
-                        "/general/construction2/*",
-                        "/general/notice/**",
+                .requestMatchers("/*",
+                    "/general/document/**", "/css/**", "/js/**", "/assets/**", "/error/**",
+                    "/contact/**", "/construction/**",
+                    "/general/construction/*",
+                    "/general/construction2/*",
+                    "/general/notice/**",
 //                        "/general/member/async-find-pw",
-                        "/general/member/check-username"
+                    "/general/member/check-username"
                 ).permitAll()
                 .requestMatchers(HttpMethod.POST,"/general/member/async-find-pw").permitAll()
                 .requestMatchers("/general/auth/login", "/general/member/register/**", "/general/member/find-*").hasRole("ANONYMOUS")
