@@ -38,7 +38,7 @@
                     <label for="searchType" class="form-label">검색 항목</label>
                     <select class="form-select" id="searchType" name="searchType">
                         <option value="">선택하세요</option>
-                        <option value="name" th:selected="${param.searchType != null and param.searchType[0] == 'name'}">이름</option>
+                        <option value="name" th:selected="${param.searchType != null and param.searchType[0] == 'name'}">이름(직책)</option>
                         <option value="phone" th:selected="${param.searchType != null and param.searchType[0] == 'phone'}">전화번호</option>
                         <!-- <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'location'}">현장건설공사 현장</option> -->
                         <!-- <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'location'}">현장명</option> -->
