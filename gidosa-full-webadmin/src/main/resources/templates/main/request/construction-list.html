@@ -108,7 +108,8 @@
                     <td th:text="${request.name}" style="text-align: center; width: 17%;"></td>
                     <td th:text="${request.phone}" style="text-align: center; width: 17%;"></td>
                     <!-- <td th:text="${request.constructionLocation}"></td> -->
-                   <td th:text="${request.message}"></td>
+                    <!-- <td th:text="${#strings.length(request.message) > 20 ? request.message.substring(0, 20) + '...' : request.message}"></td> -->
+                    <td th:text="${request.message}" style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></td>
                     <!-- <td th:text="${request.position}"></td> -->
                     <td th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm')}" style="text-align: center; width: 21%;"></td>
                 </tr>
