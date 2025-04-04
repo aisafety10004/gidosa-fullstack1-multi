@@ -65,20 +65,20 @@
                         
                         <div class="form-group file-upload">
                             <label for="businessCard">명함(사진첨부)</label>
-                            <input type="file" id="businessCard" name="businessCard" accept="image/*,.pdf">
-                            <small class="file-info">JPG, PNG, PDF 파일 형식만 가능합니다 (최대 5MB)</small>
+                            <input type="file" id="businessCard" name="businessCard" accept=".jpg,.jpeg,.png,.pdf">
+                            <small class="file-info">JPG, JPEG, PNG, PDF 파일 형식만 가능합니다 (최대 5MB)</small>
                         </div>
                         
                         <div class="form-group file-upload">
                             <label for="businessLicense">사업자등록증(사진첨부)</label>
-                            <input type="file" id="businessLicense" name="businessLicense" accept="image/*,.pdf">
-                            <small class="file-info">JPG, PNG, PDF 파일 형식만 가능합니다 (최대 5MB)</small>
+                            <input type="file" id="businessLicense" name="businessLicense" accept=".jpg,.jpeg,.png,.pdf">
+                            <small class="file-info">JPG, JPEG, PNG, PDF 파일 형식만 가능합니다 (최대 5MB)</small>
                         </div>
                         
                         <div class="form-group file-upload">
                             <label for="insuranceCertificate">고용산재보험가입증명원(사진첨부)</label>
-                            <input type="file" id="insuranceCertificate" name="insuranceCertificate" accept="image/*,.pdf">
-                            <small class="file-info">JPG, PNG, PDF 파일 형식만 가능합니다 (최대 5MB)</small>
+                            <input type="file" id="insuranceCertificate" name="insuranceCertificate" accept=".jpg,.jpeg,.png,.pdf">
+                            <small class="file-info">JPG, JPEG, PNG, PDF 파일 형식만 가능합니다 (최대 5MB)</small>
                         </div>
                     </div>
 
@@ -139,6 +139,16 @@
                     if (!file) {
                         previewImg.style.display = 'none';
                         return;
+                    }
+                    if (file) {
+                        const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+                        if (!allowedTypes.includes(file.type)) {
+                          alert('jpg, png, pdf 파일만 업로드할 수 있습니다.');
+                          //this.value = ''; // 파일 선택 초기화
+                          previewImg.style.display = 'none';
+
+                          return;
+                        }
                     }
                     
                     // 이미지 파일인 경우에만 미리보기 표시

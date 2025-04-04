@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Log4j2
@@ -23,12 +24,13 @@ public class HomeController {
 
 //    @GetMapping(value = "/manifest.json", produces = MediaType.APPLICATION_JSON_VALUE)
 //    public String manifest(
-//            @RequestParam(required = false, defaultValue = "guest") String userId,
+////            @RequestParam(required = false, defaultValue = "guest") String userId,
 //            Model model
 //    ) {
 //        String version = "1.0.0"; // 또는 @Value로 주입받을 수도 있음
 //        model.addAttribute("version", version);
-//        model.addAttribute("userId", userId);
+////        model.addAttribute("userId", userId);
+//        model.addAttribute("constructionId", "1");
 //        return "manifest";
 //    }
 }

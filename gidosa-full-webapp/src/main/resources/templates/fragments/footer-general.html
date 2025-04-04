@@ -25,8 +25,8 @@
 
         <script>
             const installBtn = document.getElementById('installBtn');
-            installBtn.style.display = 'flex';
-            /*
+            //installBtn.style.display = 'flex';
+
             // // 홈 화면에 추가 버튼 클릭 시 홈 화면에 추가
             // document.getElementById('installBtn').addEventListener('click', function() {
             //     navigator.serviceWorker.register('/service-worker.js');
@@ -74,6 +74,8 @@
             });        
             installBtn.addEventListener('click', async () => {
                 if (!deferredPrompt) return;
+
+                //window.location.href = '/manifest.json';
     
                 // 반드시 사용자 클릭 시 실행!
                 deferredPrompt.prompt();
@@ -94,7 +96,6 @@
               installBtn.style.display = 'none';
               //console.log('앱 설치 완료!');
             });
-            */
         </script>
     </div>
 </div>
