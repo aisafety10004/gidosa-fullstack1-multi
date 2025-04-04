@@ -18,4 +18,11 @@ public interface RequestConstructionJpaRepository extends JpaRepository<RequestC
     
     @Query("SELECT r FROM RequestConstruction r WHERE LOWER(r.constructionLocation) LIKE LOWER(CONCAT('%', :location, '%'))")
     Page<RequestConstruction> findByConstructionLocationContaining(@Param("location") String location, Pageable pageable);
+    
+    @Query("SELECT r FROM RequestConstruction r " +
+           "LEFT JOIN FETCH r.businessCard " +
+           "LEFT JOIN FETCH r.businessLicense " +
+           "LEFT JOIN FETCH r.insuranceCertificate " +
+           "WHERE r.id = :id")
+    RequestConstruction findByIdWithAttachments(@Param("id") Long id);
 }

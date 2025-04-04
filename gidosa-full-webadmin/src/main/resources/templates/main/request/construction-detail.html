@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{${layout}}">
+<head>
+    <style>
+        .file-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .file-card .btn {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- 알림 메시지 표시 -->
+        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${message}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+            <h3>상담신청 문의 상세정보</h3>
+            <div>
+                <a th:href="@{/request/construction/edit/{id}(id=${request.id})}" class="btn btn-primary">수정</a>
+                <a th:href="@{/request/construction/list}" class="btn btn-secondary">목록으로</a>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">기본 정보</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">ID</div>
+                    <div class="col-md-9" th:text="${request.id}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">이름</div>
+                    <div class="col-md-9" th:text="${request.name}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">전화번호</div>
+                    <div class="col-md-9" th:text="${request.phone}"></div>
+                </div>
+                <!-- <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">현장명</div>
+                    <div class="col-md-9" th:text="${request.constructionLocation}"></div>
+                </div> -->
+                <!-- <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">직책</div>
+                    <div class="col-md-9" th:text="${request.position}"></div>
+                </div> -->
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">등록일</div>
+                    <div class="col-md-9" th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">수정일</div>
+                    <div class="col-md-9" th:text="${#temporals.format(request.updatedAt, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">개인정보 동의</div>
+                    <div class="col-md-9">
+                        <span th:if="${request.agreement}" class="badge bg-success">동의함</span>
+                        <span th:unless="${request.agreement}" class="badge bg-danger">동의하지 않음</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">문의 내용</h5>
+            </div>
+            <div class="card-body">
+                <div class="p-3 bg-light rounded" style="white-space: pre-wrap;" th:text="${request.message}"></div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">첨부 파일</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- 명함 -->
+                    <div class="col-md-4">
+                        <div class="file-card">
+                            <h6>명함</h6>
+                            <div th:if="${request.businessCard != null}">
+                                <p th:text="${request.businessCard.originalFilename}"></p>
+                                <a th:href="@{/common/file/download/{id}(id=${request.businessCard.id})}" class="btn btn-sm btn-primary">다운로드</a>
+                            </div>
+                            <div th:unless="${request.businessCard != null}">
+                                <p class="text-muted">첨부 파일 없음</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 사업자등록증 -->
+                    <div class="col-md-4">
+                        <div class="file-card">
+                            <h6>사업자등록증</h6>
+                            <div th:if="${request.businessLicense != null}">
+                                <p th:text="${request.businessLicense.originalFilename}"></p>
+                                <a th:href="@{/common/file/download/{id}(id=${request.businessLicense.id})}" class="btn btn-sm btn-primary">다운로드</a>
+                            </div>
+                            <div th:unless="${request.businessLicense != null}">
+                                <p class="text-muted">첨부 파일 없음</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 고용산재보험가입증명원 -->
+                    <div class="col-md-4">
+                        <div class="file-card">
+                            <h6>고용산재보험가입증명원</h6>
+                            <div th:if="${request.insuranceCertificate != null}">
+                                <p th:text="${request.insuranceCertificate.originalFilename}"></p>
+                                <a th:href="@{/common/file/download/{id}(id=${request.insuranceCertificate.id})}" class="btn btn-sm btn-primary">다운로드</a>
+                            </div>
+                            <div th:unless="${request.insuranceCertificate != null}">
+                                <p class="text-muted">첨부 파일 없음</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

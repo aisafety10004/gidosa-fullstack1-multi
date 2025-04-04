@@ -41,7 +41,7 @@
                         <option value="name" th:selected="${param.searchType != null and param.searchType[0] == 'name'}">이름</option>
                         <option value="phone" th:selected="${param.searchType != null and param.searchType[0] == 'phone'}">전화번호</option>
                         <!-- <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'location'}">현장건설공사 현장</option> -->
-                        <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'location'}">현장명</option>
+                        <!-- <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'location'}">현장명</option> -->
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -76,7 +76,7 @@
             </div>
         </div>
 
-        <table class="table">
+        <table class="table table-hover">
             <thead>
                 <tr style="text-align: center;">
                     <th class="sortable" 
@@ -84,33 +84,33 @@
                         th:data-sort="id">ID</th>
                     <th class="sortable" 
                         th:classappend="${param.sort != null && param.sort[0] == 'name' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
-                        th:data-sort="name">이름</th>
+                        th:data-sort="name">이름(직책)</th>
                     <th class="sortable" 
                         th:classappend="${param.sort != null && param.sort[0] == 'phone' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
                         th:data-sort="phone">전화번호</th>
-                    <th class="sortable"
+                    <!-- <th class="sortable"
                         th:classappend="${param.sort != null && param.sort[0] == 'location' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
-                        th:data-sort="constructionLocation">현장명</th>
-<!--                    <th class="sortable" -->
-<!--                        th:classappend="${param.sort != null && param.sort[0] == 'message' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"-->
-<!--                        th:data-sort="message">문의내용</th>-->
-                    <th class="sortable" 
+                        th:data-sort="constructionLocation">현장명</th> -->
+                   <th class="sortable"
+                       th:classappend="${param.sort != null && param.sort[0] == 'message' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                       th:data-sort="message">문의내용</th>
+                    <!-- <th class="sortable" 
                         th:classappend="${param.sort != null && param.sort[0] == 'position' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
-                        th:data-sort="position">직책</th>
+                        th:data-sort="position">직책</th> -->
                     <th class="sortable" 
                         th:classappend="${param.sort != null && param.sort[0] == 'createdAt' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
                         th:data-sort="createdAt">등록일</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="request : ${requests}">
-                    <td th:text="${request.id}"></td>
-                    <td th:text="${request.name}"></td>
-                    <td th:text="${request.phone}"></td>
-                    <td th:text="${request.constructionLocation}"></td>
-<!--                    <td th:text="${request.message}"></td>-->
-                    <td th:text="${request.position}"></td>
-                    <td th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <tr th:each="request : ${requests}" style="cursor: pointer;" th:onclick="'location.href=\'' + @{/request/construction/detail/{id}(id=${request.id})} + '\''">
+                    <td th:text="${request.id}" style="text-align: center; width: 10%;"></td>
+                    <td th:text="${request.name}" style="text-align: center; width: 17%;"></td>
+                    <td th:text="${request.phone}" style="text-align: center; width: 17%;"></td>
+                    <!-- <td th:text="${request.constructionLocation}"></td> -->
+                   <td th:text="${request.message}"></td>
+                    <!-- <td th:text="${request.position}"></td> -->
+                    <td th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm')}" style="text-align: center; width: 21%;"></td>
                 </tr>
             </tbody>
         </table>

@@ -101,7 +101,8 @@ jwt:
 
 # 파일 업로드 경로 설정
 file:
-  upload-dir: /home/gapture/apps-gidosa/attachment-files/webapp
+#  upload-dir: /home/gapture/apps-gidosa/attachment-files/webapp
   # upload-dir: uploads
-  # upload:
+   upload:
   #   path: C:\\uploads
+     path: /home/gapture/apps-gidosa/attachment-files

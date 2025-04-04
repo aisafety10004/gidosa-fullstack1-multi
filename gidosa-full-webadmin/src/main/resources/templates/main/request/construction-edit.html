@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{${layout}}">
+<head>
+    <style>
+        .form-label.required::after {
+            content: " *";
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+            <h3>상담신청 문의 수정</h3>
+            <div>
+                <a th:href="@{/request/construction/detail/{id}(id=${request.id})}" class="btn btn-secondary">취소</a>
+            </div>
+        </div>
+        
+        <form th:action="@{/request/construction/edit/{id}(id=${request.id})}" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">기본 정보</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label required">이름</label>
+                            <input type="text" class="form-control" id="name" name="name" th:value="${request.name}" required>
+                            <div class="invalid-feedback">이름을 입력하세요</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label required">전화번호</label>
+                            <input type="text" class="form-control" id="phone" name="phone" th:value="${request.phone}" required>
+                            <div class="invalid-feedback">전화번호를 입력하세요</div>
+                        </div>
+                    </div>
+                    
+                    <!-- <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="constructionLocation" class="form-label required">현장명</label>
+                            <input type="text" class="form-control" id="constructionLocation" name="constructionLocation" th:value="${request.constructionLocation}" required>
+                            <div class="invalid-feedback">현장명을 입력하세요</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="position" class="form-label">직책</label>
+                            <input type="text" class="form-control" id="position" name="position" th:value="${request.position}">
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">문의 내용</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="message" class="form-label required">내용</label>
+                        <textarea class="form-control" id="message" name="message" rows="5" required th:text="${request.message}"></textarea>
+                        <div class="invalid-feedback">문의 내용을 입력하세요</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">첨부 파일 정보</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- 명함 -->
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6>명함</h6>
+                                    <div th:if="${request.businessCard != null}">
+                                        <p th:text="${request.businessCard.originalFilename}"></p>
+                                        <div class="d-flex gap-2 mb-3">
+                                            <a th:href="@{/common/file/download/{id}(id=${request.businessCard.id})}" class="btn btn-sm btn-primary">다운로드</a>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="deleteBusinessCard" name="deleteBusinessCard">
+                                                <label class="form-check-label" for="deleteBusinessCard">
+                                                    파일 삭제
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div th:unless="${request.businessCard != null}" class="mb-3">
+                                        <p class="text-muted">첨부 파일 없음</p>
+                                    </div>
+                                    <div class="mt-2">
+                                        <label for="businessCardFile" class="form-label">새 명함 첨부</label>
+                                        <input type="file" class="form-control" id="businessCardFile" name="businessCardFile">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 사업자등록증 -->
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6>사업자등록증</h6>
+                                    <div th:if="${request.businessLicense != null}">
+                                        <p th:text="${request.businessLicense.originalFilename}"></p>
+                                        <div class="d-flex gap-2 mb-3">
+                                            <a th:href="@{/common/file/download/{id}(id=${request.businessLicense.id})}" class="btn btn-sm btn-primary">다운로드</a>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="deleteBusinessLicense" name="deleteBusinessLicense">
+                                                <label class="form-check-label" for="deleteBusinessLicense">
+                                                    파일 삭제
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div th:unless="${request.businessLicense != null}" class="mb-3">
+                                        <p class="text-muted">첨부 파일 없음</p>
+                                    </div>
+                                    <div class="mt-2">
+                                        <label for="businessLicenseFile" class="form-label">새 사업자등록증 첨부</label>
+                                        <input type="file" class="form-control" id="businessLicenseFile" name="businessLicenseFile">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 고용산재보험가입증명원 -->
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6>고용산재보험가입증명원</h6>
+                                    <div th:if="${request.insuranceCertificate != null}">
+                                        <p th:text="${request.insuranceCertificate.originalFilename}"></p>
+                                        <div class="d-flex gap-2 mb-3">
+                                            <a th:href="@{/common/file/download/{id}(id=${request.insuranceCertificate.id})}" class="btn btn-sm btn-primary">다운로드</a>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="deleteInsuranceCertificate" name="deleteInsuranceCertificate">
+                                                <label class="form-check-label" for="deleteInsuranceCertificate">
+                                                    파일 삭제
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div th:unless="${request.insuranceCertificate != null}" class="mb-3">
+                                        <p class="text-muted">첨부 파일 없음</p>
+                                    </div>
+                                    <div class="mt-2">
+                                        <label for="insuranceCertificateFile" class="form-label">새 고용산재보험가입증명원 첨부</label>
+                                        <input type="file" class="form-control" id="insuranceCertificateFile" name="insuranceCertificateFile">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info mt-3">
+                        <small>파일을 변경하려면 새 파일을 첨부하세요. 기존 파일을 삭제하려면 '파일 삭제' 체크박스를 선택하세요.</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
+                <a th:href="@{/request/construction/detail/{id}(id=${request.id})}" class="btn btn-secondary me-md-2">취소</a>
+                <button type="submit" class="btn btn-primary">저장</button>
+            </div>
+        </form>
+        
+        <script>
+            // 폼 유효성 검사
+            (function() {
+                'use strict'
+                
+                // 모든 폼에 대한 유효성 검사 스타일 적용
+                var forms = document.querySelectorAll('.needs-validation')
+                
+                // 제출 버튼 클릭 시 검증 실행
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()
+        </script>
+    </div>
+</body>
+</html> 

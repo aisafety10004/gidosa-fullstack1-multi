@@ -131,6 +131,8 @@ jwt:
 
 # 파일 업로드 경로 설정
 file:
-  upload-dir: /Users/pktjesus/uploads/gidosa/webapp
-  # upload:
-  #   path: C:\\uploads
+#  upload-dir: /Users/pktjesus/uploads/gidosa/webapp
+#   upload-dir: C:\\uploads\\baroceum\\webapp
+   upload:
+     path: C:\\uploads
+#     path: C:\\uploads\\baroceum\\webapp

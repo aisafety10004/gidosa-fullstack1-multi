@@ -11,9 +11,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Log4j2
 @Controller
@@ -50,5 +50,52 @@ public class RequestController {
         model.addAttribute("currentDirection", direction);
         
         return "main/request/construction-list";
+    }
+    
+    // 상세 보기 기능 추가
+    @GetMapping("/construction/detail/{id}")
+    public String viewConstructionRequestDetail(@PathVariable Long id, Model model) {
+        RequestConstruction request = requestService.getRequestConstructionById(id);
+        model.addAttribute("request", request);
+        return "main/request/construction-detail";
+    }
+    
+    // 수정 폼 페이지
+    @GetMapping("/construction/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        RequestConstruction request = requestService.getRequestConstructionById(id);
+        model.addAttribute("request", request);
+        return "main/request/construction-edit";
+    }
+    
+    // 수정 처리
+    @PostMapping("/construction/edit/{id}")
+    public String updateConstructionRequest(
+            @PathVariable Long id,
+            @ModelAttribute RequestConstruction requestConstruction,
+            @RequestParam(value = "businessCardFile", required = false) MultipartFile businessCardFile,
+            @RequestParam(value = "businessLicenseFile", required = false) MultipartFile businessLicenseFile,
+            @RequestParam(value = "insuranceCertificateFile", required = false) MultipartFile insuranceCertificateFile,
+            @RequestParam(value = "deleteBusinessCard", required = false, defaultValue = "false") boolean deleteBusinessCard,
+            @RequestParam(value = "deleteBusinessLicense", required = false, defaultValue = "false") boolean deleteBusinessLicense,
+            @RequestParam(value = "deleteInsuranceCertificate", required = false, defaultValue = "false") boolean deleteInsuranceCertificate,
+            RedirectAttributes redirectAttributes) {
+        
+        // 기본 정보 업데이트
+        requestService.updateRequestConstruction(id, requestConstruction);
+        
+        // 파일 정보 업데이트
+        requestService.updateRequestConstructionFiles(
+                id, 
+                businessCardFile, 
+                businessLicenseFile, 
+                insuranceCertificateFile, 
+                deleteBusinessCard, 
+                deleteBusinessLicense, 
+                deleteInsuranceCertificate
+        );
+        
+        redirectAttributes.addFlashAttribute("message", "문의 정보가 성공적으로 수정되었습니다.");
+        return "redirect:/request/construction/detail/" + id;
     }
 }

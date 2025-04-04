@@ -30,7 +30,8 @@ public class FileStorageService {
 
     private final FileAttachmentJpaRepository fileAttachmentRepository;
 
-    @Value("${file.upload-dir:uploads}")
+    @Value("${file.upload.path}")
+//    @Value("${file.upload-dir:uploads}")
     private String uploadDir;
 
     /**
@@ -58,7 +59,7 @@ public class FileStorageService {
             
             // 현재 날짜 기반 디렉토리 생성
 //            String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            String directoryPath = uploadDir + "/" + fileType;
+            String directoryPath = uploadDir + File.separator + fileType;
             
             // 저장 디렉토리 생성
             Path directory = Paths.get(directoryPath);
@@ -67,7 +68,7 @@ public class FileStorageService {
             }
             
             // 고유한 파일명 생성
-            String storedFilename = UUID.randomUUID().toString() + "." + fileExtension;
+            String storedFilename = UUID.randomUUID() + "." + fileExtension;
             
             // 파일 저장 경로 생성
             Path targetPath = directory.resolve(storedFilename);

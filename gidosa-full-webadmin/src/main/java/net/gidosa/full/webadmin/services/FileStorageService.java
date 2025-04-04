@@ -38,7 +38,7 @@ public class FileStorageService {
         
         // 파일명 충돌 방지를 위한 UUID 추가
         String fileExtension = getFileExtension(originalFileName);
-        String newFileName = UUID.randomUUID().toString() + fileExtension;
+        String newFileName = UUID.randomUUID() + fileExtension;
         
         // 저장 경로 생성
         //Path uploadPath = Paths.get(uploadDir, subDirectory);

@@ -48,21 +48,21 @@ public class ContactService {
     
     private void processAttachments(RequestConstructionDto request, RequestConstruction requestConstruction) {
         if (request.businessCard() != null && !request.businessCard().isEmpty()) {
-            FileAttachment businessCard = storeFile(request.businessCard(), "BUSINESS_CARD");
+            FileAttachment businessCard = storeFile(request.businessCard(), "business_card");
             if (businessCard != null) {
                 requestConstruction.setBusinessCard(businessCard);
             }
         }
         
         if (request.businessLicense() != null && !request.businessLicense().isEmpty()) {
-            FileAttachment businessLicense = storeFile(request.businessLicense(), "BUSINESS_LICENSE");
+            FileAttachment businessLicense = storeFile(request.businessLicense(), "business_license");
             if (businessLicense != null) {
                 requestConstruction.setBusinessLicense(businessLicense);
             }
         }
         
         if (request.insuranceCertificate() != null && !request.insuranceCertificate().isEmpty()) {
-            FileAttachment insuranceCertificate = storeFile(request.insuranceCertificate(), "INSURANCE_CERTIFICATE");
+            FileAttachment insuranceCertificate = storeFile(request.insuranceCertificate(), "insurance_certificate");
             if (insuranceCertificate != null) {
                 requestConstruction.setInsuranceCertificate(insuranceCertificate);
             }
