@@ -41,7 +41,8 @@
                         <option value="name" th:selected="${param.searchType != null and param.searchType[0] == 'name'}">이름</option>
                         <option value="phone" th:selected="${param.searchType != null and param.searchType[0] == 'phone'}">전화번호</option>
                         <!-- <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'location'}">현장건설공사 현장</option> -->
-                        <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'location'}">문의내용</option>
+                        <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'location'}">현장명</option>
+<!--                        <option value="location" th:selected="${param.searchType != null and param.searchType[0] == 'content'}">문의내용</option>-->
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -89,7 +90,7 @@
                         th:classappend="${param.sort != null && param.sort[0] == 'phone' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
                         th:data-sort="phone">전화번호</th>
                     <th class="sortable"
-                        th:classappend="${param.sort != null && param.sort[0] == 'constructionLocation' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
+                        th:classappend="${param.sort != null && param.sort[0] == 'location' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"
                         th:data-sort="constructionLocation">현장명</th>
 <!--                    <th class="sortable" -->
 <!--                        th:classappend="${param.sort != null && param.sort[0] == 'message' ? (param.direction != null && param.direction[0] == 'asc' ? 'asc' : 'desc') : ''}"-->
