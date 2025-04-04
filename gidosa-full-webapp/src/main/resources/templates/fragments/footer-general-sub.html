@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.springframework.org/security/tags"
+>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <!-- 하단 버튼 -->
+   <div th:fragment="footer-sub" id="mobile1-footer-sub" class="w-full bg-gray-800 text-white p-3 mt-auto" style="display: none;">
+    <!-- <div th:fragment="footer(construction)" id="mobile1-footer-sub" class="w-full bg-gray-800 text-white p-3 mt-auto"> -->
+        <div class="container mx-auto flex items-center justify-center">
+            <!-- <button class="flex items-center text-sm border border-white rounded-md p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                PC버전으로 보기
+            </button> -->
+            <button id="installBtn" class="flex items-center text-sm border border-white rounded-md p-1" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                홈 화면에 추가
+            </button>
+        </div>
+
+        <script>
+            let manifestJSON = {
+                "name": "바로세움(baroceum)",
+                "short_name": "바로세움",
+                "version": "1.0.0",
+                "start_url": "",
+                "scope": "",
+                "display": "standalone",
+                "background_color": "#ffffff",
+                "theme_color": "#000000",
+                "icons": [
+                    {
+                        "src": "",
+                        "sizes": "192x192",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "",
+                        "sizes": "512x512",
+                        "type": "image/png"
+                    }
+                ],
+                "description": "바로세움 회원 사이트"
+            };
+            if (window.location.hostname === 'localhost') {
+                manifestJSON.name = '바로세움(localhost)';
+            }
+            if (window.location.hostname === 'dev-inner-webapp.baroceum.com') {
+                manifestJSON.name = '바로세움(dev-inner)';
+            }
+            
+            // construction 객체가 존재하면 해당 ID를 사용, 없으면 기본값 1 사용
+            const constructionId = [[${construction != null ? construction.id : 0}]]; 
+            if (constructionId > 0) {
+                manifestJSON.start_url = window.location.protocol + '//' + window.location.host + '/general/construction/' + constructionId;
+                manifestJSON.scope = window.location.protocol + '//' + window.location.host + '/general/construction/';
+            } else {
+                manifestJSON.start_url = window.location.protocol + '//' + window.location.host;
+                manifestJSON.scope = window.location.protocol + '//' + window.location.host + '/';
+            }
+            manifestJSON.icons[0].src = window.location.protocol + '//' + window.location.host + '/assets/images/baroceum_app_192x192.png';
+            manifestJSON.icons[1].src = window.location.protocol + '//' + window.location.host + '/assets/images/baroceum_app_512x512.png';
+            
+            const stringManifest = JSON.stringify(manifestJSON);
+            const blob = new Blob([stringManifest], {type: 'application/json'});
+            const manifestURL = URL.createObjectURL(blob);
+            const myManifestPlaceholder = document.querySelector('#my-manifest-placeholder');
+            if (myManifestPlaceholder) {
+                myManifestPlaceholder.setAttribute('href', manifestURL);
+            }
+
+            const installBtn = document.getElementById('installBtn');
+            const mobile1FooterSub = document.getElementById('mobile1-footer-sub');
+            //installBtn.style.display = 'flex';
+            //mobile1FooterSub.style.display = 'block';
+
+            // // 홈 화면에 추가 버튼 클릭 시 홈 화면에 추가
+            // document.getElementById('installBtn').addEventListener('click', function() {
+            //     navigator.serviceWorker.register('/service-worker.js');
+            // });
+            // 서비스워커 등록
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.register('/service-worker.js')
+                // .then(reg => console.log('Service Worker Registered'))
+                // .catch(err => console.error('SW registration failed:', err))
+                ;
+            }
+        
+            // 앱이 이미 설치된 경우 숨기기
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                installBtn.style.display = 'none';
+                mobile1FooterSub.style.display = 'none';
+            }
+            // 또는 iOS safari대응 (PWA 설치 감지)
+            const isInStandaloneMode = () =>
+                ('standalone' in window.navigator && window.navigator.standalone);
+            if (isInStandaloneMode()) {
+                installBtn.style.display = 'none';
+                mobile1FooterSub.style.display = 'none';
+            }            
+    
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+              // 기본 동작 막고 이벤트 저장
+              e.preventDefault();
+              deferredPrompt = e;
+              
+              if(deferredPrompt) {
+                installBtn.style.display = 'flex';
+                mobile1FooterSub.style.display = 'block';
+              }
+    
+            //   installBtn.addEventListener('click', async () => {
+            //     installBtn.hidden = true;
+            //     deferredPrompt.prompt();
+            //     const { outcome } = await deferredPrompt.userChoice;
+            //     // if (outcome === 'accepted') {
+            //     //   console.log('설치를 수락했습니다.');
+            //     // } else {
+            //     //   console.log('설치를 거절했습니다.');
+            //     // }
+            //     deferredPrompt = null;
+            //   });
+            });        
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+
+                //window.location.href = '/manifest.json';
+    
+                // 반드시 사용자 클릭 시 실행!
+                deferredPrompt.prompt();
+    
+                // deferredPrompt.userChoice.then((result) => {
+                // 	if (result.outcome == "accepted") {
+                // 		//KQ("#addHome").css("display", "none");
+                //         installBtn.style.display = 'none';
+                //         mobile1FooterSub.style.display = 'none';
+                // 	}
+                // });
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`사용자 선택: ${outcome}`);
+    
+                deferredPrompt = null;
+            });
+        
+            window.addEventListener('appinstalled', () => {
+              installBtn.style.display = 'none';
+              mobile1FooterSub.style.display = 'none';
+              //console.log('앱 설치 완료!');
+            });
+        </script>
+    </div>
+</div>
+</body>
+</html>
