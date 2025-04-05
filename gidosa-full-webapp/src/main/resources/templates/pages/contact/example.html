@@ -3,11 +3,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default}">
 <head>
-    <title>도입사례 - gidosa</title>
+    <title>도입사례 - 바로세움</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap530.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/bootstrap170-icons.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/contact/example.css}">
 </head>
 <body>
@@ -80,8 +80,13 @@
 
     <th:block layout:fragment="script">
         <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="/js/bootstrap530.bundle.min.js"></script>
         <script th:inline="javascript">
+            // 모바일 기기 감지 함수
+            function isMobile() {
+                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            }
+            
             document.addEventListener('DOMContentLoaded', function() {
               // 메인 검색창 클릭 시 모달 열기
               const mainSearch = document.getElementById('mainSearch');
@@ -132,7 +137,7 @@
                           html += '<div class="list-group">';
                           data.results.forEach(item => {
                               html += `
-                                  <a href="/general/construction/${item.id}" target="_blank">
+                                  <a href="/general/construction/${item.id}" target="${isMobile() ? '_self' : '_blank'}">
                                       <div class="list-group-item">
                                           <div class="d-flex justify-content-between align-items-center">
                                               <div>
