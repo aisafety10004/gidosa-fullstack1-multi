@@ -43,7 +43,7 @@ public class GeneralMemberController {
         return "pages/general/member/register";
     }
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String register(@Valid @ModelAttribute MemberRegisterDto memberRegisterDto,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes,
@@ -65,6 +65,9 @@ public class GeneralMemberController {
             return "redirect:/general/auth/login?constructionId=" + memberRegisterDto.getConstructionId() + "&registered";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            return "pages/general/member/register";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", "회원 가입 처리 중 오류가 발생했습니다. " + e.getMessage());
             return "pages/general/member/register";
         }
     }

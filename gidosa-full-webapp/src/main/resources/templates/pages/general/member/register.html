@@ -15,7 +15,7 @@
             </div>
         </div>
         
-        <form th:action="@{/general/member/register}" method="POST" class="space-y-6" id="registerForm">
+        <form th:action="@{/general/member/register}" method="POST" class="space-y-6" id="registerForm" enctype="multipart/form-data">
             <input type="hidden" name="constructionId" th:value="${construction.id}" />
             <!-- 아이디 -->
             <div>
@@ -83,6 +83,128 @@
                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                            placeholder="'-' 없이 입력해주세요">
                 </div>
+            </div>
+
+            <!-- 직책 -->
+            <div>
+                <label for="position" class="block text-sm font-medium text-gray-700">직책</label>
+                <div class="mt-1">
+                    <input type="text" id="position" name="position" th:value="${memberRegisterDto != null ? memberRegisterDto.position : ''}"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           placeholder="직책을 입력해주세요">
+                </div>
+            </div>
+
+            <!-- 직종 -->
+            <div>
+                <label for="jobType" class="block text-sm font-medium text-gray-700">직종</label>
+                <div class="mt-1">
+                    <input type="text" id="jobType" name="jobType" th:value="${memberRegisterDto != null ? memberRegisterDto.jobType : ''}"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           placeholder="직종을 입력해주세요">
+                </div>
+            </div>
+
+            <!-- 비상연락번호 -->
+            <div>
+                <label for="emergencyContact" class="block text-sm font-medium text-gray-700">비상연락번호</label>
+                <div class="mt-1">
+                    <input type="tel" id="emergencyContact" name="emergencyContact" th:value="${memberRegisterDto != null ? memberRegisterDto.emergencyContact : ''}"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           placeholder="'-' 없이 입력해주세요">
+                </div>
+            </div>
+
+            <!-- 프로필 사진 업로드 -->
+            <div>
+                <label for="profilePhotoFile" class="block text-sm font-medium text-gray-700">본인사진</label>
+                <div class="mt-1">
+                    <input type="file" id="profilePhotoFile" name="profilePhotoFile"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           accept="image/*">
+                </div>
+                <p class="mt-1 text-xs text-gray-500">사진 파일만 업로드 가능합니다.</p>
+            </div>
+
+            <!-- 근로계약서 업로드 -->
+            <div>
+                <label for="laborContractFile" class="block text-sm font-medium text-gray-700">근로계약서</label>
+                <div class="mt-1">
+                    <input type="file" id="laborContractFile" name="laborContractFile"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           accept="image/*,application/pdf">
+                </div>
+                <p class="mt-1 text-xs text-gray-500">이미지 또는 PDF 파일만 업로드 가능합니다.</p>
+            </div>
+
+            <!-- 건설업기초안전보건교육이수증 업로드 -->
+            <div>
+                <label for="safetyEducationCertFile" class="block text-sm font-medium text-gray-700">건설업기초안전보건교육이수증</label>
+                <div class="mt-1">
+                    <input type="file" id="safetyEducationCertFile" name="safetyEducationCertFile"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           accept="image/*,application/pdf">
+                </div>
+                <p class="mt-1 text-xs text-gray-500">이미지 또는 PDF 파일만 업로드 가능합니다.</p>
+            </div>
+
+            <!-- 보호구착용서약서 업로드 -->
+            <div>
+                <label for="protectiveGearPledgeFile" class="block text-sm font-medium text-gray-700">보호구착용서약서</label>
+                <div class="mt-1">
+                    <input type="file" id="protectiveGearPledgeFile" name="protectiveGearPledgeFile"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           accept="image/*,application/pdf">
+                </div>
+                <p class="mt-1 text-xs text-gray-500">이미지 또는 PDF 파일만 업로드 가능합니다.</p>
+            </div>
+
+            <!-- 기타문서1 업로드 -->
+            <div>
+                <label for="etcDoc1Description" class="block text-sm font-medium text-gray-700">기타입력1</label>
+                <!-- <div class="mt-1">
+                    <input type="text" id="etcDoc1Description" name="etcDoc1Description" th:value="${memberRegisterDto != null ? memberRegisterDto.etcDoc1Description : ''}"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           placeholder="기타문서1 설명을 입력해주세요">
+                </div> -->
+                <div class="mt-1">
+                    <input type="file" id="etcDoc1File" name="etcDoc1File"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           accept="image/*,application/pdf">
+                </div>
+                <p class="mt-1 text-xs text-gray-500">이미지 또는 PDF 파일만 업로드 가능합니다.</p>
+            </div>
+
+            <!-- 기타문서2 업로드 -->
+            <div>
+                <label for="etcDoc2Description" class="block text-sm font-medium text-gray-700">기타입력2</label>
+                <!-- <div class="mt-1">
+                    <input type="text" id="etcDoc2Description" name="etcDoc2Description" th:value="${memberRegisterDto != null ? memberRegisterDto.etcDoc2Description : ''}"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           placeholder="기타문서2 설명을 입력해주세요">
+                </div> -->
+                <div class="mt-1">
+                    <input type="file" id="etcDoc2File" name="etcDoc2File"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           accept="image/*,application/pdf">
+                </div>
+                <p class="mt-1 text-xs text-gray-500">이미지 또는 PDF 파일만 업로드 가능합니다.</p>
+            </div>
+
+            <!-- 기타문서3 업로드 -->
+            <div>
+                <label for="etcDoc3Description" class="block text-sm font-medium text-gray-700">기타입력3</label>
+                <!-- <div class="mt-1">
+                    <input type="text" id="etcDoc3Description" name="etcDoc3Description" th:value="${memberRegisterDto != null ? memberRegisterDto.etcDoc3Description : ''}"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           placeholder="기타문서3 설명을 입력해주세요">
+                </div> -->
+                <div class="mt-1">
+                    <input type="file" id="etcDoc3File" name="etcDoc3File"
+                           class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                           accept="image/*,application/pdf">
+                </div>
+                <p class="mt-1 text-xs text-gray-500">이미지 또는 PDF 파일만 업로드 가능합니다.</p>
             </div>
 
             <div class="flex justify-center space-x-4 pt-4">

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter @Setter
 public class MemberRegisterDto {
@@ -29,4 +30,27 @@ public class MemberRegisterDto {
 
     @NotBlank(message = "휴대폰번호는 필수 입력값입니다.")
     private String phone;
+    
+    private String position; // 직책
+    
+    private String jobType; // 직종
+    
+    private String emergencyContact; // 비상연락번호
+    
+    private MultipartFile profilePhotoFile; // 프로필 사진
+    
+    private MultipartFile laborContractFile; // 근로계약서
+    
+    private MultipartFile safetyEducationCertFile; // 건설업기초안전보건교육이수증
+    
+    private MultipartFile protectiveGearPledgeFile; // 보호구착용서약서
+    
+    private MultipartFile etcDoc1File; // 기타문서1
+    private String etcDoc1Description; // 기타문서1 설명
+    
+    private MultipartFile etcDoc2File; // 기타문서2
+    private String etcDoc2Description; // 기타문서2 설명
+    
+    private MultipartFile etcDoc3File; // 기타문서3
+    private String etcDoc3Description; // 기타문서3 설명
 } 

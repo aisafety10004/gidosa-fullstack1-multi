@@ -6,6 +6,7 @@ import net.gidosa.common.utils.PasswordUtil;
 import net.gidosa.full.webapp.dtos.MemberUpdateDto;
 import net.gidosa.full.webapp.models.dtos.MemberRegisterDto;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
+import net.gidosa.rdb.models.entities.dbs.mysql.FileAttachment;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberGeneral;
 import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
 import net.gidosa.rdb.repositories.mysql.jpa.MemberGeneralJpaRepository;
@@ -26,6 +27,7 @@ public class GeneralMemberService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final AdminMemberService adminMemberService;
+    private final FileStorageService fileStorageService;
 
     @Transactional
     public MemberGeneral register(MemberRegisterDto registerDto, Construction construction) {
@@ -47,6 +49,92 @@ public class GeneralMemberService {
         member.setEmail(registerDto.getEmail());
         member.setPhone(registerDto.getPhone());
         member.setConstruction(construction);
+        
+        // 추가 필드 설정
+        member.setPosition(registerDto.getPosition());
+        member.setJobType(registerDto.getJobType());
+        member.setEmergencyContact(registerDto.getEmergencyContact());
+        
+        // 기타 문서 설명 설정
+        member.setEtcDoc1Description(registerDto.getEtcDoc1Description());
+        member.setEtcDoc2Description(registerDto.getEtcDoc2Description());
+        member.setEtcDoc3Description(registerDto.getEtcDoc3Description());
+        
+        // 파일 업로드 처리
+        try {
+            // 프로필 사진
+            if (registerDto.getProfilePhotoFile() != null && !registerDto.getProfilePhotoFile().isEmpty()) {
+                FileAttachment profilePhoto = fileStorageService.storeFile(
+                    registerDto.getProfilePhotoFile(), 
+                    "profile_photo", 
+                    null
+                );
+                member.setProfilePhoto(profilePhoto);
+            }
+            
+            // 근로계약서
+            if (registerDto.getLaborContractFile() != null && !registerDto.getLaborContractFile().isEmpty()) {
+                FileAttachment laborContract = fileStorageService.storeFile(
+                    registerDto.getLaborContractFile(), 
+                    "labor_contract", 
+                    null
+                );
+                member.setLaborContract(laborContract);
+            }
+            
+            // 건설업기초안전보건교육이수증
+            if (registerDto.getSafetyEducationCertFile() != null && !registerDto.getSafetyEducationCertFile().isEmpty()) {
+                FileAttachment safetyEducationCert = fileStorageService.storeFile(
+                    registerDto.getSafetyEducationCertFile(), 
+                    "safety_education_cert", 
+                    null
+                );
+                member.setSafetyEducationCert(safetyEducationCert);
+            }
+            
+            // 보호구착용서약서
+            if (registerDto.getProtectiveGearPledgeFile() != null && !registerDto.getProtectiveGearPledgeFile().isEmpty()) {
+                FileAttachment protectiveGearPledge = fileStorageService.storeFile(
+                    registerDto.getProtectiveGearPledgeFile(), 
+                    "protective_gear_pledge", 
+                    null
+                );
+                member.setProtectiveGearPledge(protectiveGearPledge);
+            }
+            
+            // 기타문서1
+            if (registerDto.getEtcDoc1File() != null && !registerDto.getEtcDoc1File().isEmpty()) {
+                FileAttachment etcDoc1 = fileStorageService.storeFile(
+                    registerDto.getEtcDoc1File(), 
+                    "etc_doc1", 
+                    null
+                );
+                member.setEtcDoc1(etcDoc1);
+            }
+            
+            // 기타문서2
+            if (registerDto.getEtcDoc2File() != null && !registerDto.getEtcDoc2File().isEmpty()) {
+                FileAttachment etcDoc2 = fileStorageService.storeFile(
+                    registerDto.getEtcDoc2File(), 
+                    "etc_doc2", 
+                    null
+                );
+                member.setEtcDoc2(etcDoc2);
+            }
+            
+            // 기타문서3
+            if (registerDto.getEtcDoc3File() != null && !registerDto.getEtcDoc3File().isEmpty()) {
+                FileAttachment etcDoc3 = fileStorageService.storeFile(
+                    registerDto.getEtcDoc3File(), 
+                    "etc_doc3", 
+                    null
+                );
+                member.setEtcDoc3(etcDoc3);
+            }
+        } catch (Exception e) {
+            log.error("회원 가입 중 파일 업로드 오류: {}", e.getMessage(), e);
+            throw new RuntimeException("파일 업로드 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
 
         return memberGeneralJpaRepository.save(member);
     }
