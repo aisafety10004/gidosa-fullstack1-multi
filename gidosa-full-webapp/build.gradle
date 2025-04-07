@@ -63,6 +63,12 @@ dependencies {
 //    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2'
 //    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
 
+    // firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+    // web-push
+    implementation 'nl.martijndwars:web-push:5.1.2'
+//    implementation 'org.bouncycastle:bcprov-jdk18on:1.80'
+
     compileOnly 'org.projectlombok:lombok'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
