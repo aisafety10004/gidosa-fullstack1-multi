@@ -75,8 +75,59 @@
     <script src="/js/swiper10-bundle.min.js"></script>
     <script src="/js/firebase-app-compat961.js"></script>
     <script src="/js/firebase-messaging-compat961.js"></script>
+    <script src="/js/firebase-analytics-compat961.js"></script>
+    <script type="module">
+        // // Import the functions you need from the SDKs you need
+        // import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        // import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
+        // // TODO: Add SDKs for Firebase products that you want to use
+        // // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // // Your web app's Firebase configuration
+        // // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        // const firebaseConfig = {
+        //     apiKey: "AIzaSyAhGBd-3pzg1HzHvGJ6poVatZ9t4fcRC7g",
+        //     authDomain: "text-me-917f5.firebaseapp.com",
+        //     projectId: "text-me-917f5",
+        //     storageBucket: "text-me-917f5.appspot.com",
+        //     messagingSenderId: "357915322625",
+        //     appId: "1:357915322625:web:694139cec2a5c263b81300",
+        //     measurementId: "G-WXZEPBL34M"
+        // };
+
+        // // Initialize Firebase
+        // const app = initializeApp(firebaseConfig);
+        // const analytics = getAnalytics(app);
+    </script>
     <script>
-        
+        // ------- 푸시 알림 설정(firebase 사용) ------------------------------------------------------------------------------------------
+        // const firebaseConfig = {
+        //     apiKey: "YOUR_API_KEY",
+        //     authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        //     projectId: "YOUR_PROJECT_ID",
+        //     messagingSenderId: "YOUR_SENDER_ID",
+        //     appId: "YOUR_APP_ID"
+        // };
+
+        // firebase.initializeApp(firebaseConfig);
+        // const messaging = firebase.messaging();
+
+        // messaging.requestPermission()
+        //     .then(() => messaging.getToken())
+        //     .then(token => {
+        //     console.log("FCM 토큰:", token);
+        //     return fetch("/api/fcm-token", {
+        //         method: "POST",
+        //         headers: { "Content-Type": "application/json" },
+        //         body: JSON.stringify({ token })
+        //     });
+        //     })
+        //     .catch(err => console.error("FCM 권한 요청 실패", err));
+
+        // messaging.onMessage(payload => {
+        //     console.log("푸시 수신:", payload);
+        //     alert(payload.notification.title + "\n" + payload.notification.body);
+        // });
     </script>
 </head>
 <body class="bg-[#DAE4FA] flex flex-col min-h-screen">
