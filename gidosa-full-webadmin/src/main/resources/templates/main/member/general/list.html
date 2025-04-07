@@ -28,10 +28,10 @@
                         <label for="searchType" class="form-label">검색 항목</label>
                         <select class="form-select" id="searchType" name="searchType">
                             <option value="">-- 선택 --</option>
-                            <option value="username" th:selected="${searchType != null && searchType == 'username'}">사용자명</option>
+                            <option value="username" th:selected="${searchType != null && searchType == 'username'}">아이디(사용자명)</option>
                             <option value="name" th:selected="${searchType != null && searchType == 'name'}">이름</option>
                             <option value="email" th:selected="${searchType != null && searchType == 'email'}">이메일</option>
-                            <option value="phone" th:selected="${searchType != null && searchType == 'phone'}">전화번호</option>
+                            <option value="phone" th:selected="${searchType != null && searchType == 'phone'}">휴대폰번호</option>
                         </select>
                     </div>
                     <div class="col-md-5">
@@ -64,7 +64,7 @@
             <thead>
                 <tr style="text-align: center;">
                     <th>ID</th>
-                    <th>사용자명</th>
+                    <th>아이디(사용자명)</th>
                     <th>이름</th>
                     <th>이메일</th>
                     <th>전화번호</th>

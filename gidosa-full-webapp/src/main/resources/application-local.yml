@@ -135,5 +135,6 @@ file:
 #   upload-dir: C:\\uploads\\baroceum\\webapp
    upload:
 #     path: C:\\uploads
+     path: C:\\uploads\\baroceum
 #     path: C:\\uploads\\baroceum\\webapp
-    path: /Users/pktjesus/uploads/gidosa
+#    path: /Users/pktjesus/uploads/gidosa

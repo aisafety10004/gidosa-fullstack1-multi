@@ -12,7 +12,7 @@
         <form th:action="@{/member/general/update/{id}(id=${member.id})}" 
               th:object="${member}" method="post" class="needs-validation" novalidate>
             <div class="mb-3 mt-3">
-                <label for="username" class="form-label">사용자명</label>
+                <label for="username" class="form-label">아이디(사용자명)</label>
                 <input type="text" class="form-control" id="username" th:field="*{username}" readonly>
             </div>
 
