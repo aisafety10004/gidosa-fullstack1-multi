@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-status-bar-style" content="default" />
+    <meta name="mobile-web-app-title" content="BAROCEUM" />
     <title layout:title-pattern="$CONTENT_TITLE - 공사현장"> </title>
     <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
     <!-- Common CSS -->
@@ -76,6 +78,8 @@
     </script>
 </head>
 <body class="bg-[#DAE4FA] flex flex-col min-h-screen">
+    <script th:src="@{/js/common.js}"></script>
+
     <!-- Header/Navigation -->
     <div th:replace="~{fragments/header-general3 :: header}"></div>
     <!-- Header Sub/Navigation -->
@@ -99,7 +103,7 @@
     <!-- Footer -->
     <div th:replace="~{fragments/footer-general :: footer(construction=${construction})}"></div>
 
-    <!-- Common JavaScript -->
+    <!-- Main JavaScript -->
     <script th:src="@{/js/main.js}"></script>
 
     <!-- Page specific JavaScript -->

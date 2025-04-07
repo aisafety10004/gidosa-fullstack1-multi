@@ -18,6 +18,8 @@
     <script src="/js/swiper10-bundle.min.js"></script>
 </head>
 <body class="bg-gray-100">
+    <script th:src="@{/js/common.js}"></script>
+    
     <!-- Header/Navigation -->
     <div th:replace="~{fragments/header :: header}"></div>
     
@@ -31,7 +33,7 @@
     <!-- Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
     
-    <!-- Common JavaScript -->
+    <!-- Main JavaScript -->
     <script th:src="@{/js/main.js}"></script>
 
     <!-- Page specific JavaScript -->

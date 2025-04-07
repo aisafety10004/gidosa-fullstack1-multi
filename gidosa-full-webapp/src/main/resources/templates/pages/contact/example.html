@@ -82,11 +82,6 @@
         <!-- Bootstrap JS -->
         <script src="/js/bootstrap530.bundle.min.js"></script>
         <script th:inline="javascript">
-            // 모바일 기기 감지 함수
-            function isMobile() {
-                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
-            }
-            
             document.addEventListener('DOMContentLoaded', function() {
               // 메인 검색창 클릭 시 모달 열기
               const mainSearch = document.getElementById('mainSearch');
