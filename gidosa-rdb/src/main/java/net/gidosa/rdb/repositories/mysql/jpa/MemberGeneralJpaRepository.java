@@ -220,4 +220,37 @@ public interface MemberGeneralJpaRepository extends JpaRepository<MemberGeneral,
             @Param("phone") String phone,
             @Param("endDateTime") LocalDateTime endDateTime,
             Pageable pageable);
+
+    @Query("SELECT m FROM MemberGeneral m LEFT JOIN FETCH m.construction WHERE m.username = :username")
+    Optional<MemberGeneral> findByUsernameWithConstruction(@Param("username") String username);
+
+    @Query("SELECT m FROM MemberGeneral m LEFT JOIN FETCH m.construction WHERE m.id = :id")
+    Optional<MemberGeneral> findByIdWithConstruction(@Param("id") Long id);
+
+    @Query("SELECT m FROM MemberGeneral m WHERE m.construction.id = :constructionId AND m.username = :username")
+    Optional<MemberGeneral> findByConstructionIdAndUsername(
+            @Param("constructionId") Long constructionId,
+            @Param("username") String username);
+
+    @Query("SELECT m FROM MemberGeneral m WHERE m.construction.id = :constructionId AND m.email = :email")
+    Optional<MemberGeneral> findByConstructionIdAndEmail(
+            @Param("constructionId") Long constructionId,
+            @Param("email") String email);
+
+    @Query("SELECT m FROM MemberGeneral m WHERE m.construction.id = :constructionId AND m.phone = :phone")
+    Optional<MemberGeneral> findByConstructionIdAndPhone(
+            @Param("constructionId") Long constructionId,
+            @Param("phone") String phone);
+
+    @Query("SELECT m FROM MemberGeneral m WHERE m.construction.id = :constructionId AND m.username = :username AND m.email = :email")
+    Optional<MemberGeneral> findByConstructionIdAndUsernameAndEmail(
+            @Param("constructionId") Long constructionId,
+            @Param("username") String username,
+            @Param("email") String email);
+
+    @Query("SELECT m FROM MemberGeneral m WHERE m.construction.id = :constructionId AND m.username = :username AND m.phone = :phone")
+    Optional<MemberGeneral> findByConstructionIdAndUsernameAndPhone(
+            @Param("constructionId") Long constructionId,
+            @Param("username") String username,
+            @Param("phone") String phone);
 }
