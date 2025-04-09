@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>바로세움 기타 전용</title>
+    <!-- <title>바로세움 관리자</title> -->
+    <!-- <title th:utext="${#authentication.principal.memberAdmin.location}"></title>  -->
+
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap-icons/bootstrap-icons.min.css}">
+    <!-- Toast UI Editor CSS -->
+    <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor-dark.min.css}" />
+
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <!-- Toast UI Editor JS -->
+    <script th:src="@{/js/toastui/toastui-editor-all.min.js}"></script>
+    <script src="/js/tailwind/tailwindcss.js"></script>
+    <script>
+        tailwind.config = {
+          // prefix: 'tw-', // 모든 타일윈드 클래스에 'tw-' 프리픽스 추가(ex) class="bg-blue-500" → class="tw-bg-blue-500", class="text-white" → class="tw-text-white")
+          // important: true, // 타일윈드 스타일에 !important 추가 (필요한 경우)
+          important: '.tailwind-section', // tailwind-section 안에서만 타일윈드 스타일 우선 적용
+          corePlugins: {
+            preflight: false, // 기본 스타일 초기화 비활성화
+            // container: false, // 컨테이너 유틸리티 비활성화(타일윈드 설정에서 부트스트랩과 충돌하는 일부 컴포넌트나 유틸리티를 비활성화)
+          }
+        }
+    </script>
+</head>
+<body class="">
+<div class="container-fluid" layout:fragment="content" />
+<!-- Bootstrap core JS-->
+<script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>
+<!--<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>-->
+<!-- Core theme JS-->
+<script src="/js/scripts.js"></script>
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>
