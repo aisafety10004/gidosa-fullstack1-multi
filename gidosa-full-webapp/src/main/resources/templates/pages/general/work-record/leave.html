@@ -1,4 +1,28 @@
-
-
-
-
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/general}">
+<head>
+    <title th:text="${construction.location + ' - 현장공사'}"></title>
+</head>
+<body>
+<!-- <div layout:fragment="content" class="bg-white">
+    <h1 th:text="${construction.location} + ' - 현장공사 general 메인 페이지'"></h1>
+</div> -->
+<div layout:fragment="content">
+    <div class="" id="mobile1-content">
+        <div class="flex flex-col items-center w-full max-w-md mx-auto px-4 py-4">
+            <h1 th:text="${construction.location} + ' - 공사 퇴근하기'"></h1>
+        </div>
+    </div>
+    <div class="tailwind-section" id="pc1-content">
+        <h1>퇴근하기 - 데스크톱 상단 화면</h1>
+    </div>
+</div>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        
+    </script>
+</th:block>
+</body>
+</html>
