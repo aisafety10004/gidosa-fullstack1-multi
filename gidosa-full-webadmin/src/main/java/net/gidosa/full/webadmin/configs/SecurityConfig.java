@@ -48,8 +48,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//            .headers(header -> header.frameOptions(frameOption -> frameOption.disable()))
 //            .csrf(csrf -> csrf.disable())  // CSRF 보호는 필요에 따라 활성화하세요
-            .headers(header -> header.frameOptions(frameOption -> frameOption.disable()))
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .maximumSessions(1)
