@@ -49,13 +49,14 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 //            .csrf(csrf -> csrf.disable())  // CSRF 보호는 필요에 따라 활성화하세요
+            .headers(header -> header.frameOptions(frameOption -> frameOption.disable()))
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false)
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/assets/**", "/vendor/**", "/error/**").permitAll()
+                .requestMatchers("/htmls/common1.html", "/css/**", "/js/**", "/assets/**", "/vendor/**", "/error/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/member/admin/**", "/construction/**", "/request/construction/**").hasRole("ADMIN")
                 .requestMatchers("/member/general/**", "/safety/risk-factor/**", "/process/work-discussion/**", "/work-record/**").hasRole("MANAGER")
