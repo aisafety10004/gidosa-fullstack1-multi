@@ -186,7 +186,7 @@ public class GeneralMemberService {
                     throw new IllegalArgumentException("이메일은 필수 입력값입니다.");
                 }
                 if (generalMemberUpdateDto.getPhone() == null || generalMemberUpdateDto.getPhone().trim().isEmpty()) {
-                    throw new IllegalArgumentException("전화번호는 필수 입력값입니다.");
+                    throw new IllegalArgumentException("휴대폰번호는 필수 입력값입니다.");
                 }
 
                 member.setName(generalMemberUpdateDto.getName().trim());
