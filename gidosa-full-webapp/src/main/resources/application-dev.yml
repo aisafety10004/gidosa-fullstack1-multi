@@ -25,7 +25,7 @@ spring:
         max-pool-size: 20
 
   thymeleaf:          # 타임리프
-    cache: false
+    cache: true
 #    prefix: classpath:/templates/
 #    suffix: .html
 #    view-names: thymeleaf/*
