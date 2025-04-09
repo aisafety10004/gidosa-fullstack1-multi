@@ -10,7 +10,7 @@
         <!-- <h2 class="mb-4">회원 정보 수정</h2> -->
 
         <form th:action="@{/member/general/update/{id}(id=${member.id})}" 
-              th:object="${member}" method="post" class="needs-validation" novalidate>
+              th:object="${member}" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
             <div class="mb-3 mt-3">
                 <label for="username" class="form-label">아이디(사용자명)</label>
                 <input type="text" class="form-control" id="username" th:field="*{username}" readonly>

@@ -30,7 +30,7 @@ public class MemberGeneralService {
 
     // ID로 회원 조회
     public Optional<MemberGeneral> getMemberById(Long id) {
-        return memberGeneralJpaRepository.findById(id);
+        return memberGeneralJpaRepository.findByIdWithAttachments(id);
     }
 
     // 사용자명으로 회원 조회
@@ -48,10 +48,42 @@ public class MemberGeneralService {
     public MemberGeneral updateMember(Long id, MemberGeneral memberDetails) {
         return memberGeneralJpaRepository.findById(id)
             .map(member -> {
-                // 수정 불가능한 필드는 제외하고 업데이트
+                // 수정 가능한 필드 업데이트
                 member.setName(memberDetails.getName());
                 member.setPhone(memberDetails.getPhone());
                 member.setEmail(memberDetails.getEmail());
+                
+                // 추가 필드 업데이트
+                member.setPosition(memberDetails.getPosition());
+                member.setJobType(memberDetails.getJobType());
+                member.setEmergencyContact(memberDetails.getEmergencyContact());
+                member.setEtcDoc1Description(memberDetails.getEtcDoc1Description());
+                member.setEtcDoc2Description(memberDetails.getEtcDoc2Description());
+                member.setEtcDoc3Description(memberDetails.getEtcDoc3Description());
+                
+                // 파일 관련 필드 업데이트
+                if (memberDetails.getProfilePhoto() != null) {
+                    member.setProfilePhoto(memberDetails.getProfilePhoto());
+                }
+                if (memberDetails.getLaborContract() != null) {
+                    member.setLaborContract(memberDetails.getLaborContract());
+                }
+                if (memberDetails.getSafetyEducationCert() != null) {
+                    member.setSafetyEducationCert(memberDetails.getSafetyEducationCert());
+                }
+                if (memberDetails.getProtectiveGearPledge() != null) {
+                    member.setProtectiveGearPledge(memberDetails.getProtectiveGearPledge());
+                }
+                if (memberDetails.getEtcDoc1() != null) {
+                    member.setEtcDoc1(memberDetails.getEtcDoc1());
+                }
+                if (memberDetails.getEtcDoc2() != null) {
+                    member.setEtcDoc2(memberDetails.getEtcDoc2());
+                }
+                if (memberDetails.getEtcDoc3() != null) {
+                    member.setEtcDoc3(memberDetails.getEtcDoc3());
+                }
+                
                 // 비밀번호는 별도의 암호화 처리가 필요할 수 있음
                 if (memberDetails.getPassword() != null && !memberDetails.getPassword().isEmpty()) {
                     member.setPassword(passwordEncoder.encode(memberDetails.getPassword()));

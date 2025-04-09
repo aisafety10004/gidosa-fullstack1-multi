@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{${layout}}">
+<head>
+    <!-- <title>회원 정보 수정</title> -->
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- <h2 class="mb-4">회원 정보 수정</h2> -->
+
+        <form th:action="@{/member/general/update/{id}(id=${member.id})}" 
+              th:object="${member}" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+            <div class="mb-3 mt-3">
+                <label for="username" class="form-label">아이디(사용자명)</label>
+                <input type="text" class="form-control" id="username" th:field="*{username}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label for="name" class="form-label">이름</label>
+                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">이메일</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="phone" class="form-label">휴대폰번호</label>
+                <input type="tel" class="form-control" id="phone" th:field="*{phone}" required>
+            </div>
+
+            <!-- 직책 필드 추가 -->
+            <div class="mb-3">
+                <label for="position" class="form-label">직책</label>
+                <input type="text" class="form-control" id="position" th:field="*{position}">
+            </div>
+
+            <!-- 직종 필드 추가 -->
+            <div class="mb-3">
+                <label for="jobType" class="form-label">직종</label>
+                <input type="text" class="form-control" id="jobType" th:field="*{jobType}">
+            </div>
+
+            <!-- 비상연락번호 필드 추가 -->
+            <div class="mb-3">
+                <label for="emergencyContact" class="form-label">비상연락번호</label>
+                <input type="tel" class="form-control" id="emergencyContact" th:field="*{emergencyContact}">
+            </div>
+
+            <!-- 프로필 사진 필드 추가 -->
+            <div class="mb-3">
+                <label for="profilePhotoFile" class="form-label">프로필 사진</label>
+                <div class="input-group">
+                    <input type="file" class="form-control" id="profilePhotoFile" name="profilePhotoFile" accept="image/*">
+                </div>
+                <div class="form-text">현재 파일: 
+                    <span th:if="${member.profilePhoto != null}" th:text="${member.profilePhoto.originalFilename}"></span>
+                    <span th:if="${member.profilePhoto == null}">없음</span>
+                </div>
+            </div>
+
+            <!-- 근로계약서 필드 추가 -->
+            <div class="mb-3">
+                <label for="laborContractFile" class="form-label">근로계약서</label>
+                <div class="input-group">
+                    <input type="file" class="form-control" id="laborContractFile" name="laborContractFile" accept=".pdf,image/*">
+                </div>
+                <div class="form-text">현재 파일: 
+                    <span th:if="${member.laborContract != null}" th:text="${member.laborContract.originalFilename}"></span>
+                    <span th:if="${member.laborContract == null}">없음</span>
+                </div>
+            </div>
+
+            <!-- 건설업기초안전보건교육이수증 필드 추가 -->
+            <div class="mb-3">
+                <label for="safetyEducationCertFile" class="form-label">건설업기초안전보건교육이수증</label>
+                <div class="input-group">
+                    <input type="file" class="form-control" id="safetyEducationCertFile" name="safetyEducationCertFile" accept=".pdf,image/*">
+                </div>
+                <div class="form-text">현재 파일: 
+                    <span th:if="${member.safetyEducationCert != null}" th:text="${member.safetyEducationCert.originalFilename}"></span>
+                    <span th:if="${member.safetyEducationCert == null}">없음</span>
+                </div>
+            </div>
+
+            <!-- 보호구착용서약서 필드 추가 -->
+            <div class="mb-3">
+                <label for="protectiveGearPledgeFile" class="form-label">보호구착용서약서</label>
+                <div class="input-group">
+                    <input type="file" class="form-control" id="protectiveGearPledgeFile" name="protectiveGearPledgeFile" accept=".pdf,image/*">
+                </div>
+                <div class="form-text">현재 파일: 
+                    <span th:if="${member.protectiveGearPledge != null}" th:text="${member.protectiveGearPledge.originalFilename}"></span>
+                    <span th:if="${member.protectiveGearPledge == null}">없음</span>
+                </div>
+            </div>
+
+            <!-- 기타문서1 필드 추가 -->
+            <div class="mb-3">
+                <label for="etcDoc1File" class="form-label">기타문서1</label>
+                <div class="input-group">
+                    <input type="file" class="form-control" id="etcDoc1File" name="etcDoc1File" accept=".pdf,image/*">
+                </div>
+                <div class="form-text">현재 파일: 
+                    <span th:if="${member.etcDoc1 != null}" th:text="${member.etcDoc1.originalFilename}"></span>
+                    <span th:if="${member.etcDoc1 == null}">없음</span>
+                </div>
+                <div class="mt-2">
+                    <label for="etcDoc1Description" class="form-label">기타문서1 설명</label>
+                    <input type="text" class="form-control" id="etcDoc1Description" th:field="*{etcDoc1Description}">
+                </div>
+            </div>
+
+            <!-- 기타문서2 필드 추가 -->
+            <div class="mb-3">
+                <label for="etcDoc2File" class="form-label">기타문서2</label>
+                <div class="input-group">
+                    <input type="file" class="form-control" id="etcDoc2File" name="etcDoc2File" accept=".pdf,image/*">
+                </div>
+                <div class="form-text">현재 파일: 
+                    <span th:if="${member.etcDoc2 != null}" th:text="${member.etcDoc2.originalFilename}"></span>
+                    <span th:if="${member.etcDoc2 == null}">없음</span>
+                </div>
+                <div class="mt-2">
+                    <label for="etcDoc2Description" class="form-label">기타문서2 설명</label>
+                    <input type="text" class="form-control" id="etcDoc2Description" th:field="*{etcDoc2Description}">
+                </div>
+            </div>
+
+            <!-- 기타문서3 필드 추가 -->
+            <div class="mb-3">
+                <label for="etcDoc3File" class="form-label">기타문서3</label>
+                <div class="input-group">
+                    <input type="file" class="form-control" id="etcDoc3File" name="etcDoc3File" accept=".pdf,image/*">
+                </div>
+                <div class="form-text">현재 파일: 
+                    <span th:if="${member.etcDoc3 != null}" th:text="${member.etcDoc3.originalFilename}"></span>
+                    <span th:if="${member.etcDoc3 == null}">없음</span>
+                </div>
+                <div class="mt-2">
+                    <label for="etcDoc3Description" class="form-label">기타문서3 설명</label>
+                    <input type="text" class="form-control" id="etcDoc3Description" th:field="*{etcDoc3Description}">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">새 비밀번호 (변경시에만 입력)</label>
+                <input type="password" class="form-control" id="password" name="password">
+            </div>
+
+            <button type="submit" class="btn btn-primary">수정</button>
+            <a th:href="@{/member/general/detail/{id}(id=${member.id})}" class="btn btn-secondary">취소</a>
+        </form>
+    </div>
+</body>
+</html> 

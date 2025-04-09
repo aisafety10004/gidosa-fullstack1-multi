@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{${layout}}">
+<head>
+    <!-- <title>회원 상세 정보</title> -->
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- <h2 class="mb-4">회원 상세 정보</h2> -->
+
+        <!-- 메시지 표시 -->
+        <div th:if="${message}" class="alert alert-success" role="alert">
+            <span th:text="${message}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>번호:</strong></div>
+                    <div class="col-md-9" th:text="${member.id}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>아이디(사용자명):</strong></div>
+                    <div class="col-md-9" th:text="${member.username}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>이름:</strong></div>
+                    <div class="col-md-9" th:text="${member.name}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>이메일:</strong></div>
+                    <div class="col-md-9" th:text="${member.email}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>휴대폰번호:</strong></div>
+                    <div class="col-md-9" th:text="${member.phone}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>직책:</strong></div>
+                    <div class="col-md-9" th:text="${member.position != null ? member.position : '-'}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>직종:</strong></div>
+                    <div class="col-md-9" th:text="${member.jobType != null ? member.jobType : '-'}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>비상연락번호:</strong></div>
+                    <div class="col-md-9" th:text="${member.emergencyContact != null ? member.emergencyContact : '-'}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>프로필 사진:</strong></div>
+                    <div class="col-md-9">
+                        <div th:if="${member.profilePhoto != null}">
+                            <a th:href="@{/common/file/download/{id}(id=${member.profilePhoto.id})}" target="_blank">
+                                <img th:src="@{/common/file/download/{id}(id=${member.profilePhoto.id})}" 
+                                    style="max-width: 100px; max-height: 100px;" class="img-thumbnail">
+                                <span th:text="${member.profilePhoto.originalFilename}"></span>
+                            </a>
+                        </div>
+                        <span th:if="${member.profilePhoto == null}">-</span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>근로계약서:</strong></div>
+                    <div class="col-md-9">
+                        <div th:if="${member.laborContract != null}">
+                            <a th:href="@{/common/file/download/{id}(id=${member.laborContract.id})}" target="_blank">
+                                <i class="fas fa-file-pdf"></i>
+                                <span th:text="${member.laborContract.originalFilename}"></span>
+                            </a>
+                        </div>
+                        <span th:if="${member.laborContract == null}">-</span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>건설업기초안전보건교육이수증:</strong></div>
+                    <div class="col-md-9">
+                        <div th:if="${member.safetyEducationCert != null}">
+                            <a th:href="@{/common/file/download/{id}(id=${member.safetyEducationCert.id})}" target="_blank">
+                                <i class="fas fa-file-pdf"></i>
+                                <span th:text="${member.safetyEducationCert.originalFilename}"></span>
+                            </a>
+                        </div>
+                        <span th:if="${member.safetyEducationCert == null}">-</span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>보호구착용서약서:</strong></div>
+                    <div class="col-md-9">
+                        <div th:if="${member.protectiveGearPledge != null}">
+                            <a th:href="@{/common/file/download/{id}(id=${member.protectiveGearPledge.id})}" target="_blank">
+                                <i class="fas fa-file-pdf"></i>
+                                <span th:text="${member.protectiveGearPledge.originalFilename}"></span>
+                            </a>
+                        </div>
+                        <span th:if="${member.protectiveGearPledge == null}">-</span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>기타입력1:</strong></div>
+                    <div class="col-md-9">
+                        <div th:if="${member.etcDoc1 != null}">
+                            <a th:href="@{/common/file/download/{id}(id=${member.etcDoc1.id})}" target="_blank">
+                                <i class="fas fa-file"></i>
+                                <span th:text="${member.etcDoc1.originalFilename}"></span>
+                            </a>
+                            <p th:if="${member.etcDoc1Description != null}" th:text="${member.etcDoc1Description}"></p>
+                        </div>
+                        <span th:if="${member.etcDoc1 == null && member.etcDoc1Description != null}" th:text="${member.etcDoc1Description}"></span>
+                        <span th:if="${member.etcDoc1 == null && member.etcDoc1Description == null}">-</span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>기타입력2:</strong></div>
+                    <div class="col-md-9">
+                        <div th:if="${member.etcDoc2 != null}">
+                            <a th:href="@{/common/file/download/{id}(id=${member.etcDoc2.id})}" target="_blank">
+                                <i class="fas fa-file"></i>
+                                <span th:text="${member.etcDoc2.originalFilename}"></span>
+                            </a>
+                            <p th:if="${member.etcDoc2Description != null}" th:text="${member.etcDoc2Description}"></p>
+                        </div>
+                        <span th:if="${member.etcDoc2 == null && member.etcDoc2Description != null}" th:text="${member.etcDoc2Description}"></span>
+                        <span th:if="${member.etcDoc2 == null && member.etcDoc2Description == null}">-</span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>기타입력3:</strong></div>
+                    <div class="col-md-9">
+                        <div th:if="${member.etcDoc3 != null}">
+                            <a th:href="@{/common/file/download/{id}(id=${member.etcDoc3.id})}" target="_blank">
+                                <i class="fas fa-file"></i>
+                                <span th:text="${member.etcDoc3.originalFilename}"></span>
+                            </a>
+                            <p th:if="${member.etcDoc3Description != null}" th:text="${member.etcDoc3Description}"></p>
+                        </div>
+                        <span th:if="${member.etcDoc3 == null && member.etcDoc3Description != null}" th:text="${member.etcDoc3Description}"></span>
+                        <span th:if="${member.etcDoc3 == null && member.etcDoc3Description == null}">-</span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>가입일:</strong></div>
+                    <div class="col-md-9" th:text="${#temporals.format(member.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>수정일:</strong></div>
+                    <div class="col-md-9" th:text="${#temporals.format(member.updatedAt, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a th:href="@{/member/general/list}" class="btn btn-secondary">목록으로</a>
+            <a th:href="@{/member/general/update/{id}(id=${member.id})}" class="btn btn-warning">수정</a>
+            <form th:action="@{/member/general/delete/{id}(id=${member.id})}" 
+                  method="post" style="display: inline;">
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 
