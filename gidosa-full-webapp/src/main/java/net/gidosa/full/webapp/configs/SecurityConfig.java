@@ -72,6 +72,7 @@ public class SecurityConfig {
                 // 모든 메소드에 허용(GET, POST 등)
                 //.requestMatchers("/*", "/general/auth/**", "/general/member/**", "/general/document/**", "/css/**", "/js/**", "/assets/**", "/error/**", "/contact/**", "/construction/**", "/general/construction/*").permitAll()
                 .requestMatchers("/*",
+                    "/htmls/common1.html",
                     "/general/document/**", "/css/**", "/js/**", "/assets/**", "/error/**",
                     "/contact/**", "/construction/**",
                     "/general/construction/*",
