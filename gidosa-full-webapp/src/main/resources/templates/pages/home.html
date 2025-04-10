@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/default}">
+      layout:decorate="~{layouts/default}"
+      th:with="pageTitle='바로세움 홈', pagePath='/home'"
+>
 <head>
-    <title>홈 - 위험안전 관리</title>
+    <title>홈 - 바로세움 관리</title>
 </head>
 <body>
     <div layout:fragment="content" class="bg-white">

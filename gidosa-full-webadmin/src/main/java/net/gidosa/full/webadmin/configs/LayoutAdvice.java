@@ -18,11 +18,11 @@ public class LayoutAdvice {
             if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"))) {
                 return "layouts/manager";
             }
-//            if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-//                return "layouts/admin";
-//            }
+            if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                return "layouts/admin";
+            }
         }
-        return "layouts/admin";
-//        return "layouts/etc1";
+//        return "layouts/admin";
+        return "layouts/etc1";
     }
 } 

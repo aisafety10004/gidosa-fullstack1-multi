@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/error1.html}"
+      th:with="pageTitle='404 error', pagePath='/error/404'"
 >
-<!--layout:decorate="~{${layout}}"-->
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- <title>페이지를 찾을 수 없습니다 - 관리자</title> -->
-    <title>바로세움 관리자</title>
-    <link th:href="@{/css/sb-admin-2.css}" rel="stylesheet">
+    <title>바로세움 - 404</title>
 </head>
-<!--<iframe src="/htmls/common1.html" height="0" width="0" style="overflow-y:hidden" frameborder='0' scrolling="no"></iframe>-->
 <body class="bg-gradient-primary">
-    <div class="container">
+    <div class="container" layout:fragment="content">
         <div class="row justify-content-center">
             <div class="col-xl-10 col-lg-12 col-md-9">
                 <div class="card o-hidden border-0 shadow-lg my-5">

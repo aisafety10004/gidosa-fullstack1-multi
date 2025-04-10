@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <!-- Google tag (gtag.js) 및 application.yml 또는 config로 환경 설정 -->
+    <script async th:if="${@environment.acceptsProfiles('prod')}" th:src="'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX'"></script>
+    <script th:if="${@environment.acceptsProfiles('prod')}" th:inline="javascript">
+        // // GA 코드 삽입
+        // window.dataLayer = window.dataLayer || [];
+        // function gtag(){dataLayer.push(arguments);}
+        // gtag('js', new Date());
+
+        // // GA(prod) 코드 삽입
+        // gtag('config', 'G-XXXXXXX');
+    </script>
+    <!--    <script th:if="(${@environment.acceptsProfiles('dev')} or ${@environment.acceptsProfiles('prod')})" th:inline="javascript">-->
+    <script th:if="(${@environment.acceptsProfiles('prod')})" th:inline="javascript">
+        // //var pageTitle = [[${pageTitle} ?: '타이틀 없음']];
+        // //var pagePath = [[${pagePath} ?: 'Path 없음']];
+        // gtag('event', 'page_view', {
+        //   //page_title: 'My Page',
+        //   //page_path: '/mypage'
+        //   //page_title: [[${pageTitle}]],
+        //   //page_path: [[${pagePath}]]
+        //   page_title: pageTitle,
+        //   page_path: pagePath
+        // });
+    </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -16,11 +16,11 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/bootstrap-icons/bootstrap-icons.min.css}">
     <!-- Toast UI Editor CSS -->
-    <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor.min.css}" />
-    <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor-dark.min.css}" />
+<!--    <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor.min.css}" />-->
+<!--    <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor-dark.min.css}" />-->
 
     <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-    <script src="/vendor/jquery/jquery.min.js"></script>
+<!--    <script src="/vendor/jquery/jquery.min.js"></script>-->
     <!-- Toast UI Editor JS -->
     <script th:src="@{/js/toastui/toastui-editor-all.min.js}"></script>
     <script src="/js/tailwind/tailwindcss.js"></script>
@@ -35,12 +35,34 @@
           }
         }
     </script>
+    <!-- Google tag (gtag.js) 및 application.yml 또는 config로 환경 설정 -->
+    <script async th:if="${@environment.acceptsProfiles('prod')}" th:src="'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX'"></script>
+    <script th:if="${@environment.acceptsProfiles('prod')}" th:inline="javascript">
+        // // GA 코드 삽입
+        // window.dataLayer = window.dataLayer || [];
+        // function gtag(){dataLayer.push(arguments);}
+        // gtag('js', new Date());
+
+        // // GA(prod) 코드 삽입
+        // gtag('config', 'G-XXXXXXX');
+
+        // //var pageTitle = [[${pageTitle} ?: '타이틀 없음']];
+        // //var pagePath = [[${pagePath} ?: 'Path 없음']];
+        // gtag('event', 'page_view', {
+        //   //page_title: 'My Page',
+        //   //page_path: '/mypage'
+        //   //page_title: [[${pageTitle}]],
+        //   //page_path: [[${pagePath}]]
+        //   page_title: pageTitle,
+        //   page_path: pagePath
+        // });
+    </script>
 </head>
 <!--<iframe src="/htmls/common1.html" height="0" width="0" style="overflow-y:hidden" frameborder='0' scrolling="no"></iframe>-->
 <body class="">
-<div class="container-fluid" layout:fragment="content" />
+<div layout:fragment="content" />
 <!-- Bootstrap core JS-->
-<script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>
+<!--<script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>-->
 <!--<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>-->
 <!-- Core theme JS-->
 <script src="/js/scripts.js"></script>

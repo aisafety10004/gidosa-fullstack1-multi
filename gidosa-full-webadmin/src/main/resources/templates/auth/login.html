@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{${layout}}"
+      th:with="pageTitle='바로세움 관리자 로그인', pagePath='/auth/login'"
 >
-<!--layout:decorate="~{${layout}}"-->
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,9 +17,8 @@
 <!--    <link th:href="@{../css/sb-admin-2.css}" rel="stylesheet">-->
     <link th:href="@{/css/sb-admin-2.css}" rel="stylesheet">
 </head>
-<!--<iframe src="/htmls/common1.html" height="0" width="0" style="overflow-y:hidden" frameborder='0' scrolling="no"></iframe>-->
 <body class="bg-gradient-primary">
-<div class="container">
+<div class="container" layout:fragment="content">
     <!-- Outer Row -->
     <div class="row justify-content-center">
         <div class="col-xl-10 col-lg-12 col-md-9">

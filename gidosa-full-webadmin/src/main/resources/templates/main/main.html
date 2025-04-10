@@ -2,8 +2,9 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{${layout}}">
-
+      layout:decorate="~{${layout}}"
+      th:with="pageTitle='admin 메인 페이지', pagePath='/main/main'"
+>
 <div layout:fragment="content">
     <!-- 메시지 표시 -->
 <!--    <div th:if="${message}" class="alert alert-success" role="alert">-->
@@ -36,7 +37,7 @@
                         <div sec:authorize="isAuthenticated()">
                             <div th:with="construction=${#authentication.principal.memberAdmin.construction}">
                                 <div th:if="${construction != null}">
-                                    <p><strong>건설공사현장 ID:</strong> 
+                                    <p><strong>공사현장 ID:</strong>
                                         <span th:text="${construction.id}">-</span>
                                     </p>
                                     <p><strong>현장주소:</strong> 

@@ -1,22 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/error1}"
+      th:with="pageTitle='404 page - 바로세움 홈', pagePath='/error/404'"
 >
-<!--layout:decorate="~{layouts/default}"-->
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title layout:title-pattern="$CONTENT_TITLE - 지도사">지도사 페이지 오류</title>
-
-    <!-- Common CSS -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <!--    <link rel="stylesheet" th:href="@{/css/tailwind.css}">-->
-    <!-- Page specific CSS -->
-    <th:block layout:fragment="css"></th:block>
-
-    <script src="/js/tailwindcss.js"></script>
+    <title>바로세움 404 요청 오류</title>
 </head>
-<!--<iframe src="/htmls/common1.html" height="0" width="0" style="overflow-y:hidden" frameborder='0' scrolling="no"></iframe>-->
 <body>
 <div layout:fragment="content" class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="text-center">
