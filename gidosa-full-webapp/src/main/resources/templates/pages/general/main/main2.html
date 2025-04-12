@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/general}">
 <head>
-    <title sec:authorize="isAuthenticated()" th:text="${'현장공사 - 안전지도사'}"></title>
+    <title sec:authorize="isAuthenticated()" th:text="${'현장공사 - 바로세움'}"></title>
 </head>
 <body>
 <div layout:fragment="content" class="bg-white" th:with="construction=${#authentication.principal.memberGeneral.construction}">
