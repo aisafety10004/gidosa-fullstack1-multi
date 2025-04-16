@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{${layout}}">
+<head>
+    <!-- <title>HTML 페이지 관리</title> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- 페이지 제목 -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-3">
+            <h1 class="h3 mb-0 text-gray-800">HTML 페이지 관리</h1>
+        </div>
+
+        <!-- 알림 메시지 -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <!-- 검색 및 필터 -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">검색 및 필터</h6>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/settings/html-manager}" method="get" id="searchForm">
+                    <div class="form-row align-items-center">
+                        <div class="col-md-3 mb-2">
+                            <label for="searchTitle">제목</label>
+                            <input type="text" class="form-control" id="searchTitle" name="searchTitle" th:value="${searchTitle}" placeholder="제목 검색">
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label for="startDate">시작일</label>
+                            <input type="text" class="form-control datepicker" id="startDate" name="startDate" th:value="${startDate}" placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label for="endDate">종료일</label>
+                            <input type="text" class="form-control datepicker" id="endDate" name="endDate" th:value="${endDate}" placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label for="published">게시 상태</label>
+                            <select class="form-control" id="published" name="published">
+                                <option value="">모두</option>
+                                <option value="true" th:selected="${published != null && published == true}">게시</option>
+                                <option value="false" th:selected="${published != null && published == false}">미게시</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary mr-2">검색</button>
+                            <button type="button" id="resetBtn" class="btn btn-secondary">초기화</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 정렬을 위한 히든 필드 -->
+                    <input type="hidden" name="sort" id="sort" th:value="${currentSort}">
+                    <input type="hidden" name="direction" id="direction" th:value="${currentDirection}">
+                    <input type="hidden" name="page" id="page" value="0">
+                </form>
+            </div>
+        </div>
+
+        <!-- HTML 페이지 목록 테이블 -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">HTML 페이지 목록</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <a th:href="@{/settings/html-manager/create}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                        <i class="fas fa-plus fa-sm text-white-50"></i> 새 HTML 페이지 만들기
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th class="text-center" style="width: 5%">번호</th>
+                            <th class="text-center" style="width: 30%">
+                                <a href="#" class="sort-link" data-sort="title">제목</a>
+                                <span th:if="${currentSort == 'title'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
+                            </th>
+                            <th class="text-center" style="width: 10%">HTML 파일</th>
+                            <th class="text-center" style="width: 10%">
+                                <a href="#" class="sort-link" data-sort="published">게시 상태</a>
+                                <span th:if="${currentSort == 'published'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
+                            </th>
+                            <th class="text-center" style="width: 15%">
+                                <a href="#" class="sort-link" data-sort="createdAt">등록일</a>
+                                <span th:if="${currentSort == 'createdAt'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
+                            </th>
+                            <th class="text-center" style="width: 15%">
+                                <a href="#" class="sort-link" data-sort="updatedAt">수정일</a>
+                                <span th:if="${currentSort == 'updatedAt'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
+                            </th>
+                            <th class="text-center" style="width: 15%">관리</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${htmlPages.empty}">
+                            <td colspan="7" class="text-center">등록된 HTML 페이지가 없습니다.</td>
+                        </tr>
+                        <tr th:each="htmlPage, iterStat : ${htmlPages}">
+                            <td class="text-center align-middle" th:text="${htmlPages.totalElements - (htmlPages.number * htmlPages.size) - iterStat.index}"></td>
+                            <td class="align-middle">
+                                <a th:href="@{/settings/html-manager/detail/{id}(id=${htmlPage.id})}" th:text="${htmlPage.title}" class="text-primary"></a>
+                            </td>
+                            <td class="text-center align-middle">
+                                <span th:if="${htmlPage.htmlFile != null}">
+                                        <!-- <a th:href="@{/settings/html-manager/html-file/{id}(id=${htmlPage.htmlFile.id})}" th:text="${htmlPage.htmlFile.originalFilename}"></a> -->
+                                        <span class="fas fa-file-code text-info" th:text="${htmlPage.htmlFile.originalFilename}"></span>
+                                </span>
+                                <span th:unless="${htmlPage.htmlFile != null}">-</span>
+                            </td>
+                            <td class="text-center align-middle">
+                                <span th:if="${htmlPage.published}" class="">게시</span>
+                                <span th:unless="${htmlPage.published}" class="">미게시</span>
+                            </td>
+                            <td class="text-center align-middle" th:text="${#temporals.format(htmlPage.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td class="text-center align-middle" th:text="${#temporals.format(htmlPage.updatedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td class="text-center align-middle">
+                                <a th:href="@{/settings/html-manager/update/{id}(id=${htmlPage.id})}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-edit"></i> 수정
+                                </a>
+                                <button type="button" th:data-id="${htmlPage.id}" class="btn btn-sm btn-danger delete-btn">
+                                    <i class="fas fa-trash"></i> 삭제
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- 페이징 -->
+                <div th:if="${!htmlPages.empty}" class="d-flex justify-content-center">
+                    <nav>
+                        <ul class="pagination">
+                            <li th:class="${htmlPages.first ? 'page-item disabled' : 'page-item'}">
+                                <a class="page-link" th:href="@{/settings/html-manager(page=0, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, published=${published}, sort=${currentSort}, direction=${currentDirection})}" aria-label="처음">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li th:class="${htmlPages.first ? 'page-item disabled' : 'page-item'}">
+                                <a class="page-link" th:href="@{/settings/html-manager(page=${htmlPages.number - 1}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, published=${published}, sort=${currentSort}, direction=${currentDirection})}" aria-label="이전">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li th:each="i : ${#numbers.sequence(0, htmlPages.totalPages - 1)}"
+                                th:if="${i >= htmlPages.number - 2 and i <= htmlPages.number + 2}"
+                                th:class="${i == htmlPages.number ? 'page-item active' : 'page-item'}">
+                                <a class="page-link" th:href="@{/settings/html-manager(page=${i}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, published=${published}, sort=${currentSort}, direction=${currentDirection})}" th:text="${i + 1}"></a>
+                            </li>
+                            <li th:class="${htmlPages.last ? 'page-item disabled' : 'page-item'}">
+                                <a class="page-link" th:href="@{/settings/html-manager(page=${htmlPages.number + 1}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, published=${published}, sort=${currentSort}, direction=${currentDirection})}" aria-label="다음">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li th:class="${htmlPages.last ? 'page-item disabled' : 'page-item'}">
+                                <a class="page-link" th:href="@{/settings/html-manager(page=${htmlPages.totalPages - 1}, searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, published=${published}, sort=${currentSort}, direction=${currentDirection})}" aria-label="마지막">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- 삭제 확인 모달 -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">HTML 페이지 삭제</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        정말 이 HTML 페이지를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                        <form id="deleteForm" method="post" th:action="@{/settings/html-manager/delete/0}">
+                            <button type="submit" class="btn btn-danger">삭제</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // 날짜 선택기 초기화
+                flatpickr(".datepicker", {
+                    locale: "ko",
+                    dateFormat: "Y-m-d",
+                    allowInput: true
+                });
+                
+                // 검색 폼 초기화 버튼
+                document.getElementById('resetBtn').addEventListener('click', function() {
+                    document.getElementById('searchTitle').value = '';
+                    document.getElementById('startDate').value = '';
+                    document.getElementById('endDate').value = '';
+                    document.getElementById('published').value = '';
+                    document.getElementById('sort').value = '';
+                    document.getElementById('direction').value = '';
+                    document.getElementById('searchForm').submit();
+                });
+                
+                // 정렬 링크
+                document.querySelectorAll('.sort-link').forEach(function(link) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        var sortField = this.getAttribute('data-sort');
+                        var currentSort = document.getElementById('sort').value;
+                        var currentDirection = document.getElementById('direction').value;
+                        
+                        var newDirection = 'asc';
+                        if (sortField === currentSort) {
+                            newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+                        }
+                        
+                        document.getElementById('sort').value = sortField;
+                        document.getElementById('direction').value = newDirection;
+                        document.getElementById('searchForm').submit();
+                    });
+                });
+                
+                // 삭제 버튼 이벤트
+                document.querySelectorAll('.delete-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var id = this.getAttribute('data-id');
+                        var deleteForm = document.getElementById('deleteForm');
+                        // Thymeleaf가 렌더링한 기본 URL에서 마지막 ID 부분만 변경
+                        var actionUrl = deleteForm.action;
+                        deleteForm.action = actionUrl.substring(0, actionUrl.lastIndexOf('/') + 1) + id;
+                        $('#deleteModal').modal('show');
+                    });
+                });
+                
+                // 모달 닫기 버튼과 취소 버튼 이벤트 추가
+                document.querySelector('.modal .close').addEventListener('click', function() {
+                    $('#deleteModal').modal('hide');
+                });
+                
+                document.querySelector('.modal .btn-secondary').addEventListener('click', function() {
+                    $('#deleteModal').modal('hide');
+                });
+                
+                // 알림 메시지 닫기 버튼 이벤트 추가
+                document.querySelectorAll('.alert .close').forEach(function(closeBtn) {
+                    closeBtn.addEventListener('click', function() {
+                        var alert = this.closest('.alert');
+                        alert.classList.remove('show');
+                        setTimeout(function() {
+                            alert.style.display = 'none';
+                        }, 150);
+                    });
+                });
+            });
+        </script>
+    </div>
+</body>
+</html> 
