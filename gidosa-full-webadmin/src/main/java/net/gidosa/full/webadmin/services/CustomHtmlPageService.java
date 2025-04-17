@@ -2,6 +2,7 @@ package net.gidosa.full.webadmin.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.gidosa.common.constants.CommonConsts;
 import net.gidosa.full.webadmin.models.dtos.CustomHtmlPageDTO;
 import net.gidosa.rdb.models.entities.dbs.mysql.CustomHtmlPage;
 import net.gidosa.rdb.models.entities.dbs.mysql.FileAttachment;
@@ -221,7 +222,7 @@ public class CustomHtmlPageService {
 
             // 저장할 파일명 생성
             String storedFilename = generateStoredFilename(originalFilename);
-            String filePath = uploadPath + File.separator + storedFilename;
+            String filePath = uploadPath + File.separator + CommonConsts.CUSTOM_HTML_FOLOER + File.separator + storedFilename;
 
             // 파일 저장
             File dest = new File(filePath);

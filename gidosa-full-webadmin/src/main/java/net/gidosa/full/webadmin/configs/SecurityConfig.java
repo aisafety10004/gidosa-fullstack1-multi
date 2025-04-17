@@ -60,7 +60,7 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/member/admin/**", "/construction/**", "/request/construction/**").hasRole("ADMIN")
                 .requestMatchers("/member/general/**", "/safety/risk-factor/**", "/process/work-discussion/**", "/work-record/**").hasRole("MANAGER")
-                .requestMatchers("/main/**", "/settings/**", "/custom/**").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers("/main/**", "/settings/**", "/custom/**", "/file-viewer/html-view/*").hasAnyRole("ADMIN", "MANAGER")
                 .anyRequest().authenticated()
 //                .anyRequest().permitAll()
             )

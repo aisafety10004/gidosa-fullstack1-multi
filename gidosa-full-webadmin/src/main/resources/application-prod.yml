@@ -95,3 +95,8 @@ jwt:
 file:
   upload:
     path: /path/to/upload/directory
+
+custom:
+  site-webapp:
+    url:
+    version: 1.0.0

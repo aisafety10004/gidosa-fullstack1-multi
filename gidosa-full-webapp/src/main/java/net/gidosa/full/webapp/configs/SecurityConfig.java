@@ -79,7 +79,8 @@ public class SecurityConfig {
                     "/general/construction2/*",
                     "/general/notice/**",
 //                        "/general/member/async-find-pw",
-                    "/general/member/check-username"
+                    "/general/member/check-username",
+                    "/custom-viewer/htmls/*"
                 ).permitAll()
                 .requestMatchers(HttpMethod.POST,"/general/member/async-find-pw").permitAll()
                 .requestMatchers("/general/auth/login", "/general/member/register/**", "/general/member/find-*").hasRole("ANONYMOUS")

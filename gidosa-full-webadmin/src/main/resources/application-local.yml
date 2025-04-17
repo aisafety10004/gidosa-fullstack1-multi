@@ -139,3 +139,8 @@ file:
     path: C:\\uploads\\baroceum
 #     path: C:\\uploads
 #    path: /Users/pktjesus/uploads/gidosa
+
+custom:
+  site-webapp:
+    url: http://localhost:9097
+    version: 1.0.0

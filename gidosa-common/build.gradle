@@ -21,6 +21,9 @@ dependencies {
 //    implementation 'com.fasterxml.jackson.core:jackson-core'
     implementation "com.fasterxml.jackson.core:jackson-databind"
 
+    // Jsoup Java HTML Parser
+    implementation 'org.jsoup:jsoup:1.19.1'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // testFixture

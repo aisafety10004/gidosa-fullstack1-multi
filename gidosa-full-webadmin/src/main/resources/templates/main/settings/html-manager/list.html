@@ -93,8 +93,8 @@
                                 <a href="#" class="sort-link" data-sort="title">제목</a>
                                 <span th:if="${currentSort == 'title'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
                             </th>
-                            <th class="text-center" style="width: 10%">HTML 파일</th>
-                            <th class="text-center" style="width: 10%">
+                            <th class="text-center" style="width: 12%">HTML 파일</th>
+                            <th class="text-center" style="width: 8%">
                                 <a href="#" class="sort-link" data-sort="published">게시 상태</a>
                                 <span th:if="${currentSort == 'published'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
                             </th>
@@ -120,8 +120,11 @@
                             </td>
                             <td class="text-center align-middle">
                                 <span th:if="${htmlPage.htmlFile != null}">
-                                        <!-- <a th:href="@{/settings/html-manager/html-file/{id}(id=${htmlPage.htmlFile.id})}" th:text="${htmlPage.htmlFile.originalFilename}"></a> -->
-                                        <span class="fas fa-file-code text-info" th:text="${htmlPage.htmlFile.originalFilename}"></span>
+                                    <!-- <a th:href="@{/settings/html-manager/html-file/{id}(id=${htmlPage.htmlFile.id})}" th:text="${htmlPage.htmlFile.originalFilename}"></a> -->
+                                    <span class="fas fa-file-code text-info" th:text="${htmlPage.htmlFile.originalFilename}"></span>
+<!--                                    <br>-->
+<!--                                    <a th:href="${@environment.getProperty('custom.site-webapp.url')} + '/custom-viewer/htmls/' + ${htmlPage.htmlFile.id}" target="_blank">(새 창으로 미리보기)</a>-->
+<!--                                    <a th:href="${@environment.getProperty('custom.site-webapp.url')} + '/custom-viewer/htmls/' + ${htmlPage.htmlFile.storedFilename}" target="_blank">(새 창으로 미리보기)</a>-->
                                 </span>
                                 <span th:unless="${htmlPage.htmlFile != null}">-</span>
                             </td>

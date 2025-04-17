@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 HTML 보기</title>
+    <!-- 스크립트 실행 제한 -->
+<!--    <meta http-equiv="Content-Security-Policy" content="script-src 'none';">-->
+    <!-- (선택) 외부 링크 허용을 위한 CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;">
+</head>
+<body>
+<!-- 사용자 HTML 삽입 위치 -->
+<div th:utext="${htmlContent}"></div>
+</body>
+</html>
