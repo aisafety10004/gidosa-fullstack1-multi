@@ -215,14 +215,14 @@ public class CustomHtmlPageService {
             }
 
             // 업로드 디렉토리 생성
-            File uploadDir = new File(uploadPath);
+            File uploadDir = new File(uploadPath + File.separator + CommonConsts.CUSTOM_HTML_FOLOER);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
 
             // 저장할 파일명 생성
             String storedFilename = generateStoredFilename(originalFilename);
-            String filePath = uploadPath + File.separator + CommonConsts.CUSTOM_HTML_FOLOER + File.separator + storedFilename;
+            String filePath = uploadPath + File.separator + storedFilename;
 
             // 파일 저장
             File dest = new File(filePath);
