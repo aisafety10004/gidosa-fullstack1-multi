@@ -124,7 +124,7 @@
                                     <span class="fas fa-file-code text-info" th:text="${htmlPage.htmlFile.originalFilename}"></span>
 <!--                                    <br>-->
 <!--                                    <a th:href="${@environment.getProperty('custom.site-webapp.url')} + '/custom-viewer/htmls/' + ${htmlPage.htmlFile.id}" target="_blank">(새 창으로 미리보기)</a>-->
-<!--                                    <a th:href="${@environment.getProperty('custom.site-webapp.url')} + '/custom-viewer/htmls/' + ${htmlPage.htmlFile.storedFilename}" target="_blank">(새 창으로 미리보기)</a>-->
+                                   <a th:href="${@environment.getProperty('custom.site-webapp.url')} + '/custom-viewer/htmls/' + ${htmlPage.htmlFile.storedFilename}" target="_blank">(새 창으로 미리보기)</a>
                                 </span>
                                 <span th:unless="${htmlPage.htmlFile != null}">-</span>
                             </td>
