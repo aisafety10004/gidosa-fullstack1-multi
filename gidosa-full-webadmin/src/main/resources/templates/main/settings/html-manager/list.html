@@ -132,9 +132,9 @@
                             <td class="text-center align-middle" th:text="${#temporals.format(htmlPage.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                             <td class="text-center align-middle" th:text="${#temporals.format(htmlPage.updatedAt, 'yyyy-MM-dd HH:mm')}"></td>
                             <td class="text-center align-middle">
-                                <a th:href="@{/settings/html-manager/update/{id}(id=${htmlPage.id})}" class="btn btn-sm btn-info">
+                                <!-- <a th:href="@{/settings/html-manager/update/{id}(id=${htmlPage.id})}" class="btn btn-sm btn-info">
                                     <i class="fas fa-edit"></i> 수정
-                                </a>
+                                </a> -->
                                 <button type="button" th:data-id="${htmlPage.id}" class="btn btn-sm btn-danger delete-btn">
                                     <i class="fas fa-trash"></i> 삭제
                                 </button>
