@@ -25,5 +25,11 @@ public class CustomHtmlPageDTO {
     
     private boolean published;
     
+    // 소속 공사 ID
+    private Long constructionId;
+    
+    // 소속 공사 이름 (표시용)
+    private String constructionName;
+    
     // HTML 파일 관련 필드는 MultipartFile로 컨트롤러에서 별도 처리
 } 

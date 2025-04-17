@@ -46,6 +46,11 @@ public class CustomHtmlPage {
     @LastModifiedDate
     @Comment("수정 일시")
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "construction_id")
+    @Comment("소속 공사 정보")
+    private Construction construction; // 소속 공사 정보
     
     @PrePersist
     protected void onCreate() {

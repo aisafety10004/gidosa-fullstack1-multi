@@ -33,14 +33,14 @@ public class CustomHtmlPageService {
     @Value("${file.upload.path}")
     private String uploadPath;
 
-    // 모든 HTML 페이지 조회
+    // 모든 HTML 페이지 조회 (Construction 정보 함께 가져오기)
     public Page<CustomHtmlPage> getAllHtmlPages(Pageable pageable) {
-        return customHtmlPageRepository.findAll(pageable);
+        return customHtmlPageRepository.findAllWithConstructionPage(pageable);
     }
 
-    // ID로 HTML 페이지 조회
+    // ID로 HTML 페이지 조회 (HTML 파일과 Construction 정보 함께 가져오기)
     public Optional<CustomHtmlPage> getHtmlPageById(Long id) {
-        return customHtmlPageRepository.findByIdWithHtmlFile(id);
+        return customHtmlPageRepository.findByIdWithHtmlFileAndConstruction(id);
     }
 
     // DTO를 이용한 HTML 페이지 생성
@@ -51,6 +51,18 @@ public class CustomHtmlPageService {
         htmlPage.setTitle(htmlPageDTO.getTitle());
         htmlPage.setContent(htmlPageDTO.getContent());
         htmlPage.setPublished(htmlPageDTO.isPublished());
+        
+        // construction 설정
+        if (htmlPageDTO.getConstructionId() != null) {
+            // Construction 정보를 가져와서 설정
+            net.gidosa.rdb.models.entities.dbs.mysql.Construction construction = 
+                new net.gidosa.rdb.models.entities.dbs.mysql.Construction();
+            construction.setId(htmlPageDTO.getConstructionId());
+            htmlPage.setConstruction(construction);
+        } else {
+            // construction이 null이면 전체 공통 HTML 페이지
+            htmlPage.setConstruction(null);
+        }
         
         // HTML 파일 처리
         if (htmlFile != null && !htmlFile.isEmpty()) {
@@ -65,14 +77,26 @@ public class CustomHtmlPageService {
     // DTO를 이용한 HTML 페이지 수정
     @Transactional
     public CustomHtmlPage updateHtmlPageFromDTO(Long id, CustomHtmlPageDTO htmlPageDTO, MultipartFile htmlFile) {
-        // 기존 엔티티 조회
-        CustomHtmlPage htmlPage = customHtmlPageRepository.findByIdWithHtmlFile(id)
+        // 기존 엔티티 조회 (HTML 파일과 Construction 정보 함께 가져오기)
+        CustomHtmlPage htmlPage = customHtmlPageRepository.findByIdWithHtmlFileAndConstruction(id)
                 .orElseThrow(() -> new RuntimeException("HTML 페이지를 찾을 수 없습니다."));
 
         // DTO 데이터로 엔티티 업데이트
         htmlPage.setTitle(htmlPageDTO.getTitle());
         htmlPage.setContent(htmlPageDTO.getContent());
         htmlPage.setPublished(htmlPageDTO.isPublished());
+        
+        // construction 설정
+        if (htmlPageDTO.getConstructionId() != null) {
+            // Construction 정보를 가져와서 설정
+            net.gidosa.rdb.models.entities.dbs.mysql.Construction construction = 
+                new net.gidosa.rdb.models.entities.dbs.mysql.Construction();
+            construction.setId(htmlPageDTO.getConstructionId());
+            htmlPage.setConstruction(construction);
+        } else {
+            // construction이 null이면 전체 공통 HTML 페이지
+            htmlPage.setConstruction(null);
+        }
 
         // HTML 파일 처리
         if (htmlFile != null && !htmlFile.isEmpty()) {
@@ -105,7 +129,7 @@ public class CustomHtmlPageService {
     // HTML 페이지 수정
     @Transactional
     public CustomHtmlPage updateHtmlPage(Long id, CustomHtmlPage updatedHtmlPage, MultipartFile htmlFile) {
-        CustomHtmlPage htmlPage = customHtmlPageRepository.findByIdWithHtmlFile(id)
+        CustomHtmlPage htmlPage = customHtmlPageRepository.findByIdWithHtmlFileAndConstruction(id)
                 .orElseThrow(() -> new RuntimeException("HTML 페이지를 찾을 수 없습니다."));
 
         htmlPage.setTitle(updatedHtmlPage.getTitle());
@@ -130,7 +154,7 @@ public class CustomHtmlPageService {
     // HTML 페이지 삭제
     @Transactional
     public void deleteHtmlPage(Long id) {
-        CustomHtmlPage htmlPage = customHtmlPageRepository.findByIdWithHtmlFile(id)
+        CustomHtmlPage htmlPage = customHtmlPageRepository.findByIdWithHtmlFileAndConstruction(id)
                 .orElseThrow(() -> new RuntimeException("HTML 페이지를 찾을 수 없습니다."));
 
         // 연결된 파일 삭제
@@ -145,7 +169,7 @@ public class CustomHtmlPageService {
     // HTML 파일 첨부 제거
     @Transactional
     public void removeHtmlFile(Long htmlPageId) {
-        CustomHtmlPage htmlPage = customHtmlPageRepository.findByIdWithHtmlFile(htmlPageId)
+        CustomHtmlPage htmlPage = customHtmlPageRepository.findByIdWithHtmlFileAndConstruction(htmlPageId)
                 .orElseThrow(() -> new RuntimeException("HTML 페이지를 찾을 수 없습니다."));
 
         if (htmlPage.getHtmlFile() != null) {
@@ -156,10 +180,10 @@ public class CustomHtmlPageService {
         }
     }
 
-    // HTML 페이지 게시 상태 변경
+    // HTML 페이지 게시 상태 변경 (HTML 파일과 Construction 정보 함께 가져오기)
     @Transactional
     public CustomHtmlPage updatePublishStatus(Long id, boolean publish) {
-        CustomHtmlPage htmlPage = customHtmlPageRepository.findById(id)
+        CustomHtmlPage htmlPage = customHtmlPageRepository.findByIdWithHtmlFileAndConstruction(id)
                 .orElseThrow(() -> new RuntimeException("HTML 페이지를 찾을 수 없습니다."));
         htmlPage.setPublished(publish);
         return customHtmlPageRepository.save(htmlPage);
@@ -167,37 +191,72 @@ public class CustomHtmlPageService {
 
     // 제목으로 검색
     public Page<CustomHtmlPage> searchHtmlPagesByTitle(String title, Pageable pageable) {
-        return customHtmlPageRepository.findByTitleContaining(title, pageable);
+        return customHtmlPageRepository.findByTitleContainingWithConstruction(title, pageable);
     }
 
     // 게시 상태로 검색
     public Page<CustomHtmlPage> searchHtmlPagesByPublished(Boolean published, Pageable pageable) {
-        return customHtmlPageRepository.findByPublished(published, pageable);
+        return customHtmlPageRepository.findByPublishedWithConstruction(published, pageable);
     }
 
     // 날짜 범위로 검색
     public Page<CustomHtmlPage> searchHtmlPagesByDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
-        return customHtmlPageRepository.findByCreatedAtBetween(startDate, endDate, pageable);
+        return customHtmlPageRepository.findByCreatedAtBetweenWithConstruction(startDate, endDate, pageable);
     }
 
     // 제목 및 날짜 범위로 검색
     public Page<CustomHtmlPage> searchHtmlPagesByTitleAndDateRange(String title, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
-        return customHtmlPageRepository.findByTitleContainingAndCreatedAtBetween(title, startDate, endDate, pageable);
+        return customHtmlPageRepository.findByTitleContainingAndCreatedAtBetweenWithConstruction(title, startDate, endDate, pageable);
     }
 
     // 제목 및 게시 상태로 검색
     public Page<CustomHtmlPage> searchHtmlPagesByTitleAndPublished(String title, Boolean published, Pageable pageable) {
-        return customHtmlPageRepository.findByTitleContainingAndPublished(title, published, pageable);
+        return customHtmlPageRepository.findByTitleContainingAndPublishedWithConstruction(title, published, pageable);
     }
 
     // 날짜 범위 및 게시 상태로 검색
     public Page<CustomHtmlPage> searchHtmlPagesByDateRangeAndPublished(LocalDateTime startDate, LocalDateTime endDate, Boolean published, Pageable pageable) {
-        return customHtmlPageRepository.findByCreatedAtBetweenAndPublished(startDate, endDate, published, pageable);
+        return customHtmlPageRepository.findByCreatedAtBetweenAndPublishedWithConstruction(startDate, endDate, published, pageable);
     }
 
     // 제목, 날짜 범위, 게시 상태로 검색
     public Page<CustomHtmlPage> searchHtmlPagesByTitleAndDateRangeAndPublished(String title, LocalDateTime startDate, LocalDateTime endDate, Boolean published, Pageable pageable) {
-        return customHtmlPageRepository.findByTitleContainingAndCreatedAtBetweenAndPublished(title, startDate, endDate, published, pageable);
+        return customHtmlPageRepository.findByTitleContainingAndCreatedAtBetweenAndPublishedWithConstruction(title, startDate, endDate, published, pageable);
+    }
+
+    // Construction ID로 필터링
+    public Page<CustomHtmlPage> getHtmlPagesByConstructionId(Long constructionId, Pageable pageable) {
+        return customHtmlPageRepository.findByConstructionIdWithConstruction(constructionId, pageable);
+    }
+    
+    // Construction이 null인 HTML 페이지 조회 (전체 공통 공지)
+    public Page<CustomHtmlPage> getHtmlPagesWithNoConstruction(Pageable pageable) {
+        return customHtmlPageRepository.findByConstructionIsNull(pageable);
+    }
+    
+    // Construction이 null 또는 특정 ID인 HTML 페이지 조회 (관리자용)
+    public Page<CustomHtmlPage> getHtmlPagesByConstructionNullOrId(Long constructionId, Pageable pageable) {
+        return customHtmlPageRepository.findByConstructionNullOrIdWithConstruction(constructionId, pageable);
+    }
+    
+    // 제목과 Construction ID로 필터링
+    public Page<CustomHtmlPage> searchHtmlPagesByTitleAndConstructionId(String title, Long constructionId, Pageable pageable) {
+        return customHtmlPageRepository.findByTitleAndConstructionIdWithConstruction(title, constructionId, pageable);
+    }
+    
+    // 제목과 Construction이 null인 HTML 페이지 조회
+    public Page<CustomHtmlPage> searchHtmlPagesByTitleAndNoConstruction(String title, Pageable pageable) {
+        return customHtmlPageRepository.findByTitleAndConstructionIsNullWithConstruction(title, pageable);
+    }
+    
+    // 날짜 범위와 Construction ID로 필터링
+    public Page<CustomHtmlPage> searchHtmlPagesByDateRangeAndConstructionId(LocalDateTime startDate, LocalDateTime endDate, Long constructionId, Pageable pageable) {
+        return customHtmlPageRepository.findByDateRangeAndConstructionIdWithConstruction(startDate, endDate, constructionId, pageable);
+    }
+    
+    // 게시 상태와 Construction ID로 필터링
+    public Page<CustomHtmlPage> searchHtmlPagesByPublishedAndConstructionId(Boolean published, Long constructionId, Pageable pageable) {
+        return customHtmlPageRepository.findByPublishedAndConstructionIdWithConstruction(published, constructionId, pageable);
     }
 
     // HTML 파일 저장 로직

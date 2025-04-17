@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{${layout}}">
 <head>
     <!-- <title>HTML 페이지 상세</title> -->
@@ -60,7 +61,7 @@
             <table class="table table-bordered">
                 <tr>
                     <th style="width: 20%" class="bg-light">제목</th>
-                    <td th:text="${htmlPage.title}"></td>
+                    <td th:text="${htmlPage.title}" class="font-weight-normal"></td>
                 </tr>
                 <tr>
                     <th class="bg-light">게시 상태</th>
@@ -98,7 +99,18 @@
             <h6 class="m-0 font-weight-bold text-primary">HTML 페이지 내용</h6>
         </div>
         <div class="card-body">
-            <div class="html-content" th:utext="${htmlPage.content}"></div>
+            <div class="form-group">
+                <label for="construction" class="font-weight-bold">소속 공사:</label>
+                <div id="construction">
+                    <span th:if="${htmlPage.construction != null}" th:text="${htmlPage.construction.name}" class="font-weight-normal"></span>
+                    <span th:unless="${htmlPage.construction != null}" class="badge badge-primary">전체 공통</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="htmlContent" class="font-weight-bold">HTML 내용:</label>
+                <div class="html-content" th:utext="${htmlPage.content}"></div>
+            </div>
         </div>
     </div>
 

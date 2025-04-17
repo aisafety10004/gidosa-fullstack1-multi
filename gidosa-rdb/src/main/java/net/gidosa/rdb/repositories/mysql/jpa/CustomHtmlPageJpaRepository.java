@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface CustomHtmlPageJpaRepository extends JpaRepository<CustomHtmlPage, Long> {
@@ -15,38 +16,91 @@ public interface CustomHtmlPageJpaRepository extends JpaRepository<CustomHtmlPag
     @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.htmlFile WHERE h.id = :id")
     Optional<CustomHtmlPage> findByIdWithHtmlFile(@Param("id") Long id);
     
-    @Query("SELECT h FROM CustomHtmlPage h WHERE h.title LIKE %:title%")
-    Page<CustomHtmlPage> findByTitleContaining(@Param("title") String title, Pageable pageable);
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.id = :id")
+    Optional<CustomHtmlPage> findByIdWithConstruction(@Param("id") Long id);
     
-    @Query("SELECT h FROM CustomHtmlPage h WHERE h.published = :published")
-    Page<CustomHtmlPage> findByPublished(@Param("published") Boolean published, Pageable pageable);
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.htmlFile LEFT JOIN FETCH h.construction WHERE h.id = :id")
+    Optional<CustomHtmlPage> findByIdWithHtmlFileAndConstruction(@Param("id") Long id);
     
-    @Query("SELECT h FROM CustomHtmlPage h WHERE h.createdAt BETWEEN :startDate AND :endDate")
-    Page<CustomHtmlPage> findByCreatedAtBetween(@Param("startDate") LocalDateTime startDate, 
-                                              @Param("endDate") LocalDateTime endDate, 
-                                              Pageable pageable);
+    @Query("SELECT DISTINCT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction")
+    List<CustomHtmlPage> findAllWithConstruction();
     
-    @Query("SELECT h FROM CustomHtmlPage h WHERE h.title LIKE %:title% AND h.createdAt BETWEEN :startDate AND :endDate")
-    Page<CustomHtmlPage> findByTitleContainingAndCreatedAtBetween(@Param("title") String title, 
-                                                                @Param("startDate") LocalDateTime startDate, 
-                                                                @Param("endDate") LocalDateTime endDate, 
+    @Query(value = "SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction",
+           countQuery = "SELECT COUNT(h) FROM CustomHtmlPage h")
+    Page<CustomHtmlPage> findAllWithConstructionPage(Pageable pageable);
+    
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.title LIKE %:title%")
+    Page<CustomHtmlPage> findByTitleContainingWithConstruction(@Param("title") String title, Pageable pageable);
+    
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.published = :published")
+    Page<CustomHtmlPage> findByPublishedWithConstruction(@Param("published") Boolean published, Pageable pageable);
+    
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.createdAt BETWEEN :startDate AND :endDate")
+    Page<CustomHtmlPage> findByCreatedAtBetweenWithConstruction(@Param("startDate") LocalDateTime startDate,
+                                                                @Param("endDate") LocalDateTime endDate,
                                                                 Pageable pageable);
     
-    @Query("SELECT h FROM CustomHtmlPage h WHERE h.title LIKE %:title% AND h.published = :published")
-    Page<CustomHtmlPage> findByTitleContainingAndPublished(@Param("title") String title, 
-                                                         @Param("published") Boolean published, 
-                                                         Pageable pageable);
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.title LIKE %:title% AND h.createdAt BETWEEN :startDate AND :endDate")
+    Page<CustomHtmlPage> findByTitleContainingAndCreatedAtBetweenWithConstruction(@Param("title") String title,
+                                                                                  @Param("startDate") LocalDateTime startDate,
+                                                                                  @Param("endDate") LocalDateTime endDate,
+                                                                                  Pageable pageable);
     
-    @Query("SELECT h FROM CustomHtmlPage h WHERE h.createdAt BETWEEN :startDate AND :endDate AND h.published = :published")
-    Page<CustomHtmlPage> findByCreatedAtBetweenAndPublished(@Param("startDate") LocalDateTime startDate, 
-                                                          @Param("endDate") LocalDateTime endDate, 
-                                                          @Param("published") Boolean published, 
-                                                          Pageable pageable);
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.title LIKE %:title% AND h.published = :published")
+    Page<CustomHtmlPage> findByTitleContainingAndPublishedWithConstruction(@Param("title") String title,
+                                                                           @Param("published") Boolean published,
+                                                                           Pageable pageable);
     
-    @Query("SELECT h FROM CustomHtmlPage h WHERE h.title LIKE %:title% AND h.createdAt BETWEEN :startDate AND :endDate AND h.published = :published")
-    Page<CustomHtmlPage> findByTitleContainingAndCreatedAtBetweenAndPublished(@Param("title") String title, 
-                                                                            @Param("startDate") LocalDateTime startDate, 
-                                                                            @Param("endDate") LocalDateTime endDate, 
-                                                                            @Param("published") Boolean published, 
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.createdAt BETWEEN :startDate AND :endDate AND h.published = :published")
+    Page<CustomHtmlPage> findByCreatedAtBetweenAndPublishedWithConstruction(@Param("startDate") LocalDateTime startDate,
+                                                                            @Param("endDate") LocalDateTime endDate,
+                                                                            @Param("published") Boolean published,
                                                                             Pageable pageable);
+    
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.title LIKE %:title% AND h.createdAt BETWEEN :startDate AND :endDate AND h.published = :published")
+    Page<CustomHtmlPage> findByTitleContainingAndCreatedAtBetweenAndPublishedWithConstruction(@Param("title") String title,
+                                                                                              @Param("startDate") LocalDateTime startDate,
+                                                                                              @Param("endDate") LocalDateTime endDate,
+                                                                                              @Param("published") Boolean published,
+                                                                                              Pageable pageable);
+    
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.construction.id = :constructionId")
+    Page<CustomHtmlPage> findByConstructionIdWithConstruction(@Param("constructionId") Long constructionId, Pageable pageable);
+    
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.construction IS NULL")
+    Page<CustomHtmlPage> findByConstructionIsNull(Pageable pageable);
+    
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.construction IS NULL OR h.construction.id = :constructionId")
+    Page<CustomHtmlPage> findByConstructionNullOrIdWithConstruction(@Param("constructionId") Long constructionId, Pageable pageable);
+    
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.title LIKE %:title% AND (h.construction.id = :constructionId)")
+    Page<CustomHtmlPage> findByTitleAndConstructionIdWithConstruction(@Param("title") String title, @Param("constructionId") Long constructionId, Pageable pageable);
+
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.title LIKE %:title% AND (h.construction.id = :constructionId OR h.construction IS NULL)")
+    Page<CustomHtmlPage> findByTitleAndConstructionIdOrNullWithConstruction(@Param("title") String title, @Param("constructionId") Long constructionId, Pageable pageable);
+    
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.title LIKE %:title% AND h.construction IS NULL")
+    Page<CustomHtmlPage> findByTitleAndConstructionIsNullWithConstruction(@Param("title") String title, Pageable pageable);
+    
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.createdAt BETWEEN :startDate AND :endDate AND (h.construction.id = :constructionId)")
+    Page<CustomHtmlPage> findByDateRangeAndConstructionIdWithConstruction(@Param("startDate") LocalDateTime startDate,
+                                                                          @Param("endDate") LocalDateTime endDate,
+                                                                          @Param("constructionId") Long constructionId,
+                                                                          Pageable pageable);
+
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.createdAt BETWEEN :startDate AND :endDate AND (h.construction.id = :constructionId OR h.construction IS NULL)")
+    Page<CustomHtmlPage> findByDateRangeAndConstructionIdOrNullWithConstruction(@Param("startDate") LocalDateTime startDate,
+                                                                                @Param("endDate") LocalDateTime endDate,
+                                                                                @Param("constructionId") Long constructionId,
+                                                                                Pageable pageable);
+    
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.published = :published AND (h.construction.id = :constructionId)")
+    Page<CustomHtmlPage> findByPublishedAndConstructionIdWithConstruction(@Param("published") Boolean published,
+                                                                          @Param("constructionId") Long constructionId,
+                                                                          Pageable pageable);
+
+    @Query("SELECT h FROM CustomHtmlPage h LEFT JOIN FETCH h.construction WHERE h.published = :published AND (h.construction.id = :constructionId OR h.construction IS NULL)")
+    Page<CustomHtmlPage> findByPublishedAndConstructionIdOrNullWithConstruction(@Param("published") Boolean published,
+                                                                                @Param("constructionId") Long constructionId,
+                                                                                Pageable pageable);
 } 
