@@ -60,20 +60,19 @@
                 </div>
                 
                 <!-- Construction 정보 표시 (관리자만 변경 가능) -->
-                <div class="form-group mb-3" th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}">
+                <!-- <div class="form-group mb-3" th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}">
                     <label for="constructionId">소속 공사</label>
                     <select class="form-control" id="constructionId" name="constructionId">
                         <option value="">전체 공통 HTML 페이지</option>
-                        <!-- 공사 목록을 동적으로 가져와 표시할 수 있습니다 -->
-                        <!-- <option th:each="construction : ${constructionList}" 
+                        <option th:each="construction : ${constructionList}" 
                                 th:value="${construction.id}" 
                                 th:text="${construction.name}"
-                                th:selected="${construction.id == htmlPageDTO.constructionId}">공사명</option> -->
+                                th:selected="${construction.id == htmlPageDTO.constructionId}">공사명</option>
                     </select>
                     <small class="form-text text-muted">
                         전체 공통은 모든 매니저가 볼 수 있습니다. 특정 공사를 선택하면 해당 공사 소속 매니저만 볼 수 있습니다.
                     </small>
-                </div>
+                </div> -->
                 
                 <!-- 매니저의 경우 자신의 소속 공사 정보 표시 (변경 불가) -->
                 <div class="form-group mb-3" th:unless="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}">
