@@ -24,12 +24,12 @@
 <body>
     <div layout:fragment="content">
         <!-- 페이지 제목 -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-3">
+        <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-3">
             <h1 class="h3 mb-0 text-gray-800">HTML 페이지 관리</h1>
-        </div>
+        </div> -->
 
         <!-- 뷰 모드 선택 (관리자만 볼 수 있음) -->
-        <div th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}" class="mb-3">
+        <div th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}" class="mb-3 mt-3">
             <div class="btn-group" role="group" aria-label="View Mode">
                 <a th:href="@{/settings/html-manager(viewMode='noConstruction', searchTitle=${searchTitle}, startDate=${startDate}, endDate=${endDate}, published=${published})}"
                    class="btn" th:classappend="${viewMode == 'noConstruction'} ? 'btn-primary' : 'btn-outline-primary'">
@@ -60,9 +60,9 @@
 
         <!-- 검색 및 필터 -->
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <!-- <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">검색 및 필터</h6>
-            </div>
+            </div> -->
             <div class="card-body">
                 <form th:action="@{/settings/html-manager}" method="get" id="searchForm" class="row g-3">
                     <div class="col-md-3">
@@ -101,13 +101,13 @@
 
         <!-- HTML 페이지 목록 테이블 -->
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">HTML 페이지 목록</h6>
-            </div>
+            <!-- <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">페이지 목록</h6>
+            </div> -->
             <div class="card-body">
                 <div class="mb-3">
-                    <a th:href="@{/settings/html-manager/create}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                        <i class="fas fa-plus fa-sm text-white-50"></i> 새 HTML 페이지 만들기
+                    <a th:href="@{/settings/html-manager/create(viewMode=${viewMode})}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                        <i class="fas fa-plus fa-sm text-white-50"></i> 페이지 만들기
                     </a>
                 </div>
                 <div class="table-responsive">
@@ -120,7 +120,7 @@
                                     <span th:if="${currentSort == 'title'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
                                 </th>
                                 <th class="text-center" style="width: 10%" th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN') and viewMode == 'all'}">현장명</th>
-                                <th class="text-center" style="width: 10%">HTML 파일</th>
+                                <th class="text-center" style="width: 10%">페이지 파일</th>
                                 <th class="text-center" style="width: 8%">
                                     <a href="#" class="sort-link" data-sort="published">게시 상태</a>
                                     <span th:if="${currentSort == 'published'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
@@ -143,7 +143,7 @@
                             <tr th:each="htmlPage, iterStat : ${htmlPages}">
                                 <td class="text-center align-middle" th:text="${htmlPages.totalElements - (htmlPages.number * htmlPages.size) - iterStat.index}"></td>
                                 <td class="align-middle">
-                                    <a th:href="@{/settings/html-manager/detail/{id}(id=${htmlPage.id})}" th:text="${htmlPage.title}" class="text-primary"></a>
+                                    <a th:href="@{/settings/html-manager/detail/{id}(id=${htmlPage.id}, viewMode=${viewMode})}" th:text="${htmlPage.title}" class="text-primary"></a>
                                 </td>
                                 <td class="text-center align-middle" th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN') and viewMode == 'all'}">
                                     <span th:if="${htmlPage.construction != null}" th:text="${htmlPage.construction.name}"></span>
@@ -221,13 +221,13 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel">HTML 페이지 삭제</h5>
+                        <h5 class="modal-title" id="deleteModalLabel">페이지 삭제</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        정말 이 HTML 페이지를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+                        정말 이 페이지를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>

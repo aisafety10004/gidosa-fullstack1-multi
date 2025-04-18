@@ -12,8 +12,8 @@
 <div layout:fragment="content">
     <!-- 페이지 제목 -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-3">
-        <h1 class="h3 mb-0 text-gray-800">HTML 페이지 생성</h1>
-        <a th:href="@{/settings/html-manager}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+        <!-- <h1 class="h3 mb-0 text-gray-800">HTML 페이지 생성</h1> -->
+        <a th:href="@{/settings/html-manager(viewMode=${viewMode})}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
             <i class="fas fa-list fa-sm text-white-50"></i> 목록으로
         </a>
     </div>
@@ -35,9 +35,9 @@
 
     <!-- HTML 페이지 생성 폼 -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
+        <!-- <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">HTML 페이지 정보 입력</h6>
-        </div>
+        </div> -->
         <div class="card-body">
             <form th:action="@{/settings/html-manager/create}" method="post" enctype="multipart/form-data" id="createForm" th:object="${htmlPageDTO}">
                 <div class="form-group mb-3">
@@ -47,7 +47,7 @@
                 </div>
                 
                 <div class="form-group mb-3">
-                    <label for="content">HTML 페이지 내용</label>
+                    <label for="content">페이지 설명(옵션)</label>
                     <textarea class="form-control" id="content" th:field="*{content}" rows="10"></textarea>
                     <div class="text-danger" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
                 </div>
@@ -79,7 +79,7 @@
                 </div>
                 
                 <div class="form-group mb-3">
-                    <label for="htmlFile">HTML 파일 업로드 <span class="text-danger">*</span></label>
+                    <label for="htmlFile">파일 업로드 <span class="text-danger">*</span></label>
                     <div class="custom-file">
                         <!-- <label class="custom-file-label" for="htmlFile">파일을 선택하세요</label>
                         <br> -->
@@ -102,7 +102,7 @@
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-check"></i> 생성하기
                     </button>
-                    <a th:href="@{/settings/html-manager}" class="btn btn-secondary">
+                    <a th:href="@{/settings/html-manager?(viewMode=${viewMode})}" class="btn btn-secondary">
                         <i class="fas fa-times"></i> 취소
                     </a>
                 </div>
