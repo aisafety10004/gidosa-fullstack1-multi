@@ -100,7 +100,7 @@
         </div>
         <div class="card-body">
             <div class="form-group mb-4" th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN')}">
-                <label for="construction" class="font-weight-bold">소속 공사</label>
+                <label th:if="${htmlPage.construction != null}" for="construction" class="font-weight-bold">현장명</label>
                 <div id="construction">
                     <span th:if="${htmlPage.construction != null}" th:text="${htmlPage.construction.name}" class="font-weight-normal"></span>
                     <span th:unless="${htmlPage.construction != null}" class="badge badge-primary">전체 공통</span>

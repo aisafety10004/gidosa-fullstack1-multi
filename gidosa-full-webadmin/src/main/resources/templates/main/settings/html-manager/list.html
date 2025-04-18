@@ -119,7 +119,7 @@
                                     <a href="#" class="sort-link" data-sort="title">제목</a>
                                     <span th:if="${currentSort == 'title'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
                                 </th>
-                                <th class="text-center" style="width: 10%" th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN') and viewMode == 'all'}">소속 공사</th>
+                                <th class="text-center" style="width: 10%" th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN') and viewMode == 'all'}">현장명</th>
                                 <th class="text-center" style="width: 10%">HTML 파일</th>
                                 <th class="text-center" style="width: 8%">
                                     <a href="#" class="sort-link" data-sort="published">게시 상태</a>
