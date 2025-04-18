@@ -187,9 +187,11 @@ public class CustomHtmlManagerController {
     }
     
     @GetMapping("/create")
-    public String createForm(Model model) {
+    public String createForm(@RequestParam(required = false) String viewMode, Model model) {
         // 빈 DTO 객체를 모델에 추가
         model.addAttribute("htmlPageDTO", new CustomHtmlPageDTO());
+        model.addAttribute("viewMode", viewMode);
+
         return "main/settings/html-manager/create";
     }
     
@@ -234,7 +236,7 @@ public class CustomHtmlManagerController {
     }
     
     @GetMapping("/detail/{id}")
-    public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String detail(@PathVariable Long id, @RequestParam(required = false) String viewMode, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Optional<CustomHtmlPage> htmlPageOpt = customHtmlPageService.getHtmlPageById(id);
         
         if (htmlPageOpt.isPresent()) {
@@ -247,6 +249,8 @@ public class CustomHtmlManagerController {
             }
             
             model.addAttribute("htmlPage", htmlPage);
+            model.addAttribute("viewMode", viewMode);
+            
             return "main/settings/html-manager/detail";
         } else {
             return "redirect:/settings/html-manager";
