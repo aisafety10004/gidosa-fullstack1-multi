@@ -154,11 +154,18 @@
                                 </td>
                                 <td class="text-center align-middle">
                                     <span th:if="${htmlPage.htmlFile != null}">
-                                        <!-- <a th:href="@{/settings/html-manager/html-file/{id}(id=${htmlPage.htmlFile.id})}" th:text="${htmlPage.htmlFile.originalFilename}"></a> -->
-                                        <span class="fas fa-file-code text-info" th:text="${htmlPage.htmlFile.originalFilename}"></span>
+                                        <!-- <a th:href="@{/settings/html-manager/html-file/{id}(id=${htmlPage.htmlFile.id})}" th:text="${#strings.abbreviate(htmlPage.htmlFile.originalFilename, 15)}"></a> -->
+                                        <span class="fas fa-file-code text-info" th:text="${#strings.abbreviate(htmlPage.htmlFile.originalFilename, 15)}"></span>
                                         <br>
     <!--                                    <a th:href="${@environment.getProperty('custom.site-webapp.url')} + '/custom-viewer/htmls/' + ${htmlPage.htmlFile.id}" target="_blank">(새 창으로 미리보기)</a>-->
                                         <a th:href="${@environment.getProperty('custom.site-webapp.url')} + '/custom-viewer/htmls/' + ${htmlPage.htmlFile.storedFilename}" target="_blank">(새 창으로 미리보기)</a>
+                                        <br>
+                                        <a th:href="@{/common/file/download/{id}(id=${htmlPage.htmlFile.id})}" 
+                                           class="text-decoration-none">
+                                            <i class="fas fa-file-download"></i>
+                                            <!-- <span th:text="${#strings.abbreviate(htmlPage.htmlFile.originalFilename, 15)}"></span> -->
+                                            (다운로드)
+                                        </a>
                                     </span>
                                     <span th:unless="${htmlPage.htmlFile != null}">-</span>
                                 </td>
