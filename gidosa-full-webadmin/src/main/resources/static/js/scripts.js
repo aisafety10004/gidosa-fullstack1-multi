@@ -159,21 +159,27 @@ window.addEventListener('DOMContentLoaded', event => {
     if (!exactMatch) {
         menuLinks.forEach(link => {
             const href = link.getAttribute('href');
-            if (href && href.includes('/request/construction') && currentPath.includes('/request/construction')) {
+            // 상담신청 관리(/request/construction)
+            if (href && href.startsWith('/request/construction') && href.includes('/request/construction') && currentPath.startsWith('/request/construction')) {
                 link.classList.add('active');
                 activeMenuFound = true;
                 
                 // 링크가 중첩 메뉴 내부에 있는 경우 부모 메뉴도 열기
                 openParentMenus(link, storageKey);
             }
-            else if (href && href.includes('/inquiry/admin') && currentPath.includes('/inquiry/admin')) {
+            // 제출의견 관리
+            else if (href && href.includes('/inquiry') && currentPath.includes('/inquiry')) {
                 link.classList.add('active');
                 activeMenuFound = true;
                 
                 // 링크가 중첩 메뉴 내부에 있는 경우 부모 메뉴도 열기
                 openParentMenus(link, storageKey);
             }
-            else if (href && href.includes('/construction') && currentPath.includes('/construction')) {
+            // 도입현장 관리(/construction)
+            //else if (href && href.startsWith('/construction') && href.includes('/construction') && currentPath.includes('/construction')) {
+            //else if (href && href.startsWith('/construction') && !href.includes('/request/construction')) {
+            //else if (href && href.startsWith('/construction') && !href.includes('/request/construction')) {
+            else if (href && !href.startsWith('/request/construction') && currentPath.startsWith('/construction') && href.includes('/construction') && currentPath.includes('/construction')) {
                 link.classList.add('active');
                 activeMenuFound = true;
                 

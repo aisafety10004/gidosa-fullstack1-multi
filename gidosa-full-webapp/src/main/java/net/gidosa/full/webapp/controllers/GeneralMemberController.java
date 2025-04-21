@@ -4,8 +4,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.gidosa.full.webapp.models.dtos.MemberRegisterDto;
 import net.gidosa.full.webapp.services.GeneralConstructionService;
+import net.gidosa.full.webapp.services.GeneralCustomMenuService;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberGeneral;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenu;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import net.gidosa.full.webapp.services.GeneralMemberService;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,12 +26,16 @@ import java.util.Optional;
 public class GeneralMemberController {
     private final GeneralMemberService generalMemberService;
     private final GeneralConstructionService generalConstructionService;
+    private final GeneralCustomMenuService generalCustomMenuService;
 
     @GetMapping("/register/agreement")
     public String registerAgreement(@RequestParam(value = "constructionId") Long constructionId, Model model) {
         model.addAttribute("headerInvisible", true);
         model.addAttribute("headerSubInvisible", true);
         model.addAttribute("constructionId", constructionId);
+        // 현장에 해당하는 메뉴 데이터 로드
+        List<CustomMenu> customMenus = generalCustomMenuService.getAllMenusByConstructionId(constructionId);
+        model.addAttribute("customMenus", customMenus);
 
         return "pages/general/member/register-agreement";
     }
@@ -39,6 +46,9 @@ public class GeneralMemberController {
         Construction construction = generalConstructionService.getConstruction(constructionId);
         model.addAttribute("construction", construction);
         model.addAttribute("headerSubInvisible", true);
+        // 현장에 해당하는 메뉴 데이터 로드
+        List<CustomMenu> customMenus = generalCustomMenuService.getAllMenusByConstructionId(constructionId);
+        model.addAttribute("customMenus", customMenus);
 
         return "pages/general/member/register";
     }
@@ -85,6 +95,10 @@ public class GeneralMemberController {
         model.addAttribute("construction", construction);
         model.addAttribute("headerSubInvisible", true);
 
+        // 현장에 해당하는 메뉴 데이터 로드
+        List<CustomMenu> customMenus = generalCustomMenuService.getAllMenusByConstructionId(constructionId);
+        model.addAttribute("customMenus", customMenus);
+
         return "pages/general/member/find-id";
     }
 
@@ -115,6 +129,9 @@ public class GeneralMemberController {
         Construction construction = generalConstructionService.getConstruction(constructionId);
         model.addAttribute("construction", construction);
         model.addAttribute("headerSubInvisible", true);
+        // 현장에 해당하는 메뉴 데이터 로드
+        List<CustomMenu> customMenus = generalCustomMenuService.getAllMenusByConstructionId(constructionId);
+        model.addAttribute("customMenus", customMenus);
 
         return "pages/general/member/find-pw";
     }

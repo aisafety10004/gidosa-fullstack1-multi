@@ -48,10 +48,15 @@
                     <div class="col-md-2 font-weight-bold">확장 메뉴</div>
                     <div class="col-md-10">
                         <ul class="list-unstyled">
-                            <li th:each="menu : ${construction.customMenus}" th:text="${menu.name + ' (' + menu.url + ')'}">
+                            <li th:each="menu : ${construction.customMenus}">
+                                <span th:text="${'* ' + menu.name}"></span>
+                                <a th:if="${menu.url != null && !menu.url.isEmpty()}" th:href="${menu.url}" th:text="${'(' + menu.url + ')'}" target="_blank"></a>
                                 <span th:if="${menu.children != null && !menu.children.isEmpty()}" class="ms-3">
                                     <ul class="list-unstyled">
-                                        <li th:each="child : ${menu.children}" th:text="${child.name + ' (' + child.url + ')'}"></li>
+                                        <li th:each="child : ${menu.children}">
+                                            <span th:text="${'* ' + child.name}"></span>
+                                            <a th:if="${child.url != null && !child.url.isEmpty()}" th:href="${child.url}" th:text="${' (' + child.url + ')'}" target="_blank"></a>
+                                        </li>
                                     </ul>
                                 </span>
                             </li>

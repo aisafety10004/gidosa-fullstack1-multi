@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.gidosa.full.webapp.services.GeneralConstructionService;
 import net.gidosa.full.webapp.services.GeneralNoticeService;
+import net.gidosa.full.webapp.services.GeneralCustomMenuService;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.FileAttachment;
 import net.gidosa.rdb.models.entities.dbs.mysql.Notice;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,7 +33,7 @@ import java.util.stream.Collectors;
 public class GeneralNoticeController {
     private final GeneralNoticeService noticeService;
     private final GeneralConstructionService generalConstructionService;
-
+    private final GeneralCustomMenuService generalCustomMenuService;
     /**
      * 공지사항 목록 페이지
      */
@@ -103,6 +105,10 @@ public class GeneralNoticeController {
         Construction construction = generalConstructionService.getConstruction(constructionId);
         model.addAttribute("construction", construction);
 
+        // 현장에 해당하는 메뉴 데이터 로드
+        List<CustomMenu> customMenus = generalCustomMenuService.getAllMenusByConstructionId(constructionId);
+        model.addAttribute("customMenus", customMenus);
+
         return "pages/general/notice/list";
     }
 
@@ -132,6 +138,10 @@ public class GeneralNoticeController {
         if(Objects.isNull(construction))
             construction = generalConstructionService.getConstruction(constructionId);
         model.addAttribute("construction", construction);
+
+        // 현장에 해당하는 메뉴 데이터 로드
+        List<CustomMenu> customMenus = generalCustomMenuService.getAllMenusByConstructionId(constructionId);
+        model.addAttribute("customMenus", customMenus);
 
         return "pages/general/notice/detail";
     }

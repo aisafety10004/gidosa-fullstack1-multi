@@ -25,6 +25,15 @@
     <!-- Page specific CSS -->
     <th:block layout:fragment="css">
         <style>
+            /* 모든 텍스트 선택 방지 */
+            /*
+            body {
+                user-select: none; 
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+            }
+            */
             /* 모바일 화면에서 서브(sub)헤더 숨기기 (508px 미만에서 적용) */
             @media (max-width: 507px) {
                 #mobile1-content {
@@ -180,6 +189,8 @@
     <!-- Footer -->
     <div th:replace="~{fragments/footer-general :: footer(construction=${construction})}"></div>
 
+    <!-- General JavaScript -->
+    <script th:src="@{/js/general.js}"></script>
     <!-- Main JavaScript -->
     <script th:src="@{/js/main.js}"></script>
 

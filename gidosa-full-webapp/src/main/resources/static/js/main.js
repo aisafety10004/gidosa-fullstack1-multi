@@ -111,3 +111,4 @@ function closeMenu3() {
     middleBar.classList.remove('opacity-0');
     bottomBar.classList.remove('transform', '-rotate-45', '-translate-y-[8px]');
 }
+

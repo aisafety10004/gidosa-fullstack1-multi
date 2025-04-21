@@ -4,19 +4,23 @@ import lombok.RequiredArgsConstructor;
 import net.gidosa.full.webapp.configs.auth.PrincipalDetails;
 import net.gidosa.full.webapp.dtos.MemberUpdateDto;
 import net.gidosa.full.webapp.services.GeneralMemberService;
+import net.gidosa.full.webapp.services.GeneralCustomMenuService;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberGeneral;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenu;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/general/mypage")
 public class GeneralMypageController {
-
     private final GeneralMemberService generalMemberService;
+    private final GeneralCustomMenuService generalCustomMenuService;
 
     @GetMapping("/profile")
     public String profileForm(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {

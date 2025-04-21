@@ -131,8 +131,8 @@ public class ConstructionController {
     public String detail(@PathVariable Long id, Model model) {
         Construction construction = constructionService.getConstructionWithManagementMenus(id);
         
-        // 현재 건설 현장의 커스텀 메뉴 로딩
-        List<CustomMenu> customMenus = customMenuService.getAllMenusByConstructionId(id);
+        // 현재 건설 현장의 커스텀 메뉴 로딩 (fetch join으로 하위 메뉴까지 모두 로드)
+        List<CustomMenu> customMenus = customMenuService.getRootMenusWithChildrenByConstructionId(id);
         construction.setCustomMenus(customMenus);
         
         model.addAttribute("construction", construction);
