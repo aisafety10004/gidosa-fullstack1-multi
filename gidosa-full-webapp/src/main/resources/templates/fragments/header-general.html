@@ -153,23 +153,7 @@
                     </a>
                 </th:block>
             </th:block>
-            <!-- 커스텀 메뉴 출력2 -->
-            <th:block th:if="${customMenus != null}">
-                <th:block th:each="menu : ${customMenus}">
-                    <!-- 구분선 -->
-                    <div class="ml-8 my-4 border-t border-gray-200"></div>
-                    <!-- 커스텀 메뉴 항목 -->
-                    <a th:href="@{${menu.url}}"
-                        class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
-                    >
-                    <!-- onclick="closeMenu()" -->
-                        <span class="flex items-center">
-                            [[${menu.name}]]
-                        </span>
-                    </a>
-                </th:block>
-            </th:block>
-            
+
             <!-- 기본 메뉴 -->
             <a href="#"
                class="mx-8 my-3 px-6 py-2 text-black rounded-md hover:bg-primaryDark text-center focus:outline-none"
