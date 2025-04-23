@@ -80,9 +80,11 @@ public class SecurityConfig {
                     "/general/notice/**",
 //                        "/general/member/async-find-pw",
                     "/general/member/check-username",
+//                    "/general/work-record/**",
                     "/custom-viewer/htmls/*"
                 ).permitAll()
                 .requestMatchers(HttpMethod.POST,"/general/member/async-find-pw").permitAll()
+//                .requestMatchers(HttpMethod.POST,"/general/work-record/**").permitAll()
                 .requestMatchers("/general/auth/login", "/general/member/register/**", "/general/member/find-*").hasRole("ANONYMOUS")
                 .anyRequest().authenticated()
             )

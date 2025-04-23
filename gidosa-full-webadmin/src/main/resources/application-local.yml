@@ -136,9 +136,9 @@ jwt:
 
 file:
   upload:
-    path: C:\\uploads\\baroceum
-#     path: C:\\uploads
-#    path: /Users/pktjesus/uploads/gidosa
+#    path: C:\\uploads\\baroceum
+#    path: C:\\uploads
+    path: /Users/pktjesus/uploads/baroceum
 
 custom:
   site-webapp:

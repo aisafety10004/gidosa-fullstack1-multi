@@ -149,5 +149,9 @@ https://drive.google.com/open?id=1oS-ookZiUafudH0nsRHenAiQgJCTwCB_
 6. 
 
 
+25-04-23 요청사항
+1. 출퇴근관리 말고 '복무관리'의 출근관리, 퇴근관리
+2. '공정관리-업무등록'을 업무등록을 밖으로 빼기?(1단계 메뉴로...)
+3.
 
 

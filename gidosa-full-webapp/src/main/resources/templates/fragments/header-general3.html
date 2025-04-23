@@ -141,7 +141,7 @@
                     </form>
 
                     <!-- 구분선 -->
-                    <div class="ml-4 my-4 border-t border-gray-200"></div>
+                    <div class="ml-8 my-4 border-t border-gray-200"></div>
                     <!-- 개인정보 수정 -->
                     <a th:href="@{/general/mypage/profile}"
                        class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
@@ -153,6 +153,27 @@
                            개인정보 수정
                         </span>
                     </a>
+
+                    <!-- 구분선 -->
+                    <div class="ml-8 my-4 border-t border-gray-200"></div>
+                    <!-- 사업장 출근하기 -->
+                    <a th:href="@{/general/work-record/start}"
+                       class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                       onclick="closeMenu3()">
+                        <span class="flex items-center">
+                           사업장 출근하기
+                        </span>
+                    </a>
+                    <!-- 구분선 -->
+                    <div class="ml-8 my-4 border-t border-gray-200"></div>
+                    <!-- 사업장 퇴근하기 -->
+                    <a th:href="@{/general/work-record/leave}"
+                       class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                       onclick="closeMenu3()">
+                        <span class="flex items-center">
+                           사업장 퇴근하기
+                        </span>
+                    </a>
                 </th:block>
 
                 <!-- 구분선 -->
@@ -162,9 +183,9 @@
                    class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
                    onclick="javascript:alert('개발중입니다.'); return false;">
                     <span class="flex items-center">
-                           <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                           </svg>
+                       <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                       </svg>
                         검색
                     </span>
                 </a>
@@ -176,11 +197,11 @@
                         <!-- 커스텀 메뉴 항목 -->
                         <a th:href="@{${menu.url}}"
                            class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                           onclick="closeMenu3()"
                         >
-                            <!-- onclick="closeMenu()" -->
                             <span class="flex items-center">
-                            [[${menu.name}]]
-                        </span>
+                                [[${menu.name}]]
+                            </span>
                         </a>
                     </th:block>
                 </th:block>
