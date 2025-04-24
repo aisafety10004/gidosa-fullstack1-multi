@@ -8,7 +8,7 @@
          th:with="authConstruction=${construction == null ? #authentication.principal.memberGeneral.construction : construction}">
         <div class="flex items-center">
             <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main/main' : '/general/construction/' + construction.id}}"
-               class="text-lg md:text-2xl font-bold text-primary focus:outline-none" style="width: 96px;"
+               class="text-lg md:text-2xl font-bold text-primary focus:outline-none" style=""
                onclick="if (headerInvisible) return false;">
                 공사현장
             </a>
@@ -17,7 +17,7 @@
                 <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main/main' : '/general/construction/' + construction.id}}"
                    class="text-base md:text-xl text-gray-700 cursor-pointer"
                    onclick="if (headerInvisible) return false;"
-                   th:text="${authConstruction != null ? authConstruction.location : construction.location}"
+                   th:text="${authConstruction != null ? authConstruction.name : construction.name}"
                 >
                 </a>
             </th:block>
@@ -103,7 +103,7 @@
     </nav>
 
     <!-- 모바일 드롭다운 메뉴 -->
-    <div id="mobile-menu" class="md:hidden absolute right-0 bg-white shadow-lg z-50 hidden h-screen w-4/5 max-w-sm">
+    <div id="mobile-menu" class="md:hidden absolute right-0 bg-white shadow-lg z-50 hidden h-screen w-4/5 max-w-sm overflow-hidden">
         <div class="flex flex-col py-6 h-full">
             <!-- 메뉴 헤더 부분 -->
             <div class="px-8 pb-4 mb-4 border-b border-gray-200">
@@ -111,7 +111,7 @@
             </div>
             
             <!-- 메뉴 항목들 -->
-            <div class="flex-1 overflow-y-auto">
+            <div class="flex-1 overflow-y-auto pb-12">
                 <!-- 로그인 상태에 따라 다른 메뉴 표시 -->
                 <th:block sec:authorize="!isAuthenticated()">
                     <a th:href="@{${'/general/auth/login?constructionId=' + construction.id}}"
@@ -161,9 +161,38 @@
                        class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
                        onclick="closeMenu3()">
                         <span class="flex items-center">
-                           사업장 출근하기
+                           출근등록
                         </span>
                     </a>
+
+                    <!-- 구분선 -->
+                    <!-- <div class="ml-8 my-4 border-t border-gray-200"></div> -->
+                    <!-- 위험요인 신규등록 -->
+                    <!-- <a th:href="@{/general/risk-factor/create}"
+                       class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                       onclick="closeMenu3()">
+                        <span class="flex items-center">
+                            위험요인 보고
+                        </span>
+                    </a> -->
+
+                    <!-- 커스텀 메뉴 출력2 -->
+                    <th:block th:if="${customMenus != null}">
+                        <th:block th:each="menu : ${customMenus}">
+                            <!-- 구분선 -->
+                            <div class="ml-8 my-4 border-t border-gray-200"></div>
+                            <!-- 커스텀 메뉴 항목 -->
+                            <a th:href="@{${menu.url}}"
+                               class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
+                               onclick="closeMenu3()"
+                            >
+                            <span class="flex items-center">
+                                [[${menu.name}]]
+                            </span>
+                            </a>
+                        </th:block>
+                    </th:block>
+
                     <!-- 구분선 -->
                     <div class="ml-8 my-4 border-t border-gray-200"></div>
                     <!-- 사업장 퇴근하기 -->
@@ -171,41 +200,25 @@
                        class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
                        onclick="closeMenu3()">
                         <span class="flex items-center">
-                           사업장 퇴근하기
+                           퇴근등록
                         </span>
                     </a>
                 </th:block>
 
                 <!-- 구분선 -->
-                <div class="ml-8 my-4 border-t border-gray-200"></div>
+<!--                <div class="ml-8 my-4 border-t border-gray-200"></div>-->
                 <!-- 검색 -->
-                <a href="#"
-                   class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
-                   onclick="javascript:alert('개발중입니다.'); return false;">
-                    <span class="flex items-center">
-                       <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                       </svg>
-                        검색
-                    </span>
-                </a>
-                <!-- 커스텀 메뉴 출력2 -->
-                <th:block th:if="${customMenus != null}">
-                    <th:block th:each="menu : ${customMenus}">
-                        <!-- 구분선 -->
-                        <div class="ml-8 my-4 border-t border-gray-200"></div>
-                        <!-- 커스텀 메뉴 항목 -->
-                        <a th:href="@{${menu.url}}"
-                           class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"
-                           onclick="closeMenu3()"
-                        >
-                            <span class="flex items-center">
-                                [[${menu.name}]]
-                            </span>
-                        </a>
-                    </th:block>
-                </th:block>
-                
+<!--                <a href="#"-->
+<!--                   class="mx-8 my-3 px-6 py-3 text-gray-700 hover:text-black hover:bg-gray-100 rounded-md block focus:outline-none"-->
+<!--                   onclick="javascript:alert('개발중입니다.'); return false;">-->
+<!--                    <span class="flex items-center">-->
+<!--                       <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>-->
+<!--                       </svg>-->
+<!--                        검색-->
+<!--                    </span>-->
+<!--                </a>-->
+
                 <!-- 구분선 -->
                 <!-- <div class="ml-8 my-4 border-t border-gray-200"></div> -->
                 <!-- 공지사항 -->
@@ -243,4 +256,42 @@
 <!--            </div>-->
         </div>
     </div>
+
+    <script th:inline="javascript">
+        function toggleMenu3() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburgerTop = document.getElementById('hamburger-top');
+            const hamburgerMiddle = document.getElementById('hamburger-middle');
+            const hamburgerBottom = document.getElementById('hamburger-bottom');
+            
+            if (mobileMenu.classList.contains('hidden')) {
+                // 메뉴 열기
+                mobileMenu.classList.remove('hidden');
+                // 햄버거 아이콘을 X 모양으로 변경
+                hamburgerTop.classList.add('rotate-45', 'translate-y-[6px]');
+                hamburgerMiddle.classList.add('opacity-0');
+                hamburgerBottom.classList.add('-rotate-45', '-translate-y-[6px]');
+                // 스크롤 방지
+                document.body.style.overflow = 'hidden';
+            } else {
+                closeMenu3();
+            }
+        }
+        
+        function closeMenu3() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburgerTop = document.getElementById('hamburger-top');
+            const hamburgerMiddle = document.getElementById('hamburger-middle');
+            const hamburgerBottom = document.getElementById('hamburger-bottom');
+            
+            // 메뉴 닫기
+            mobileMenu.classList.add('hidden');
+            // X 모양을 햄버거 아이콘으로 변경
+            hamburgerTop.classList.remove('rotate-45', 'translate-y-[6px]');
+            hamburgerMiddle.classList.remove('opacity-0');
+            hamburgerBottom.classList.remove('-rotate-45', '-translate-y-[6px]');
+            // 스크롤 허용
+            document.body.style.overflow = '';
+        }
+    </script>
 </header>

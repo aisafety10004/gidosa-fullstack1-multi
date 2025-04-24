@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/general}">
+<head>
+    <title th:text="${construction.name + ' - 위험요인 상세'}"></title>
+    <style>
+        .detail-section {
+            margin-bottom: 30px;
+        }
+        
+        .detail-section h5 {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+        }
+        
+        .detail-value {
+            margin-bottom: 15px;
+        }
+        
+        .image-container {
+            max-width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .detail-image {
+            max-width: 100%;
+            max-height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+        }
+        
+        .risk-size-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .btn-action {
+            background-color: #2876cd;
+            color: white;
+            border: none;
+        }
+        
+        .btn-action:hover,
+        .btn-action:focus,
+        .btn-action:active {
+            background-color: #1c5ca9 !important;
+            color: white !important;
+        }
+        
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+        
+        .btn-delete:hover,
+        .btn-delete:focus,
+        .btn-delete:active {
+            background-color: #bb2d3b !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">위험요인 상세 정보</h1>
+        
+        <!-- 기본 정보 섹션 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-info-circle me-1"></i>
+                위험요인 정보
+            </div>
+            <div class="card-body">
+                <div class="detail-section">
+                    <h5>기본 정보</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-label">현장명</div>
+                            <div class="detail-value" th:text="${riskFactor.siteName}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-label">등록일</div>
+                            <div class="detail-value" th:text="${#temporals.format(riskFactor.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-label">공정</div>
+                            <div class="detail-value" th:text="${riskFactor.workProcess}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-label">작업위치(위치층수)</div>
+                            <div class="detail-value" th:text="${riskFactor.workLocation ?: '-'}"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 현장 사진 섹션 -->
+                <div class="detail-section">
+                    <h5>현장 사진</h5>
+                    <div class="row">
+                        <div class="col-md-6" th:if="${riskFactor.workImage1Url != null}">
+                            <div class="detail-label">현장사진1</div>
+                            <div class="image-container">
+                                <img th:src="@{'/uploads/' + ${riskFactor.workImage1Url}}" alt="현장사진1" class="detail-image">
+                            </div>
+                        </div>
+                        <div class="col-md-6" th:if="${riskFactor.workImage2Url != null}">
+                            <div class="detail-label">현장사진2</div>
+                            <div class="image-container">
+                                <img th:src="@{'/uploads/' + ${riskFactor.workImage2Url}}" alt="현장사진2" class="detail-image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 위험 분류 섹션 -->
+                <div class="detail-section">
+                    <h5>위험 분류</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-label">위험 분류</div>
+                            <div class="detail-value" th:text="${riskFactor.riskClassification != null ? riskFactor.riskClassification.displayName : '-'}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-label">위험 요인(상세)</div>
+                            <div class="detail-value" th:text="${riskFactor.riskDetailFactor ?: '-'}"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="detail-label">(예상)위험상황 및 결과</div>
+                            <div class="detail-value" th:text="${riskFactor.riskSituationResult ?: '-'}"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="detail-label">현재안전조치</div>
+                            <div class="detail-value" th:text="${riskFactor.currentSafetyMeasure ?: '-'}"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 위험성 평가 섹션 -->
+                <div class="detail-section">
+                    <h5>위험성 평가</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="detail-label">가능성</div>
+                            <div class="detail-value" th:text="${riskFactor.riskPossibility}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-label">중대성</div>
+                            <div class="detail-value" th:text="${riskFactor.riskCriticality}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-label">위험성 크기</div>
+                            <div class="risk-size-display" th:text="'위험성 크기: ' + ${riskFactor.riskSize} + ' (가능성 × 중대성)'"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 위험성 감소대책 섹션 -->
+                <div class="detail-section">
+                    <h5>위험성 감소대책</h5>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="detail-label">감소대책1</div>
+                            <div class="detail-value" th:text="${riskFactor.riskReductionMeasure1 != null ? riskFactor.riskReductionMeasure1.displayName : '-'}"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="detail-label">감소대책2</div>
+                            <div class="detail-value" th:text="${riskFactor.riskReductionMeasure2 ?: '-'}"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="detail-label">조치여부</div>
+                            <div class="detail-value" th:text="${riskFactor.isRiskMeasureCompletion != null ? riskFactor.isRiskMeasureCompletion.displayName : '-'}"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 버튼 그룹 -->
+                <div class="d-flex justify-content-center mt-4">
+                    <a th:href="@{/general/risk-factor/list}" class="btn btn-secondary me-2">
+                        <i class="fas fa-list"></i> 목록으로
+                    </a>
+                    <a th:href="@{/general/risk-factor/edit/{id}(id=${riskFactor.id})}" class="btn btn-action me-2">
+                        <i class="fas fa-edit"></i> 수정
+                    </a>
+                    <button type="button" class="btn btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="fas fa-trash"></i> 삭제
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 삭제 확인 모달 -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">위험요인 삭제 확인</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    정말로 이 위험요인을 삭제하시겠습니까?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <form th:action="@{/general/risk-factor/delete/{id}(id=${riskFactor.id})}" method="post">
+                        <button type="submit" class="btn btn-danger">삭제</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            // 필요한 스크립트 코드 추가
+        });
+    </script>
+</th:block>
+</body>
+</html> 

@@ -8,7 +8,7 @@
          th:with="authConstruction=${construction == null ? #authentication.principal.memberGeneral.construction : construction}">
         <div class="flex items-center">
             <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main/main' : '/general/construction/' + construction.id}}"
-               class="text-lg md:text-2xl font-bold text-primary focus:outline-none" style="width: 96px;"
+               class="text-lg md:text-2xl font-bold text-primary focus:outline-none" style=""
                onclick="if (headerInvisible) return false;">
                 공사현장
             </a>
@@ -17,7 +17,7 @@
                 <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main/main' : '/general/construction/' + construction.id}}"
                    class="text-base md:text-xl text-gray-700 cursor-pointer"
                    onclick="if (headerInvisible) return false;"
-                   th:text="${authConstruction != null ? authConstruction.location : construction.location}"
+                   th:text="${authConstruction != null ? authConstruction.name : construction.name}"
                 >
                 </a>
             </th:block>

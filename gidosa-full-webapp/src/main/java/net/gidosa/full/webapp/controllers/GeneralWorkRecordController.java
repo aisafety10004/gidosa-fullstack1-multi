@@ -83,14 +83,14 @@ public class GeneralWorkRecordController {
                 protectiveGearCheck
             );
             
-            redirectAttributes.addFlashAttribute("successMessage", "출근 처리가 완료되었습니다.");
-            return "redirect:/general/main/main";
-            
+            redirectAttributes.addFlashAttribute("successMessage", "출근등록이 완료되었습니다.");
+            // return "redirect:/general/main/main";            
         } catch (Exception e) {
             log.error("출근 처리 중 오류 발생: " + e.getMessage(), e);
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/general/work-record/start";
         }
+
+        return "redirect:/general/work-record/start";
     }
 
     @GetMapping("/leave")
@@ -149,13 +149,13 @@ public class GeneralWorkRecordController {
                 planToComeNextDay
             );
             
-            redirectAttributes.addFlashAttribute("successMessage", "퇴근 처리가 완료되었습니다.");
-            return "redirect:/general/main/main";
-            
+            redirectAttributes.addFlashAttribute("successMessage", "퇴근등록이 완료되었습니다.");
+            // return "redirect:/general/main/main";
         } catch (Exception e) {
             log.error("퇴근 처리 중 오류 발생: " + e.getMessage(), e);
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/general/work-record/leave";
         }
+
+        return "redirect:/general/work-record/leave";
     }
 }

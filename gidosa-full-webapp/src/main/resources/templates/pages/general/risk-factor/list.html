@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/general}">
+<head>
+    <title th:text="${construction.name + ' - 위험요인 목록'}"></title>
+    <style>
+        .alert-message {
+            margin-top: 20px;
+        }
+        
+        .risk-table th {
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        
+        .risk-table td {
+            vertical-align: middle;
+        }
+        
+        .risk-btn {
+            background-color: #2876cd;
+            color: white;
+            border: none;
+        }
+        
+        .risk-btn:hover,
+        .risk-btn:focus,
+        .risk-btn:active {
+            background-color: #1c5ca9 !important;
+            color: white !important;
+        }
+        
+        .empty-list {
+            text-align: center;
+            padding: 50px 0;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">위험요인 목록</h1>
+        
+        <!-- 알림 메시지 -->
+        <div th:if="${message}" class="alert alert-success alert-message" role="alert">
+            <span th:text="${message}"></span>
+        </div>
+        
+        <!-- 버튼 그룹 -->
+        <div class="mb-4 text-end">
+            <a th:href="@{/general/risk-factor/create}" class="btn risk-btn">
+                <i class="fas fa-plus"></i> 새 위험요인 등록
+            </a>
+        </div>
+        
+        <!-- 목록 테이블 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                위험요인 목록
+            </div>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(riskFactors)}" class="empty-list">
+                    <p>등록된 위험요인이 없습니다.</p>
+                </div>
+                
+                <div th:unless="${#lists.isEmpty(riskFactors)}">
+                    <table class="table table-bordered table-hover risk-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%">No</th>
+                                <th style="width: 15%">현장명</th>
+                                <th style="width: 15%">공정</th>
+                                <th style="width: 15%">위험 분류</th>
+                                <th style="width: 20%">위험 요인(상세)</th>
+                                <th style="width: 15%">위험성 크기</th>
+                                <th style="width: 15%">조치여부</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="riskFactor, iterStat : ${riskFactors}" th:onclick="'location.href=\'' + @{/general/risk-factor/detail/{id}(id=${riskFactor.id})} + '\''" style="cursor: pointer;">
+                                <td class="text-center" th:text="${iterStat.count}"></td>
+                                <td th:text="${riskFactor.siteName}"></td>
+                                <td th:text="${riskFactor.workProcess}"></td>
+                                <td th:text="${riskFactor.riskClassification != null ? riskFactor.riskClassification.displayName : '-'}"></td>
+                                <td th:text="${riskFactor.riskDetailFactor ?: '-'}"></td>
+                                <td class="text-center" th:text="${riskFactor.riskSize}"></td>
+                                <td class="text-center" th:text="${riskFactor.isRiskMeasureCompletion != null ? riskFactor.isRiskMeasureCompletion.displayName : '-'}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            // 알림 메시지 자동 닫기
+            setTimeout(function() {
+                $('.alert-message').fadeOut('slow');
+            }, 3000);
+        });
+    </script>
+</th:block>
+</body>
+</html> 

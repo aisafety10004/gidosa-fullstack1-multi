@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/general}">
+<head>
+    <title th:text="${construction.name + ' - 현장공사'}"></title>
+    <style>
+        /* PC용 CSS */
+        .form-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-section h5 {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        
+        .required-label::after {
+            content: " *";
+            color: red;
+        }
+        
+        /* 반응형 스타일 */
+        @media (max-width: 768px) {
+            .form-section .row {
+                flex-direction: column;
+            }
+            
+            .form-section .col-md-6 {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+        }
+        
+        .risk-size-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .risk-low {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+        
+        .risk-medium {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+        
+        .risk-high {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+        
+        .risk-critical {
+            background-color: #842029;
+            color: #ffffff;
+        }
+
+        .btn-hazard-new {
+            background-color: #2876cd;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+            max-width: none;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .btn-hazard-new:hover,
+        .btn-hazard-new:focus,
+        .btn-hazard-new:active {
+            background-color: #2876cd !important;
+        }
+    </style>
+</head>
+<body>
+<!-- <div layout:fragment="content" class="bg-white">
+    <h1 th:text="${construction.name} + ' - 현장공사 general 메인 페이지'"></h1>
+</div> -->
+<div layout:fragment="content">
+    <div class="tailwind-section" id="mobile1-content">
+        <div class="w-full max-w-md mx-auto bg-white">
+            <!-- 에러 메시지 표시 영역 추가 -->
+            <div th:if="${errorMessage}" class="mb-4 p-4 rounded-md bg-red-50">
+                <div class="text-sm text-red-700" th:text="${errorMessage}">
+                </div>
+            </div>
+            <!-- 성공 메시지 표시 영역 추가 -->
+            <div th:if="${successMessage}" class="mb-4 p-4 rounded-md bg-green-50">
+                <div class="text-sm text-green-700" th:text="${successMessage}">
+                </div>
+            </div>
+            
+            <!-- 모바일 헤더 -->
+            <div class="bg-[#2876cd] text-white text-center py-4 px-4 rounded-t-lg mb-4">
+                <h1 class="text-xl font-bold">
+                    위험요인 보고
+                </h1>
+            </div>
+
+            <form th:action="@{/general/risk-factor/create}" method="post" th:object="${riskFactorDto}" enctype="multipart/form-data" class="px-4">
+                <!-- 숨겨진 필드 -->
+                <input type="hidden" id="mobile-latitude" th:field="*{latitude}" />
+                <input type="hidden" id="mobile-longitude" th:field="*{longitude}" />
+                <input type="hidden" id="mobile-constructionId" th:field="*{constructionId}" th:value="${construction.id}" />
+
+                <!-- 현장명 -->
+                <div class="mb-4">
+                    <label for="mobile-siteName" class="block text-sm font-medium text-blue-600 mb-1">현장명<span class="text-red-500">*</span></label>
+                    <input type="text" id="mobile-siteName" th:field="*{siteName}" th:value="${construction.name}" required
+                          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" readonly>
+                </div>
+
+                <!-- 접견장소 -->
+                <div class="mb-4">
+                    <label for="mobile-workProcess" class="block text-sm font-medium text-blue-600 mb-1">접견장소<span class="text-red-500">*</span></label>
+                    <input type="text" id="mobile-workProcess" th:field="*{workProcess}" required
+                          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- 작업공정 -->
+                <div class="mb-4">
+                    <label for="mobile-workLocation" class="block text-sm font-medium text-blue-600 mb-1">작업공정</label>
+                    <input type="text" id="mobile-workLocation" th:field="*{workLocation}"
+                          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- 위치층수 -->
+                <div class="mb-4">
+                    <label for="mobile-locationFloor" class="block text-sm font-medium text-blue-600 mb-1">위치층수</label>
+                    <input type="text" id="mobile-locationFloor" name="locationFloor"
+                          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- 현장사진 1 -->
+                <div class="mb-4">
+                    <label for="mobile-workImage1File" class="block text-sm font-medium text-blue-600 mb-1">현장사진(1)<span class="text-red-500">*</span></label>
+                    <input type="file" id="mobile-workImage1File" name="workImage1File" accept="image/*" required
+                          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none">
+                    <div id="mobile-workImage1Preview" class="mt-2"></div>
+                    <small id="mobile-gpsInfo" class="text-xs text-gray-500 mt-1"></small>
+                </div>
+
+                <!-- 현장사진 2 -->
+                <div class="mb-4">
+                    <label for="mobile-workImage2File" class="block text-sm font-medium text-blue-600 mb-1">현장사진(2)</label>
+                    <input type="file" id="mobile-workImage2File" name="workImage2File" accept="image/*"
+                          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none">
+                    <div id="mobile-workImage2Preview" class="mt-2"></div>
+                </div>
+
+                <!-- 위험 분류 -->
+                <div class="mb-4">
+                    <label for="mobile-riskClassification" class="block text-sm font-medium text-blue-600 mb-1">위험 분류<span class="text-red-500">*</span></label>
+                    <select id="mobile-riskClassification" th:field="*{riskClassification}" required
+                           class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- 위험 분류 선택 --</option>
+                        <option th:each="option : ${riskClassificationOptions}"
+                                th:value="${option}"
+                                th:text="${option.displayName}"></option>
+                    </select>
+                </div>
+
+                <!-- 위험 요인(상세) -->
+                <div class="mb-4">
+                    <label for="mobile-riskDetailFactor" class="block text-sm font-medium text-blue-600 mb-1">위험 요인(상세)<span class="text-red-500">*</span></label>
+                    <select id="mobile-riskDetailFactor" th:field="*{riskDetailFactor}" required
+                           class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- 위험 분류를 선택하세요 --</option>
+                    </select>
+                </div>
+
+                <!-- (예상)위험상황 및 결과 -->
+                <div class="mb-4">
+                    <label for="mobile-riskSituationResult" class="block text-sm font-medium text-blue-600 mb-1">(예상)위험상황 및 결과<span class="text-red-500">*</span></label>
+                    <textarea id="mobile-riskSituationResult" th:field="*{riskSituationResult}" rows="3" required
+                             class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+
+                <!-- 현재안전조치 -->
+                <div class="mb-4">
+                    <label for="mobile-currentSafetyMeasure" class="block text-sm font-medium text-blue-600 mb-1">현재안전조치</label>
+                    <textarea id="mobile-currentSafetyMeasure" th:field="*{currentSafetyMeasure}" rows="3"
+                             class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+
+                <!-- 위험성 평가 -->
+                <div class="border-t border-gray-200 pt-4 mb-4">
+                    <h2 class="text-lg font-bold text-gray-800 mb-3">위험성 평가</h2>
+                    
+                    <!-- 가능성 -->
+                    <div class="mb-4">
+                        <label for="mobile-riskPossibility" class="block text-sm font-medium text-blue-600 mb-1">가능성<span class="text-red-500">*</span></label>
+                        <select id="mobile-riskPossibility" th:field="*{riskPossibility}" required
+                               class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="1" selected>1 - 낮음</option>
+                            <option value="2">2 - 보통</option>
+                            <option value="3">3 - 높음</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 중대성 -->
+                    <div class="mb-4">
+                        <label for="mobile-riskCriticality" class="block text-sm font-medium text-blue-600 mb-1">중대성<span class="text-red-500">*</span></label>
+                        <select id="mobile-riskCriticality" th:field="*{riskCriticality}" required
+                               class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="1" selected>1 - 경미</option>
+                            <option value="2">2 - 중간</option>
+                            <option value="3">3 - 심각</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 위험성 크기 -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-blue-600 mb-1">위험성 크기</label>
+                        <div id="mobile-riskSizeDisplay" class="font-bold text-center p-2 bg-green-100 text-green-800 rounded-md">
+                            위험성 크기: 1 (가능성 × 중대성)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 위험성 감소대책 -->
+                <div class="border-t border-gray-200 pt-4 mb-4">
+                    <h2 class="text-lg font-bold text-gray-800 mb-3">위험성 감소대책</h2>
+                    
+                    <!-- 감소대책1 -->
+                    <div class="mb-4">
+                        <label for="mobile-riskReductionMeasure1" class="block text-sm font-medium text-blue-600 mb-1">감소대책1<span class="text-red-500">*</span></label>
+                        <select id="mobile-riskReductionMeasure1" th:field="*{riskReductionMeasure1}" required
+                               class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">-- 감소대책 선택 --</option>
+                            <option th:each="option : ${riskReductionMeasureFirstOptions}"
+                                    th:value="${option}"
+                                    th:text="${option.displayName}"></option>
+                        </select>
+                    </div>
+                    
+                    <!-- 감소대책2 -->
+                    <div class="mb-4">
+                        <label for="mobile-riskReductionMeasure2" class="block text-sm font-medium text-blue-600 mb-1">감소대책2<span class="text-red-500">*</span></label>
+                        <textarea id="mobile-riskReductionMeasure2" th:field="*{riskReductionMeasure2}" rows="3" required
+                                 class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                    
+                    <!-- 조치여부 -->
+                    <div class="mb-4">
+                        <label for="mobile-isRiskMeasureCompletion" class="block text-sm font-medium text-blue-600 mb-1">조치여부</label>
+                        <select id="mobile-isRiskMeasureCompletion" th:field="*{isRiskMeasureCompletion}"
+                               class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">-- 조치여부 선택 --</option>
+                            <option th:each="option : ${riskMeasureCompletionOptions}"
+                                    th:value="${option}"
+                                    th:text="${option.displayName}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 제출 버튼 -->
+                <div class="bottom-0 left-0 right-0 bg-white p-4">
+                    <button type="submit" class="w-full bg-[#2876cd] text-white py-3 px-4 rounded-full font-bold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        위험요인 등록
+                    </button>
+                </div>
+                <!-- 하단 여백 -->
+                <!-- <div class="pb-16"></div>  -->
+            </form>
+        </div>
+    </div>
+
+    <div class="container-fluid px-4" id="pc1-content">
+        <!-- 에러 메시지 표시 영역 추가 -->
+        <div th:if="${errorMessage}" class="mb-6 rounded-md bg-red-50 p-4">
+            <div class="text-sm text-red-700" th:text="${errorMessage}">
+            </div>
+        </div>
+        <!-- 성공 메시지 표시 영역 추가 -->
+        <div th:if="${successMessage}" class="mb-6 rounded-md bg-green-50 p-4">
+            <div class="text-sm text-green-700" th:text="${successMessage}">
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header" style="text-align: center;">
+                <i class="fas fa-edit me-1"></i>
+                신규 위험요인 등록 양식
+            </div>
+            <div class="card-body">
+                <form th:action="@{/general/risk-factor/create}" method="post" th:object="${riskFactorDto}" enctype="multipart/form-data">
+                    <!-- 위도, 경도 hidden 필드 추가 -->
+                    <input type="hidden" id="latitude" th:field="*{latitude}" />
+                    <input type="hidden" id="longitude" th:field="*{longitude}" />
+                    <input type="hidden" id="constructionId" th:field="*{constructionId}" th:value="${construction.id}" />
+
+                    <!-- 기본 정보 섹션 -->
+                    <div class="form-section">
+                        <div class="row">
+                            <div class="col-12 text-center mb-3">
+                                <div class="btn btn-hazard-new" style="pointer-events: none;">
+                                    신규 유해위험 등록 시스템
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="siteName" class="form-label required-label">현장명</label>
+                                <input type="text" class="form-control" id="siteName" th:field="*{siteName}" th:value="${construction.name}" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="workProcess" class="form-label required-label">공정</label>
+                                <input type="text" class="form-control" id="workProcess" th:field="*{workProcess}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="workLocation" class="form-label">작업위치(위치층수)</label>
+                                <input type="text" class="form-control" id="workLocation" th:field="*{workLocation}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 현장 사진 섹션 -->
+                    <div class="form-section">
+                        <h5>현장 사진</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="workImage1File" class="form-label required-label">현장사진1</label>
+                                <input type="file" class="form-control" id="workImage1File" name="workImage1File" accept="image/*" required>
+                                <div id="workImage1Preview" class="mt-2"></div>
+                                <small id="gpsInfo" class="form-text text-muted mt-1"></small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="workImage2File" class="form-label">현장사진2</label>
+                                <input type="file" class="form-control" id="workImage2File" name="workImage2File" accept="image/*">
+                                <div id="workImage2Preview" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 위험 분류 섹션 -->
+                    <div class="form-section">
+                        <h5>위험 분류</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="riskClassification" class="form-label required-label">위험 분류</label>
+                                <select class="form-select" id="riskClassification" th:field="*{riskClassification}" required>
+                                    <option value="">-- 위험 분류 선택 --</option>
+                                    <option th:each="option : ${riskClassificationOptions}"
+                                            th:value="${option}"
+                                            th:text="${option.displayName}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="riskDetailFactor" class="form-label required-label">위험 요인(상세)</label>
+                                <select class="form-select" id="riskDetailFactor" th:field="*{riskDetailFactor}" required>
+                                    <option value="">-- 위험 분류를 선택하세요 --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="riskSituationResult" class="form-label required-label">(예상)위험상황 및 결과</label>
+                            <textarea class="form-control" id="riskSituationResult" th:field="*{riskSituationResult}" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="currentSafetyMeasure" class="form-label">현재안전조치</label>
+                            <textarea class="form-control" id="currentSafetyMeasure" th:field="*{currentSafetyMeasure}" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- 위험성 평가 섹션 -->
+                    <div class="form-section">
+                        <h5>위험성 평가</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="riskPossibility" class="form-label required-label">가능성</label>
+                                <select class="form-control" id="riskPossibility" th:field="*{riskPossibility}" required>
+                                    <option value="1" selected>1 - 낮음</option>
+                                    <option value="2">2 - 보통</option>
+                                    <option value="3">3 - 높음</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="riskCriticality" class="form-label required-label">중대성</label>
+                                <select class="form-control" id="riskCriticality" th:field="*{riskCriticality}" required>
+                                    <option value="1" selected>1 - 경미</option>
+                                    <option value="2">2 - 중간</option>
+                                    <option value="3">3 - 심각</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">위험성 크기</label>
+                            <div id="riskSizeDisplay" class="risk-size-display">
+                                위험성 크기: 1 (가능성 × 중대성)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 위험성 감소대책 섹션 -->
+                    <div class="form-section">
+                        <h5>위험성 감소대책</h5>
+                        <div class="mb-3">
+                            <label for="riskReductionMeasure1" class="form-label required-label">감소대책1</label>
+                            <select class="form-select" id="riskReductionMeasure1" th:field="*{riskReductionMeasure1}" required>
+                                <option value="">-- 감소대책 선택 --</option>
+                                <option th:each="option : ${riskReductionMeasureFirstOptions}"
+                                        th:value="${option}"
+                                        th:text="${option.displayName}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="riskReductionMeasure2" class="form-label required-label">감소대책2</label>
+                            <textarea class="form-control" id="riskReductionMeasure2" th:field="*{riskReductionMeasure2}" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="isRiskMeasureCompletion" class="form-label">조치여부</label>
+                            <select class="form-select" id="isRiskMeasureCompletion" th:field="*{isRiskMeasureCompletion}">
+                                <option value="">-- 조치여부 선택 --</option>
+                                <option th:each="option : ${riskMeasureCompletionOptions}"
+                                        th:value="${option}"
+                                        th:text="${option.displayName}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 버튼 그룹 -->
+                    <div class="d-flex justify-content-center mt-4">
+                        <button type="submit" class="btn btn-primary me-2" style="background-color: #2876cd;">
+                            <i class="fas fa-save"></i> 위험보고 등록
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script src="/js/lib/exif.min.js"></script>
+    <script src="/js/utils.js"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // PC 버전 스크립트
+            // 위험성 크기 계산
+            const riskPossibilitySelect = document.getElementById('riskPossibility');
+            const riskCriticalitySelect = document.getElementById('riskCriticality');
+            const riskSizeDisplay = document.getElementById('riskSizeDisplay');
+            
+            // 위험 분류와 위험 요인(상세) 드롭다운 요소
+            const riskClassificationSelect = document.getElementById('riskClassification');
+            const riskDetailFactorSelect = document.getElementById('riskDetailFactor');
+            
+            // 위도, 경도 hidden 필드
+            const latitudeInput = document.getElementById('latitude');
+            const longitudeInput = document.getElementById('longitude');
+            const gpsInfoDisplay = document.getElementById('gpsInfo');
+            
+            // 모바일 버전 스크립트
+            // 위험성 크기 계산
+            const mobileRiskPossibilitySelect = document.getElementById('mobile-riskPossibility');
+            const mobileRiskCriticalitySelect = document.getElementById('mobile-riskCriticality');
+            const mobileRiskSizeDisplay = document.getElementById('mobile-riskSizeDisplay');
+            
+            // 위험 분류와 위험 요인(상세) 드롭다운 요소
+            const mobileRiskClassificationSelect = document.getElementById('mobile-riskClassification');
+            const mobileRiskDetailFactorSelect = document.getElementById('mobile-riskDetailFactor');
+            
+            // 위도, 경도 hidden 필드
+            const mobileLatitudeInput = document.getElementById('mobile-latitude');
+            const mobileLongitudeInput = document.getElementById('mobile-longitude');
+            const mobileGpsInfoDisplay = document.getElementById('mobile-gpsInfo');
+            
+            // 위험 분류에 따른 위험 요인(상세) 옵션 매핑
+            const detailFactorOptions = {
+                'MECHANICAL_EQUIPMENT': /*[[${mechanicalEquipmentOptions}]]*/ [],
+                'ELECTRICAL': /*[[${electricalOptions}]]*/ [],
+                'CHEMICAL_SUBSTANCE': /*[[${chemicalSubstanceOptions}]]*/ [],
+                'BIOLOGICAL': /*[[${biologicalOptions}]]*/ [],
+                'WORK_CHARACTERISTICS': /*[[${workCharacteristicsOptions}]]*/ [],
+                'WORK_ENVIRONMENT': /*[[${workEnvironmentOptions}]]*/ []
+            };
+            
+            // PC 위험 분류 변경 시 위험 요인(상세) 옵션 업데이트
+            function updateRiskDetailFactorOptions() {
+                const selectedClassification = riskClassificationSelect.value;
+                
+                // 기존 옵션 제거
+                riskDetailFactorSelect.innerHTML = '';
+                
+                // 기본 옵션 추가
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.text = selectedClassification ? '-- 위험 요인(상세) 선택 --' : '-- 위험 분류를 선택하세요 --';
+                riskDetailFactorSelect.appendChild(defaultOption);
+                
+                // 선택된 위험 분류에 따른 옵션 추가
+                if (selectedClassification && detailFactorOptions[selectedClassification]) {
+                    detailFactorOptions[selectedClassification].forEach(option => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option.value;
+                        optionElement.text = option.text;
+                        riskDetailFactorSelect.appendChild(optionElement);
+                    });
+                }
+            }
+            
+            // 모바일 위험 분류 변경 시 위험 요인(상세) 옵션 업데이트
+            function updateMobileRiskDetailFactorOptions() {
+                const selectedClassification = mobileRiskClassificationSelect.value;
+                
+                // 기존 옵션 제거
+                mobileRiskDetailFactorSelect.innerHTML = '';
+                
+                // 기본 옵션 추가
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.text = selectedClassification ? '-- 위험 요인(상세) 선택 --' : '-- 위험 분류를 선택하세요 --';
+                mobileRiskDetailFactorSelect.appendChild(defaultOption);
+                
+                // 선택된 위험 분류에 따른 옵션 추가
+                if (selectedClassification && detailFactorOptions[selectedClassification]) {
+                    detailFactorOptions[selectedClassification].forEach(option => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option.value;
+                        optionElement.text = option.text;
+                        mobileRiskDetailFactorSelect.appendChild(optionElement);
+                    });
+                }
+            }
+            
+            // PC 위험 분류 변경 이벤트 리스너 등록
+            riskClassificationSelect.addEventListener('change', updateRiskDetailFactorOptions);
+            
+            // 모바일 위험 분류 변경 이벤트 리스너 등록
+            mobileRiskClassificationSelect.addEventListener('change', updateMobileRiskDetailFactorOptions);
+            
+            // 초기 로드 시 위험 요인(상세) 옵션 설정
+            updateRiskDetailFactorOptions();
+            updateMobileRiskDetailFactorOptions();
+            
+            // PC 위험성 크기 계산
+            function calculateRiskSize() {
+                const possibility = parseInt(riskPossibilitySelect.value) || 1;
+                const criticality = parseInt(riskCriticalitySelect.value) || 1;
+                const riskSize = possibility * criticality;
+                
+                riskSizeDisplay.textContent = `위험성 크기: ${riskSize} (가능성 × 중대성)`;
+                
+                // 위험성 크기에 따른 스타일 변경
+                riskSizeDisplay.className = 'risk-size-display';
+            }
+            
+            // 모바일 위험성 크기 계산
+            function calculateMobileRiskSize() {
+                const possibility = parseInt(mobileRiskPossibilitySelect.value) || 1;
+                const criticality = parseInt(mobileRiskCriticalitySelect.value) || 1;
+                const riskSize = possibility * criticality;
+                
+                mobileRiskSizeDisplay.textContent = `위험성 크기: ${riskSize} (가능성 × 중대성)`;
+                
+                // 위험성 크기에 따른 스타일 변경
+                mobileRiskSizeDisplay.className = 'font-bold text-center p-2 rounded-md';
+                
+                if (riskSize <= 2) {
+                    mobileRiskSizeDisplay.classList.add('bg-green-100', 'text-green-800');
+                } else if (riskSize <= 4) {
+                    mobileRiskSizeDisplay.classList.add('bg-yellow-100', 'text-yellow-800');
+                } else if (riskSize <= 6) {
+                    mobileRiskSizeDisplay.classList.add('bg-red-100', 'text-red-800');
+                } else {
+                    mobileRiskSizeDisplay.classList.add('bg-red-900', 'text-white');
+                }
+            }
+            
+            // PC 이벤트 리스너
+            riskPossibilitySelect.addEventListener('change', calculateRiskSize);
+            riskCriticalitySelect.addEventListener('change', calculateRiskSize);
+            
+            // 모바일 이벤트 리스너
+            mobileRiskPossibilitySelect.addEventListener('change', calculateMobileRiskSize);
+            mobileRiskCriticalitySelect.addEventListener('change', calculateMobileRiskSize);
+            
+            // PC 이미지 미리보기 및 EXIF 데이터 추출
+            function previewImage(input, previewId) {
+                const preview = document.getElementById(previewId);
+                preview.innerHTML = '';
+                
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    const reader = new FileReader();
+                    
+                    // 이미지 미리보기
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'image-preview';
+                        preview.appendChild(img);
+                    };
+                    
+                    reader.readAsDataURL(file);
+                    
+                    // EXIF 데이터 추출 (workImage1File인 경우에만)
+                    if (input.id === 'workImage1File' || input.id === 'mobile-workImage1File') {
+                        extractExifData2(file).then(exifData => {
+                            if (exifData && exifData.latitude && exifData.longitude) {
+                                // PC와 모바일 hidden 필드에 위도, 경도 설정
+                                latitudeInput.value = exifData.latitude;
+                                longitudeInput.value = exifData.longitude;
+                                mobileLatitudeInput.value = exifData.latitude;
+                                mobileLongitudeInput.value = exifData.longitude;
+                                
+                                // 위치 정보 표시
+                                const gpsText = `위치 정보가 이미지에서 추출되었습니다.<br>(위도: ${exifData.latitude.toFixed(6)}, 경도: ${exifData.longitude.toFixed(6)})`;
+                                if (input.id === 'workImage1File') {
+                                    gpsInfoDisplay.innerHTML = gpsText;
+                                } else {
+                                    mobileGpsInfoDisplay.innerHTML = gpsText;
+                                }
+                            } else {
+                                // 위치 정보가 없는 경우
+                                if (input.id === 'workImage1File') {
+                                    latitudeInput.value = '';
+                                    longitudeInput.value = '';
+                                    gpsInfoDisplay.textContent = '이미지에 위치 정보가 없습니다.';
+                                } else {
+                                    mobileLatitudeInput.value = '';
+                                    mobileLongitudeInput.value = '';
+                                    mobileGpsInfoDisplay.textContent = '이미지에 위치 정보가 없습니다.';
+                                }
+                            }
+                        }).catch(error => {
+                            console.error('EXIF 데이터 추출 오류:', error);
+                            if (input.id === 'workImage1File') {
+                                latitudeInput.value = '';
+                                longitudeInput.value = '';
+                                gpsInfoDisplay.textContent = 'EXIF 데이터를 읽는 중 오류가 발생했습니다.';
+                            } else {
+                                mobileLatitudeInput.value = '';
+                                mobileLongitudeInput.value = '';
+                                mobileGpsInfoDisplay.textContent = 'EXIF 데이터를 읽는 중 오류가 발생했습니다.';
+                            }
+                        });
+                    }
+                }
+            }
+            
+            // PC 이벤트 리스너
+            document.getElementById('workImage1File').addEventListener('change', function() {
+                previewImage(this, 'workImage1Preview');
+            });
+            
+            document.getElementById('workImage2File').addEventListener('change', function() {
+                previewImage(this, 'workImage2Preview');
+            });
+            
+            // 모바일 이벤트 리스너
+            document.getElementById('mobile-workImage1File').addEventListener('change', function() {
+                previewImage(this, 'mobile-workImage1Preview');
+            });
+            
+            document.getElementById('mobile-workImage2File').addEventListener('change', function() {
+                previewImage(this, 'mobile-workImage2Preview');
+            });
+            
+            // 폼 제출 전 유효성 검사
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    if (!this.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    this.classList.add('was-validated');
+                });
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>
