@@ -1,5 +1,6 @@
 package net.gidosa.full.webadmin.controllers.managers;
 
+import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.gidosa.full.webadmin.services.ConstructionService;
@@ -208,7 +209,7 @@ public class WorkDiscussionController {
     public String create(@ModelAttribute WorkDiscussion workDiscussion, 
                         @RequestParam(value = "files", required = false) List<MultipartFile> files,
                         @RequestParam(value = "constructionId", required = false) Long constructionId,
-                        @RequestParam(value = "mermaidCode", required = false) String mermaidCode,
+//                        @RequestParam(value = "mermaidCode", required = false) String mermaidCode,
                         @AuthenticationPrincipal UserDetails userDetails,
                         RedirectAttributes redirectAttributes) {
         try {
@@ -223,7 +224,8 @@ public class WorkDiscussionController {
             }
             
             // 머메이드 코드 설정
-            workDiscussion.setMermaidCode(mermaidCode);
+            if(!Strings.isNullOrEmpty(workDiscussion.getMermaidCode()) && workDiscussion.getMermaidCode().trim().isEmpty())
+                workDiscussion.setMermaidCode(null);
             
             // 권한에 따라 건설현장 설정
             if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
@@ -352,7 +354,8 @@ public class WorkDiscussionController {
             }
             
             // 머메이드 코드 설정
-            workDiscussion.setMermaidCode(mermaidCode);
+            if(!Strings.isNullOrEmpty(workDiscussion.getMermaidCode()) && workDiscussion.getMermaidCode().trim().isEmpty())
+                workDiscussion.setMermaidCode(null);
             
             // 그룹명이 없으면 기본값으로 설정
             if (workDiscussion.getGroupName() == null || workDiscussion.getGroupName().isEmpty()) {

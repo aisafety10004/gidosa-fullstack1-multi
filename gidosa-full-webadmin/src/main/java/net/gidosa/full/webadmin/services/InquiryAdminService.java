@@ -376,7 +376,9 @@ public class InquiryAdminService {
         attachment.setFilePath(FILE_UPLOAD_PATH + File.separator + savedFilename);
         attachment.setFileSize(file.getSize());
         attachment.setContentType(file.getContentType());
-        
+        attachment.setFileExtension(fileExtension);
+//            attachment.setFileType(fileExtension);
+
         // 파일 확장자 설정
         if (fileExtension.startsWith(".")) {
             attachment.setFileExtension(fileExtension.substring(1));

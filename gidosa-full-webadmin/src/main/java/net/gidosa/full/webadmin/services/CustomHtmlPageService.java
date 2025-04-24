@@ -296,7 +296,7 @@ public class CustomHtmlPageService {
             attachment.setFileSize(file.getSize());
             attachment.setContentType(file.getContentType());
             attachment.setFileExtension(extension);
-            attachment.setFileType("html");
+//            attachment.setFileType("html");
 
             return fileAttachmentRepository.save(attachment);
         } catch (IOException e) {

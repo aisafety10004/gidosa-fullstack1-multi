@@ -172,6 +172,11 @@ public class WorkDiscussionService {
 
             // 저장할 파일명 생성
             String originalFilename = file.getOriginalFilename();
+            String fileExtension = "";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+            }
+
             String storedFilename = generateStoredFilename(originalFilename);
             String filePath = uploadPath + File.separator + storedFilename;
 
@@ -186,6 +191,8 @@ public class WorkDiscussionService {
             attachment.setFilePath(filePath);
             attachment.setFileSize(file.getSize());
             attachment.setContentType(file.getContentType());
+            attachment.setFileExtension(fileExtension);
+//            attachment.setFileType(fileExtension);
 
             return fileAttachmentRepository.save(attachment);
         } catch (IOException e) {
