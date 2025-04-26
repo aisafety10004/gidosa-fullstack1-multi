@@ -75,9 +75,9 @@ public class PrincipalDetails implements UserDetails, OAuth2User, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collet = new ArrayList<>();
-        collet.add(()->{ return memberAdmin.getRole();});
-        return collet;
+        Collection<GrantedAuthority> colletion = new ArrayList<>();
+        colletion.add(()->{ return memberAdmin.getRole();});
+        return colletion;
     }
 
     // 리소스 서버로 부터 받는 회원정보(OAuth2)

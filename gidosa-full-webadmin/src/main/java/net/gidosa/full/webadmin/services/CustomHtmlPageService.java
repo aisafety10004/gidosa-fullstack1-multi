@@ -51,6 +51,7 @@ public class CustomHtmlPageService {
         htmlPage.setTitle(htmlPageDTO.getTitle());
         htmlPage.setContent(htmlPageDTO.getContent());
         htmlPage.setPublished(htmlPageDTO.isPublished());
+        htmlPage.setIsMainPage(htmlPageDTO.getIsMainPage());
         
         // construction 설정
         if (htmlPageDTO.getConstructionId() != null) {
@@ -85,6 +86,7 @@ public class CustomHtmlPageService {
         htmlPage.setTitle(htmlPageDTO.getTitle());
         htmlPage.setContent(htmlPageDTO.getContent());
         htmlPage.setPublished(htmlPageDTO.isPublished());
+        htmlPage.setIsMainPage(htmlPageDTO.getIsMainPage());
         
         // construction 설정
         if (htmlPageDTO.getConstructionId() != null) {
@@ -325,5 +327,14 @@ public class CustomHtmlPageService {
         } catch (IOException e) {
             log.error("파일 삭제 중 오류 발생", e);
         }
+    }
+
+    // 메인 페이지 여부 상태 변경
+    @Transactional
+    public CustomHtmlPage updateMainPageStatus(Long id, boolean isMainPage) {
+        CustomHtmlPage htmlPage = customHtmlPageRepository.findByIdWithHtmlFileAndConstruction(id)
+                .orElseThrow(() -> new RuntimeException("HTML 페이지를 찾을 수 없습니다."));
+        htmlPage.setIsMainPage(isMainPage);
+        return customHtmlPageRepository.save(htmlPage);
     }
 } 

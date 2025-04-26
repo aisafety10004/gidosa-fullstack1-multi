@@ -25,6 +25,14 @@ public class CustomHtmlPageDTO {
     
     private boolean published;
     
+    private boolean isMainPage;
+    public boolean getIsMainPage() {
+        return this.isMainPage;
+    }
+    public void setIsMainPage(boolean isMainPage) {
+        this.isMainPage = isMainPage;
+    }
+
     // 소속 공사 ID
     private Long constructionId;
     

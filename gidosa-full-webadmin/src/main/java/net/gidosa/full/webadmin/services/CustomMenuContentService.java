@@ -8,7 +8,7 @@ import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuContentType2Repository;
 import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuContentType3Repository;
 import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuContentType4Repository;
 import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuContentType5Repository;
-import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuRepository;
+import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuJpaRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,7 +34,7 @@ public class CustomMenuContentService {
     private final CustomMenuContentType3Repository type3Repository;
     private final CustomMenuContentType4Repository type4Repository;
     private final CustomMenuContentType5Repository type5Repository;
-    private final CustomMenuRepository customMenuRepository;
+    private final CustomMenuJpaRepository customMenuJpaRepository;
     private final FileAttachmentService fileAttachmentService;
     
     // 파일 업로드 경로 설정
@@ -88,7 +87,7 @@ public class CustomMenuContentService {
      */
     @Transactional
     public CustomMenuContentType1 saveType1Content(Long menuId, String content) {
-        CustomMenu menu = customMenuRepository.findById(menuId)
+        CustomMenu menu = customMenuJpaRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
         
         if (menu.getMenuType() != 1) {
@@ -116,7 +115,7 @@ public class CustomMenuContentService {
      */
     @Transactional
     public CustomMenuContentType2 saveType2Content(Long menuId, String content, LocalDate date) {
-        CustomMenu menu = customMenuRepository.findById(menuId)
+        CustomMenu menu = customMenuJpaRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
         
         if (menu.getMenuType() != 2) {
@@ -145,7 +144,7 @@ public class CustomMenuContentService {
      */
     @Transactional
     public CustomMenuContentType3 saveType3Content(Long menuId, String mermaidCode) {
-        CustomMenu menu = customMenuRepository.findById(menuId)
+        CustomMenu menu = customMenuJpaRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
         
         if (menu.getMenuType() != 3) {
@@ -173,7 +172,7 @@ public class CustomMenuContentService {
      */
     @Transactional
     public CustomMenuContentType4 saveType4Content(Long menuId, String content, List<MultipartFile> files) throws IOException {
-        CustomMenu menu = customMenuRepository.findById(menuId)
+        CustomMenu menu = customMenuJpaRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
         
         if (menu.getMenuType() != 4) {
@@ -240,7 +239,7 @@ public class CustomMenuContentService {
      */
     @Transactional
     public CustomMenuContentType5 saveType5Content(Long menuId, String mermaidCode, List<MultipartFile> files) throws IOException {
-        CustomMenu menu = customMenuRepository.findById(menuId)
+        CustomMenu menu = customMenuJpaRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
         
         if (menu.getMenuType() != 5) {
@@ -345,7 +344,7 @@ public class CustomMenuContentService {
      */
     @Transactional
     public void deleteType1Content(Long menuId) {
-        CustomMenu menu = customMenuRepository.findById(menuId)
+        CustomMenu menu = customMenuJpaRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
         
         if (menu.getMenuType() != 1) {
@@ -360,7 +359,7 @@ public class CustomMenuContentService {
      */
     @Transactional
     public void deleteType2Content(Long menuId, LocalDate date) {
-        CustomMenu menu = customMenuRepository.findById(menuId)
+        CustomMenu menu = customMenuJpaRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
         
         if (menu.getMenuType() != 2) {
@@ -375,7 +374,7 @@ public class CustomMenuContentService {
      */
     @Transactional
     public void deleteType3Content(Long menuId) {
-        CustomMenu menu = customMenuRepository.findById(menuId)
+        CustomMenu menu = customMenuJpaRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu Id: " + menuId));
         
         if (menu.getMenuType() != 3) {

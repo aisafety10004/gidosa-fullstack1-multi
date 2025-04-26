@@ -7,13 +7,13 @@
          th:classappend="${headerInvisible ?: 'bg-gray-500/50'}"
          th:with="authConstruction=${construction == null ? #authentication.principal.memberGeneral.construction : construction}">
         <div class="flex items-center">
-            <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main/main' : '/general/construction/' + construction.id}}"
-               class="text-lg md:text-2xl font-bold text-primary focus:outline-none" style=""
-               onclick="if (headerInvisible) return false;">
-                공사현장
-            </a>
+<!--            <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main/main' : '/general/construction/' + construction.id}}"-->
+<!--               class="text-lg md:text-2xl font-bold text-primary focus:outline-none" style=""-->
+<!--               onclick="if (headerInvisible) return false;">-->
+<!--                공사현장-->
+<!--            </a>-->
             <th:block th:if="${authConstruction != null || construction != null}">
-                <span class="mx-2 md:mx-4 text-gray-300">|</span>
+<!--                <span class="mx-2 md:mx-4 text-gray-300">|</span>-->
                 <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/general/main/main' : '/general/construction/' + construction.id}}"
                    class="text-base md:text-xl text-gray-700 cursor-pointer"
                    onclick="if (headerInvisible) return false;"
@@ -106,9 +106,9 @@
     <div id="mobile-menu" class="md:hidden absolute right-0 bg-white shadow-lg z-50 hidden h-screen w-4/5 max-w-sm overflow-hidden">
         <div class="flex flex-col py-6 h-full">
             <!-- 메뉴 헤더 부분 -->
-            <div class="px-8 pb-4 mb-4 border-b border-gray-200">
-                <h3 class="text-xl font-bold text-primary">메뉴</h3>
-            </div>
+<!--            <div class="px-8 pb-4 mb-4 border-b border-gray-200">-->
+<!--                <h3 class="text-xl font-bold text-primary">메뉴</h3>-->
+<!--            </div>-->
             
             <!-- 메뉴 항목들 -->
             <div class="flex-1 overflow-y-auto pb-10">

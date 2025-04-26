@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenu;
 import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
-import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuRepository;
+import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 //@Transactional(readOnly = true)
 public class ConstructionService {
     private final ConstructionJpaRepository constructionJpaRepository;
-    private final CustomMenuRepository customMenuRepository;
+    private final CustomMenuJpaRepository customMenuJpaRepository;
 
     public Page<Construction> findAllConstructions(Pageable pageable) {
         return constructionJpaRepository.findAllByOrderByIdDesc(pageable);
@@ -196,9 +196,9 @@ public class ConstructionService {
     @Transactional
     public void deleteConstructionWithCustomMenus(Long constructionId) {
         // 관련 커스텀 메뉴 먼저 삭제
-        List<CustomMenu> customMenus = customMenuRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
+        List<CustomMenu> customMenus = customMenuJpaRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
         for (CustomMenu menu : customMenus) {
-            customMenuRepository.deleteById(menu.getId());
+            customMenuJpaRepository.deleteById(menu.getId());
         }
         
         // 건설 현장 삭제
@@ -219,13 +219,13 @@ public class ConstructionService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid construction Id: " + constructionId));
         
         // 현재 건설 현장의 커스텀 메뉴를 조회하여 URL 목록 추출
-        List<CustomMenu> existingMenus = customMenuRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
+        List<CustomMenu> existingMenus = customMenuJpaRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
         List<String> existingUrls = existingMenus.stream()
                 .map(CustomMenu::getUrl)
                 .collect(Collectors.toList());
         
         for (Long templateMenuId : templateMenuIds) {
-            CustomMenu templateMenu = customMenuRepository.findByIdWithConstruction(templateMenuId)
+            CustomMenu templateMenu = customMenuJpaRepository.findByIdWithConstruction(templateMenuId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid template menu Id: " + templateMenuId));
             
             // 템플릿 메뉴가 아니면 건너뜀
@@ -259,7 +259,7 @@ public class ConstructionService {
         newMenu.setParent(newParent);
         
         // 새 메뉴 저장
-        CustomMenu savedMenu = customMenuRepository.save(newMenu);
+        CustomMenu savedMenu = customMenuJpaRepository.save(newMenu);
         
         // 하위 메뉴가 있으면 재귀적으로 복사
         if (sourceMenu.getChildren() != null && !sourceMenu.getChildren().isEmpty()) {
@@ -281,10 +281,10 @@ public class ConstructionService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid construction Id: " + constructionId));
         
         // 현재 건설 현장의 커스텀 메뉴를 조회
-        List<CustomMenu> customMenus = customMenuRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
+        List<CustomMenu> customMenus = customMenuJpaRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
         
         // 템플릿 메뉴 목록 조회
-        List<CustomMenu> templateMenus = customMenuRepository.findTemplateMenus();
+        List<CustomMenu> templateMenus = customMenuJpaRepository.findTemplateMenus();
         
         List<Long> selectedIds = new ArrayList<>();
         for (CustomMenu template : templateMenus) {
@@ -306,18 +306,18 @@ public class ConstructionService {
     @Transactional
     public void updateCustomMenusForConstruction(Long constructionId, List<Long> newSelectedMenuIds) {
         // 템플릿 메뉴 목록 조회 (admin이 만든 커스텀 메뉴)
-        List<CustomMenu> templateMenus = customMenuRepository.findTemplateMenus();
+        List<CustomMenu> templateMenus = customMenuJpaRepository.findTemplateMenus();
         List<String> templateUrls = templateMenus.stream()
                 .map(CustomMenu::getUrl)
                 .collect(Collectors.toList());
         
         // 현재 건설 현장의 커스텀 메뉴 조회
-        List<CustomMenu> existingMenus = customMenuRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
+        List<CustomMenu> existingMenus = customMenuJpaRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
         
         // admin이 만든 커스텀 메뉴만 삭제 (URL을 기준으로 판단)
         for (CustomMenu menu : existingMenus) {
             if (templateUrls.contains(menu.getUrl())) {
-                customMenuRepository.deleteById(menu.getId());
+                customMenuJpaRepository.deleteById(menu.getId());
             }
         }
         

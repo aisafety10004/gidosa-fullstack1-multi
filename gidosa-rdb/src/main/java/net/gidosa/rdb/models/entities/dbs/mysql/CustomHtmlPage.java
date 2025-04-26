@@ -39,6 +39,10 @@ public class CustomHtmlPage {
     @Comment("게시 여부")
     private Boolean published = false;
     
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    @Comment("메인 페이지 여부")
+    private Boolean isMainPage = false;
+    
     @CreatedDate
     @Comment("생성 일시")
     private LocalDateTime createdAt;

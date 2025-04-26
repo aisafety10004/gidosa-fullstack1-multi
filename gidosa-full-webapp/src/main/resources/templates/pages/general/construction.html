@@ -13,132 +13,140 @@
     <div class="" id="mobile1-content">
         <!-- 메인 컨테이너 -->
         <div class="flex flex-col items-center w-full max-w-md mx-auto px-4 py-4">
-            <!-- 헤더 섹션 -->
-            <div class="w-full bg-blue-50 rounded-lg p-4 mb-4">
-                <div class="text-blue-500 text-xl font-bold">위험성평가</div>
-                <div class="text-blue-900 text-2xl font-bold">자기규율 예방체계의 <span class="text-blue-500">핵심</span>입니다.</div>
-            </div>
+            <!-- 사용자 HTML 삽입 위치(1개라도 MainPage가 있을 경우) -->
+            <th:block th:if="${htmlContent != null && !htmlContent.isEmpty()}">
+                <div th:utext="${htmlContent}"></div>
+            </th:block>
 
-            <!-- 유튜브 비디오 -->
-            <div class="w-full aspect-video bg-gray-200 mb-4 rounded-lg overflow-hidden">
-                <iframe class="w-full h-full" 
-                        src="https://www.youtube.com/embed/VIDEO_ID_HERE" 
-                        title="위험성평가 부서소개" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                </iframe>
-            </div>
+            <!-- 기본 화면(MainPage가 없을 경우) -->
+            <th:block th:if="${htmlContent == null || htmlContent.isEmpty()}">
+                <!-- 헤더 섹션 -->
+                <div class="w-full bg-blue-50 rounded-lg p-4 mb-4">
+                    <div class="text-blue-500 text-xl font-bold">위험성평가</div>
+                    <div class="text-blue-900 text-2xl font-bold">자기규율 예방체계의 <span class="text-blue-500">핵심</span>입니다.</div>
+                </div>
 
-            <!-- 메뉴 그리드 - 0 번째 행 -->
-            <!-- <div class="grid grid-cols-2 gap-4 w-full mb-4">
-                <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
-                    <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                    </div>
-                    <span class="text-blue-900 text-sm font-semibold text-center">출근하기</span>
+                <!-- 유튜브 비디오 -->
+                <div class="w-full aspect-video bg-gray-200 mb-4 rounded-lg overflow-hidden">
+                    <iframe class="w-full h-full"
+                            src="https://www.youtube.com/embed/VIDEO_ID_HERE"
+                            title="위험성평가 부서소개"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                    </iframe>
                 </div>
-                <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
-                    <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                    </div>
-                    <span class="text-blue-900 text-sm font-semibold text-center">퇴근하기</span>
-                </div>                
-            </div> -->
 
-            <!-- 메뉴 그리드 - 첫 번째 행 -->
-            <div class="grid grid-cols-3 gap-4 w-full mb-4">
-                <!-- 위험성평가 결과조회 -->
-                <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
-                    <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
-                    <span class="text-blue-900 text-sm font-semibold text-center">위험성평가<br/>결과조회</span>
-                </div>
-                
-                <!-- 컨설팅산정 -->
-                <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
-                    <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                    </div>
-                    <span class="text-blue-900 text-sm font-semibold text-center">컨설팅산정<br/>(위험성평가/<br/>인전보건관리<br/>체계)</span>
-                </div>
-                
-                <!-- TBM실시 등 확/조회 -->
-                <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
-                    <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
-                    </div>
-                    <span class="text-blue-900 text-sm font-semibold text-center">TBM실시 등록<br/>/조회</span>
-                </div>
-            </div>
-
-            <!-- 메뉴 그리드 - 두 번째 행 -->
-            <div class="grid grid-cols-3 gap-4 w-full mb-4">
-                <!-- 유해위험요인 상세계획 -->
-                <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
-                    <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <span class="text-blue-900 text-sm font-semibold text-center">유해위험요인<br/>상세계획</span>
-                </div>
-                
-                <!-- 자료실 -->
-                <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
-                    <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                        </svg>
-                    </div>
-                    <span class="text-blue-900 text-sm font-semibold text-center">자료실</span>
-                </div>
-                
-                <!-- 자주하는질문(FAQ) -->
-                <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
-                    <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                        </svg>
-                    </div>
-                    <span class="text-blue-900 text-sm font-semibold text-center">자주하는<br/>질문(FAQ)</span>
-                </div>
-            </div>
-
-            <!-- 커스텀 메뉴 그리드(upperupperupperupperupperupper) -->
-            <!-- 메뉴를 3열 그리드로 표시 (한 행에 3개씩) -->
-            <!-- <th:block th:if="${customMenus != null && !customMenus.isEmpty()}">
-                
-                <div class="grid grid-cols-3 gap-4 w-full mb-4" th:with="menuCount=${#lists.size(customMenus)}">
-                    <th:block th:each="menu, status : ${customMenus}">
-                        <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
-                            <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <a th:href="@{${menu.url}}" class="text-blue-900 text-sm font-semibold text-center" th:text="${menu.name}">메뉴명</a>
+                <!-- 메뉴 그리드 - 0 번째 행 -->
+                <!-- <div class="grid grid-cols-2 gap-4 w-full mb-4">
+                    <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
+                        <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
                         </div>
-                    </th:block>
+                        <span class="text-blue-900 text-sm font-semibold text-center">출근하기</span>
+                    </div>
+                    <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
+                        <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <span class="text-blue-900 text-sm font-semibold text-center">퇴근하기</span>
+                    </div>
+                </div> -->
+
+                <!-- 메뉴 그리드 - 첫 번째 행 -->
+                <div class="grid grid-cols-3 gap-4 w-full mb-4">
+                    <!-- 위험성평가 결과조회 -->
+                    <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
+                        <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <span class="text-blue-900 text-sm font-semibold text-center">위험성평가<br/>결과조회</span>
+                    </div>
+
+                    <!-- 컨설팅산정 -->
+                    <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
+                        <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <span class="text-blue-900 text-sm font-semibold text-center">컨설팅산정<br/>(위험성평가/<br/>인전보건관리<br/>체계)</span>
+                    </div>
+
+                    <!-- TBM실시 등 확/조회 -->
+                    <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
+                        <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        </div>
+                        <span class="text-blue-900 text-sm font-semibold text-center">TBM실시 등록<br/>/조회</span>
+                    </div>
                 </div>
-            </th:block> -->
-            <!-- 메뉴가 없을 경우 기본 메시지 -->
-            <!-- <th:block th:if="${customMenus == null || customMenus.isEmpty()}">
-                <div class="w-full text-center p-4 bg-gray-100 rounded-lg mb-4">
-                    <p class="text-gray-600">등록된 메뉴가 없습니다.</p>
+
+                <!-- 메뉴 그리드 - 두 번째 행 -->
+                <div class="grid grid-cols-3 gap-4 w-full mb-4">
+                    <!-- 유해위험요인 상세계획 -->
+                    <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
+                        <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <span class="text-blue-900 text-sm font-semibold text-center">유해위험요인<br/>상세계획</span>
+                    </div>
+
+                    <!-- 자료실 -->
+                    <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
+                        <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                            </svg>
+                        </div>
+                        <span class="text-blue-900 text-sm font-semibold text-center">자료실</span>
+                    </div>
+
+                    <!-- 자주하는질문(FAQ) -->
+                    <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
+                        <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                            </svg>
+                        </div>
+                        <span class="text-blue-900 text-sm font-semibold text-center">자주하는<br/>질문(FAQ)</span>
+                    </div>
                 </div>
-            </th:block> -->
+
+                <!-- 커스텀 메뉴 그리드(upperupperupperupperupperupper) -->
+                <!-- 메뉴를 3열 그리드로 표시 (한 행에 3개씩) -->
+                <!-- <th:block th:if="${customMenus != null && !customMenus.isEmpty()}">
+
+                    <div class="grid grid-cols-3 gap-4 w-full mb-4" th:with="menuCount=${#lists.size(customMenus)}">
+                        <th:block th:each="menu, status : ${customMenus}">
+                            <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white">
+                                <div class="w-10 h-10 bg-white flex items-center justify-center rounded-full mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <a th:href="@{${menu.url}}" class="text-blue-900 text-sm font-semibold text-center" th:text="${menu.name}">메뉴명</a>
+                            </div>
+                        </th:block>
+                    </div>
+                </th:block> -->
+                <!-- 메뉴가 없을 경우 기본 메시지 -->
+                <!-- <th:block th:if="${customMenus == null || customMenus.isEmpty()}">
+                    <div class="w-full text-center p-4 bg-gray-100 rounded-lg mb-4">
+                        <p class="text-gray-600">등록된 메뉴가 없습니다.</p>
+                    </div>
+                </th:block> -->
+            </th:block>
         </div>
     </div>
     

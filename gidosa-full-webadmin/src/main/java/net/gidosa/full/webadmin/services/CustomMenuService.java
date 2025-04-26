@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.gidosa.full.webadmin.models.dtos.CustomMenuDto;
 import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenu;
-import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuRepository;
+import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuJpaRepository;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
 import net.gidosa.rdb.repositories.mysql.jpa.ConstructionJpaRepository;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomMenuService {
     
-    private final CustomMenuRepository customMenuRepository;
+    private final CustomMenuJpaRepository customMenuJpaRepository;
     private final ConstructionJpaRepository constructionJpaRepository;
     
     /**
@@ -27,7 +27,7 @@ public class CustomMenuService {
      */
     @Transactional(readOnly = true)
     public List<CustomMenu> getAllMenusByConstructionId(Long constructionId) {
-        return customMenuRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
+        return customMenuJpaRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
     }
     
     /**
@@ -35,7 +35,7 @@ public class CustomMenuService {
      */
     @Transactional(readOnly = true)
     public List<CustomMenu> getRootMenusByConstructionId(Long constructionId) {
-        return customMenuRepository.findRootMenusByConstructionId(constructionId);
+        return customMenuJpaRepository.findRootMenusByConstructionId(constructionId);
     }
     
     /**
@@ -43,7 +43,7 @@ public class CustomMenuService {
      */
     @Transactional(readOnly = true)
     public List<CustomMenu> getRootMenusWithChildrenByConstructionId(Long constructionId) {
-        return customMenuRepository.findRootMenusWithChildrenByConstructionId(constructionId);
+        return customMenuJpaRepository.findRootMenusWithChildrenByConstructionId(constructionId);
     }
     
     /**
@@ -51,7 +51,7 @@ public class CustomMenuService {
      */
     @Transactional(readOnly = true)
     public List<CustomMenu> getChildMenusByParentId(Long parentId) {
-        return customMenuRepository.findByParentIdOrderByDisplayOrderAsc(parentId);
+        return customMenuJpaRepository.findByParentIdOrderByDisplayOrderAsc(parentId);
     }
     
     /**
@@ -60,7 +60,7 @@ public class CustomMenuService {
     @Transactional
     public CustomMenu saveMenu(CustomMenuDto menuDto) {
         CustomMenu menu = convertToEntity(menuDto);
-        return customMenuRepository.save(menu);
+        return customMenuJpaRepository.save(menu);
     }
     
     /**
@@ -68,7 +68,7 @@ public class CustomMenuService {
      */
     @Transactional
     public void deleteMenu(Long menuId) {
-        customMenuRepository.deleteById(menuId);
+        customMenuJpaRepository.deleteById(menuId);
     }
     
     /**
@@ -76,7 +76,7 @@ public class CustomMenuService {
      */
     @Transactional(readOnly = true)
     public Optional<CustomMenu> getMenuById(Long menuId) {
-        return customMenuRepository.findByIdWithConstruction(menuId);
+        return customMenuJpaRepository.findByIdWithConstruction(menuId);
     }
     
     /**
@@ -85,7 +85,7 @@ public class CustomMenuService {
     @Transactional(readOnly = true)
     public List<CustomMenu> getMenusByTypeAndConstructionId(Long constructionId, Integer menuType) {
     // public CustomMenu getMenusByUrl(Long constructionId, String url) {
-        return customMenuRepository.findByConstructionIdAndMenuTypeOrderByDisplayOrderAsc(constructionId, menuType);
+        return customMenuJpaRepository.findByConstructionIdAndMenuTypeOrderByDisplayOrderAsc(constructionId, menuType);
         // log.info("Searching for menu with constructionId: {} and URL: {}", constructionId, url);
         
         // // 1. 정확한 URL 매칭 시도
@@ -131,7 +131,7 @@ public class CustomMenuService {
      */
     @Transactional(readOnly = true)
     public CustomMenu getMenuByUrl(Long constructionId, String url) {
-        return customMenuRepository.findByConstructionIdAndUrl(constructionId, url);
+        return customMenuJpaRepository.findByConstructionIdAndUrl(constructionId, url);
     }
 
     /**
@@ -139,7 +139,7 @@ public class CustomMenuService {
      */
     @Transactional(readOnly = true)
     public CustomMenu getMenuByConstructionIsNullAndUrl(String url) {
-        return customMenuRepository.findByConstructionIsNullAndUrl(url);
+        return customMenuJpaRepository.findByConstructionIsNullAndUrl(url);
     }
     
     /**
@@ -149,7 +149,7 @@ public class CustomMenuService {
         CustomMenu menu = new CustomMenu();
         
         if (dto.getId() != null) {
-            menu = customMenuRepository.findByIdWithConstruction(dto.getId())
+            menu = customMenuJpaRepository.findByIdWithConstruction(dto.getId())
                     .orElse(new CustomMenu());
         }
         
@@ -171,7 +171,7 @@ public class CustomMenuService {
         
         // 상위 메뉴 설정
         if (dto.getParentId() != null) {
-            CustomMenu parent = customMenuRepository.findByIdWithConstruction(dto.getParentId())
+            CustomMenu parent = customMenuJpaRepository.findByIdWithConstruction(dto.getParentId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid parent menu Id: " + dto.getParentId()));
             menu.setParent(parent);
         } else {
@@ -203,7 +203,7 @@ public class CustomMenuService {
      */
     @Transactional(readOnly = true)
     public List<CustomMenu> getAllRootMenus() {
-        return customMenuRepository.findAllRootMenus();
+        return customMenuJpaRepository.findAllRootMenus();
     }
     
     /**
@@ -211,7 +211,7 @@ public class CustomMenuService {
      */
     @Transactional(readOnly = true)
     public List<CustomMenu> getAllRootMenusWithChildren() {
-        return customMenuRepository.findAllRootMenusWithChildren();
+        return customMenuJpaRepository.findAllRootMenusWithChildren();
     }
 
     /**
@@ -219,7 +219,7 @@ public class CustomMenuService {
      */
     @Transactional(readOnly = true)
     public List<CustomMenu> getAllRootMenusAdminWithChildren() {
-        return customMenuRepository.findAllRootMenusAdminWithChildren();
+        return customMenuJpaRepository.findAllRootMenusAdminWithChildren();
     }
     
     /**
@@ -235,6 +235,6 @@ public class CustomMenuService {
      */
     @Transactional(readOnly = true)
     public List<CustomMenu> getTemplateCustomMenus() {
-        return customMenuRepository.findTemplateMenus();
+        return customMenuJpaRepository.findTemplateMenus();
     }
 } 

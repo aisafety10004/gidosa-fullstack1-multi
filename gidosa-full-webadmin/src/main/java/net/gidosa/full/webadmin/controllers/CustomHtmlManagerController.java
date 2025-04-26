@@ -276,6 +276,7 @@ public class CustomHtmlManagerController {
                     .title(htmlPage.getTitle())
                     .content(htmlPage.getContent())
                     .published(htmlPage.getPublished())
+                    .isMainPage(htmlPage.getIsMainPage())
                     .build();
             
             // construction 정보 설정
@@ -419,5 +420,21 @@ public class CustomHtmlManagerController {
             redirectAttributes.addFlashAttribute("errorMessage", "HTML 파일 제거 중 오류가 발생했습니다: " + e.getMessage());
         }
         return "redirect:/settings/html-manager/update/" + id;
+    }
+    
+    @PostMapping("/main-page/{id}")
+    public String setMainPage(@PathVariable Long id,
+                           @RequestParam(defaultValue = "true") boolean isMain,
+                           @AuthenticationPrincipal UserDetails userDetails,
+                           RedirectAttributes redirectAttributes) {
+        try {
+            customHtmlPageService.updateMainPageStatus(id, isMain);
+            String message = isMain ? "HTML 페이지가 메인 페이지로 설정되었습니다." : "HTML 페이지가 메인 페이지에서 해제되었습니다.";
+            redirectAttributes.addFlashAttribute("successMessage", message);
+        } catch (Exception e) {
+            log.error("HTML 페이지 메인 페이지 상태 변경 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "HTML 페이지 메인 페이지 상태 변경 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        return "redirect:/settings/html-manager/detail/" + id;
     }
 }

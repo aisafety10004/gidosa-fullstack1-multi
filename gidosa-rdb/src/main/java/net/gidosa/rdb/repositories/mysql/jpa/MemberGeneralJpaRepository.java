@@ -15,6 +15,8 @@ public interface MemberGeneralJpaRepository extends JpaRepository<MemberGeneral,
     Optional<MemberGeneral> findByUsername(String username);
     Optional<MemberGeneral> findByEmail(String email);
     Optional<MemberGeneral> findByUsernameAndEmail(String username, String email);
+    Optional<MemberGeneral> findByUsernameAndConstructionId(String username, Long constructionId);
+
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     Optional<MemberGeneral> findByPhone(String phone);
@@ -226,6 +228,9 @@ public interface MemberGeneralJpaRepository extends JpaRepository<MemberGeneral,
 
     @Query("SELECT m FROM MemberGeneral m LEFT JOIN FETCH m.construction WHERE m.id = :id")
     Optional<MemberGeneral> findByIdWithConstruction(@Param("id") Long id);
+
+    @Query("SELECT m FROM MemberGeneral m LEFT JOIN FETCH m.construction WHERE m.username = :username and m.construction.id = :constructionId")
+    Optional<MemberGeneral> findByUsernameAndConstructionIdWithConstruction(@Param("username") String username, @Param("constructionId") Long constructionId);
 
     @Query("SELECT m FROM MemberGeneral m WHERE m.construction.id = :constructionId AND m.username = :username")
     Optional<MemberGeneral> findByConstructionIdAndUsername(

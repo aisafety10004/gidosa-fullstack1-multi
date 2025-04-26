@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface CustomMenuRepository extends JpaRepository<CustomMenu, Long> {
+public interface CustomMenuJpaRepository extends JpaRepository<CustomMenu, Long> {
     
     // ID로 메뉴 조회 (Construction 포함, 없는 경우도 처리)
     @Query("SELECT m FROM CustomMenu m LEFT JOIN FETCH m.construction WHERE m.id = :id")

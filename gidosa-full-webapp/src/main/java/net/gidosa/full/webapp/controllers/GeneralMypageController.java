@@ -26,6 +26,12 @@ public class GeneralMypageController {
     public String profileForm(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
         MemberUpdateDto memberUpdateDto = MemberUpdateDto.from(principalDetails.getMemberGeneral());
         model.addAttribute("memberUpdateDto", memberUpdateDto);
+
+        // 현장에 해당하는 메뉴 데이터 로드
+        Long constructionId = principalDetails.getMemberGeneral().getConstruction().getId();
+        List<CustomMenu> customMenus = generalCustomMenuService.getAllMenusByConstructionId(constructionId);
+        model.addAttribute("customMenus", customMenus);
+
         return "pages/general/mypage/profile";
     }
 

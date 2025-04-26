@@ -3,7 +3,7 @@ package net.gidosa.full.webapp.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenu;
-import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuRepository;
+import net.gidosa.rdb.repositories.mysql.jpa.CustomMenuJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,14 +13,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GeneralCustomMenuService {
-    private final CustomMenuRepository customMenuRepository;
+    private final CustomMenuJpaRepository customMenuJpaRepository;
 
     /**
      * 특정 건설 현장의 모든 메뉴를 조회합니다.
      */
     @Transactional(readOnly = true)
     public List<CustomMenu> getAllMenusByConstructionId(Long constructionId) {
-        return customMenuRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
+        return customMenuJpaRepository.findByConstructionIdOrderByDisplayOrderAsc(constructionId);
     }
 
     /**
@@ -28,6 +28,6 @@ public class GeneralCustomMenuService {
      */
     @Transactional(readOnly = true)
     public List<CustomMenu> getRootMenusWithChildrenByConstructionId(Long constructionId) {
-        return customMenuRepository.findRootMenusWithChildrenByConstructionId(constructionId);
+        return customMenuJpaRepository.findRootMenusWithChildrenByConstructionId(constructionId);
     }
 } 
