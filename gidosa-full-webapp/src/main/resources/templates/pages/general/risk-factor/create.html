@@ -111,11 +111,11 @@
             </div>
             
             <!-- 모바일 헤더 -->
-            <div class="bg-[#2876cd] text-white text-center py-4 px-4 rounded-t-lg mb-4">
+            <!-- <div class="bg-[#2876cd] text-white text-center py-4 px-4 mb-4">
                 <h1 class="text-xl font-bold">
                     위험요인 신규보고
                 </h1>
-            </div>
+            </div> -->
 
             <form th:action="@{/general/risk-factor/create}" method="post" th:object="${riskFactorDto}" enctype="multipart/form-data" class="px-4">
                 <!-- 숨겨진 필드 -->
@@ -130,24 +130,17 @@
                           class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" readonly>
                 </div>
 
-                <!-- 접견장소 -->
+                <!-- 작업공정 -->
                 <div class="mb-4">
-                    <label for="mobile-workProcess" class="block text-sm font-medium text-blue-600 mb-1">접견장소<span class="text-red-500">*</span></label>
+                    <label for="mobile-workProcess" class="block text-sm font-medium text-blue-600 mb-1">작업공정<span class="text-red-500">*</span></label>
                     <input type="text" id="mobile-workProcess" th:field="*{workProcess}" required
                           class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
-                <!-- 작업공정 -->
+                <!-- 작업위치 -->
                 <div class="mb-4">
-                    <label for="mobile-workLocation" class="block text-sm font-medium text-blue-600 mb-1">작업공정</label>
+                    <label for="mobile-workLocation" class="block text-sm font-medium text-blue-600 mb-1">작업위치</label>
                     <input type="text" id="mobile-workLocation" th:field="*{workLocation}"
-                          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-
-                <!-- 위치층수 -->
-                <div class="mb-4">
-                    <label for="mobile-locationFloor" class="block text-sm font-medium text-blue-600 mb-1">위치층수</label>
-                    <input type="text" id="mobile-locationFloor" name="locationFloor"
                           class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
