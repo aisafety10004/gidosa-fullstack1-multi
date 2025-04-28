@@ -1,0 +1,11 @@
+<!--<html layout:decorate="~{thymeleaf/layouts/admin.html}">-->
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{${layout}}"
+      th:with="pageTitle='admin 메인 페이지', pagePath='/main/main'"
+>
+<div layout:fragment="content">
+    <!-- 사용자 HTML 삽입 위치 -->
+    <div th:utext="${htmlContent}"></div>
+</div>

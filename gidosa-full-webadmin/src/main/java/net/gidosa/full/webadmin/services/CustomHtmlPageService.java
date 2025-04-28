@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -336,5 +337,10 @@ public class CustomHtmlPageService {
                 .orElseThrow(() -> new RuntimeException("HTML 페이지를 찾을 수 없습니다."));
         htmlPage.setIsMainPage(isMainPage);
         return customHtmlPageRepository.save(htmlPage);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CustomHtmlPage> getCustomHtmlMainPagesByConstructionId(boolean isMainPage, Long constructionId) {
+        return customHtmlPageRepository.findByIsMainPageAndConstructionId(isMainPage, constructionId);
     }
 } 

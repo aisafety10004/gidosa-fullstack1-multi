@@ -2,17 +2,30 @@ package net.gidosa.full.webadmin.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.gidosa.common.constants.CommonConsts;
 import net.gidosa.full.webadmin.configs.auth.PrincipalDetails;
 import net.gidosa.full.webadmin.services.AuthService;
+import net.gidosa.full.webadmin.services.CustomHtmlPageService;
+import net.gidosa.full.webadmin.services.CustomMenuService;
 import net.gidosa.full.webadmin.services.MainService;
 import net.gidosa.rdb.models.entities.dbs.mysql.Construction;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomHtmlPage;
+import net.gidosa.rdb.models.entities.dbs.mysql.CustomMenu;
 import net.gidosa.rdb.models.entities.dbs.mysql.MemberAdmin;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 @Log4j2
 @Controller
@@ -21,11 +34,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class MainController {
     private final MainService mainService;
 //    private final AuthService authService;
+    private final CustomHtmlPageService customHtmlPageService;
+
+    @Value("${file.upload.path}")
+    private String uploadPath;
 
     @GetMapping({"/", "/main"})
     public String index(Model model, 
                        @AuthenticationPrincipal PrincipalDetails principalDetails,
-                       @RequestParam(value = "error", required = false) String error) {
+                       @RequestParam(value = "error", required = false) String error) throws IOException {
 //        String test1 = authService.test1();
 
 //        model.addAttribute("test1", test1);
@@ -59,10 +76,26 @@ public class MainController {
 //        // return "main/intro/admin";
 //        //  return "main/intro/manager";
 //       return "main/main";
-        if (isAdmin)
+        if (isAdmin) {
             return "main/main";
-        else
+        } else {
+            Long constructionId = memberAdmin.getConstruction().getId();
+            // MainPage인 custom_html페이지 조회
+            List<CustomHtmlPage> customHtmlPageList
+                    = customHtmlPageService.getCustomHtmlMainPagesByConstructionId(true, constructionId);
+
+            if (customHtmlPageList != null && customHtmlPageList.size() > 0) {
+                Path filePath = Paths.get(uploadPath)
+                        .resolve(CommonConsts.CUSTOM_HTML_FOLOER + File.separator + customHtmlPageList.get(0).getHtmlFile().getStoredFilename());
+                if (!Files.exists(filePath)) {
+                    return "error/404";
+                }
+                String htmlContent = Files.readString(filePath); // Java 11 이상
+                model.addAttribute("htmlContent", htmlContent);
+            }
+
             return "main/intro/manager";
+        }
     }
 
     @GetMapping("/error/403")

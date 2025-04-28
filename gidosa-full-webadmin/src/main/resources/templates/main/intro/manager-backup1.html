@@ -1,0 +1,248 @@
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{${layout}}"
+      th:with="pageTitle='manager 메인 페이지', pagePath='/main/intro/manager'"
+>
+<div layout:fragment="content">
+    <!-- Swiper10 스타일 및 스크립트 -->
+    <link rel="stylesheet" href="/css/swiper/swiper10-bundle.min.css" />
+    <script src="/js/swiper/swiper10-bundle.min.js"></script>
+    
+    <!-- 커스텀 스타일 추가 -->
+    <style>
+      .corner-image {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 150px;
+        height: auto;
+        z-index: 10;
+      }
+      
+      .swiper-slide {
+        border-radius: 15px;
+        overflow: hidden;
+      }
+      
+      .swiper-container {
+        border-radius: 15px;
+        overflow: hidden;
+      }
+      
+      .play-pause-btn {
+        position: absolute;
+        bottom: 20px;
+        right: 0.5%;
+        transform: translateX(-50%);
+        z-index: 100;
+        background-color: rgba(255, 255, 255, 0.7);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .play-pause-btn:hover {
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+      
+      .swiper-pagination {
+        position: absolute;
+        bottom: 20px;
+      }
+
+      /* CSS: bullet 간격 조절 */
+      .swiper-horizontal>.swiper-pagination-bullets .swiper-pagination-bullet,.swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet {
+        width: 8px;
+        height: 8px;
+        margin: 0 7px;
+        /* background-color: #999; */
+        opacity: 1; /* Swiper 기본은 0.2라서 잘 안보일 수 있음 */
+      }
+
+      .swiper-pagination-bullet-active {
+        opacity: 1;
+        background: blue;
+      }
+    </style>
+    
+    <div class="tailwind-section">
+        <!-- 상단 슬라이더 섹션 -->
+        <div class="relative w-full h-96 bg-lime-500 mb-10 mt-3 rounded-xl overflow-hidden">
+            <div class="swiper mainSwiper w-full h-full rounded-xl overflow-hidden">
+                <div class="swiper-wrapper">
+                    <!-- 슬라이드 1 -->
+                    <div class="swiper-slide relative">
+                        <img src="/assets/images/main/photo-main-slide1.jpg" class="w-full h-full object-cover" alt="건설 현장 안전">
+                        <div class="absolute inset-0 flex flex-col items-start justify-center px-20 text-white">
+                            <h2 class="text-4xl font-bold mb-4">손에 잡히는<br/>안전보건관리체계 구축</h2>
+                            <p class="text-xl">안전한 작업환경을 위한 최적의 솔루션</p>
+                        </div>
+                    </div>
+                    <!-- 슬라이드 2 -->
+                    <div class="swiper-slide relative">
+                        <img src="/assets/images/main/photo-main-slide2.jpg" class="w-full h-full object-cover" alt="건설 현장">
+                        <div class="absolute inset-0 flex flex-col items-start justify-center px-20 text-white">
+                            <h2 class="text-4xl font-bold mb-4">체계적인<br/>안전관리 시스템</h2>
+                            <p class="text-xl">현장 안전을 위한 통합 솔루션</p>
+                        </div>
+                    </div>
+                    <!-- 슬라이드 3 -->
+                    <div class="swiper-slide relative">
+                        <img src="/assets/images/main/photo-main-slide3.jpg" class="w-full h-full object-cover" alt="안전 장비">
+                        <div class="absolute inset-0 flex flex-col items-start justify-center px-20 text-white">
+                            <h2 class="text-4xl font-bold mb-4">효율적인<br/>안전보건 관리</h2>
+                            <p class="text-xl">모든 작업자의 안전을 위한 체계 구축</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 네비게이션 버튼 -->
+                <div class="swiper-button-next text-white mr-2"></div>
+                <div class="swiper-button-prev text-white ml-2"></div>
+                
+                <!-- 페이지네이션 -->
+                <div class="swiper-pagination"></div>
+                
+                <!-- 재생/정지 버튼 -->
+                <div class="play-pause-btn" id="swiperPlayPause">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="pauseIcon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: block;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" id="playIcon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 하단 카드 섹션 -->
+        <div class="container mx-auto px-4 mb-10">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- 왼쪽 상단 카드 -->
+              <div class="flex flex-col items-center p-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                  <div class="p-4 rounded-full bg-red-100 mb-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                  </div>
+                  <h3 class="text-lg font-bold text-center mb-2">위험성평가</h3>
+                  <h4 class="text-xl font-bold text-center text-red-500">실시</h4>
+              </div>
+              
+              <!-- 오른쪽 상단 카드들 -->
+              <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- 첫 번째 카드 -->
+                  <div class="flex items-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                      <div class="mr-4">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                      </div>
+                      <div>
+                          <p class="text-sm text-green-600">위험성평가</p>
+                          <h3 class="text-lg font-bold">개요</h3>
+                      </div>
+                  </div>
+                  
+                  <!-- 두 번째 카드 -->
+                  <div class="flex items-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                      <div class="mr-4">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                          </svg>
+                      </div>
+                      <div>
+                          <p class="text-sm text-blue-600">위험성평가</p>
+                          <h3 class="text-lg font-bold">인정심사 신청</h3>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          
+          <!-- 중간 카드 섹션 -->
+                     
+       </div> 
+    </div>
+
+    <!-- Swiper 초기화 스크립트 -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Swiper 인스턴스 생성
+        const swiper = new Swiper(".mainSwiper", {
+          loop: true,
+          autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+          },
+          effect: "slide", // 슬라이드 효과
+          speed: 800, // 슬라이드 속도
+          pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+          },
+          navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          },
+          // 키보드 컨트롤 추가
+          keyboard: {
+            enabled: true,
+            onlyInViewport: true,
+          },
+          // 드래그로 슬라이드 컨트롤 추가
+          grabCursor: true,
+        });
+        
+        // 재생/정지 버튼 기능
+        const playPauseBtn = document.getElementById('swiperPlayPause');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        
+        // 재생/정지 버튼 클릭 이벤트
+        playPauseBtn.addEventListener('click', function() {
+          if (pauseIcon.style.display === 'block') {
+            swiper.autoplay.stop();
+            pauseIcon.style.display = 'none';
+            playIcon.style.display = 'block';
+          } else {
+            swiper.autoplay.start();
+            pauseIcon.style.display = 'block';
+            playIcon.style.display = 'none';
+          }
+        });
+        
+        // 슬라이드 변경 시 재생 아이콘 업데이트
+        swiper.on('autoplayStart', function() {
+          pauseIcon.style.display = 'block';
+          playIcon.style.display = 'none';
+        });
+        
+        swiper.on('autoplayStop', function() {
+          pauseIcon.style.display = 'none';
+          playIcon.style.display = 'block';
+        });
+        
+        // 슬라이드에 마우스 오버 시 슬라이드 일시 정지 (선택적)
+        // const swiperEl = document.querySelector('.mainSwiper');        
+        // swiperEl.addEventListener('mouseenter', function() {
+        //   swiper.autoplay.stop();
+        //   pauseIcon.style.display = 'none';
+        //   playIcon.style.display = 'block';
+        // });
+        
+        // swiperEl.addEventListener('mouseleave', function() {
+        //   swiper.autoplay.start();
+        //   pauseIcon.style.display = 'block';
+        //   playIcon.style.display = 'none';
+        // });
+      });
+    </script>
+</div>
+</html>
