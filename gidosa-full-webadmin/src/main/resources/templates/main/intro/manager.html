@@ -7,7 +7,7 @@
 <div layout:fragment="content">
     <!-- 사용자 HTML 삽입 위치(1개라도 MainPage가 있을 경우) -->
     <th:block th:if="${htmlContent != null && !htmlContent.isEmpty()}">
-        <div th:utext="${htmlContent}"></div>
+        <div th:utext="${htmlContent}" class="mt-3"></div>
     </th:block>
 
     <!-- 기본 화면(MainPage가 없을 경우) -->

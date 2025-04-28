@@ -120,7 +120,10 @@
                                     <span th:if="${currentSort == 'title'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
                                 </th>
                                 <th class="text-center" style="width: 10%" th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN') and viewMode == 'all'}">현장명</th>
-                                <th class="text-center" style="width: 10%">페이지 파일</th>
+                                <th class="text-center" style="width: 10%">
+                                    페이지 파일
+                                    <br>(※ 사용자 화면에서 해당 현장으로 로그인 후 미리보기 가능)
+                                </th>
                                 <th class="text-center" style="width: 8%">
                                     <a href="#" class="sort-link" data-sort="published">게시 상태</a>
                                     <span th:if="${currentSort == 'published'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
