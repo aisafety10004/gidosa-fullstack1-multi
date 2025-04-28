@@ -43,10 +43,13 @@ public class HtmlViewerController {
         boolean isLoggedIn = authentication != null && authentication.isAuthenticated() &&
                 !authentication.getName().equals("anonymousUser");
 
+        Long constructionId = null;
         if (isLoggedIn) {
-            Long constructionId = principalDetails.getMemberGeneral().getConstruction().getId();
+            constructionId = principalDetails.getMemberGeneral().getConstruction().getId();
             Construction construction = generalConstructionService.getConstruction(constructionId);
             model.addAttribute("construction", construction);
+        } else {
+            return "error/403";
         }
 
         // 현장에 해당하는 메뉴 데이터 로드

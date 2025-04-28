@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!--<html xmlns:th="http://www.thymeleaf.org"-->
-<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
-<!--      layout:decorate="~{layouts/general}"-->
-<!--&gt;-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/general}"
+>
 <head>
     <meta charset="UTF-8">
     <title th:text="${title ?: '사용자 HTML 보기'}"></title>
@@ -13,7 +13,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;">
 </head>
 <body>
-<!--<div layout:fragment="content">-->
+<div layout:fragment="content">
     <div class="" id="mobile1-content">
         <!-- 메인 컨테이너 -->
         <div class="flex flex-col items-center w-full max-w-md mx-auto px-4 py-4">
@@ -21,6 +21,6 @@
             <div th:utext="${htmlContent}"></div>
         </div>
     </div>
-<!--</div>-->
+</div>
 </body>
 </html>
