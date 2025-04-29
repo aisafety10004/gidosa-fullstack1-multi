@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/general}">
 <head>
-    <title th:text="${construction.name + ' - 현장공사'}"></title>
+    <title th:text="${construction.name}"></title>
     <style>
         /* PC용 CSS */
         .form-section {
@@ -94,7 +94,7 @@
 </head>
 <body>
 <!-- <div layout:fragment="content" class="bg-white">
-    <h1 th:text="${construction.name} + ' - 현장공사 general 메인 페이지'"></h1>
+    <h1 th:text="${construction.name} + ' - 바로세움 general 메인 페이지'"></h1>
 </div> -->
 <div layout:fragment="content">
     <div class="tailwind-section" id="mobile1-content">
