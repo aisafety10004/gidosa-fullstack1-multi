@@ -43,7 +43,7 @@ public class HtmlViewerController {
         boolean isLoggedIn = authentication != null && authentication.isAuthenticated() &&
                 !authentication.getName().equals("anonymousUser");
 
-        Long constructionId = null;
+        Long constructionId;
         if (isLoggedIn) {
             constructionId = principalDetails.getMemberGeneral().getConstruction().getId();
             Construction construction = generalConstructionService.getConstruction(constructionId);

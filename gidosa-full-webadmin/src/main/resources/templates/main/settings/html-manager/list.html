@@ -119,8 +119,8 @@
                                     <a href="#" class="sort-link" data-sort="title">제목</a>
                                     <span th:if="${currentSort == 'title'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
                                 </th>
-                                <th class="text-center" style="width: 10%" th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN') and viewMode == 'all'}">현장명</th>
-                                <th class="text-center" style="width: 10%">
+                                <th class="text-center" style="width: 25%" th:if="${#authentication.principal.authorities.![authority].contains('ROLE_ADMIN') and viewMode == 'all'}">현장명</th>
+                                <th class="text-center" style="width: 25%">
                                     페이지 파일
                                     <br>(※ 사용자 화면에서 해당 현장으로 로그인 후 미리보기 가능)
                                 </th>
@@ -132,15 +132,15 @@
                                     <a href="#" class="sort-link" data-sort="isMainPage">메인 페이지</a>
                                     <span th:if="${currentSort == 'isMainPage'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
                                 </th>
-                                <th class="text-center" style="width: 15%">
+                                <th class="text-center" style="width: 10%">
                                     <a href="#" class="sort-link" data-sort="createdAt">등록일</a>
                                     <span th:if="${currentSort == 'createdAt'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
                                 </th>
-                                <th class="text-center" style="width: 15%">
+                                <th class="text-center" style="width: 10%">
                                     <a href="#" class="sort-link" data-sort="updatedAt">수정일</a>
                                     <span th:if="${currentSort == 'updatedAt'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
                                 </th>
-                                <th class="text-center" style="width: 15%">관리</th>
+                                <th class="text-center" style="width: 10%">관리</th>
                             </tr>
                         </thead>
                         <tbody>
