@@ -11,7 +11,7 @@
     <div layout:fragment="content" class="bg-white">
         <!-- 사용자 HTML 삽입 위치(1개라도 MainPage가 있을 경우) -->
         <th:block th:if="${htmlContent != null && !htmlContent.isEmpty()}">
-            <div th:utext="${htmlContent}" style="margin-bottom: 52px;"></div>
+            <div th:utext="${htmlContent}" style="margin-top: 52px;"></div>
         </th:block>
 
         <!-- 기본 화면(MainPage가 없을 경우) -->
