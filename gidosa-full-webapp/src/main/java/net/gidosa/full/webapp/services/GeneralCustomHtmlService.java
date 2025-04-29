@@ -17,6 +17,10 @@ public class GeneralCustomHtmlService {
 
     @Transactional(readOnly = true)
     public List<CustomHtmlPage> getCustomHtmlMainPagesByConstructionId(boolean isMainPage, Long constructionId) {
+        if (constructionId == null) {
+            return customHtmlPageJpaRepository.findByIsMainPageAndConstructionIdIsNull(isMainPage);
+        }
+
         return customHtmlPageJpaRepository.findByIsMainPageAndConstructionId(isMainPage, constructionId);
     }
 }

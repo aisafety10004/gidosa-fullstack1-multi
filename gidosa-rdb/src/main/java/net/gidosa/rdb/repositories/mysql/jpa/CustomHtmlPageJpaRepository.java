@@ -109,7 +109,13 @@ public interface CustomHtmlPageJpaRepository extends JpaRepository<CustomHtmlPag
     
     @Query("SELECT hp FROM CustomHtmlPage hp LEFT JOIN FETCH hp.construction WHERE hp.isMainPage = :isMainPage AND hp.construction.id = :constructionId")
     List<CustomHtmlPage> findByIsMainPageAndConstructionId(@Param("isMainPage") Boolean isMainPage, @Param("constructionId") Long constructionId);
+
+    @Query("SELECT hp FROM CustomHtmlPage hp LEFT JOIN FETCH hp.construction WHERE hp.isMainPage = :isMainPage AND hp.construction.id IS NULL")
+    List<CustomHtmlPage> findByIsMainPageAndConstructionIdIsNull(@Param("isMainPage") Boolean isMainPage);
     
     @Query("SELECT hp FROM CustomHtmlPage hp LEFT JOIN FETCH hp.construction WHERE hp.isMainPage = :isMainPage AND hp.published = :published")
     List<CustomHtmlPage> findByIsMainPageAndPublished(@Param("isMainPage") Boolean isMainPage, @Param("published") Boolean published);
+
+    @Query("SELECT hp FROM CustomHtmlPage hp LEFT JOIN FETCH hp.construction WHERE hp.isMainPage = :isMainPage AND hp.construction.id = :constructionId AND hp.published = :published")
+    List<CustomHtmlPage> findByIsMainPageAndConstructionIdAndPublished(@Param("isMainPage") Boolean isMainPage, @Param("constructionId") Long constructionId, @Param("published") Boolean published);
 } 
