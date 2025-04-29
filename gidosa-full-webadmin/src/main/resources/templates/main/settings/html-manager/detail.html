@@ -43,12 +43,12 @@
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <!-- <h6 class="m-0 font-weight-bold text-primary">HTML 페이지 정보</h6> -->
             <div>
-                <div class="d-flex align-items-center mb-2">
+                <!-- 게시 상태 표시 및 변경 버튼 -->
+                <!-- <div class="d-flex align-items-center mb-2">
                     <span class="mr-2">게시 상태: </span>
                     <span th:if="${htmlPage.published}" class="">게시중</span>
                     <span th:unless="${htmlPage.published}" class="">미게시</span>
                     
-                    <!-- 게시 상태 변경 버튼 -->
                     <form th:if="${htmlPage.published}" 
                         th:action="@{/settings/html-manager/publish/{id}(id=${htmlPage.id})}" 
                         method="post" class="d-inline ml-2">
@@ -61,7 +61,7 @@
                         <input type="hidden" name="publish" value="true">
                         <button type="submit" class="btn btn-sm btn-success"> 게시하기</button>
                     </form>
-                </div>
+                </div> -->
                 
                 <!-- 메인 페이지 상태 표시 및 변경 버튼 -->
                 <div class="d-flex align-items-center mb-2">

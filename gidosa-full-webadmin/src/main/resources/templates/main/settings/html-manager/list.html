@@ -124,10 +124,10 @@
                                     페이지 파일
                                     <br>(※ 사용자 화면에서 해당 현장으로 로그인 후 미리보기 가능)
                                 </th>
-                                <th class="text-center" style="width: 8%">
+                                <!-- <th class="text-center" style="width: 8%">
                                     <a href="#" class="sort-link" data-sort="published">게시 상태</a>
                                     <span th:if="${currentSort == 'published'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
-                                </th>
+                                </th> -->
                                 <th class="text-center" style="width: 8%">
                                     <a href="#" class="sort-link" data-sort="isMainPage">메인 페이지</a>
                                     <span th:if="${currentSort == 'isMainPage'}" th:class="${currentDirection == 'asc' ? 'ml-1 fas fa-sort-up' : 'ml-1 fas fa-sort-down'}"></span>
@@ -176,10 +176,10 @@
                                     </span>
                                     <span th:unless="${htmlPage.htmlFile != null}">-</span>
                                 </td>
-                                <td class="text-center align-middle">
+                                <!-- <td class="text-center align-middle">
                                     <span th:if="${htmlPage.published}" class="">게시중</span>
                                     <span th:unless="${htmlPage.published}" class="">미게시</span>
-                                </td>
+                                </td> -->
                                 <td class="text-center align-middle">
                                     <span th:if="${htmlPage.isMainPage}" class="">메인</span>
                                     <span th:unless="${htmlPage.isMainPage}" class="">-</span>
