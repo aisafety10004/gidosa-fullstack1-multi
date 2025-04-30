@@ -19,6 +19,8 @@
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
+  color: #5f6368; /* 구글 검색 아이콘 색상 */
+  font-size: 24px; /* Material 아이콘 크기 조정 */
 }
 
 .building-card {
@@ -35,11 +37,13 @@
   position: relative;
 }
 
-.modal .search-input-container i {
+.modal .search-input-container .material-icons {
   position: absolute;
   right: 15px;
   top: 50%;
   transform: translateY(-50%);
+  color: #5f6368; /* 구글 검색 아이콘 색상 */
+  font-size: 24px; /* Material 아이콘 크기 조정 */
 }
 
 #searchModal .modal-content {
