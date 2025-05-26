@@ -1,110 +1,138 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
->
-<head>
-    <meta charset="UTF-8">
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <title>바로세움 관리자 전용</title>
-    <!-- <title>바로세움 관리자</title> -->
-    <!-- <title th:utext="${#authentication.principal.memberAdmin.location}"></title>  -->
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-    <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link th:href="@{/css/styles.css}" rel="stylesheet" />
-    <link rel="stylesheet" th:href="@{/css/bootstrap-icons/bootstrap-icons.min.css}">
-    <!-- Toast UI Editor CSS -->
-    <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor.min.css}" />
-    <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor-dark.min.css}" />
-    
-    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-    <script src="/vendor/jquery/jquery.min.js"></script>
-    <!-- Toast UI Editor JS -->
-    <script th:src="@{/js/toastui/toastui-editor-all.min.js}"></script>
-    <script src="/js/tailwind/tailwindcss.js"></script>
-    <script>
-      tailwind.config = {
-        // prefix: 'tw-', // 모든 타일윈드 클래스에 'tw-' 프리픽스 추가(ex) class="bg-blue-500" → class="tw-bg-blue-500", class="text-white" → class="tw-text-white")
-        // important: true, // 타일윈드 스타일에 !important 추가 (필요한 경우)
-        important: '.tailwind-section', // tailwind-section 안에서만 타일윈드 스타일 우선 적용
-        corePlugins: {
-          preflight: false, // 기본 스타일 초기화 비활성화
-          // container: false, // 컨테이너 유틸리티 비활성화(타일윈드 설정에서 부트스트랩과 충돌하는 일부 컴포넌트나 유틸리티를 비활성화)
-        }
+<head>
+  <meta charset="UTF-8">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <title>바로세움 관리자 전용</title>
+  <!-- <title>바로세움 관리자</title> -->
+  <!-- <title th:utext="${#authentication.principal.memberAdmin.location}"></title>  -->
+
+  <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/bootstrap-icons/bootstrap-icons.min.css}">
+  <!-- Toast UI Editor CSS -->
+  <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor.min.css}" />
+  <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor-dark.min.css}" />
+
+  <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+  <script src="/vendor/jquery/jquery.min.js"></script>
+  <!-- Toast UI Editor JS -->
+  <script th:src="@{/js/toastui/toastui-editor-all.min.js}"></script>
+  <script src="/js/tailwind/tailwindcss.js"></script>
+  <script>
+    tailwind.config = {
+      // prefix: 'tw-', // 모든 타일윈드 클래스에 'tw-' 프리픽스 추가(ex) class="bg-blue-500" → class="tw-bg-blue-500", class="text-white" → class="tw-text-white")
+      // important: true, // 타일윈드 스타일에 !important 추가 (필요한 경우)
+      important: '.tailwind-section', // tailwind-section 안에서만 타일윈드 스타일 우선 적용
+      corePlugins: {
+        preflight: false, // 기본 스타일 초기화 비활성화
+        // container: false, // 컨테이너 유틸리티 비활성화(타일윈드 설정에서 부트스트랩과 충돌하는 일부 컴포넌트나 유틸리티를 비활성화)
       }
-    </script>
+    }
+  </script>
 </head>
 <!--<iframe src="/htmls/common1.html" height="0" width="0" style="overflow-y:hidden" frameborder='0' scrolling="no"></iframe>-->
+
 <body class="">
-<div class="d-flex" id="wrapper">
+  <div class="d-flex" id="wrapper">
     <!-- Sidebar-->
     <div class="border-end bg-white" id="sidebar-wrapper" style="overflow: hidden;">
-        <div class="sidebar-heading border-bottom bg-light" style="padding-bottom: 20px; text-align: center; width:220px;">
-            <a href="/main" style="text-decoration: none; color: inherit;">
-                <!-- 바로세움<br>관리자 전용 -->
-                <!-- <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.memberAdmin.construction.location}" /> -->
-                <span sec:authorize="isAuthenticated()" th:utext="${#authentication.principal.memberAdmin.location}" />
-            </a>
+      <div class="sidebar-heading border-bottom bg-light"
+        style="padding-bottom: 20px; text-align: center; width:220px;">
+        <a href="/main" style="text-decoration: none; color: inherit;">
+          <!-- 바로세움<br>관리자 전용 -->
+          <!-- <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.memberAdmin.construction.location}" /> -->
+          <span sec:authorize="isAuthenticated()" th:utext="${#authentication.principal.memberAdmin.location}" />
+        </a>
+      </div>
+      <div class="list-group list-group-flush">
+        <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">문의요청 관리</a> -->
+        <!--            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">도입요청 관리</a>-->
+        <a class="list-group-item list-group-item-action list-group-item-light p-3"
+          href="/request/construction/list">상담신청 관리</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/inquiry/admin/list">제출의견
+          관리</a>
+        <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/inquiry/list">문의사항 관리</a> -->
+        <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="javascript:alert('해당 페이지는 준비중입니다.');">문의사항 관리</a> -->
+        <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/construction/list">건설공사현장 관리</a> -->
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/construction/list">도입현장
+          관리</a>
+        <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/admin/list">건설공사현장 매니저 관리</a> -->
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/admin/list">현장관리자
+          등록</a>
+
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/notice">전체공지 관리</a>
+        <!-- 안전 교육 메뉴 -->
+        <div class="list-group-item list-group-item-light p-0">
+          <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#onlineExamSubmenu" role="button">
+            <span>안전 교육</span>
+            <i class="bi bi-chevron-down"></i>
+          </a>
+          <div class="collapse" id="onlineExamSubmenu">
+            <div class="list-group list-group-flush ps-4">
+              <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/education/list">교육
+                자료</a>
+              <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/education/template">템플릿
+                만들기</a>
+              <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/exam/register">시험
+                등록하기</a>
+              <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/exam/completion">이수자
+                현황</a>
+              <a class="list-group-item list-group-item-action list-group-item-light p-2"
+                href="/exam/target/register">대상자 등록</a> -->
+            </div>
+          </div>
         </div>
-        <div class="list-group list-group-flush">
-            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">문의요청 관리</a> -->
-<!--            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">도입요청 관리</a>-->
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/request/construction/list">상담신청 관리</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/inquiry/admin/list">제출의견 관리</a>
-            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/inquiry/list">문의사항 관리</a> -->
-            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="javascript:alert('해당 페이지는 준비중입니다.');">문의사항 관리</a> -->
-            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/construction/list">건설공사현장 관리</a> -->
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/construction/list">도입현장 관리</a>
-            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/admin/list">건설공사현장 매니저 관리</a> -->
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/member/admin/list">현장관리자 등록</a>
-            <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/notice">공지사항 관리</a> -->
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/notice">전체공지 관리</a>
 
-            <!-- 서브메뉴가 있는 항목 예시 -->
-<!--            <div class="list-group-item list-group-item-light p-0">-->
-<!--                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#shortcutsSubmenu1" role="button">-->
-<!--                    <span>공정관리</span>-->
-<!--                    <i class="bi bi-chevron-down"></i>-->
-<!--                </a>-->
-<!--                <div class="collapse" id="shortcutsSubmenu1">-->
-<!--                    <div class="list-group list-group-flush ps-4">-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 1</a>-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 2</a>-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 3</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="list-group-item list-group-item-light p-0">-->
-<!--                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#shortcutsSubmenu2" role="button">-->
-<!--                    <span>품질관리</span>-->
-<!--                    <i class="bi bi-chevron-down"></i>-->
-<!--                </a>-->
-<!--                <div class="collapse" id="shortcutsSubmenu2">-->
-<!--                    <div class="list-group list-group-flush ps-4">-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 1</a>-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 2</a>-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 3</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="list-group-item list-group-item-light p-0">-->
-<!--                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#shortcutsSubmenu3" role="button">-->
-<!--                    <span>안전관리</span>-->
-<!--                    <i class="bi bi-chevron-down"></i>-->
-<!--                </a>-->
-<!--                <div class="collapse" id="shortcutsSubmenu3">-->
-<!--                    <div class="list-group list-group-flush ps-4">-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 1</a>-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 2</a>-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 3</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
 
-            <!-- 또 다른 서브메뉴가 있는 항목 예시 -->
-            <!-- <div class="list-group-item list-group-item-light p-0">
+
+        <!-- 서브메뉴가 있는 항목 예시 -->
+        <!--            <div class="list-group-item list-group-item-light p-0">-->
+        <!--                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#shortcutsSubmenu1" role="button">-->
+        <!--                    <span>공정관리</span>-->
+        <!--                    <i class="bi bi-chevron-down"></i>-->
+        <!--                </a>-->
+        <!--                <div class="collapse" id="shortcutsSubmenu1">-->
+        <!--                    <div class="list-group list-group-flush ps-4">-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 1</a>-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 2</a>-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 3</a>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--            <div class="list-group-item list-group-item-light p-0">-->
+        <!--                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#shortcutsSubmenu2" role="button">-->
+        <!--                    <span>품질관리</span>-->
+        <!--                    <i class="bi bi-chevron-down"></i>-->
+        <!--                </a>-->
+        <!--                <div class="collapse" id="shortcutsSubmenu2">-->
+        <!--                    <div class="list-group list-group-flush ps-4">-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 1</a>-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 2</a>-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 3</a>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--            <div class="list-group-item list-group-item-light p-0">-->
+        <!--                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#shortcutsSubmenu3" role="button">-->
+        <!--                    <span>안전관리</span>-->
+        <!--                    <i class="bi bi-chevron-down"></i>-->
+        <!--                </a>-->
+        <!--                <div class="collapse" id="shortcutsSubmenu3">-->
+        <!--                    <div class="list-group list-group-flush ps-4">-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 1</a>-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 2</a>-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">서브메뉴 3</a>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!-- 또 다른 서브메뉴가 있는 항목 예시 -->
+        <!-- <div class="list-group-item list-group-item-light p-0">
                 <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#eventsSubmenu" role="button">
                     <span>Events</span>
                     <i class="bi bi-chevron-down"></i>
@@ -138,77 +166,80 @@
                     </div>
                 </div>
             </div> -->
-            <!-- Settings 서브메뉴 -->
-<!--            <div class="list-group-item list-group-item-light p-0">-->
-<!--                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#settingsSubmenu" role="button">-->
-<!--                    <span>Settings</span>-->
-<!--                    <i class="bi bi-chevron-down"></i>-->
-<!--                </a>-->
-<!--                <div class="collapse" id="settingsSubmenu">-->
-<!--                    <div class="list-group list-group-flush ps-4">-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">일반 설정</a>-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">보안 설정</a>-->
-<!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">알림 설정</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-            <!-- 설정(Settings) 메뉴 -->
-            <div class="list-group-item list-group-item-light p-0">
-                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#settingsSubmenu" role="button">
-                    <!-- <span>설정(Settings)</span> -->
-                    <span>확장메뉴 추가</span>
-                    <i class="bi bi-chevron-down"></i>
-                </a>
-                <div class="collapse" id="settingsSubmenu">
-                    <div class="list-group list-group-flush ps-4">
-                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">확장메뉴 설정</a>
-                        <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">커스텀 메뉴관리</a> -->
-                        <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/sub2">서브메뉴 2</a> -->
-                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/html-manager?viewMode=noConstruction">페이지 관리</a>
-                    </div>
-                </div>
+        <!-- Settings 서브메뉴 -->
+        <!--            <div class="list-group-item list-group-item-light p-0">-->
+        <!--                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#settingsSubmenu" role="button">-->
+        <!--                    <span>Settings</span>-->
+        <!--                    <i class="bi bi-chevron-down"></i>-->
+        <!--                </a>-->
+        <!--                <div class="collapse" id="settingsSubmenu">-->
+        <!--                    <div class="list-group list-group-flush ps-4">-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">일반 설정</a>-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">보안 설정</a>-->
+        <!--                        <a class="list-group-item list-group-item-action list-group-item-light p-2" href="#!">알림 설정</a>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!-- 설정(Settings) 메뉴 -->
+        <div class="list-group-item list-group-item-light p-0">
+          <a class="d-flex justify-content p-3" data-bs-toggle="collapse" href="#settingsSubmenu" role="button">
+            <!-- <span>설정(Settings)</span> -->
+            <span>확장메뉴 추가</span>
+            <i class="bi bi-chevron-down"></i>
+          </a>
+          <div class="collapse" id="settingsSubmenu">
+            <div class="list-group list-group-flush ps-4">
+              <a class="list-group-item list-group-item-action list-group-item-light p-2"
+                href="/settings/menu-manager">확장메뉴 설정</a>
+              <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/menu-manager">커스텀 메뉴관리</a> -->
+              <!-- <a class="list-group-item list-group-item-action list-group-item-light p-2" href="/settings/sub2">서브메뉴 2</a> -->
+              <a class="list-group-item list-group-item-action list-group-item-light p-2"
+                href="/settings/html-manager?viewMode=noConstruction">페이지 관리</a>
             </div>
-
-            <!-- 커스텀 메뉴 표시 -->
-            <th:block th:if="${@customMenuService.getAllRootMenusAdminWithChildren() != null}">
-                <th:block th:each="rootMenu : ${@customMenuService.getAllRootMenusAdminWithChildren()}">
-                    <div class="list-group-item list-group-item-light p-0" th:if="${rootMenu.isActive}">
-                        <th:block th:if="${!rootMenu.children.isEmpty()}">
-                            <a class="d-flex justify-content p-3" data-bs-toggle="collapse" th:href="'#customMenu' + ${rootMenu.id}" role="button">
-                                <span th:text="${rootMenu.name}"></span>
-                                <i class="bi bi-chevron-down"></i>
-                            </a>
-                            <div class="collapse" th:id="'customMenu' + ${rootMenu.id}">
-                                <div class="list-group list-group-flush ps-4">
-                                    <a class="list-group-item list-group-item-action list-group-item-light p-2"
-                                       th:each="childMenu : ${rootMenu.children}"
-                                       th:if="${childMenu.isActive}"
-                                       th:href="${childMenu.url}"
-                                       th:text="${childMenu.name}"></a>
-                                </div>
-                            </div>
-                        </th:block>
-                        <th:block th:if="${rootMenu.children.isEmpty()}">
-                            <a class="d-flex justify-content p-3" th:href="${rootMenu.url}">
-                                <span th:text="${rootMenu.name}"></span>
-                            </a>
-                        </th:block>
-                    </div>
-                </th:block>
-            </th:block>
+          </div>
         </div>
+
+        <!-- 커스텀 메뉴 표시 -->
+        <th:block th:if="${@customMenuService.getAllRootMenusAdminWithChildren() != null}">
+          <th:block th:each="rootMenu : ${@customMenuService.getAllRootMenusAdminWithChildren()}">
+            <div class="list-group-item list-group-item-light p-0" th:if="${rootMenu.isActive}">
+              <th:block th:if="${!rootMenu.children.isEmpty()}">
+                <a class="d-flex justify-content p-3" data-bs-toggle="collapse" th:href="'#customMenu' + ${rootMenu.id}"
+                  role="button">
+                  <span th:text="${rootMenu.name}"></span>
+                  <i class="bi bi-chevron-down"></i>
+                </a>
+                <div class="collapse" th:id="'customMenu' + ${rootMenu.id}">
+                  <div class="list-group list-group-flush ps-4">
+                    <a class="list-group-item list-group-item-action list-group-item-light p-2"
+                      th:each="childMenu : ${rootMenu.children}" th:if="${childMenu.isActive}"
+                      th:href="${childMenu.url}" th:text="${childMenu.name}"></a>
+                  </div>
+                </div>
+              </th:block>
+              <th:block th:if="${rootMenu.children.isEmpty()}">
+                <a class="d-flex justify-content p-3" th:href="${rootMenu.url}">
+                  <span th:text="${rootMenu.name}"></span>
+                </a>
+              </th:block>
+            </div>
+          </th:block>
+        </th:block>
+      </div>
     </div>
     <!-- Page content wrapper-->
     <div id="page-content-wrapper">
-        <!-- Top navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-            <div class="container-fluid">
-                <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-<!--                        <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>-->
-                        <!--
+      <!-- Top navigation-->
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <div class="container-fluid">
+          <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+              <!--                        <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>-->
+              <!--
                         <li class="nav-item dropdown">
                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -218,37 +249,37 @@
                                <a class="dropdown-item" href="#!">Something else here</a>
                            </div>
                        </li> -->
-                        <li class="nav-item active">
-                            <form th:action="@{/auth/logout}" method="post" style="display: inline;">
-                                <button type="submit" class="nav-link" style="background: none; border: none;">Logout</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <!-- Page content-->
-        <div class="container-fluid" layout:fragment="content" />
+              <li class="nav-item active">
+                <form th:action="@{/auth/logout}" method="post" style="display: inline;">
+                  <button type="submit" class="nav-link" style="background: none; border: none;">Logout</button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- Page content-->
+      <div class="container-fluid" layout:fragment="content" />
     </div>
-</div>
-<!-- Bootstrap core JS-->
-<script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>
-<!--<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>-->
-<!-- Core theme JS-->
-<script src="/js/scripts.js"></script>
-<th:block layout:fragment="script"></th:block>
-<style>
+  </div>
+  <!-- Bootstrap core JS-->
+  <script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>
+  <!--<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>-->
+  <!-- Core theme JS-->
+  <script src="/js/scripts.js"></script>
+  <th:block layout:fragment="script"></th:block>
+  <style>
     #sidebar-wrapper {
-        overflow-x: hidden;
-        min-height: 100vh;
-        margin-left: 0;
-        transition: margin .25s ease-out;
+      overflow-x: hidden;
+      min-height: 100vh;
+      margin-left: 0;
+      transition: margin .25s ease-out;
     }
-    
+
     #sidebar-wrapper .list-group-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* 모바일 화면에서 사이드바 토글 관련 스타일 */
@@ -263,6 +294,7 @@
         }
     }
     */
-</style>
+  </style>
 </body>
+
 </html>

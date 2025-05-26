@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{layouts/admin}">
+
+<head>
+  <title>시험 등록</title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="container-fluid">
+      <h1 class="h3 mb-4 text-gray-800">시험 등록</h1>
+
+      <!-- 시험 등록 폼 -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">새로운 시험 등록</h6>
+        </div>
+        <div class="card-body">
+          <form id="examForm">
+            <div class="form-group">
+              <label for="examTitle">시험 제목</label>
+              <input type="text" class="form-control" id="examTitle" required>
+            </div>
+            <div class="form-group">
+              <label for="examDescription">시험 설명</label>
+              <textarea class="form-control" id="examDescription" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="examDuration">시험 시간 (분)</label>
+              <input type="number" class="form-control" id="examDuration" required>
+            </div>
+            <div class="form-group">
+              <label for="passingScore">합격 점수</label>
+              <input type="number" class="form-control" id="passingScore" required>
+            </div>
+            <button type="submit" class="btn btn-primary">시험 등록</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <th:block layout:fragment="script">
+    <script>
+      $(document).ready(function () {
+        // 시험 등록 폼 제출 처리
+        $('#examForm').on('submit', function (e) {
+          e.preventDefault();
+
+          // TODO: 시험 정보를 서버로 전송
+          console.log('Exam title:', $('#examTitle').val());
+          console.log('Exam description:', $('#examDescription').val());
+          console.log('Exam duration:', $('#examDuration').val());
+          console.log('Passing score:', $('#passingScore').val());
+        });
+      });
+    </script>
+  </th:block>
+</body>
+
+</html>

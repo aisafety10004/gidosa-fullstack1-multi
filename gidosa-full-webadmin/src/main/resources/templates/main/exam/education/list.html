@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/admin}">
+
+<head>
+  <title>교육 자료 관리</title>
+  <th:block layout:fragment="style">
+    <style>
+      .clickable-row {
+        cursor: pointer;
+      }
+
+      .clickable-row:hover {
+        background-color: #f8f9fc;
+      }
+
+      .action-buttons {
+        pointer-events: auto;
+      }
+
+      /* 반응형 테이블 스타일 */
+      .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* 모바일에서 버튼 그룹 스타일 */
+      @media (max-width: 768px) {
+        .action-buttons {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .action-buttons .btn {
+          width: 100%;
+        }
+
+        .pagination {
+          flex-wrap: wrap;
+        }
+
+        .table td,
+        .table th {
+          min-width: 120px;
+        }
+      }
+    </style>
+  </th:block>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="container-fluid">
+      <h1 class="h3 mb-4 text-gray-800">교육 자료 관리</h1>
+
+      <!-- 교육 자료 목록 -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">교육 자료 목록</h6>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>제목</th>
+                  <th>설명</th>
+                  <th>유형</th>
+                  <th>태그</th>
+                  <th>학습 시간</th>
+                  <th>작성자</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="material : ${materials}" class="clickable-row"
+                  th:onclick="'window.location.href=\'' + @{/education/detail/{id}(id=${material.id})} + '\''">
+                  <td th:text="${material.title}"></td>
+                  <td th:text="${material.description}"></td>
+                  <td>
+                    <span th:if="${material.type == 'PPT'}" class="badge badge-info"
+                      style="background-color: #17a2b8; color: white;">PPT</span>
+                    <span th:if="${material.type == 'URL'}" class="badge badge-danger"
+                      style="background-color: #dc3545; color: white;">링크</span>
+                  </td>
+                  <td th:text="${material.tag}"></td>
+                  <td th:text="${material.duration + '분'}"></td>
+                  <td th:text="${material.writerType}"></td>
+                  <td class="action-buttons">
+                    <button class="btn btn-sm btn-primary"
+                      th:onclick="'editMaterial(' + ${material.id} + '); event.stopPropagation();'">
+                      <i class="fas fa-edit"></i> 수정
+                    </button>
+                    <form th:action="@{/exam/prelecture/template/delete}" method="post" style="display: inline;"
+                      th:onclick="'event.stopPropagation();'">
+                      <input type="hidden" name="materialId" th:value="${material.id}">
+                      <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('정말 삭제하시겠습니까?');">
+                        <i class="fas fa-trash"></i> 삭제
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 페이지네이션 -->
+          <div class="d-flex justify-content-center mt-4">
+            <nav th:if="${totalPages > 1}">
+              <ul class="pagination flex-wrap">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                  <a class="page-link" th:href="@{/exam/education/list(page=${currentPage - 1})}">이전</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                  th:classappend="${currentPage == i} ? 'active'">
+                  <a class="page-link" th:href="@{/exam/education/list(page=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                  <a class="page-link" th:href="@{/exam/education/list(page=${currentPage + 1})}">다음</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

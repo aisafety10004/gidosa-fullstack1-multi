@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/admin}">
+
+<head>
+  <title>학습 자료 상세</title>
+  <th:block layout:fragment="style">
+    <style>
+      /* 반응형 테이블 스타일 */
+      .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* 검색 폼 반응형 */
+      .search-form {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      /* 검색 버튼 스타일 추가 */
+      .search-form .btn {
+        white-space: nowrap;
+        min-width: 60px;
+      }
+
+      @media (max-width: 768px) {
+        .search-form {
+          max-width: 100%;
+          margin-top: 1rem;
+        }
+
+        .card-header {
+          flex-direction: column;
+        }
+
+        .pagination {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </th:block>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="container-fluid">
+      <h1 class="h3 mb-4 text-gray-800">학습 자료 상세</h1>
+
+      <!-- 문제 은행 섹션 -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-wrap justify-content-between align-items-center">
+          <h6 class="m-0 font-weight-bold text-primary">문제 은행</h6>
+          <form class="d-flex gap-2 search-form" th:action="@{/education/detail/{id}(id=${educationId})}" method="get">
+            <input type="text" class="form-control" name="searchKeyword" th:value="${param.searchKeyword}"
+              placeholder="문제 검색...">
+            <button type="submit" class="btn btn-primary">검색</button>
+          </form>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th style="width: 25%">문제 제목</th>
+                  <th style="width: 25%">보기</th>
+                  <th style="width: 8%">정답</th>
+                  <th style="width: 25%">해설</th>
+                  <th style="width: 8%">배점</th>
+                  <th style="width: 9%">관리자</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="question : ${questions}">
+                  <td th:text="${question.title}" class="text-center align-middle"></td>
+                  <td>
+                    <div class="d-flex flex-column gap-2">
+                      <span th:each="content, iterStat : ${question.contents}"
+                        th:text="${iterStat.index + 1 + '. ' + content}" class="w-100"></span>
+                    </div>
+                  </td>
+                  <td class="text-center align-middle">
+                    <span class="badge bg-primary p-2" th:text="${question.answerNumber + '번'}"></span>
+                  </td>
+                  <td>
+                    <div class="p-2" style="white-space: pre-wrap;" th:text="${question.explanation}"></div>
+                  </td>
+                  <td class="text-center align-middle" th:text="${question.score}"></td>
+                  <td class="text-center align-middle" th:text="${question.managerName}"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 페이지네이션 -->
+          <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center flex-wrap">
+              <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link"
+                  th:href="@{/education/detail/{id}(id=${educationId}, page=${currentPage - 1}, searchKeyword=${param.searchKeyword})}">이전</a>
+              </li>
+              <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${pageNum == currentPage} ? 'active'">
+                <a class="page-link"
+                  th:href="@{/education/detail/{id}(id=${educationId}, page=${pageNum}, searchKeyword=${param.searchKeyword})}"
+                  th:text="${pageNum}"></a>
+              </li>
+              <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link"
+                  th:href="@{/education/detail/{id}(id=${educationId}, page=${currentPage + 1}, searchKeyword=${param.searchKeyword})}">다음</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <!-- 새 문제 등록 폼 -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">새로운 문제 등록</h6>
+        </div>
+        <div class="card-body">
+          <form id="questionForm" class="d-flex gap-2 flex-column">
+            <div class="form-group">
+              <label for="questionTitle">문제 제목</label>
+              <input type="text" class="form-control" id="questionTitle" required>
+            </div>
+            <div class="form-group">
+              <label for="questionContent1">보기 1</label>
+              <input type="text" class="form-control" id="questionContent1" required>
+            </div>
+            <div class="form-group">
+              <label for="questionContent2">보기 2</label>
+              <input type="text" class="form-control" id="questionContent2" required>
+            </div>
+            <div class="form-group">
+              <label for="questionContent3">보기 3</label>
+              <input type="text" class="form-control" id="questionContent3" required>
+            </div>
+            <div class="form-group">
+              <label for="questionContent4">보기 4</label>
+              <input type="text" class="form-control" id="questionContent4" required>
+            </div>
+            <div class="form-group">
+              <label for="questionAnswerNumber">정답 번호</label>
+              <input type="number" class="form-control" id="questionAnswerNumber" required>
+            </div>
+            <div class="form-group">
+              <label for="questionExplanation">해설</label>
+              <textarea class="form-control" id="questionExplanation" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="questionScore">배점</label>
+              <input type="number" class="form-control" id="questionScore" required>
+            </div>
+            <button type="submit" class="btn btn-primary">문제 등록</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <th:block layout:fragment="script">
+    <script>
+      $(document).ready(function () {
+        $('#questionForm').on('submit', function (e) {
+          e.preventDefault();
+          console.log('Question title:', $('#questionTitle').val());
+          console.log('Question content:', $('#questionContent1').val());
+          console.log('Question content:', $('#questionContent2').val());
+          console.log('Question content:', $('#questionContent3').val());
+          console.log('Question content:', $('#questionContent4').val());
+          console.log('Question answer number:', $('#questionAnswerNumber').val());
+          console.log('Question score:', $('#questionScore').val());
+          console.log('Question explanation:', $('#questionExplanation').val());
+        });
+      });
+    </script>
+  </th:block>
+</body>
