@@ -1,61 +1,64 @@
-<!--<html layout:decorate="~{thymeleaf/layouts/admin.html}">-->
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{${layout}}"
-      th:with="pageTitle='admin 메인 페이지', pagePath='/main/main'"
->
-<div layout:fragment="content">
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{${layout}}"
+  th:with="pageTitle='admin 메인 페이지', pagePath='/main/main'">
+
+<body>
+  <div layout:fragment="content">
     <!-- 메시지 표시 -->
-<!--    <div th:if="${message}" class="alert alert-success" role="alert">-->
-<!--        <span th:text="${message}"></span>-->
-<!--    </div>-->
+    <!--    <div th:if="${message}" class="alert alert-success" role="alert">-->
+    <!--        <span th:text="${message}"></span>-->
+    <!--    </div>-->
     <div th:if="${error}" class="alert alert-danger" role="alert">
-        <span th:text="${error}"></span>
+      <span th:text="${error}"></span>
     </div>
 
     <div class="container mt-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">로그인 정보</h5>
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">로그인 정보</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong>이름:</strong>
+                <span sec:authentication="principal.memberAdmin.name">-</span>
+              </p>
+              <p><strong>아이디:</strong>
+                <span sec:authentication="name">-</span>
+              </p>
+              <p><strong>권한:</strong>
+                <span sec:authentication="principal.memberAdmin.role">-</span>
+              </p>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>이름:</strong> 
-                            <span sec:authentication="principal.memberAdmin.name">-</span>
-                        </p>
-                        <p><strong>아이디:</strong> 
-                            <span sec:authentication="name">-</span>
-                        </p>
-                        <p><strong>권한:</strong> 
-                            <span sec:authentication="principal.memberAdmin.role">-</span>
-                        </p>
-                    </div>
-                    <div class="col-md-6">
-                        <!-- Construction 정보 표시 -->
-                        <div sec:authorize="isAuthenticated()">
-                            <div th:with="construction=${#authentication.principal.memberAdmin.construction}">
-                                <div th:if="${construction != null}">
-                                    <p><strong>공사현장 ID:</strong>
-                                        <span th:text="${construction.id}">-</span>
-                                    </p>
-                                    <p><strong>현장주소:</strong> 
-                                        <span th:text="${construction.location}">-</span>
-                                    </p>
-                                </div>
-                                <div th:unless="${construction != null}">
-                                    <p class="text-muted" th:unless="${#authentication.principal.memberAdmin.role == 'ROLE_ADMIN'}">배정된 건설공사현장이 없습니다.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="col-md-6">
+              <!-- Construction 정보 표시 -->
+              <div sec:authorize="isAuthenticated()">
+                <div th:with="construction=${#authentication.principal.memberAdmin.construction}">
+                  <div th:if="${construction != null}">
+                    <p><strong>공사현장 ID:</strong>
+                      <span th:text="${construction.id}">-</span>
+                    </p>
+                    <p><strong>현장주소:</strong>
+                      <span th:text="${construction.location}">-</span>
+                    </p>
+                  </div>
+                  <div th:unless="${construction != null}">
+                    <p class="text-muted" th:unless="${#authentication.principal.memberAdmin.role == 'ROLE_ADMIN'}">배정된
+                      건설공사현장이 없습니다.</p>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
 
-        <div class="alert alert-info mt-4">
-            왼쪽 혹은 상단의 메뉴를 클릭하세요
-        </div>
+      <div class="alert alert-info mt-4">
+        왼쪽 혹은 상단의 메뉴를 클릭하세요
+      </div>
     </div>
-</div>
+  </div>
+</body>
+
+</html>

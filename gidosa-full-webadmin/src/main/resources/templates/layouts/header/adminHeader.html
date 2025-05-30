@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/bootstrap-icons/bootstrap-icons.min.css}">
+  <!-- Toast UI Editor CSS -->
+  <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor.min.css}" />
+  <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor-dark.min.css}" />
+  <!-- Admin Header CSS -->
+  <link rel="stylesheet" th:href="@{/css/header.css}" />
+
+  <style>
+    /* 고정 헤더 높이만큼 컨텐츠 영역에 패딩 추가 */
+    #page-content-wrapper {
+      padding-top: 82px;
+    }
+  </style>
+</head>
+
+<body class="pt-72">
+  <!-- 헤더 시작 -->
+  <header class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <div class="container position-relative">
+
+      <!-- 로고 -->
+      <a class="navbar-brand" href="/main">
+        <span>바로세움-관리자</span>
+      </a>
+
+      <!-- 네비게이션 메뉴 -->
+      <div class="collapse navbar-collapse gap-4 " id="navbarNav">
+        <!-- 로그인한 사용자만 볼 수 있는 메뉴 -->
+        <ul class="navbar-nav ms-auto" sec:authorize="isAuthenticated()">
+          <!-- 상담신청 관리 -->
+          <li class="nav-item">
+            <a class="nav-link" href="/request/construction/list">상담신청 관리</a>
+          </li>
+
+          <!-- 제출의견 관리 -->
+          <li class="nav-item">
+            <a class="nav-link" href="/inquiry/admin/list">제출의견 관리</a>
+          </li>
+
+          <!-- 도입현장 관리 -->
+          <li class="nav-item">
+            <a class="nav-link" href="/construction/list">도입현장 관리</a>
+          </li>
+
+          <!-- 현장관리자 등록 -->
+          <li class="nav-item">
+            <a class="nav-link" href="/member/admin/list">현장관리자 등록</a>
+          </li>
+
+          <!-- 전체공지 관리 -->
+          <li class="nav-item">
+            <a class="nav-link" href="/notice">전체공지 관리</a>
+          </li>
+
+          <!-- 안전 교육 드롭다운 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="educationDropdown" role="button" data-bs-toggle="dropdown">
+              안전 교육
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/education/list">교육 자료</a></li>
+              <li><a class="dropdown-item" href="/education/template">템플릿 만들기</a></li>
+            </ul>
+          </li>
+
+          <!-- 확장 메뉴 통합 드롭다운 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="extensionDropdown" role="button" data-bs-toggle="dropdown">
+              확장 메뉴
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/settings/menu-manager">확장메뉴 설정</a></li>
+              <li><a class="dropdown-item" href="/settings/html-manager?viewMode=noConstruction">페이지 관리</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <!-- 커스텀 메뉴 섹션 -->
+              <th:block th:if="${@customMenuService.getAllRootMenusAdminWithChildren() != null}">
+                <th:block th:each="rootMenu : ${@customMenuService.getAllRootMenusAdminWithChildren()}">
+                  <th:block th:if="${rootMenu.isActive}">
+                    <th:block th:if="${!rootMenu.children.isEmpty()}">
+                      <li class="dropdown-submenu">
+                        <a class="dropdown-item dropdown-toggle" th:href="'#'" th:text="${rootMenu.name}"></a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li th:each="childMenu : ${rootMenu.children}" th:if="${childMenu.isActive}">
+                            <a class="dropdown-item" th:href="${childMenu.url}" th:text="${childMenu.name}"></a>
+                          </li>
+                        </ul>
+                      </li>
+                    </th:block>
+                    <th:block th:if="${rootMenu.children.isEmpty()}">
+                      <li><a class="dropdown-item" th:href="${rootMenu.url}" th:text="${rootMenu.name}"></a></li>
+                    </th:block>
+                  </th:block>
+                </th:block>
+              </th:block>
+            </ul>
+          </li>
+        </ul>
+
+        <!-- 로그아웃 버튼 -->
+        <div class="nav-item" sec:authorize="isAuthenticated()">
+          <form th:action="@{/auth/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-link logout-link p-0">Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- 헤더 끝 -->
+
+  <!-- 메인 컨텐츠 영역 -->
+  <main id="page-content-wrapper" class="container">
+    <div layout:fragment="content" />
+  </main>
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  <!-- 드롭다운 스크립트 -->
+  <script th:src="@{/js/dropdown.js}"></script>
+
+  <!-- Core theme JS-->
+  <script th:src="@{/js/scripts.js}"></script>
+</body>
+
+</html>

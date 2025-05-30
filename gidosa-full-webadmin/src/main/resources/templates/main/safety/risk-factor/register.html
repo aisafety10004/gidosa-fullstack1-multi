@@ -1,413 +1,417 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/manager}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/header/managerHeader}">
+
 <head>
-    <!-- <title>위험요인 등록</title> -->
-    <style>
-        .form-section {
-            margin-bottom: 30px;
-        }
-        
-        .form-section h5 {
-            margin-bottom: 15px;
-            border-bottom: 1px solid #dee2e6;
-            padding-bottom: 10px;
-        }
-        
-        .required-label::after {
-            content: " *";
-            color: red;
-        }
-        
-        /* 반응형 스타일 */
-        @media (max-width: 768px) {
-            .form-section .row {
-                flex-direction: column;
-            }
-            
-            .form-section .col-md-6 {
-                width: 100%;
-                margin-bottom: 15px;
-            }
-        }
-        
-        .image-preview {
-            max-width: 100%;
-            max-height: 200px;
-            margin-top: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 5px;
-        }
-        
-        .risk-size-display {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        
-        .risk-low {
-            background-color: #d1e7dd;
-            color: #0f5132;
-        }
-        
-        .risk-medium {
-            background-color: #fff3cd;
-            color: #664d03;
-        }
-        
-        .risk-high {
-            background-color: #f8d7da;
-            color: #842029;
-        }
-        
-        .risk-critical {
-            background-color: #842029;
-            color: #ffffff;
-        }
+  <!-- <title>위험요인 등록</title> -->
+  <style>
+    .form-section {
+      margin-bottom: 30px;
+    }
 
-        .btn-hazard-new {
-            background-color: #2876cd;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 10px 20px;
-            font-weight: bold;
-            text-align: center;
-            width: 100%;
-            max-width: none;
-            display: block;
-            margin: 0 auto;
-        }
+    .form-section h5 {
+      margin-bottom: 15px;
+      border-bottom: 1px solid #dee2e6;
+      padding-bottom: 10px;
+    }
 
-        .btn-hazard-new:hover,
-        .btn-hazard-new:focus,
-        .btn-hazard-new:active {
-            background-color: #2876cd !important;
-        }
-    </style>
+    .required-label::after {
+      content: " *";
+      color: red;
+    }
+
+    /* 반응형 스타일 */
+    @media (max-width: 768px) {
+      .form-section .row {
+        flex-direction: column;
+      }
+
+      .form-section .col-md-6 {
+        width: 100%;
+        margin-bottom: 15px;
+      }
+    }
+
+    .image-preview {
+      max-width: 100%;
+      max-height: 200px;
+      margin-top: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 5px;
+    }
+
+    .risk-size-display {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .risk-low {
+      background-color: #d1e7dd;
+      color: #0f5132;
+    }
+
+    .risk-medium {
+      background-color: #fff3cd;
+      color: #664d03;
+    }
+
+    .risk-high {
+      background-color: #f8d7da;
+      color: #842029;
+    }
+
+    .risk-critical {
+      background-color: #842029;
+      color: #ffffff;
+    }
+
+    .btn-hazard-new {
+      background-color: #2876cd;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+      max-width: none;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .btn-hazard-new:hover,
+    .btn-hazard-new:focus,
+    .btn-hazard-new:active {
+      background-color: #2876cd !important;
+    }
+  </style>
 </head>
+
 <body>
-<div layout:fragment="content">
+  <div layout:fragment="content">
     <div class="container-fluid px-4">
-        <h1 class="mt-4">신규 위험요인 등록</h1>
-<!--        <h1 class="mt-4">위험요인 등록</h1>-->
-<!--        <ol class="breadcrumb mb-4">-->
-<!--            <li class="breadcrumb-item"><a href="/main">홈</a></li>-->
-<!--            <li class="breadcrumb-item"><a href="/safety/risk-factor/list">위험요인 관리</a></li>-->
-<!--            <li class="breadcrumb-item active">위험요인 등록</li>-->
-<!--        </ol>-->
-        
-        <div class="card mb-4">
-            <div class="card-header" style="text-align: center;">
-                <i class="fas fa-edit me-1"></i>
-                신규 위험요인 등록 양식
+      <h1 class="mt-4">신규 위험요인 등록</h1>
+      <!--        <h1 class="mt-4">위험요인 등록</h1>-->
+      <!--        <ol class="breadcrumb mb-4">-->
+      <!--            <li class="breadcrumb-item"><a href="/main">홈</a></li>-->
+      <!--            <li class="breadcrumb-item"><a href="/safety/risk-factor/list">위험요인 관리</a></li>-->
+      <!--            <li class="breadcrumb-item active">위험요인 등록</li>-->
+      <!--        </ol>-->
+
+      <div class="card mb-4">
+        <div class="card-header" style="text-align: center;">
+          <i class="fas fa-edit me-1"></i>
+          신규 위험요인 등록 양식
+        </div>
+        <div class="card-body">
+          <form th:action="@{/safety/risk-factor/register}" method="post" th:object="${riskFactorDto}"
+            enctype="multipart/form-data">
+            <!-- 위도, 경도 hidden 필드 추가 -->
+            <input type="hidden" id="latitude" th:field="*{latitude}" />
+            <input type="hidden" id="longitude" th:field="*{longitude}" />
+
+            <!-- 기본 정보 섹션 -->
+            <div class="form-section">
+              <div class="row">
+                <div class="col-12 text-center mb-3">
+                  <div class="btn btn-hazard-new" style="pointer-events: none;">
+                    신규 유해위험 등록 시스템
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <label for="siteName" class="form-label required-label">현장명</label>
+                  <input type="text" class="form-control" id="siteName" th:field="*{siteName}" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="workProcess" class="form-label required-label">공정</label>
+                  <input type="text" class="form-control" id="workProcess" th:field="*{workProcess}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="workLocation" class="form-label">작업위치(위치층수)</label>
+                  <input type="text" class="form-control" id="workLocation" th:field="*{workLocation}">
+                </div>
+              </div>
             </div>
-            <div class="card-body">
-                <form th:action="@{/safety/risk-factor/register}" method="post" th:object="${riskFactorDto}" enctype="multipart/form-data">
-                    <!-- 위도, 경도 hidden 필드 추가 -->
-                    <input type="hidden" id="latitude" th:field="*{latitude}" />
-                    <input type="hidden" id="longitude" th:field="*{longitude}" />
-                    
-                    <!-- 기본 정보 섹션 -->
-                    <div class="form-section">
-                        <div class="row">
-                            <div class="col-12 text-center mb-3">
-                                <div class="btn btn-hazard-new" style="pointer-events: none;">
-                                    신규 유해위험 등록 시스템
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label for="siteName" class="form-label required-label">현장명</label>
-                                <input type="text" class="form-control" id="siteName" th:field="*{siteName}" required>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="workProcess" class="form-label required-label">공정</label>
-                                <input type="text" class="form-control" id="workProcess" th:field="*{workProcess}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="workLocation" class="form-label">작업위치(위치층수)</label>
-                                <input type="text" class="form-control" id="workLocation" th:field="*{workLocation}">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 현장 사진 섹션 -->
-                    <div class="form-section">
-                        <h5>현장 사진</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="workImage1File" class="form-label required-label">현장사진1</label>
-                                <input type="file" class="form-control" id="workImage1File" name="workImage1File" accept="image/*" required>
-                                <div id="workImage1Preview" class="mt-2"></div>
-                                <small id="gpsInfo" class="form-text text-muted mt-1"></small>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="workImage2File" class="form-label">현장사진2</label>
-                                <input type="file" class="form-control" id="workImage2File" name="workImage2File" accept="image/*">
-                                <div id="workImage2Preview" class="mt-2"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 위험 분류 섹션 -->
-                    <div class="form-section">
-                        <h5>위험 분류</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="riskClassification" class="form-label required-label">위험 분류</label>
-                                <select class="form-select" id="riskClassification" th:field="*{riskClassification}" required>
-                                    <option value="">-- 위험 분류 선택 --</option>
-                                    <option th:each="option : ${riskClassificationOptions}"
-                                            th:value="${option}"
-                                            th:text="${option.displayName}"></option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="riskDetailFactor" class="form-label required-label">위험 요인(상세)</label>
-                                <select class="form-select" id="riskDetailFactor" th:field="*{riskDetailFactor}" required>
-                                    <option value="">-- 위험 분류를 선택하세요 --</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="riskSituationResult" class="form-label required-label">(예상)위험상황 및 결과</label>
-                            <textarea class="form-control" id="riskSituationResult" th:field="*{riskSituationResult}" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="currentSafetyMeasure" class="form-label">현재안전조치</label>
-                            <textarea class="form-control" id="currentSafetyMeasure" th:field="*{currentSafetyMeasure}" rows="3"></textarea>
-                        </div>
-                    </div>
-                    
-                    <!-- 위험성 평가 섹션 -->
-                    <div class="form-section">
-                        <h5>위험성 평가</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="riskPossibility" class="form-label required-label">가능성</label>
-                                <select class="form-control" id="riskPossibility" th:field="*{riskPossibility}" required>
-                                    <option value="1" selected>1 - 낮음</option>
-                                    <option value="2">2 - 보통</option>
-                                    <option value="3">3 - 높음</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="riskCriticality" class="form-label required-label">중대성</label>
-                                <select class="form-control" id="riskCriticality" th:field="*{riskCriticality}" required>
-                                    <option value="1" selected>1 - 경미</option>
-                                    <option value="2">2 - 중간</option>
-                                    <option value="3">3 - 심각</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">위험성 크기</label>
-                            <div id="riskSizeDisplay" class="risk-size-display">
-                                위험성 크기: 1 (가능성 × 중대성)
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 위험성 감소대책 섹션 -->
-                    <div class="form-section">
-                        <h5>위험성 감소대책</h5>
-                        <div class="mb-3">
-                            <label for="riskReductionMeasure1" class="form-label required-label">감소대책1</label>
-                            <select class="form-select" id="riskReductionMeasure1" th:field="*{riskReductionMeasure1}" required>
-                                <option value="">-- 감소대책 선택 --</option>
-                                <option th:each="option : ${riskReductionMeasureFirstOptions}"
-                                        th:value="${option}"
-                                        th:text="${option.displayName}"></option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="riskReductionMeasure2" class="form-label required-label">감소대책2</label>
-                            <textarea class="form-control" id="riskReductionMeasure2" th:field="*{riskReductionMeasure2}" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="isRiskMeasureCompletion" class="form-label">조치여부</label>
-                            <select class="form-select" id="isRiskMeasureCompletion" th:field="*{isRiskMeasureCompletion}">
-                                <option value="">-- 조치여부 선택 --</option>
-                                <option th:each="option : ${riskMeasureCompletionOptions}"
-                                        th:value="${option}"
-                                        th:text="${option.displayName}"></option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <!-- 버튼 그룹 -->
-                    <div class="d-flex justify-content-center mt-4">
-                        <button type="submit" class="btn btn-primary me-2" style="background-color: #2876cd;">
-                            <i class="fas fa-save"></i> 위험보고 등록
-                        </button>
-                        <!-- <a th:href="@{/safety/risk-factor/list}" class="btn btn-secondary">
+
+            <!-- 현장 사진 섹션 -->
+            <div class="form-section">
+              <h5>현장 사진</h5>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="workImage1File" class="form-label required-label">현장사진1</label>
+                  <input type="file" class="form-control" id="workImage1File" name="workImage1File" accept="image/*"
+                    required>
+                  <div id="workImage1Preview" class="mt-2"></div>
+                  <small id="gpsInfo" class="form-text text-muted mt-1"></small>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="workImage2File" class="form-label">현장사진2</label>
+                  <input type="file" class="form-control" id="workImage2File" name="workImage2File" accept="image/*">
+                  <div id="workImage2Preview" class="mt-2"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 위험 분류 섹션 -->
+            <div class="form-section">
+              <h5>위험 분류</h5>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="riskClassification" class="form-label required-label">위험 분류</label>
+                  <select class="form-select" id="riskClassification" th:field="*{riskClassification}" required>
+                    <option value="">-- 위험 분류 선택 --</option>
+                    <option th:each="option : ${riskClassificationOptions}" th:value="${option}"
+                      th:text="${option.displayName}"></option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="riskDetailFactor" class="form-label required-label">위험 요인(상세)</label>
+                  <select class="form-select" id="riskDetailFactor" th:field="*{riskDetailFactor}" required>
+                    <option value="">-- 위험 분류를 선택하세요 --</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="riskSituationResult" class="form-label required-label">(예상)위험상황 및 결과</label>
+                <textarea class="form-control" id="riskSituationResult" th:field="*{riskSituationResult}" rows="3"
+                  required></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="currentSafetyMeasure" class="form-label">현재안전조치</label>
+                <textarea class="form-control" id="currentSafetyMeasure" th:field="*{currentSafetyMeasure}"
+                  rows="3"></textarea>
+              </div>
+            </div>
+
+            <!-- 위험성 평가 섹션 -->
+            <div class="form-section">
+              <h5>위험성 평가</h5>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="riskPossibility" class="form-label required-label">가능성</label>
+                  <select class="form-control" id="riskPossibility" th:field="*{riskPossibility}" required>
+                    <option value="1" selected>1 - 낮음</option>
+                    <option value="2">2 - 보통</option>
+                    <option value="3">3 - 높음</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="riskCriticality" class="form-label required-label">중대성</label>
+                  <select class="form-control" id="riskCriticality" th:field="*{riskCriticality}" required>
+                    <option value="1" selected>1 - 경미</option>
+                    <option value="2">2 - 중간</option>
+                    <option value="3">3 - 심각</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">위험성 크기</label>
+                <div id="riskSizeDisplay" class="risk-size-display">
+                  위험성 크기: 1 (가능성 × 중대성)
+                </div>
+              </div>
+            </div>
+
+            <!-- 위험성 감소대책 섹션 -->
+            <div class="form-section">
+              <h5>위험성 감소대책</h5>
+              <div class="mb-3">
+                <label for="riskReductionMeasure1" class="form-label required-label">감소대책1</label>
+                <select class="form-select" id="riskReductionMeasure1" th:field="*{riskReductionMeasure1}" required>
+                  <option value="">-- 감소대책 선택 --</option>
+                  <option th:each="option : ${riskReductionMeasureFirstOptions}" th:value="${option}"
+                    th:text="${option.displayName}"></option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="riskReductionMeasure2" class="form-label required-label">감소대책2</label>
+                <textarea class="form-control" id="riskReductionMeasure2" th:field="*{riskReductionMeasure2}" rows="3"
+                  required></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="isRiskMeasureCompletion" class="form-label">조치여부</label>
+                <select class="form-select" id="isRiskMeasureCompletion" th:field="*{isRiskMeasureCompletion}">
+                  <option value="">-- 조치여부 선택 --</option>
+                  <option th:each="option : ${riskMeasureCompletionOptions}" th:value="${option}"
+                    th:text="${option.displayName}"></option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 버튼 그룹 -->
+            <div class="d-flex justify-content-center mt-4">
+              <button type="submit" class="btn btn-primary me-2" style="background-color: #2876cd;">
+                <i class="fas fa-save"></i> 위험보고 등록
+              </button>
+              <!-- <a th:href="@{/safety/risk-factor/list}" class="btn btn-secondary">
                             <i class="fas fa-times"></i> 취소
                         </a> -->
-                    </div>
-                </form>
             </div>
+          </form>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<th:block layout:fragment="script">
+  <th:block layout:fragment="script">
     <script src="/js/lib/exif.min.js"></script>
     <script src="/js/utils.js"></script>
     <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function() {
-            // 위험성 크기 계산
-            const riskPossibilitySelect = document.getElementById('riskPossibility');
-            const riskCriticalitySelect = document.getElementById('riskCriticality');
-            const riskSizeDisplay = document.getElementById('riskSizeDisplay');
-            
-            // 위험 분류와 위험 요인(상세) 드롭다운 요소
-            const riskClassificationSelect = document.getElementById('riskClassification');
-            const riskDetailFactorSelect = document.getElementById('riskDetailFactor');
-            
-            // 위도, 경도 hidden 필드
-            const latitudeInput = document.getElementById('latitude');
-            const longitudeInput = document.getElementById('longitude');
-            const gpsInfoDisplay = document.getElementById('gpsInfo');
-            
-            // 위험 분류에 따른 위험 요인(상세) 옵션 매핑
-            const detailFactorOptions = {
-                'MECHANICAL_EQUIPMENT': /*[[${mechanicalEquipmentOptions}]]*/ [],
-                'ELECTRICAL': /*[[${electricalOptions}]]*/ [],
-                'CHEMICAL_SUBSTANCE': /*[[${chemicalSubstanceOptions}]]*/ [],
-                'BIOLOGICAL': /*[[${biologicalOptions}]]*/ [],
-                'WORK_CHARACTERISTICS': /*[[${workCharacteristicsOptions}]]*/ [],
-                'WORK_ENVIRONMENT': /*[[${workEnvironmentOptions}]]*/ []
+      document.addEventListener('DOMContentLoaded', function () {
+        // 위험성 크기 계산
+        const riskPossibilitySelect = document.getElementById('riskPossibility');
+        const riskCriticalitySelect = document.getElementById('riskCriticality');
+        const riskSizeDisplay = document.getElementById('riskSizeDisplay');
+
+        // 위험 분류와 위험 요인(상세) 드롭다운 요소
+        const riskClassificationSelect = document.getElementById('riskClassification');
+        const riskDetailFactorSelect = document.getElementById('riskDetailFactor');
+
+        // 위도, 경도 hidden 필드
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+        const gpsInfoDisplay = document.getElementById('gpsInfo');
+
+        // 위험 분류에 따른 위험 요인(상세) 옵션 매핑
+        const detailFactorOptions = {
+          'MECHANICAL_EQUIPMENT': /*[[${mechanicalEquipmentOptions}]]*/[],
+          'ELECTRICAL': /*[[${electricalOptions}]]*/[],
+          'CHEMICAL_SUBSTANCE': /*[[${chemicalSubstanceOptions}]]*/[],
+          'BIOLOGICAL': /*[[${biologicalOptions}]]*/[],
+          'WORK_CHARACTERISTICS': /*[[${workCharacteristicsOptions}]]*/[],
+          'WORK_ENVIRONMENT': /*[[${workEnvironmentOptions}]]*/[]
+        };
+
+        // 위험 분류 변경 시 위험 요인(상세) 옵션 업데이트
+        function updateRiskDetailFactorOptions() {
+          const selectedClassification = riskClassificationSelect.value;
+
+          // 기존 옵션 제거
+          riskDetailFactorSelect.innerHTML = '';
+
+          // 기본 옵션 추가
+          const defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.text = selectedClassification ? '-- 위험 요인(상세) 선택 --' : '-- 위험 분류를 선택하세요 --';
+          riskDetailFactorSelect.appendChild(defaultOption);
+
+          // 선택된 위험 분류에 따른 옵션 추가
+          if (selectedClassification && detailFactorOptions[selectedClassification]) {
+            detailFactorOptions[selectedClassification].forEach(option => {
+              const optionElement = document.createElement('option');
+              optionElement.value = option.value;
+              optionElement.text = option.text;
+              riskDetailFactorSelect.appendChild(optionElement);
+            });
+          }
+        }
+
+        // 위험 분류 변경 이벤트 리스너 등록
+        riskClassificationSelect.addEventListener('change', updateRiskDetailFactorOptions);
+
+        // 초기 로드 시 위험 요인(상세) 옵션 설정
+        updateRiskDetailFactorOptions();
+
+        function calculateRiskSize() {
+          const possibility = parseInt(riskPossibilitySelect.value) || 1;
+          const criticality = parseInt(riskCriticalitySelect.value) || 1;
+          const riskSize = possibility * criticality;
+
+          riskSizeDisplay.textContent = `위험성 크기: ${riskSize} (가능성 × 중대성)`;
+
+          // 위험성 크기에 따른 스타일 변경
+          riskSizeDisplay.className = 'risk-size-display';
+          // if (riskSize >= 6) {
+          //     riskSizeDisplay.classList.add('risk-critical');
+          // } else if (riskSize >= 4) {
+          //     riskSizeDisplay.classList.add('risk-high');
+          // } else if (riskSize >= 2) {
+          //     riskSizeDisplay.classList.add('risk-medium');
+          // } else if (riskSize > 0) {
+          //     riskSizeDisplay.classList.add('risk-low');
+          // }
+        }
+
+        riskPossibilitySelect.addEventListener('change', calculateRiskSize);
+        riskCriticalitySelect.addEventListener('change', calculateRiskSize);
+
+        // 이미지 미리보기 및 EXIF 데이터 추출
+        function previewImage(input, previewId) {
+          const preview = document.getElementById(previewId);
+          preview.innerHTML = '';
+
+          if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const reader = new FileReader();
+
+            // 이미지 미리보기
+            reader.onload = function (e) {
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              img.className = 'image-preview';
+              preview.appendChild(img);
             };
-            
-            // 위험 분류 변경 시 위험 요인(상세) 옵션 업데이트
-            function updateRiskDetailFactorOptions() {
-                const selectedClassification = riskClassificationSelect.value;
-                
-                // 기존 옵션 제거
-                riskDetailFactorSelect.innerHTML = '';
-                
-                // 기본 옵션 추가
-                const defaultOption = document.createElement('option');
-                defaultOption.value = '';
-                defaultOption.text = selectedClassification ? '-- 위험 요인(상세) 선택 --' : '-- 위험 분류를 선택하세요 --';
-                riskDetailFactorSelect.appendChild(defaultOption);
-                
-                // 선택된 위험 분류에 따른 옵션 추가
-                if (selectedClassification && detailFactorOptions[selectedClassification]) {
-                    detailFactorOptions[selectedClassification].forEach(option => {
-                        const optionElement = document.createElement('option');
-                        optionElement.value = option.value;
-                        optionElement.text = option.text;
-                        riskDetailFactorSelect.appendChild(optionElement);
-                    });
+
+            reader.readAsDataURL(file);
+
+            // EXIF 데이터 추출 (workImage1File인 경우에만)
+            if (input.id === 'workImage1File') {
+              extractExifData2(file).then(exifData => {
+                if (exifData && exifData.latitude && exifData.longitude) {
+                  // hidden 필드에 위도, 경도 설정
+                  latitudeInput.value = exifData.latitude;
+                  longitudeInput.value = exifData.longitude;
+
+                  // 위치 정보 표시
+                  //gpsInfoDisplay.textContent = `위치 정보가 이미지에서 추출되었습니다.(위도: ${exifData.latitude.toFixed(6)}, 경도: ${exifData.longitude.toFixed(6)})`;
+                  gpsInfoDisplay.innerHTML = `위치 정보가 이미지에서 추출되었습니다.<br>(위도: ${exifData.latitude.toFixed(6)}, 경도: ${exifData.longitude.toFixed(6)})`;
+                } else {
+                  // 위치 정보가 없는 경우
+                  latitudeInput.value = '';
+                  longitudeInput.value = '';
+                  gpsInfoDisplay.textContent = '이미지에 위치 정보가 없습니다.';
                 }
+              }).catch(error => {
+                console.error('EXIF 데이터 추출 오류:', error);
+                latitudeInput.value = '';
+                longitudeInput.value = '';
+                gpsInfoDisplay.textContent = 'EXIF 데이터를 읽는 중 오류가 발생했습니다.';
+              });
             }
-            
-            // 위험 분류 변경 이벤트 리스너 등록
-            riskClassificationSelect.addEventListener('change', updateRiskDetailFactorOptions);
-            
-            // 초기 로드 시 위험 요인(상세) 옵션 설정
-            updateRiskDetailFactorOptions();
-            
-            function calculateRiskSize() {
-                const possibility = parseInt(riskPossibilitySelect.value) || 1;
-                const criticality = parseInt(riskCriticalitySelect.value) || 1;
-                const riskSize = possibility * criticality;
-                
-                riskSizeDisplay.textContent = `위험성 크기: ${riskSize} (가능성 × 중대성)`;
-                
-                // 위험성 크기에 따른 스타일 변경
-                riskSizeDisplay.className = 'risk-size-display';
-                // if (riskSize >= 6) {
-                //     riskSizeDisplay.classList.add('risk-critical');
-                // } else if (riskSize >= 4) {
-                //     riskSizeDisplay.classList.add('risk-high');
-                // } else if (riskSize >= 2) {
-                //     riskSizeDisplay.classList.add('risk-medium');
-                // } else if (riskSize > 0) {
-                //     riskSizeDisplay.classList.add('risk-low');
-                // }
-            }
-            
-            riskPossibilitySelect.addEventListener('change', calculateRiskSize);
-            riskCriticalitySelect.addEventListener('change', calculateRiskSize);
-            
-            // 이미지 미리보기 및 EXIF 데이터 추출
-            function previewImage(input, previewId) {
-                const preview = document.getElementById(previewId);
-                preview.innerHTML = '';
-                
-                if (input.files && input.files[0]) {
-                    const file = input.files[0];
-                    const reader = new FileReader();
-                    
-                    // 이미지 미리보기
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'image-preview';
-                        preview.appendChild(img);
-                    };
-                    
-                    reader.readAsDataURL(file);
-                    
-                    // EXIF 데이터 추출 (workImage1File인 경우에만)
-                    if (input.id === 'workImage1File') {
-                        extractExifData2(file).then(exifData => {
-                            if (exifData && exifData.latitude && exifData.longitude) {
-                                // hidden 필드에 위도, 경도 설정
-                                latitudeInput.value = exifData.latitude;
-                                longitudeInput.value = exifData.longitude;
-                                
-                                // 위치 정보 표시
-                                //gpsInfoDisplay.textContent = `위치 정보가 이미지에서 추출되었습니다.(위도: ${exifData.latitude.toFixed(6)}, 경도: ${exifData.longitude.toFixed(6)})`;
-                                gpsInfoDisplay.innerHTML = `위치 정보가 이미지에서 추출되었습니다.<br>(위도: ${exifData.latitude.toFixed(6)}, 경도: ${exifData.longitude.toFixed(6)})`;
-                            } else {
-                                // 위치 정보가 없는 경우
-                                latitudeInput.value = '';
-                                longitudeInput.value = '';
-                                gpsInfoDisplay.textContent = '이미지에 위치 정보가 없습니다.';
-                            }
-                        }).catch(error => {
-                            console.error('EXIF 데이터 추출 오류:', error);
-                            latitudeInput.value = '';
-                            longitudeInput.value = '';
-                            gpsInfoDisplay.textContent = 'EXIF 데이터를 읽는 중 오류가 발생했습니다.';
-                        });
-                    }
-                }
-            }
-            
-            document.getElementById('workImage1File').addEventListener('change', function() {
-                previewImage(this, 'workImage1Preview');
-            });
-            
-            document.getElementById('workImage2File').addEventListener('change', function() {
-                previewImage(this, 'workImage2Preview');
-            });
-            
-            // 폼 제출 전 유효성 검사
-            document.querySelector('form').addEventListener('submit', function(event) {
-                validateDates();
-                
-                if (!this.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                
-                this.classList.add('was-validated');
-            });
+          }
+        }
+
+        document.getElementById('workImage1File').addEventListener('change', function () {
+          previewImage(this, 'workImage1Preview');
         });
+
+        document.getElementById('workImage2File').addEventListener('change', function () {
+          previewImage(this, 'workImage2Preview');
+        });
+
+        // 폼 제출 전 유효성 검사
+        document.querySelector('form').addEventListener('submit', function (event) {
+          validateDates();
+
+          if (!this.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+
+          this.classList.add('was-validated');
+        });
+      });
     </script>
-</th:block>
+  </th:block>
 </body>
-</html> 
+
+</html>
