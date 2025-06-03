@@ -38,8 +38,6 @@
     /* 고정 헤더 높이만큼 컨텐츠 영역에 패딩 추가 */
     #page-content-wrapper {
       padding-top: 82px;
-      padding-left: 1rem;
-      padding-right: 1rem;
     }
   </style>
 </head>
@@ -145,6 +143,19 @@
               </th:block>
             </ul>
           </li>
+
+          <!-- ERP -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="erpDropdown" role="button"
+              data-bs-toggle="dropdown">ERP</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/erp/attendance">근퇴 관리</a></li>
+              <li><a class="dropdown-item" href="/erp/hrManagement">인사관리</a></li>
+              <li><a class="dropdown-item" href="/erp/project">프로젝트/WBS</a></li>
+              <li><a class="dropdown-item" href="/erp/approval">전자결제</a></li>
+              <li><a class="dropdown-item" href="/erp/salary">급여고과</a></li>
+            </ul>
+          </li>
         </ul>
 
         <!-- 로그아웃 버튼 -->
@@ -159,9 +170,8 @@
   <!-- 헤더 끝 -->
 
   <!-- 메인 컨텐츠 영역 -->
-  <main id="page-content-wrapper" class="container">
-    <!-- Page content-->
-    <div layout:fragment="content" />
+  <main id="page-content-wrapper" th:class="${url.startsWith('/erp')} ? '' : 'container'">
+    <div layout:fragment="content"></div>
   </main>
 
   <script th:src="@{/js/bootstrap.bundle.min.js}"></script>

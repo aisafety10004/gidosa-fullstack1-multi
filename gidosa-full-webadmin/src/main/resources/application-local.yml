@@ -1,125 +1,125 @@
 # 서버포트
 server:
-  port: 9095
-#  forward-headers-strategy: framework
-#  servlet:
-#    encoding:
-#      charset: UTF-8
-#      enabled: true
-#      force: true
-  error:
-    whitelabel:
-      enabled: true   # 스프링 기본 에러 페이지 비활성화
-    include-exception: true
-    include-stacktrace: always
-    path: /error       # 에러 발생시 이동할 경로
+    port: 9095
+    #  forward-headers-strategy: framework
+    #  servlet:
+    #    encoding:
+    #      charset: UTF-8
+    #      enabled: true
+    #      force: true
+    error:
+        whitelabel:
+            enabled: true # 스프링 기본 에러 페이지 비활성화
+        include-exception: true
+        include-stacktrace: always
+        path: /error # 에러 발생시 이동할 경로
 
 # spring-web-jpa
 spring:
-  application:
-    name: gidosa-full-webadmin
+    application:
+        name: gidosa-full-webadmin
 
-#  web:
-#    resources:
-#      static-locations:
-#        - classpath:/static/
+    #  web:
+    #    resources:
+    #      static-locations:
+    #        - classpath:/static/
 
-  devtools:
-    livereload:
-      enabled: false
-    restart:
-      enabled: false
-#    add-properties: false
+    devtools:
+        livereload:
+            enabled: false
+        restart:
+            enabled: false
+    #    add-properties: false
 
-  datasource:
-    mysql:
-      master1:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-#        jdbc-url: jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
-        jdbc-url: jdbc:mysql://dev-inner-bastion.jobio.kr:1306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
-#        jdbc-url: jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
-        username: root
-        password: password
-        max-pool-size: 20
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-##    url: jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
-#    url: jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
-#    username: root
-#    password: password
-#    hikari:
-#      maximum-pool-size: 20
+    datasource:
+        mysql:
+            master1:
+                driver-class-name: com.mysql.cj.jdbc.Driver
+                #        jdbc-url: jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+                jdbc-url: jdbc:mysql://dev-inner-bastion.jobio.kr:1306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+                #        jdbc-url: jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+                username: root
+                password: password
+                max-pool-size: 20
+    #    driver-class-name: com.mysql.cj.jdbc.Driver
+    ##    url: jdbc:mysql://35.216.107.29:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+    #    url: jdbc:mysql://localhost:3306/safety_gidosa?useSSL=false&serverTimezone=Asia/Seoul
+    #    username: root
+    #    password: password
+    #    hikari:
+    #      maximum-pool-size: 20
 
-  thymeleaf:          # 타임리프
-    cache: false
-#    prefix: classpath:/templates/
-#    suffix: .html
-#    view-names: thymeleaf/*
-#    enabled: true
-#    check-template-location: true
+    thymeleaf: # 타임리프
+        cache: false
+    #    prefix: classpath:/templates/
+    #    suffix: .html
+    #    view-names: thymeleaf/*
+    #    enabled: true
+    #    check-template-location: true
 
-#  mvc:
-##    static-path-pattern: /**
-##    static-path-pattern: /static/**
-#    view:         # 제이에스피
-#      prefix: /WEB-INF/views/
-#      suffix: .jsp
+    #  mvc:
+    ##    static-path-pattern: /**
+    ##    static-path-pattern: /static/**
+    #    view:         # 제이에스피
+    #      prefix: /WEB-INF/views/
+    #      suffix: .jsp
 
-  servlet:
-    multipart:
-      max-file-size: 15MB
-      max-request-size: 15MB
-#    context-path: /api
+    servlet:
+        multipart:
+            max-file-size: 15MB
+            max-request-size: 15MB
+    #    context-path: /api
 
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#    show-sql: true
-#    properties:
-#      hibernate:
-#        jdbc:
-#          time_zone: Asia/Seoul
-#        dialect: org.hibernate.dialect.MySQLDialect
-#        format_sql: true
-#    open-in-view: false
-  jpa:
-    properties:
-      hibernate:
-        hbm2ddl:
-          auto: update        # ddl-auto와 같음
-        show_sql: true      # java코드로 짠 sql을
-        format_sql: true    # sql문 pretty하게 보여줌
-        use_sql_comments: true
-        jdbc:
-          time_zone: Asia/Seoul
-#        dialect: org.hibernate.dialect.PostgreSQLDialect
-#        temp:
-#          use_jdbc_metadata_defaults: false
-        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-        enable_lazy_load_no_trans: false  # open-in-view 비슷?
-#        default_schema: users
-#        transaction:
-#          jta:   # Java Tomcat Application? or Java Transaction API?
-#            platform: true
-        query:
-          fail_on_pagination_over_collection_fetch: true
-    #        default_batch_fetch_size: 500
+    #  jpa:
+    #    hibernate:
+    #      ddl-auto: update
+    #    show-sql: true
+    #    properties:
+    #      hibernate:
+    #        jdbc:
+    #          time_zone: Asia/Seoul
+    #        dialect: org.hibernate.dialect.MySQLDialect
+    #        format_sql: true
+    #    open-in-view: false
+    jpa:
+        properties:
+            hibernate:
+                hbm2ddl:
+                    auto: update # ddl-auto와 같음
+                show_sql: true # java코드로 짠 sql을
+                format_sql: true # sql문 pretty하게 보여줌
+                use_sql_comments: true
+                jdbc:
+                    time_zone: Asia/Seoul
+                #        dialect: org.hibernate.dialect.PostgreSQLDialect
+                #        temp:
+                #          use_jdbc_metadata_defaults: false
+                physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+                enable_lazy_load_no_trans: false # open-in-view 비슷?
+                #        default_schema: users
+                #        transaction:
+                #          jta:   # Java Tomcat Application? or Java Transaction API?
+                #            platform: true
+                query:
+                    fail_on_pagination_over_collection_fetch: true
+        #        default_batch_fetch_size: 500
 
-  mail:
-    host:
-    port:
-    username:
-    password:
-    sender-display: 위험안전 지도사
-    properties:
-      mail:
-        smtp:
-          auth: true
-          timeout: 5000
-          starttls:
-            enable: true
+    mail:
+        host:
+        port:
+        username:
+        password:
+        sender-display: 위험안전 지도사
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    timeout: 5000
+                    starttls:
+                        enable: true
 
 jwt:
-  secret: vosdfay6ghfasdfasldfjasldfmxcfvojalksnfskdsdgfn
+    secret: vosdfay6ghfasdfasldfjasldfmxcfvojalksnfskdsdgfn
 
 ## mybatis
 #mybatis:
@@ -135,12 +135,13 @@ jwt:
 #   root: INFO
 
 file:
-  upload:
-    path: C:\\uploads\\baroceum
+    upload:
+        path: /Users/apple/uploads/baroceum
+#    path: C:\\uploads\\baroceum
 #    path: C:\\uploads
 #    path: /Users/pktjesus/uploads/baroceum
 
 custom:
-  site-webapp:
-    url: http://localhost:9097
-    version: 1.0.0
+    site-webapp:
+        url: http://localhost:9097
+        version: 1.0.0

@@ -34,7 +34,7 @@ public class NotionPageConnectController {
         ResponseEntity<NotionResponseDto> response = restTemplate
                 .exchange(url, HttpMethod.POST, new HttpEntity<>(headers), NotionResponseDto.class);
 
-        System.out.println("res: " + response.getBody());
+        System.out.println("res: " + response.getBody().getResults().get(0).getProperties());
 
         return "main/notion/connect";
     }

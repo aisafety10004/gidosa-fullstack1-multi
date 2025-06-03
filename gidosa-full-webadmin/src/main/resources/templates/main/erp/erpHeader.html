@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layouts/header/managerHeader}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/bootstrap-icons/bootstrap-icons.min.css}">
+  <!-- Toast UI Editor CSS -->
+  <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor.min.css}" />
+  <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor-dark.min.css}" />
+
+  <style>
+    .menu-list {
+      padding: 1rem 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      list-style: none;
+      gap: 1rem;
+    }
+
+    .menu-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1.5rem 0.5rem;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      margin: 0.5rem;
+      aspect-ratio: 1;
+      height: 120px;
+    }
+
+    .menu-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      color: #007bff;
+    }
+
+    .menu-item span {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    #page-content-wrapper {
+      padding-top: 0 !important;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="tailwind-section">
+      <div class="relative w-full h-96 bg-lime-500 mb-10 mt-3 overflow-hidden">
+        <!-- 배경 이미지 -->
+        <img src="/assets/images/main/photo-main-slide3.jpg" class="w-full h-full object-cover absolute inset-0"
+          alt="안전 장비" style="z-index:1; opacity:0.8;">
+        <div class="absolute inset-0 flex flex-col items-center justify-center px-20 text-white container"
+          style="z-index:2;">
+          <h2 class="text-4xl font-bold mb-4">ERP 관리 시스템</h2>
+          <ul class="row menu-list">
+            <li class="col-md-2">
+              <a href="/erp/attendance" class="menu-item">
+                <i class="bi bi-calendar-check fs-3 mb-2"></i>
+                <span>근퇴 관리</span>
+              </a>
+            </li>
+            <li class="col-md-2">
+              <a href="/erp/hrManagement" class="menu-item">
+                <i class="bi bi-people fs-3 mb-2"></i>
+                <span>인사관리</span>
+              </a>
+            </li>
+            <li class="col-md-2">
+              <a href="/erp/project" class="menu-item">
+                <i class="bi bi-kanban fs-3 mb-2"></i>
+                <span>프로젝트/WBS</span>
+              </a>
+            </li>
+            <li class="col-md-2">
+              <a href="/erp/salary" class="menu-item">
+                <i class="bi bi-file-earmark-text fs-3 mb-2"></i>
+                <span>전자결제</span>
+              </a>
+            </li>
+            <li class="col-md-2">
+              <a href="/erp/approval" class="menu-item">
+                <i class="bi bi-cash-stack fs-3 mb-2"></i>
+                <span>급여고과</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ERP 하위 페이지 컨텐츠 영역 -->
+    <div layout:fragment="erp-content" class="container">
+      <!-- 여기에 각 ERP 하위 페이지의 컨텐츠가 들어갑니다 -->
+    </div>
+  </div>
+  <!-- Bootstrap Bundle with Popper -->
+  <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  <!-- 드롭다운 스크립트 -->
+  <script th:src="@{/js/dropdown.js}"></script>
+
+  <!-- Core theme JS-->
+  <script th:src="@{/js/scripts.js}"></script>
+</body>
+
+</html>
