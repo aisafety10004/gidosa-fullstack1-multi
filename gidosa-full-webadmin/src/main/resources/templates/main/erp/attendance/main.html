@@ -4,13 +4,17 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>근퇴 관리</title>
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <title>출퇴근 관리</title>
 </head>
 
 <body>
-  <div layout:fragment="erp-content">
-    <h1>근퇴 관리</h1>
+  <div layout:fragment="erp-content" class="container">
+    <ul class="flex flex-col gap-4 justify-start items-center">
+      <li><a href="/erp/attendance/register">출퇴근 등록</a></li>
+      <li><a href="/erp/attendance/list">출퇴근 목록</a></li>
+    </ul>
   </div>
 </body>
 
