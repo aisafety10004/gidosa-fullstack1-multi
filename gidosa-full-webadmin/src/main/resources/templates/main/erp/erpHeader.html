@@ -9,6 +9,7 @@
   <link rel="icon" type="image/x-icon" th:href="@{/assets/icons/favicon.ico}" />
   <!-- Core theme CSS (includes Bootstrap)-->
   <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/header.css}" />
   <link rel="stylesheet" th:href="@{/css/bootstrap-icons/bootstrap-icons.min.css}">
   <!-- Toast UI Editor CSS -->
   <link rel="stylesheet" th:href="@{/css/toastui/toastui-editor.min.css}" />
@@ -53,7 +54,7 @@
     }
 
     #page-content-wrapper {
-      padding-top: 0 !important;
+      padding-top: 56px !important;
     }
   </style>
 
@@ -62,7 +63,7 @@
 <body>
   <div layout:fragment="erp-contents">
     <div class="tailwind-section">
-      <div class="relative w-full h-96 bg-lime-500 mb-10 mt-3 overflow-hidden">
+      <div class="relative w-full h-96 bg-lime-500 mb-4 overflow-hidden">
         <!-- 배경 이미지 -->
         <img src="/assets/images/main/photo-main-slide3.jpg" class="w-full h-full object-cover absolute inset-0"
           alt="안전 장비" style="z-index:1; opacity:0.8;">

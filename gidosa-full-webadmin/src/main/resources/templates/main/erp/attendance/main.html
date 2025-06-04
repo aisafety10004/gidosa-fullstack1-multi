@@ -7,14 +7,245 @@
   <meta name="_csrf" th:content="${_csrf.token}" />
   <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <title>출퇴근 관리</title>
+  <style>
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      justify-content: flex-start;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 5px;
+      width: 50%;
+      max-width: 500px;
+    }
+
+    .close {
+      float: right;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .status-working {
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .status-left {
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    .attendance-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      font-size: 1.1rem;
+      /* 글자 크기 증가 */
+    }
+
+    .attendance-table th {
+      background-color: #f8f9fa;
+      padding: 15px;
+      /* 패딩 증가 */
+      text-align: center;
+      border-bottom: 2px solid #dee2e6;
+      font-weight: bold;
+    }
+
+    .attendance-table td {
+      padding: 15px;
+      /* 패딩 증가 */
+      text-align: center;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .attendance-table tr:hover {
+      background-color: #f5f5f5;
+    }
+
+    /* 상태 표시 스타일 */
+    .status-working {
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .status-left {
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    .status-absent {
+      color: #ffc107;
+      font-weight: bold;
+    }
+
+    /* 출근/퇴근 버튼 스타일 */
+    .btn-working {
+      background-color: #28a745;
+      border-color: #28a745;
+      color: white;
+    }
+
+    .btn-working:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+
+    .btn-leaving {
+      background-color: #dc3545;
+      border-color: #dc3545;
+      color: white;
+    }
+
+    .btn-leaving:hover {
+      background-color: #c82333;
+      border-color: #bd2130;
+    }
+
+    .attendance-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+  </style>
+  <script>
+    // CSRF 토큰 설정
+    const token = document.querySelector("meta[name='_csrf']").getAttribute("content");
+    const header = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+    // 출근/퇴근 등록 함수
+    function registerAttendance(event) {
+      event.preventDefault();
+
+      fetch('/erp/attendance/register', {
+        method: 'POST',
+        headers: {
+          [header]: token
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          // 버튼 텍스트와 스타일 업데이트
+          const registerBtn = document.getElementById('registerBtn');
+          if (data.attendanceType === 'WORKING') {
+            registerBtn.textContent = '퇴근 등록';
+            registerBtn.classList.remove('btn-working');
+            registerBtn.classList.add('btn-leaving');
+          } else {
+            registerBtn.textContent = '출근 등록';
+            registerBtn.classList.remove('btn-leaving');
+            registerBtn.classList.add('btn-working');
+          }
+
+          // 테이블에 새로운 데이터 추가
+          const tbody = document.getElementById('attendanceTableBody');
+          const newRow = document.createElement('tr');
+          newRow.innerHTML = `
+          <td>${data.name}</td>
+          <td>${formatTime(data.workStartTime)}</td>
+          <td>${data.workEndTime ? formatTime(data.workEndTime) : '-'}</td>
+          <td>${formatDate(data.date)}</td>
+          <td>
+            <span class="${getStatusClass(data.attendanceType)}">
+              ${getStatusText(data.attendanceType)}
+            </span>
+          </td>
+        `;
+          tbody.insertBefore(newRow, tbody.firstChild);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // 시간 포맷 함수
+    function formatTime(dateTime) {
+      return new Date(dateTime).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // 날짜 포맷 함수
+    function formatDate(date) {
+      return new Date(date).toLocaleDateString('ko-KR');
+    }
+
+    // 상태 클래스 반환 함수
+    function getStatusClass(type) {
+      switch (type) {
+        case 'WORKING': return 'status-working';
+        case 'LEFT': return 'status-left';
+        default: return 'status-absent';
+      }
+    }
+
+    // 상태 텍스트 반환 함수
+    function getStatusText(type) {
+      switch (type) {
+        case 'WORKING': return '근무중';
+        case 'LEFT': return '퇴근';
+        default: return '결근';
+      }
+    }
+  </script>
 </head>
 
 <body>
   <div layout:fragment="erp-content" class="container">
-    <ul class="flex flex-col gap-4 justify-start items-center">
-      <li><a href="/erp/attendance/register">출퇴근 등록</a></li>
-      <li><a href="/erp/attendance/list">출퇴근 목록</a></li>
-    </ul>
+    <!-- 출퇴근 현황 테이블 수정 -->
+    <div id="attendanceList" class="mt-4">
+      <div class="attendance-header">
+        <h3>출퇴근 현황</h3>
+        <form th:action="@{/erp/attendance/register}" method="post" onsubmit="registerAttendance(event)">
+          <button type="submit" class="btn"
+            th:classappend="${attendanceType == 'WORKING' ? 'btn-working' : 'btn-leaving'}"
+            th:disabled="${attendanceType == 'LEFT'}" id="registerBtn" sec:authorize="isAuthenticated()"
+            th:text="${attendanceType == 'WORKING' ? '출근 등록' : '퇴근 등록'}"></button>
+        </form>
+      </div>
+      <table class="attendance-table">
+        <thead>
+          <tr>
+            <th>이름</th>
+            <th>출근시간</th>
+            <th>퇴근시간</th>
+            <th>날짜</th>
+            <th>상태</th>
+          </tr>
+        </thead>
+        <tbody id="attendanceTableBody" th:each="attendance : ${attendanceList}">
+          <tr>
+            <td th:text="${attendance.name}"></td>
+            <td th:text="${#temporals.format(attendance.workStartTime, 'HH:mm')}"></td>
+            <td th:text="${attendance.workEndTime != null ? #temporals.format(attendance.workEndTime, 'HH:mm') : '-'}">
+            </td>
+            <td th:text="${#temporals.format(attendance.date, 'yyyy-MM-dd')}"></td>
+            <td>
+              <span th:class="${attendance.attendanceType == 'WORKING' ? 'status-working' : 
+                                (attendance.attendanceType == 'LEFT' ? 'status-left' : 'status-absent')}" th:text="${attendance.attendanceType == 'WORKING' ? '근무중' : 
+                               (attendance.attendanceType == 'LEFT' ? '퇴근' : '미출근')}">
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </body>
 

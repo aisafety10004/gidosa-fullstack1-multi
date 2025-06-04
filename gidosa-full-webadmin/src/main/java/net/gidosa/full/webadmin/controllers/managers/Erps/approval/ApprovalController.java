@@ -15,6 +15,7 @@ public class ApprovalController {
 
     @GetMapping("/approval")
     public String approval() {
+
         return "main/erp/approval/main";
     }
 
