@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layouts/admin}">
+  layout:decorate="~{${layout}}" th:with="pageTitle='학습 자료 상세', pagePath='/exam/education/detail/{id}'">
 
 <head>
   <title>학습 자료 상세</title>

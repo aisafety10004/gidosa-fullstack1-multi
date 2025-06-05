@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layouts/admin}">
+  layout:decorate="~{${layout}}" th:with="pageTitle='교육 자료 관리', pagePath='/exam/education/list'">
+
 
 <head>
   <title>교육 자료 관리</title>
@@ -45,6 +46,13 @@
           min-width: 120px;
         }
       }
+
+      .education-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
     </style>
   </th:block>
 </head>
@@ -52,7 +60,10 @@
 <body>
   <div layout:fragment="content">
     <div class="container-fluid">
-      <h1 class="h3 mb-4 text-gray-800">교육 자료 관리</h1>
+      <div class="education-header">
+        <h1 class="h3 text-gray-800">교육 자료 관리</h1>
+        <a class="btn btn-primary" th:href="@{/exam/education/register}"> 교육자료 등록하기</a>
+      </div>
 
       <!-- 교육 자료 목록 -->
       <div class="card shadow mb-4">
