@@ -56,6 +56,14 @@
       <div class="collapse navbar-collapse gap-4" id="navbarNav">
         <!-- 로그인한 사용자만 볼 수 있는 메뉴 -->
         <ul class="navbar-nav ms-auto" sec:authorize="isAuthenticated()">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="processDropdown" role="button" data-bs-toggle="dropdown">
+              경영기획
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/process/work-discussion">업무등록</a></li>
+            </ul>
+          </li>
           <!-- 회원관리 -->
           <li class="nav-item">
             <a class="nav-link" href="/member/general/list">회원관리</a>

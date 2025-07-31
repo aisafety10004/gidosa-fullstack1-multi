@@ -19,16 +19,15 @@ spring:
     application:
         name: gidosa-full-webadmin
 
-    #  web:
-    #    resources:
-    #      static-locations:
-    #        - classpath:/static/
+    web:
+        resources:
+            static-locations: classpath:/static/
 
     devtools:
         livereload:
-            enabled: false
+            enabled: true
         restart:
-            enabled: false
+            enabled: true
     #    add-properties: false
 
     datasource:
@@ -51,6 +50,7 @@ spring:
 
     thymeleaf: # 타임리프
         cache: false
+        prefix: classpath:/templates/
     #    prefix: classpath:/templates/
     #    suffix: .html
     #    view-names: thymeleaf/*
